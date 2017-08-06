@@ -1569,8 +1569,57 @@ object TerraFrame {
     toolDursTemp.asScala.toMap
 
   }
-  var FUELS: Map[Short, Double] = _
-  var WIREP: Map[Int, Int] = _
+  val FUELS: Map[Short, Double] = {
+    val fuelsTemp = new jul.HashMap[Short, Double](50)
+
+    fuelsTemp.put(15.toShort, 0.01)
+    fuelsTemp.put(28.toShort, 0.001)
+    fuelsTemp.put(160.toShort, 0.02)
+    fuelsTemp.put(168.toShort, 0.01)
+    fuelsTemp.put(179.toShort, 0.0035)
+    fuelsTemp.put(20.toShort, 0.0025)
+    fuelsTemp.put(21.toShort, 0.00125)
+    fuelsTemp.put(35.toShort, 0.02)
+    fuelsTemp.put(36.toShort, 0.011)
+    fuelsTemp.put(77.toShort, 0.02)
+    fuelsTemp.put(79.toShort, 0.02)
+    fuelsTemp.put(81.toShort, 0.02)
+    fuelsTemp.put(83.toShort, 0.02)
+    fuelsTemp.put(85.toShort, 0.02)
+    fuelsTemp.put(87.toShort, 0.02)
+    fuelsTemp.put(89.toShort, 0.0035)
+    fuelsTemp.put(91.toShort, 0.02)
+    fuelsTemp.put(95.toShort, 0.02)
+    fuelsTemp.put(78.toShort, 0.01)
+    fuelsTemp.put(80.toShort, 0.01)
+    fuelsTemp.put(82.toShort, 0.01)
+    fuelsTemp.put(84.toShort, 0.01)
+    fuelsTemp.put(86.toShort, 0.01)
+    fuelsTemp.put(88.toShort, 0.01)
+    fuelsTemp.put(90.toShort, 0.01)
+    fuelsTemp.put(92.toShort, 0.01)
+    fuelsTemp.put(96.toShort, 0.01)
+    (97 until 103).foreach { i =>
+      fuelsTemp.put(i.toShort, 0.0035)
+    }
+    fuelsTemp.put(154.toShort, 0.002)
+    fuelsTemp.put(155.toShort, 0.002)
+    fuelsTemp.put(156.toShort, 0.00333)
+
+    fuelsTemp.asScala.toMap
+  }
+  val WIREP: Map[Int, Int] = {
+    val wirepTemp = new jul.HashMap[Int, Int](10)
+
+    wirepTemp.put(0, 94)
+    wirepTemp.put(1, 95)
+    wirepTemp.put(2, 96)
+    wirepTemp.put(3, 97)
+    wirepTemp.put(4, 98)
+    wirepTemp.put(5, 99)
+
+    wirepTemp.asScala.toMap
+  }
   var TORCHESL: Map[Int, Int] = _
   var TORCHESR: Map[Int, Int] = _
   var TORCHESB: Map[Int, Boolean] = _
@@ -1794,56 +1843,6 @@ class TerraFrame extends JApplet
       state = "loading_graphics"
 
       repaint()
-
-      val fuelsTemp = new jul.HashMap[Short, Double](50)
-
-      fuelsTemp.put(15.toShort, 0.01)
-      fuelsTemp.put(28.toShort, 0.001)
-      fuelsTemp.put(160.toShort, 0.02)
-      fuelsTemp.put(168.toShort, 0.01)
-      fuelsTemp.put(179.toShort, 0.0035)
-      fuelsTemp.put(20.toShort, 0.0025)
-      fuelsTemp.put(21.toShort, 0.00125)
-      fuelsTemp.put(35.toShort, 0.02)
-      fuelsTemp.put(36.toShort, 0.011)
-      fuelsTemp.put(77.toShort, 0.02)
-      fuelsTemp.put(79.toShort, 0.02)
-      fuelsTemp.put(81.toShort, 0.02)
-      fuelsTemp.put(83.toShort, 0.02)
-      fuelsTemp.put(85.toShort, 0.02)
-      fuelsTemp.put(87.toShort, 0.02)
-      fuelsTemp.put(89.toShort, 0.0035)
-      fuelsTemp.put(91.toShort, 0.02)
-      fuelsTemp.put(95.toShort, 0.02)
-      fuelsTemp.put(78.toShort, 0.01)
-      fuelsTemp.put(80.toShort, 0.01)
-      fuelsTemp.put(82.toShort, 0.01)
-      fuelsTemp.put(84.toShort, 0.01)
-      fuelsTemp.put(86.toShort, 0.01)
-      fuelsTemp.put(88.toShort, 0.01)
-      fuelsTemp.put(90.toShort, 0.01)
-      fuelsTemp.put(92.toShort, 0.01)
-      fuelsTemp.put(96.toShort, 0.01)
-      (97 until 103).foreach { i =>
-        fuelsTemp.put(i.toShort, 0.0035)
-      }
-      fuelsTemp.put(154.toShort, 0.002)
-      fuelsTemp.put(155.toShort, 0.002)
-      fuelsTemp.put(156.toShort, 0.00333)
-
-      FUELS = fuelsTemp.asScala.toMap
-
-
-      val wirepTemp = new jul.HashMap[Int, Int](10)
-
-      wirepTemp.put(0, 94)
-      wirepTemp.put(1, 95)
-      wirepTemp.put(2, 96)
-      wirepTemp.put(3, 97)
-      wirepTemp.put(4, 98)
-      wirepTemp.put(5, 99)
-
-      WIREP = wirepTemp.asScala.toMap
 
 
       val torcheslTemp = new jul.HashMap[Int, Int](10)
