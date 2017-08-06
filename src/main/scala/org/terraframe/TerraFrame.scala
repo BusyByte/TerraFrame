@@ -961,7 +961,53 @@ object TerraFrame {
 
     toolSpeedTemp.asScala.toMap
   }
-  var TOOLDAMAGE: Map[Short, Int] = _
+  val TOOLDAMAGE: Map[Short, Int] =  {
+    val toolDamageTemp = new jul.HashMap[Short, Int](items.length)
+
+    items.indices.foreach { i =>
+      toolDamageTemp.put(i.toShort, 1)
+    }
+
+    toolDamageTemp.put(7.toShort, 2)
+    toolDamageTemp.put(8.toShort, 3)
+    toolDamageTemp.put(9.toShort, 3)
+    toolDamageTemp.put(10.toShort, 4)
+    toolDamageTemp.put(11.toShort, 3)
+    toolDamageTemp.put(12.toShort, 4)
+    toolDamageTemp.put(13.toShort, 5)
+    toolDamageTemp.put(14.toShort, 6)
+    toolDamageTemp.put(16.toShort, 5)
+    toolDamageTemp.put(17.toShort, 8)
+    toolDamageTemp.put(18.toShort, 13)
+    toolDamageTemp.put(19.toShort, 18)
+    toolDamageTemp.put(51.toShort, 6)
+    toolDamageTemp.put(52.toShort, 9)
+    toolDamageTemp.put(53.toShort, 24)
+    toolDamageTemp.put(54.toShort, 8)
+    toolDamageTemp.put(55.toShort, 11)
+    toolDamageTemp.put(56.toShort, 30)
+    toolDamageTemp.put(57.toShort, 10)
+    toolDamageTemp.put(58.toShort, 15)
+    toolDamageTemp.put(59.toShort, 38)
+    toolDamageTemp.put(145.toShort, 7)
+    toolDamageTemp.put(146.toShort, 10)
+    toolDamageTemp.put(147.toShort, 27)
+    toolDamageTemp.put(148.toShort, 4)
+    toolDamageTemp.put(149.toShort, 5)
+    toolDamageTemp.put(150.toShort, 9)
+    toolDamageTemp.put(154.toShort, 1)
+    toolDamageTemp.put(155.toShort, 1)
+    toolDamageTemp.put(156.toShort, 3)
+    toolDamageTemp.put(157.toShort, 1)
+    toolDamageTemp.put(158.toShort, 2)
+    toolDamageTemp.put(159.toShort, 4)
+    toolDamageTemp.put(57.toShort, 20)
+    toolDamageTemp.put(58.toShort, 30)
+    toolDamageTemp.put(59.toShort, 75)
+
+    toolDamageTemp.asScala.toMap
+  }
+  
   var BLOCKDROPS: Map[Int, Short] = _
   var ITEMBLOCKS: Map[Short, Int] = _
   var OUTLINES: Map[Int, String] = _
@@ -1294,50 +1340,7 @@ class TerraFrame extends JApplet
 
       repaint()
 
-      val toolDamageTemp = new jul.HashMap[Short, Int](items.length)
 
-      items.indices.foreach { i =>
-        toolDamageTemp.put(i.toShort, 1)
-      }
-
-      toolDamageTemp.put(7.toShort, 2)
-      toolDamageTemp.put(8.toShort, 3)
-      toolDamageTemp.put(9.toShort, 3)
-      toolDamageTemp.put(10.toShort, 4)
-      toolDamageTemp.put(11.toShort, 3)
-      toolDamageTemp.put(12.toShort, 4)
-      toolDamageTemp.put(13.toShort, 5)
-      toolDamageTemp.put(14.toShort, 6)
-      toolDamageTemp.put(16.toShort, 5)
-      toolDamageTemp.put(17.toShort, 8)
-      toolDamageTemp.put(18.toShort, 13)
-      toolDamageTemp.put(19.toShort, 18)
-      toolDamageTemp.put(51.toShort, 6)
-      toolDamageTemp.put(52.toShort, 9)
-      toolDamageTemp.put(53.toShort, 24)
-      toolDamageTemp.put(54.toShort, 8)
-      toolDamageTemp.put(55.toShort, 11)
-      toolDamageTemp.put(56.toShort, 30)
-      toolDamageTemp.put(57.toShort, 10)
-      toolDamageTemp.put(58.toShort, 15)
-      toolDamageTemp.put(59.toShort, 38)
-      toolDamageTemp.put(145.toShort, 7)
-      toolDamageTemp.put(146.toShort, 10)
-      toolDamageTemp.put(147.toShort, 27)
-      toolDamageTemp.put(148.toShort, 4)
-      toolDamageTemp.put(149.toShort, 5)
-      toolDamageTemp.put(150.toShort, 9)
-      toolDamageTemp.put(154.toShort, 1)
-      toolDamageTemp.put(155.toShort, 1)
-      toolDamageTemp.put(156.toShort, 3)
-      toolDamageTemp.put(157.toShort, 1)
-      toolDamageTemp.put(158.toShort, 2)
-      toolDamageTemp.put(159.toShort, 4)
-      toolDamageTemp.put(57.toShort, 20)
-      toolDamageTemp.put(58.toShort, 30)
-      toolDamageTemp.put(59.toShort, 75)
-
-      TOOLDAMAGE = toolDamageTemp.asScala.toMap
 
 
       val drops: Array[Short] = Array[Short](0, 1, 2, 3, 4, 5, 6, 15, 20, 21, 22, 23, 24, 25, 26, 15, 0, 27, 28, 34, 35, 36, 37, 27, 35, 35, 36, 36, 37, 37, 0, 38, 39, 40, 41, 42, 43, 44, 44, 45, 46, 47, 48, 49, 50, 74, 75, 0, 0, 0, 78, 0, 0, 80, 0, 0, 82, 0, 0, 84, 0, 0, 86, 0, 0, 88, 0, 0, 90, 0, 0, 92, 1, 1, 93, 93, 94, 0, 0, 96, 151, 152, 153, 15, 161, 162, 163, 164, 165, 166, 168, 1, 50, 1, 175, 175, 175, 175, 175, 175, 176, 176, 176, 177, 177, 178, 178, 178, 178, 178, 178, 180, 180, 180, 180, 180, 180, 180, 180, 181, 181, 181, 181, 181, 181, 181, 181, 182, 182, 182, 182, 183, 183, 184, 184, 185, 185, 186, 186, 186, 186, 186, 186, 186, 186, 187, 187, 187, 187, 187, 187, 187, 187, 188, 188, 188, 188, 188, 188, 188, 188, 189, 189, 189, 189, 189, 189, 189, 189)
