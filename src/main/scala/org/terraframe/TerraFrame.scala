@@ -443,7 +443,10 @@ import scala.util.control.NonFatal
 */
 
 object TerraFrame {
-    val config: GraphicsConfiguration = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration()
+    val config: GraphicsConfiguration =
+        GraphicsEnvironment.getLocalGraphicsEnvironment
+          .getDefaultScreenDevice
+          .getDefaultConfiguration
     var cic, armor: ItemCollection = _
     var WIDTH: Int = 2400
     var HEIGHT: Int = 2400
@@ -635,38 +638,10 @@ object TerraFrame {
         }
     }
 
-    def max(a: Int, b: Int, c: Int): Int = {
-        return Math.max(Math.max(a, b), c)
-    }
-
-    def max(a: Float, b: Float, c: Float): Float = {
-        return Math.max(Math.max(a, b), c)
-    }
-
-    def max(a: Double, b: Double, c: Double): Double = {
-        return Math.max(Math.max(a, b), c)
-    }
-
-    def max(a: Int, b: Int, c: Int, d: Int): Int = {
-        return Math.max(Math.max(a, b), Math.max(c, d))
-    }
-
-    def max(a: Float, b: Float, c: Float, d: Float): Float =  {
-        return Math.max(Math.max(a, b), Math.max(c, d))
-    }
-
-    def max(a: Double, b: Double, c: Double, d: Double): Double = {
-        return Math.max(Math.max(a, b), Math.max(c, d))
-    }
-
-    def mod(a: Int, q: Int): Int = {
-        return ((a % q) + q) % q
-    }
-
     val theSize: Int = CHUNKBLOCKS*2
 }
 
-import TerraFrame._
+
 
 class TerraFrame extends JApplet 
   with ChangeListener 
@@ -674,6 +649,9 @@ class TerraFrame extends JApplet
   with MouseListener 
   with MouseMotionListener 
   with MouseWheelListener {
+    
+    import TerraFrame._
+    import MathHelper._
 
     var screen: BufferedImage = _
     var bg: Color = _
@@ -706,7 +684,7 @@ class TerraFrame extends JApplet
     var player: Player = _
     var inventory: Inventory = _
     
-    var entities: jul.List[Entity] = _
+    var entities: jul.List[Entity] = _  //TODO: see if can convert so scala collection
     var cloudsx, cloudsy, cloudsv: jul.List[Double] = _
     var cloudsn: jul.List[Int] = _
     var machinesx, machinesy: jul.List[Int] = _
@@ -968,7 +946,7 @@ class TerraFrame extends JApplet
             
             val backgroundImgsTemp = new jul.HashMap[Byte,BufferedImage](bgs.length)
 
-            (0 until bgs.length).foreach { i =>
+            bgs.indices.foreach { i =>
                 backgroundImgsTemp.put(i.toByte, loadImage("backgrounds/" + bgs(i) + ".png"))
             }
 
@@ -1008,11 +986,11 @@ class TerraFrame extends JApplet
             
             val outlineImgsTemp = new jul.HashMap[String,BufferedImage](outlineNameList.length * dirs.length)
 
-            (0 until outlineNameList.length).foreach { i =>
-                (0 until dirs.length).foreach { j =>
+            outlineNameList.foreach { outlineName =>
+                dirs.foreach { dir =>
                     (0 until 5).foreach { k =>
-                        outlineImgsTemp.put("outlines/" + outlineNameList(i) + "/" + dirs(j) + (k+1) + ".png",
-                            loadImage("outlines/" + outlineNameList(i) + "/" + dirs(j) + (k+1) + ".png"))
+                        outlineImgsTemp.put("outlines/" + outlineName + "/" + dir + (k+1) + ".png",
+                            loadImage("outlines/" + outlineName + "/" + dir + (k+1) + ".png"))
                     }
                 }
             }
@@ -1257,7 +1235,7 @@ class TerraFrame extends JApplet
 
             val toolDamageTemp = new jul.HashMap[Short,Int](items.length)
 
-            (0 until items.length).foreach { i =>
+            items.indices.foreach { i =>
                 toolDamageTemp.put(i.toShort, 1)
             }
 
@@ -1460,7 +1438,7 @@ class TerraFrame extends JApplet
 
             val stacks: Array[Short] = Array[Short](100, 100, 100, 100, 100, 100, 100, 1, 1, 1, 1, 1, 1, 1, 1, 100, 1, 1, 1, 1, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 1, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 1, 1, 1, 1, 1, 1, 1, 1, 1, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 100, 100, 100, 1, 1, 1, 1, 1, 1, 100, 100, 100, 100, 100, 100, 100, 100, 100, 1, 1, 1, 1, 1, 1, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 1)
 
-            (0 until items.length).foreach { i =>
+            items.indices.foreach { i =>
                 maxStacksTemp.put(i.toShort, stacks(i))
             }
 
@@ -1630,7 +1608,7 @@ class TerraFrame extends JApplet
             
             val armorTemp = new jul.HashMap[Short,Int](items.length)
 
-            (0 until items.length).foreach { i =>
+            items.indices.foreach { i =>
                 armorTemp.put(i.toShort, 0)
             }
 
@@ -1843,7 +1821,7 @@ class TerraFrame extends JApplet
             
             val torchesbTemp = new jul.HashMap[Int,Boolean](blocknames.length)
 
-            (0 until blocknames.length).foreach { i =>
+            blocknames.indices.foreach { i =>
                 torchesbTemp.put(i, false)
             }
 
@@ -1875,7 +1853,7 @@ class TerraFrame extends JApplet
             
             val gsupportTemp = new jul.HashMap[Int,Boolean](blocknames.length)
 
-            (0 until blocknames.length).foreach { i =>
+            blocknames.indices.foreach { i =>
                 gsupportTemp.put(i, false)
             }
 
@@ -1905,7 +1883,7 @@ class TerraFrame extends JApplet
 
             val fspeedTemp = new jul.HashMap[Short,Double](blocknames.length)
 
-            (0 until blocknames.length).foreach { i =>
+            blocknames.indices.foreach { i =>
                 fspeedTemp.put(i.toShort, 0.001)
             }
 
@@ -2411,7 +2389,7 @@ class TerraFrame extends JApplet
                                 if (mousePos(0) >= 186 && mousePos(0) <= 615 &&
                                     mousePos(1) >= 458 && mousePos(1) <= 484) { // create new world
                                     state = "new_world"
-                                    newWorldName = new TextField(400, "New World")
+                                    newWorldName = TextField(400, "New World")
                                     repaint()
                                     menuPressed = true
                                 }
@@ -2423,7 +2401,7 @@ class TerraFrame extends JApplet
                                 }
                                 import scala.util.control.Breaks._
                                 breakable {
-                                    (0 until worldFiles.length).foreach { i =>
+                                    worldFiles.indices.foreach { i =>
                                         if (mousePos(0) >= 166 && mousePos(0) <= 470 &&
                                           mousePos(1) >= 117 + i * 35 && mousePos(1) <= 152 + i * 35) { // load world
                                             currentWorld = worldNames(i)
@@ -2447,7 +2425,7 @@ class TerraFrame extends JApplet
                                     if (!newWorldName.text.equals("")) {
                                         findWorlds()
                                         doGenerateWorld = true
-                                        (0 until worldNames.length).foreach { i =>
+                                        worldNames.indices.foreach { i =>
                                             if (newWorldName.text.equals(worldNames(i))) {
                                                 doGenerateWorld = false
                                             }
@@ -2562,12 +2540,12 @@ class TerraFrame extends JApplet
 
         val durabilityTemp = new jul.HashMap[Short,Map[Int,Int]](toolList.length * toolList.length)
         
-        (0 until toolList.length).foreach { i =>
+        toolList.indices.foreach { i =>
             val dur = new java.util.HashMap[Int,Int](durList(i).length * durLis2(i).length)
-            (0 until durList(i).length).foreach { j =>
+            durList(i).indices.foreach { j =>
                 dur.put(j, durList(i)(j))
             }
-            (0 until durLis2(i).length).foreach { j =>
+            durLis2(i).indices.foreach { j =>
                 dur.put(j+100, durLis2(i)(j))
             }
             durabilityTemp.put(toolList(i), dur.asScala.toMap)
@@ -2581,12 +2559,12 @@ class TerraFrame extends JApplet
         folder.mkdir()
         files = folder.listFiles()
 
-        val (wordFilesTemp, worldNamesTemp) =files.filter(f => f.isFile() && f.getName().endsWith(".dat"))
+        val (wordFilesTemp, worldNamesTemp) = files.filter(f => f.isFile && f.getName.endsWith(".dat"))
           .foldLeft((List.empty[String], List.empty[String])) {
             (acc, file) =>
             val wfs = acc._1
             val wns = acc._2
-            val newFile = file.getName()
+            val newFile = file.getName
             val newName = newFile.substring(0, newFile.length()-4)
             (newFile :: wfs, newName :: wns)
         }
@@ -2789,7 +2767,7 @@ class TerraFrame extends JApplet
         mousePos2(1) = mousePos(1) + player.iy - getHeight()/2 + Player.height/2
 
         currentSkyLight = skycolors(0)
-        (0 until skycolors.length).foreach { i =>
+        skycolors.indices.foreach { i =>
             if (timeOfDay >= skycolors(i)) {
                 currentSkyLight = skycolors(i)
             }
@@ -2837,9 +2815,7 @@ class TerraFrame extends JApplet
                                 rdrawn(y)(x) = false
                             }
                         }
-                        for {
-                            fuel <- FUELS.get(icmatrix(l)(y)(x).ids(1))
-                        } yield {
+                        FUELS.get(icmatrix(l)(y)(x).ids(1)).foreach { fuel =>
                             icmatrix(l)(y)(x).FUELP -= fuel
                             if (icmatrix(l)(y)(x).FUELP < 0) {
                                 icmatrix(l)(y)(x).FUELP = 0
@@ -2847,7 +2823,7 @@ class TerraFrame extends JApplet
                             }
                             import scala.util.control.Breaks._
                             breakable {
-                                (0 until FRI1.length).foreach { i =>
+                                FRI1.indices.foreach { i =>
                                     FSPEED.get(icmatrix(l)(y)(x).ids(1)).foreach { fspeed =>
                                         if (icmatrix(l)(y)(x).ids(0) == FRI1(i) && icmatrix(l)(y)(x).nums(0) >= FRN1(i)) {
                                             icmatrix(l)(y)(x).SMELTP += fspeed
@@ -2896,7 +2872,7 @@ class TerraFrame extends JApplet
                     }
                     import scala.util.control.Breaks._
                     breakable {
-                        (0 until FRI1.length).foreach { i =>
+                        FRI1.indices.foreach { i =>
                             FSPEED.get(ic.ids(1)).foreach { fspeed =>
                                 if (ic.ids(0) == FRI1(i) && ic.nums(0) >= FRN1(i)) {
                                     ic.SMELTP += fspeed
@@ -2958,24 +2934,24 @@ class TerraFrame extends JApplet
                     if (random.nextInt(22500) == 0) {
                         t = 0
                         blocks(l)(y)(x) match {
-                            case 48 if (timeOfDay >= 75913 || timeOfDay < 28883) => t = 49
-                            case 49 if (timeOfDay >= 75913 || timeOfDay < 28883) => t = 50
-                            case 51 if (timeOfDay >= 32302 && timeOfDay < 72093) => t = 52
-                            case 52 if (timeOfDay >= 32302 && timeOfDay < 72093) => t = 53
-                            case 54 if (checkBiome(x, y).equals("desert")) => t = 55
-                            case 55 if (checkBiome(x, y).equals("desert")) => t = 56
-                            case 57 if (checkBiome(x, y).equals("jungle")) => t = 58
-                            case 58 if (checkBiome(x, y).equals("jungle")) => t = 59
-                            case 60 if (checkBiome(x, y).equals("frost")) => t = 61
-                            case 61 if (checkBiome(x, y).equals("frost")) => t = 62
-                            case 63 if (checkBiome(x, y).equals("cavern") || y >= 0/*stonelayer(x)*/) => t = 64
-                            case 64 if (checkBiome(x, y).equals("cavern") || y >= 0/*stonelayer(x)*/) => t = 65
-                            case 66 if (y <= HEIGHT*0.08 && random.nextInt(3) == 0 || y <= HEIGHT*0.04) => t = 67
-                            case 67 if (y <= HEIGHT*0.08 && random.nextInt(3) == 0 || y <= HEIGHT*0.04) => t = 68
-                            case 69 if (y >= HEIGHT*0.98) => t = 70
-                            case 70 if (y >= HEIGHT*0.98) => t = 71
-                            case 77 if (checkBiome(x, y).equals("swamp")) => t = 78
-                            case 78 if (checkBiome(x, y).equals("swamp")) => t = 79
+                            case 48 if timeOfDay >= 75913 || timeOfDay < 28883 => t = 49
+                            case 49 if timeOfDay >= 75913 || timeOfDay < 28883 => t = 50
+                            case 51 if timeOfDay >= 32302 && timeOfDay < 72093 => t = 52
+                            case 52 if timeOfDay >= 32302 && timeOfDay < 72093 => t = 53
+                            case 54 if checkBiome(x, y).equals("desert") => t = 55
+                            case 55 if checkBiome(x, y).equals("desert") => t = 56
+                            case 57 if checkBiome(x, y).equals("jungle") => t = 58
+                            case 58 if checkBiome(x, y).equals("jungle") => t = 59
+                            case 60 if checkBiome(x, y).equals("frost") => t = 61
+                            case 61 if checkBiome(x, y).equals("frost") => t = 62
+                            case 63 if checkBiome(x, y).equals("cavern") || y >= 0 /*stonelayer(x)*/ => t = 64
+                            case 64 if checkBiome(x, y).equals("cavern") || y >= 0 /*stonelayer(x)*/ => t = 65
+                            case 66 if y <= HEIGHT * 0.08 && random.nextInt(3) == 0 || y <= HEIGHT * 0.04 => t = 67
+                            case 67 if y <= HEIGHT * 0.08 && random.nextInt(3) == 0 || y <= HEIGHT * 0.04 => t = 68
+                            case 69 if y >= HEIGHT * 0.98 => t = 70
+                            case 70 if y >= HEIGHT * 0.98 => t = 71
+                            case 77 if checkBiome(x, y).equals("swamp") => t = 78
+                            case 78 if checkBiome(x, y).equals("swamp") => t = 79
                             case _ =>
                         }
                         if (t != 0) {
@@ -3091,11 +3067,11 @@ class TerraFrame extends JApplet
 
         if (!DEBUG_PEACEFUL && mobCount < 100) {
             if (msi == 1) {
-                ((player.iy/BLOCKSIZE).toInt-125 until (player.iy/BLOCKSIZE).toInt+125).foreach { ay =>
-                    ((player.ix/BLOCKSIZE).toInt-125 until (player.ix/BLOCKSIZE).toInt+125).foreach { ax =>
+                ((player.iy/BLOCKSIZE)-125 until (player.iy/BLOCKSIZE)+125).foreach { ay =>
+                    ((player.ix/BLOCKSIZE)-125 until (player.ix/BLOCKSIZE)+125).foreach { ax =>
                         import scala.util.control.Breaks._
                         breakable {
-                            if (random.nextInt((100000 / DEBUG_HOSTILE).toInt) == 0) {
+                            if (random.nextInt((100000 / DEBUG_HOSTILE)) == 0) {
                                 xpos = ax + random.nextInt(20) - 10
                                 ypos = ay + random.nextInt(20) - 10
                                 xpos2 = ax + random.nextInt(20) - 10
@@ -3585,14 +3561,14 @@ class TerraFrame extends JApplet
                     }
                     showTool = true
                     toolAngle = 4.7
-                    ux = (mousePos2(0)/BLOCKSIZE)
-                    uy = (mousePos2(1)/BLOCKSIZE)
-                    ux2 = (mousePos2(0)/BLOCKSIZE)
-                    uy2 = (mousePos2(1)/BLOCKSIZE)
+                    ux = mousePos2(0) / BLOCKSIZE
+                    uy = mousePos2(1) / BLOCKSIZE
+                    ux2 = mousePos2(0) / BLOCKSIZE
+                    uy2 = mousePos2(1) / BLOCKSIZE
                     if (Math.sqrt(Math.pow(player.x+player.image.getWidth()-ux2*BLOCKSIZE+BLOCKSIZE/2, 2) + Math.pow(player.y+player.image.getHeight()-uy2*BLOCKSIZE+BLOCKSIZE/2, 2)) <= 160 ||
                         Math.sqrt(Math.pow(player.x+player.image.getWidth()-ux2*BLOCKSIZE+BLOCKSIZE/2+WIDTH*BLOCKSIZE, 2) + Math.pow(player.y+player.image.getHeight()-uy2*BLOCKSIZE+BLOCKSIZE/2, 2)) <= 160 || DEBUG_REACH) {
-                        ucx = ux - CHUNKBLOCKS * ((ux/CHUNKBLOCKS))
-                        ucy = uy - CHUNKBLOCKS * ((uy/CHUNKBLOCKS))
+                        ucx = ux - CHUNKBLOCKS * (ux / CHUNKBLOCKS)
+                        ucy = uy - CHUNKBLOCKS * (uy / CHUNKBLOCKS)
                         if (jul.Arrays.asList(toolList).contains(inventory.tool())) {
                             if (blocks(layer)(uy)(ux) != 0 && jul.Arrays.asList(BLOCKTOOLS.get(blocks(layer)(uy)(ux))).contains(inventory.tool())) {
                                 blockdns(uy)(ux) = random.nextInt(5).toByte
@@ -3705,8 +3681,8 @@ class TerraFrame extends JApplet
                                         }
                                     }
                                     if (layer == 1 && !DEBUG_GPLACE && blockcds(blockTemp)) {
-                                        (0 until entities.size()).foreach { i =>
-                                            if (entities.get(i).name != null && entities.get(i).rect.intersects(new Rectangle(ux*BLOCKSIZE, uy*BLOCKSIZE, BLOCKSIZE, BLOCKSIZE))) {
+                                        entities.asScala.foreach { entity: Entity =>
+                                            if (entity.name != null && entity.rect.intersects(new Rectangle(ux*BLOCKSIZE, uy*BLOCKSIZE, BLOCKSIZE, BLOCKSIZE))) {
                                                 blockTemp = 0
                                             }
                                         }
@@ -4062,7 +4038,7 @@ class TerraFrame extends JApplet
                                         ic = new ItemCollection("workbench", icmatrix(l)(uy)(ux).ids, icmatrix(l)(uy)(ux).nums, icmatrix(l)(uy)(ux).durs)
                                     }
                                     else {
-                                        ic = new ItemCollection("workbench", tlist1, tlist2, tlist3)
+                                        ic = ItemCollection("workbench", tlist1, tlist2, tlist3)
                                     }
                                     icx = ux
                                     icy = uy
@@ -4074,10 +4050,10 @@ class TerraFrame extends JApplet
                                     val tlist2: Array[Short] = Array[Short](0, 0, 0, 0, 0, 0, 0, 0, 0)
                                     val tlist3: Array[Short] = Array[Short](0, 0, 0, 0, 0, 0, 0, 0, 0)
                                     if (icmatrix(l)(uy)(ux) != null && icmatrix(l)(uy)(ux).`type`.equals("wooden_chest")) {
-                                        ic = new ItemCollection("wooden_chest", icmatrix(l)(uy)(ux).ids, icmatrix(l)(uy)(ux).nums, icmatrix(l)(uy)(ux).durs)
+                                        ic = ItemCollection("wooden_chest", icmatrix(l)(uy)(ux).ids, icmatrix(l)(uy)(ux).nums, icmatrix(l)(uy)(ux).durs)
                                     }
                                     else {
-                                        ic = new ItemCollection("wooden_chest", tlist1, tlist2, tlist3)
+                                        ic = ItemCollection("wooden_chest", tlist1, tlist2, tlist3)
                                     }
                                     icx = ux
                                     icy = uy
@@ -4089,10 +4065,10 @@ class TerraFrame extends JApplet
                                     val tlist2: Array[Short] = Array[Short](0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
                                     val tlist3: Array[Short] = Array[Short](0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
                                     if (icmatrix(l)(uy)(ux) != null && icmatrix(l)(uy)(ux).`type`.equals("stone_chest")) {
-                                        ic = new ItemCollection("stone_chest", icmatrix(l)(uy)(ux).ids, icmatrix(l)(uy)(ux).nums, icmatrix(l)(uy)(ux).durs)
+                                        ic = ItemCollection("stone_chest", icmatrix(l)(uy)(ux).ids, icmatrix(l)(uy)(ux).nums, icmatrix(l)(uy)(ux).durs)
                                     }
                                     else {
-                                        ic = new ItemCollection("stone_chest", tlist1, tlist2, tlist3)
+                                        ic = ItemCollection("stone_chest", tlist1, tlist2, tlist3)
                                     }
                                     icx = ux
                                     icy = uy
@@ -4104,10 +4080,10 @@ class TerraFrame extends JApplet
                                     val tlist2: Array[Short] = Array[Short](0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
                                     val tlist3: Array[Short] = Array[Short](0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
                                     if (icmatrix(l)(uy)(ux) != null && icmatrix(l)(uy)(ux).`type`.equals("copper_chest")) {
-                                        ic = new ItemCollection("copper_chest", icmatrix(l)(uy)(ux).ids, icmatrix(l)(uy)(ux).nums, icmatrix(l)(uy)(ux).durs)
+                                        ic = ItemCollection("copper_chest", icmatrix(l)(uy)(ux).ids, icmatrix(l)(uy)(ux).nums, icmatrix(l)(uy)(ux).durs)
                                     }
                                     else {
-                                        ic = new ItemCollection("copper_chest", tlist1, tlist2, tlist3)
+                                        ic = ItemCollection("copper_chest", tlist1, tlist2, tlist3)
                                     }
                                     icx = ux
                                     icy = uy
@@ -4119,10 +4095,10 @@ class TerraFrame extends JApplet
                                     val tlist2: Array[Short] = Array[Short](0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
                                     val tlist3: Array[Short] = Array[Short](0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
                                     if (icmatrix(l)(uy)(ux) != null && icmatrix(l)(uy)(ux).`type`.equals("iron_chest")) {
-                                        ic = new ItemCollection("iron_chest", icmatrix(l)(uy)(ux).ids, icmatrix(l)(uy)(ux).nums, icmatrix(l)(uy)(ux).durs)
+                                        ic = ItemCollection("iron_chest", icmatrix(l)(uy)(ux).ids, icmatrix(l)(uy)(ux).nums, icmatrix(l)(uy)(ux).durs)
                                     }
                                     else {
-                                        ic = new ItemCollection("iron_chest", tlist1, tlist2, tlist3)
+                                        ic = ItemCollection("iron_chest", tlist1, tlist2, tlist3)
                                     }
                                     icx = ux
                                     icy = uy
@@ -4134,10 +4110,10 @@ class TerraFrame extends JApplet
                                     val tlist2: Array[Short] = Array[Short](0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
                                     val tlist3: Array[Short] = Array[Short](0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
                                     if (icmatrix(l)(uy)(ux) != null && icmatrix(l)(uy)(ux).`type`.equals("silver_chest")) {
-                                        ic = new ItemCollection("silver_chest", icmatrix(l)(uy)(ux).ids, icmatrix(l)(uy)(ux).nums, icmatrix(l)(uy)(ux).durs)
+                                        ic = ItemCollection("silver_chest", icmatrix(l)(uy)(ux).ids, icmatrix(l)(uy)(ux).nums, icmatrix(l)(uy)(ux).durs)
                                     }
                                     else {
-                                        ic = new ItemCollection("silver_chest", tlist1, tlist2, tlist3)
+                                        ic = ItemCollection("silver_chest", tlist1, tlist2, tlist3)
                                     }
                                     icx = ux
                                     icy = uy
@@ -4164,10 +4140,10 @@ class TerraFrame extends JApplet
                                     val tlist2: Array[Short] = Array[Short](0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
                                     val tlist3: Array[Short] = Array[Short](0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
                                     if (icmatrix(l)(uy)(ux) != null && icmatrix(l)(uy)(ux).`type`.equals("zinc_chest")) {
-                                        ic = new ItemCollection("zinc_chest", icmatrix(l)(uy)(ux).ids, icmatrix(l)(uy)(ux).nums, icmatrix(l)(uy)(ux).durs)
+                                        ic = ItemCollection("zinc_chest", icmatrix(l)(uy)(ux).ids, icmatrix(l)(uy)(ux).nums, icmatrix(l)(uy)(ux).durs)
                                     }
                                     else {
-                                        ic = new ItemCollection("zinc_chest", tlist1, tlist2, tlist3)
+                                        ic = ItemCollection("zinc_chest", tlist1, tlist2, tlist3)
                                     }
                                     icx = ux
                                     icy = uy
@@ -4179,10 +4155,10 @@ class TerraFrame extends JApplet
                                     val tlist2: Array[Short] = Array[Short](0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
                                     val tlist3: Array[Short] = Array[Short](0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
                                     if (icmatrix(l)(uy)(ux) != null && icmatrix(l)(uy)(ux).`type`.equals("rhymestone_chest")) {
-                                        ic = new ItemCollection("rhymestone_chest", icmatrix(l)(uy)(ux).ids, icmatrix(l)(uy)(ux).nums, icmatrix(l)(uy)(ux).durs)
+                                        ic = ItemCollection("rhymestone_chest", icmatrix(l)(uy)(ux).ids, icmatrix(l)(uy)(ux).nums, icmatrix(l)(uy)(ux).durs)
                                     }
                                     else {
-                                        ic = new ItemCollection("rhymestone_chest", tlist1, tlist2, tlist3)
+                                        ic = ItemCollection("rhymestone_chest", tlist1, tlist2, tlist3)
                                     }
                                     icx = ux
                                     icy = uy
@@ -4194,10 +4170,10 @@ class TerraFrame extends JApplet
                                     val tlist2: Array[Short] = Array[Short](0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
                                     val tlist3: Array[Short] = Array[Short](0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
                                     if (icmatrix(l)(uy)(ux) != null && icmatrix(l)(uy)(ux).`type`.equals("obdurite_chest")) {
-                                        ic = new ItemCollection("obdurite_chest", icmatrix(l)(uy)(ux).ids, icmatrix(l)(uy)(ux).nums, icmatrix(l)(uy)(ux).durs)
+                                        ic = ItemCollection("obdurite_chest", icmatrix(l)(uy)(ux).ids, icmatrix(l)(uy)(ux).nums, icmatrix(l)(uy)(ux).durs)
                                     }
                                     else {
-                                        ic = new ItemCollection("obdurite_chest", tlist1, tlist2, tlist3)
+                                        ic = ItemCollection("obdurite_chest", tlist1, tlist2, tlist3)
                                     }
                                     icx = ux
                                     icy = uy
@@ -4209,14 +4185,14 @@ class TerraFrame extends JApplet
                                     val tlist2: Array[Short] = Array[Short](0, 0, 0, 0)
                                     val tlist3: Array[Short] = Array[Short](0, 0, 0, 0)
                                     if (icmatrix(l)(uy)(ux) != null && icmatrix(l)(uy)(ux).`type`.equals("furnace")) {
-                                        ic = new ItemCollection("furnace", icmatrix(l)(uy)(ux).ids, icmatrix(l)(uy)(ux).nums, icmatrix(l)(uy)(ux).durs)
+                                        ic = ItemCollection("furnace", icmatrix(l)(uy)(ux).ids, icmatrix(l)(uy)(ux).nums, icmatrix(l)(uy)(ux).durs)
                                         ic.FUELP = icmatrix(l)(uy)(ux).FUELP
                                         ic.SMELTP = icmatrix(l)(uy)(ux).SMELTP
                                         ic.F_ON = icmatrix(l)(uy)(ux).F_ON
                                         icmatrix(l)(uy)(ux) = null
                                     }
                                     else {
-                                        ic = new ItemCollection("furnace", tlist1, tlist2, tlist3)
+                                        ic = ItemCollection("furnace", tlist1, tlist2, tlist3)
                                     }
                                     icx = ux
                                     icy = uy
@@ -4384,7 +4360,7 @@ class TerraFrame extends JApplet
                 if (!ic.`type`.equals("workbench")) {
                     machinesx.add(icx)
                     machinesy.add(icy)
-                    icmatrix(iclayer)(icy)(icx) = new ItemCollection(ic.`type`, ic.ids, ic.nums, ic.durs)
+                    icmatrix(iclayer)(icy)(icx) = ItemCollection(ic.`type`, ic.ids, ic.nums, ic.durs)
                 }
                 if (ic.`type`.equals("workbench")) {
                     if (player.imgState.equals("still right") || player.imgState.equals("walk right 1") || player.imgState.equals("walk right 2")) {
@@ -4563,9 +4539,9 @@ class TerraFrame extends JApplet
     }
 
     def empty(x: Int, y: Int): Boolean = {
-        return ((blocks(0)(y)(x) == 0 || BLOCKLIGHTS.get(blocks(0)(y)(x)).fold(true)(_ == 0)) &&
-                (blocks(1)(y)(x) == 0 || BLOCKLIGHTS.get(blocks(1)(y)(x)).fold(true)(_ == 0)) &&
-                (blocks(2)(y)(x) == 0 || BLOCKLIGHTS.get(blocks(2)(y)(x)).fold(true)(_ == 0)))
+        (blocks(0)(y)(x) == 0 || BLOCKLIGHTS.get(blocks(0)(y)(x)).fold(true)(_ == 0)) &&
+          (blocks(1)(y)(x) == 0 || BLOCKLIGHTS.get(blocks(1)(y)(x)).fold(true)(_ == 0)) &&
+          (blocks(2)(y)(x) == 0 || BLOCKLIGHTS.get(blocks(2)(y)(x)).fold(true)(_ == 0))
     }
 
     def checkBiome(x: Int, y: Int): String = {
@@ -4661,14 +4637,14 @@ class TerraFrame extends JApplet
             }
             if (blocks(layer)(uy)(ux) >= 8 && blocks(layer)(uy)(ux) <= 14 || blocks(layer)(uy)(ux) == 17 || blocks(layer)(uy)(ux) == 23 || blocks(layer)(uy)(ux) >= 80 && blocks(layer)(uy)(ux) <= 82) {
                 if (ic != null) {
-                    (0 until ic.ids.length).foreach { i =>
+                    ic.ids.indices.foreach { i =>
                         if (ic.ids(i) != 0 && !(ic.`type`.equals("furnace") && i == 1)) {
                             entities.add(new Entity(ux*BLOCKSIZE, uy*BLOCKSIZE, random.nextDouble()*4-2, -2, ic.ids(i), ic.nums(i), ic.durs(i)))
                         }
                     }
                 }
                 if (icmatrix(layer)(uy)(ux) != null) {
-                    (0 until icmatrix(layer)(uy)(ux).ids.length).foreach { i =>
+                    icmatrix(layer)(uy)(ux).ids.indices.foreach { i =>
                         if (icmatrix(layer)(uy)(ux).ids(i) != 0 && !(icmatrix(layer)(uy)(ux).`type`.equals("furnace") && i == 1)) {
                             entities.add(new Entity(ux*BLOCKSIZE, uy*BLOCKSIZE, random.nextDouble()*4-2, -2, icmatrix(layer)(uy)(ux).ids(i), icmatrix(layer)(uy)(ux).nums(i), icmatrix(layer)(uy)(ux).durs(i)))
                         }
@@ -5564,23 +5540,23 @@ class TerraFrame extends JApplet
                 return false
             }
         }
-        return true
+        true
     }
 
     def isBlockLightSource(ux: Int, uy: Int): Boolean = {
-        return (blocks(0)(uy)(ux) != 0 && BLOCKLIGHTS.get(blocks(0)(uy)(ux)).exists(_ != 0) ||
-                blocks(1)(uy)(ux) != 0 && BLOCKLIGHTS.get(blocks(1)(uy)(ux)).exists(_ != 0) ||
-                blocks(2)(uy)(ux) != 0 && BLOCKLIGHTS.get(blocks(2)(uy)(ux)).exists(_ != 0))
+        blocks(0)(uy)(ux) != 0 && BLOCKLIGHTS.get(blocks(0)(uy)(ux)).exists(_ != 0) ||
+          blocks(1)(uy)(ux) != 0 && BLOCKLIGHTS.get(blocks(1)(uy)(ux)).exists(_ != 0) ||
+          blocks(2)(uy)(ux) != 0 && BLOCKLIGHTS.get(blocks(2)(uy)(ux)).exists(_ != 0)
     }
 
     def isNonLayeredBlockLightSource(ux: Int, uy: Int): Boolean = {
-        return isNonLayeredBlockLightSource(ux, uy, layer)
+        isNonLayeredBlockLightSource(ux, uy, layer)
     }
 
     def isNonLayeredBlockLightSource(ux: Int, uy: Int, layer: Int): Boolean = {
-        return (layer != 0 && blocks(0)(uy)(ux) != 0 && BLOCKLIGHTS.get(blocks(0)(uy)(ux)).exists(_ != 0) ||
-                layer != 1 && blocks(1)(uy)(ux) != 0 && BLOCKLIGHTS.get(blocks(1)(uy)(ux)).exists(_ != 0) ||
-                layer != 2 && blocks(2)(uy)(ux) != 0 && BLOCKLIGHTS.get(blocks(2)(uy)(ux)).exists(_ != 0))
+        layer != 0 && blocks(0)(uy)(ux) != 0 && BLOCKLIGHTS.get(blocks(0)(uy)(ux)).exists(_ != 0) ||
+          layer != 1 && blocks(1)(uy)(ux) != 0 && BLOCKLIGHTS.get(blocks(1)(uy)(ux)).exists(_ != 0) ||
+          layer != 2 && blocks(2)(uy)(ux) != 0 && BLOCKLIGHTS.get(blocks(2)(uy)(ux)).exists(_ != 0)
     }
 
     def findBlockLightSource(ux: Int, uy: Int): Int = {
@@ -5588,11 +5564,11 @@ class TerraFrame extends JApplet
         if (blocks(0)(uy)(ux) != 0) n = BLOCKLIGHTS.get(blocks(0)(uy)(ux)).map(Math.max(_, n)).getOrElse(0)
         if (blocks(1)(uy)(ux) != 0) n = BLOCKLIGHTS.get(blocks(1)(uy)(ux)).map(Math.max(_, n)).getOrElse(0)
         if (blocks(2)(uy)(ux) != 0) n = BLOCKLIGHTS.get(blocks(2)(uy)(ux)).map(Math.max(_, n)).getOrElse(0)
-        return n
+        n
     }
 
     def findNonLayeredBlockLightSource(ux: Int, uy: Int): Int = {
-        return findNonLayeredBlockLightSource(ux, uy, layer)
+        findNonLayeredBlockLightSource(ux, uy, layer)
     }
 
     def findNonLayeredBlockLightSource(ux: Int, uy: Int, layer: Int): Int = {
@@ -5600,7 +5576,7 @@ class TerraFrame extends JApplet
         if (blocks(0)(uy)(ux) != 0) n = BLOCKLIGHTS.get(blocks(0)(uy)(ux)).map(Math.max(_, n)).getOrElse(0)
         if (blocks(1)(uy)(ux) != 0) n = BLOCKLIGHTS.get(blocks(1)(uy)(ux)).map(Math.max(_, n)).getOrElse(0)
         if (blocks(2)(uy)(ux) != 0) n = BLOCKLIGHTS.get(blocks(2)(uy)(ux)).map(Math.max(_, n)).getOrElse(0)
-        return n
+        n
     }
 
     def addTileToQueue(ux: Int, uy: Int): Unit = {
@@ -5895,7 +5871,7 @@ class TerraFrame extends JApplet
                 (0 until cloudsx.size()).foreach { i =>
                     cloud = clouds(cloudsn.get(i))
                     pg2.drawImage(clouds(cloudsn.get(i)),
-                        cloudsx.get(i).toInt, cloudsy.get(i).toInt, (cloudsx.get(i).toDouble + cloud.getWidth() * 2).toInt, (cloudsy.get(i).toDouble + cloud.getHeight() * 2).toInt,
+                        cloudsx.get(i).toInt, cloudsy.get(i).toInt, (cloudsx.get(i) + cloud.getWidth() * 2).toInt, (cloudsy.get(i) + cloud.getHeight() * 2).toInt,
                         0, 0, cloud.getWidth(), cloud.getHeight(),
                         null)
                 }
@@ -6009,8 +5985,8 @@ class TerraFrame extends JApplet
             }
             else {
                 pg2.drawImage(inventory.image,
-                    0, 0, inventory.image.getWidth(), (inventory.image.getHeight() / 4),
-                    0, 0, inventory.image.getWidth(), (inventory.image.getHeight() / 4),
+                    0, 0, inventory.image.getWidth(), inventory.image.getHeight() / 4,
+                    0, 0, inventory.image.getWidth(), inventory.image.getHeight() / 4,
                     null)
             }
 
@@ -6097,7 +6073,7 @@ class TerraFrame extends JApplet
             if (DEBUG_STATS) {
                 pg2.drawString("(" + (player.ix/16).toInt + ", " + (player.iy/16) + ")", getWidth()-125, 60)
                 if (player.iy >= 0 && player.iy < HEIGHT*BLOCKSIZE) {
-                    pg2.drawString(checkBiome((player.ix/16+u), (player.iy/16+v)) + " " + lights((player.iy/16+v))((player.ix/16+u)), getWidth()-125, 80)
+                    pg2.drawString(checkBiome(player.ix / 16 + u, player.iy / 16 + v) + " " + lights(player.iy / 16 + v)(player.ix / 16 + u), getWidth()-125, 80)
                 }
             }
             if (showInv) {
@@ -6289,7 +6265,7 @@ class TerraFrame extends JApplet
             pg2.setColor(Color.GREEN)
             pg2.drawString("Generating new world... Please wait.", getWidth()/2-200, getHeight()/2-5)
         }
-        (g.asInstanceOf[Graphics2D]).drawImage(screen,
+        g.asInstanceOf[Graphics2D].drawImage(screen,
             0, 0, getWidth(), getHeight(),
             0, 0, getWidth(), getHeight(),
             null)
@@ -6303,10 +6279,10 @@ class TerraFrame extends JApplet
             in.close()
             fileIn.close()
             emptyWorldContainer(wc)
-            return true
+            true
         }
         catch {
-            case NonFatal(_) => return false
+            case NonFatal(_) => false
         }
     }
 
@@ -6392,14 +6368,14 @@ class TerraFrame extends JApplet
             val tlist1: Array[Short] = Array[Short](0, 0, 0, 0, 0)
             val tlist2: Array[Short] = Array[Short](0, 0, 0, 0, 0)
             val tlist3: Array[Short] = Array[Short](0, 0, 0, 0, 0)
-            cic = new ItemCollection("cic", tlist1, tlist2, tlist3)
+            cic = ItemCollection("cic", tlist1, tlist2, tlist3)
             inventory.renderCollection(cic)
         }
         if (ic != null) {
             inventory.renderCollection(ic)
         }
-        (0 until entities.size()).foreach { i =>
-            entities.get(i).reloadImage()
+        entities.asScala.foreach { entity: Entity =>
+            entity.reloadImage()
         }
         worlds = Array.ofDim(WORLDHEIGHT, WORLDWIDTH)
         fworlds = Array.ofDim(WORLDHEIGHT, WORLDWIDTH)
@@ -6427,19 +6403,19 @@ class TerraFrame extends JApplet
     }
 
     def  createWorldContainer(): WorldContainer = {
-        return (new WorldContainer(blocks, blockds, blockdns, blockbgs, blockts,
-                                  lights, power, drawn, ldrawn, rdrawn,
-                                  player, inventory, cic,
-                                  entities, cloudsx, cloudsy, cloudsv, cloudsn,
-                                  machinesx, machinesy, lsources, lqx, lqy, lqd,
-                                  rgnc1, rgnc2, layer, layerTemp, blockTemp,
-                                  mx, my, icx, icy, mining, immune,
-                                  moveItem, moveNum, moveItemTemp, moveNumTemp, msi,
-                                  toolAngle, toolSpeed, timeOfDay, currentSkyLight, day, mobCount,
-                                  ready, showTool, showInv, doMobSpawn,
-                                  WIDTH, HEIGHT, random, WORLDWIDTH, WORLDHEIGHT,
-                                  resunlight,
-                                  ic, kworlds, icmatrix, version))
+        new WorldContainer(blocks, blockds, blockdns, blockbgs, blockts,
+            lights, power, drawn, ldrawn, rdrawn,
+            player, inventory, cic,
+            entities, cloudsx, cloudsy, cloudsv, cloudsn,
+            machinesx, machinesy, lsources, lqx, lqy, lqd,
+            rgnc1, rgnc2, layer, layerTemp, blockTemp,
+            mx, my, icx, icy, mining, immune,
+            moveItem, moveNum, moveItemTemp, moveNumTemp, msi,
+            toolAngle, toolSpeed, timeOfDay, currentSkyLight, day, mobCount,
+            ready, showTool, showInv, doMobSpawn,
+            WIDTH, HEIGHT, random, WORLDWIDTH, WORLDHEIGHT,
+            resunlight,
+            ic, kworlds, icmatrix, version)
     }
 
     def loadBlock(`type`: Int, dir: Byte, dirn: Byte, tnum: Byte,
@@ -6601,7 +6577,7 @@ class TerraFrame extends JApplet
                     if (!ic.`type`.equals("workbench")) {
                         machinesx.add(icx)
                         machinesy.add(icy)
-                        icmatrix(iclayer)(icy)(icx) = new ItemCollection(ic.`type`, ic.ids, ic.nums, ic.durs)
+                        icmatrix(iclayer)(icy)(icx) = ItemCollection(ic.`type`, ic.ids, ic.nums, ic.durs)
                     }
                     if (ic.`type`.equals("workbench")) {
                         if (player.imgState.equals("still right") || player.imgState.equals("walk right 1") || player.imgState.equals("walk right 2")) {

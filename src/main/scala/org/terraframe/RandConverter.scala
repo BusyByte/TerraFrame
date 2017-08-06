@@ -27,12 +27,12 @@ object RandConverter {
         breakable {
             while (true) {
                 System.out.print("Generate new textures for: ")
-                val name: String = (new Scanner(System.in)).nextLine()
+                val name: String = new Scanner(System.in).nextLine()
                 if (name.equals("exit")) {
                     break
                 }
                 if (option == 'O') {
-                    (0 until dirs.length).foreach { k =>
+                    dirs.indices.foreach { k =>
                         (2 until 6).foreach { j =>
                             val texture: BufferedImage = loadImage("outlines/" + name + "/" + dirs(k) + "1.png")
                             val coords: Array2D[Int] = Array.ofDim(IMAGESIZE * IMAGESIZE, 2)

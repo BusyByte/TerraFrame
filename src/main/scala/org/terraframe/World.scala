@@ -3,7 +3,7 @@ package org.terraframe
 
 object World {
 
-  import TerraFrame.mod
+  import MathHelper._
   import TerraFrame.random
 
   var coordlist:Array2D[Boolean] = _

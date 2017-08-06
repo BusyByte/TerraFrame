@@ -10,18 +10,16 @@ object Inventory {
 
     def f(x: Int): Int = {
         if (x == 9) {
-            return 0
+            0
+        } else {
+            x + 1
         }
-        return x + 1
-    }
-
-    def max(a: Int, b: Int, c: Int): Int = {
-        return Math.max(Math.max(a, b), c)
     }
 }
 
 class Inventory extends Serializable {
     import Inventory._
+    import MathHelper._
 
     var n, px, py, selection, width, height: Int = _
     var fpx, fpy: Double = _
