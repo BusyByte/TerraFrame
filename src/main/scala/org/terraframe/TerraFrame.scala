@@ -1484,7 +1484,91 @@ object TerraFrame {
 
     armorTemp.asScala.toMap
   }
-  var TOOLDURS: Map[Short, Short] = _
+  val TOOLDURS: Map[Short, Short] = {
+    val toolDursTemp = new jul.HashMap[Short, Short](80)
+
+    toolDursTemp.put(7.toShort, 400.toShort) // copper: P0200 A0200 S0125
+    toolDursTemp.put(8.toShort, 500.toShort) // iron:   P0250 A0250 S0150
+    toolDursTemp.put(9.toShort, 600.toShort) // silver: P0300 A0300 S0200
+    toolDursTemp.put(10.toShort, 800.toShort) // gold:   P0400 A0400 S0300
+    toolDursTemp.put(11.toShort, 400.toShort)
+    toolDursTemp.put(12.toShort, 500.toShort)
+    toolDursTemp.put(13.toShort, 600.toShort)
+    toolDursTemp.put(14.toShort, 800.toShort)
+    toolDursTemp.put(16.toShort, 250.toShort)
+    toolDursTemp.put(17.toShort, 300.toShort)
+    toolDursTemp.put(18.toShort, 400.toShort)
+    toolDursTemp.put(19.toShort, 600.toShort)
+    toolDursTemp.put(33.toShort, 100.toShort)
+    toolDursTemp.put(51.toShort, 1100.toShort) // zinc:   P0550 A0550 S0475
+    toolDursTemp.put(52.toShort, 1100.toShort)
+    toolDursTemp.put(53.toShort, 950.toShort)
+    toolDursTemp.put(54.toShort, 1350.toShort) // rhyme:  P0675 A0675 S0625
+    toolDursTemp.put(55.toShort, 1350.toShort)
+    toolDursTemp.put(56.toShort, 1250.toShort)
+    toolDursTemp.put(57.toShort, 1600.toShort) // obdur:  P0800 A0800 S0800
+    toolDursTemp.put(58.toShort, 1600.toShort)
+    toolDursTemp.put(59.toShort, 1600.toShort)
+    toolDursTemp.put(145.toShort, 200.toShort) // alumin: P0100 A0100 S0050
+    toolDursTemp.put(146.toShort, 200.toShort)
+    toolDursTemp.put(147.toShort, 100.toShort)
+    toolDursTemp.put(148.toShort, 2400.toShort) // lead:   P1200 A1200 S0800
+    toolDursTemp.put(149.toShort, 2400.toShort)
+    toolDursTemp.put(150.toShort, 1600.toShort)
+    toolDursTemp.put(154.toShort, 200.toShort) // wood:   P0100 A0100 S0050
+    toolDursTemp.put(155.toShort, 200.toShort)
+    toolDursTemp.put(156.toShort, 100.toShort)
+    toolDursTemp.put(157.toShort, 300.toShort) // stone:  P0150 A0150 S0075
+    toolDursTemp.put(158.toShort, 300.toShort)
+    toolDursTemp.put(159.toShort, 150.toShort)
+    toolDursTemp.put(169.toShort, 1200.toShort) // magne:  P0600 A0600 S0600
+    toolDursTemp.put(170.toShort, 1200.toShort)
+    toolDursTemp.put(171.toShort, 1200.toShort)
+    toolDursTemp.put(172.toShort, 4000.toShort) // irrad:  P2000 A2000 S2000
+    toolDursTemp.put(173.toShort, 4000.toShort)
+    toolDursTemp.put(174.toShort, 4000.toShort)
+    toolDursTemp.put(190.toShort, 400.toShort)
+
+    toolDursTemp.put(105.toShort, 200.toShort) // copper: 0300
+    toolDursTemp.put(106.toShort, 200.toShort) // copper: 0300
+    toolDursTemp.put(107.toShort, 200.toShort) // copper: 0300
+    toolDursTemp.put(108.toShort, 200.toShort) // copper: 0300
+    toolDursTemp.put(109.toShort, 200.toShort) // iron:   0400
+    toolDursTemp.put(110.toShort, 200.toShort) // iron:   0400
+    toolDursTemp.put(111.toShort, 200.toShort) // iron:   0400
+    toolDursTemp.put(112.toShort, 200.toShort) // iron:   0400
+    toolDursTemp.put(113.toShort, 200.toShort) // silver: 0550
+    toolDursTemp.put(114.toShort, 200.toShort) // silver: 0550
+    toolDursTemp.put(115.toShort, 200.toShort) // silver: 0550
+    toolDursTemp.put(116.toShort, 200.toShort) // silver: 0550
+    toolDursTemp.put(117.toShort, 200.toShort) // gold:   0700
+    toolDursTemp.put(118.toShort, 200.toShort) // gold:   0700
+    toolDursTemp.put(119.toShort, 200.toShort) // gold:   0700
+    toolDursTemp.put(120.toShort, 200.toShort) // gold:   0700
+    toolDursTemp.put(121.toShort, 200.toShort) // zinc:   0875
+    toolDursTemp.put(122.toShort, 200.toShort) // zinc:   0875
+    toolDursTemp.put(123.toShort, 200.toShort) // zinc:   0875
+    toolDursTemp.put(124.toShort, 200.toShort) // zinc:   0875
+    toolDursTemp.put(125.toShort, 200.toShort) // rhyme:  1000
+    toolDursTemp.put(126.toShort, 200.toShort) // rhyme:  1000
+    toolDursTemp.put(127.toShort, 200.toShort) // rhyme:  1000
+    toolDursTemp.put(128.toShort, 200.toShort) // rhyme:  1000
+    toolDursTemp.put(129.toShort, 200.toShort) // obdur:  1400
+    toolDursTemp.put(130.toShort, 200.toShort) // obdur:  1400
+    toolDursTemp.put(131.toShort, 200.toShort) // obdur:  1400
+    toolDursTemp.put(132.toShort, 200.toShort) // obdur:  1400
+    toolDursTemp.put(133.toShort, 200.toShort) // alumin: 0150
+    toolDursTemp.put(134.toShort, 200.toShort) // alumin: 0150
+    toolDursTemp.put(135.toShort, 200.toShort) // alumin: 0150
+    toolDursTemp.put(136.toShort, 200.toShort) // alumin: 0150
+    toolDursTemp.put(137.toShort, 200.toShort) // lead:   2000
+    toolDursTemp.put(138.toShort, 200.toShort) // lead:   2000
+    toolDursTemp.put(139.toShort, 200.toShort) // lead:   2000
+    toolDursTemp.put(140.toShort, 200.toShort) // lead:   2000
+
+    toolDursTemp.asScala.toMap
+
+  }
   var FUELS: Map[Short, Double] = _
   var WIREP: Map[Int, Int] = _
   var TORCHESL: Map[Int, Int] = _
@@ -1710,90 +1794,6 @@ class TerraFrame extends JApplet
       state = "loading_graphics"
 
       repaint()
-
-      val toolDursTemp = new jul.HashMap[Short, Short](80)
-
-      toolDursTemp.put(7.toShort, 400.toShort) // copper: P0200 A0200 S0125
-      toolDursTemp.put(8.toShort, 500.toShort) // iron:   P0250 A0250 S0150
-      toolDursTemp.put(9.toShort, 600.toShort) // silver: P0300 A0300 S0200
-      toolDursTemp.put(10.toShort, 800.toShort) // gold:   P0400 A0400 S0300
-      toolDursTemp.put(11.toShort, 400.toShort)
-      toolDursTemp.put(12.toShort, 500.toShort)
-      toolDursTemp.put(13.toShort, 600.toShort)
-      toolDursTemp.put(14.toShort, 800.toShort)
-      toolDursTemp.put(16.toShort, 250.toShort)
-      toolDursTemp.put(17.toShort, 300.toShort)
-      toolDursTemp.put(18.toShort, 400.toShort)
-      toolDursTemp.put(19.toShort, 600.toShort)
-      toolDursTemp.put(33.toShort, 100.toShort)
-      toolDursTemp.put(51.toShort, 1100.toShort) // zinc:   P0550 A0550 S0475
-      toolDursTemp.put(52.toShort, 1100.toShort)
-      toolDursTemp.put(53.toShort, 950.toShort)
-      toolDursTemp.put(54.toShort, 1350.toShort) // rhyme:  P0675 A0675 S0625
-      toolDursTemp.put(55.toShort, 1350.toShort)
-      toolDursTemp.put(56.toShort, 1250.toShort)
-      toolDursTemp.put(57.toShort, 1600.toShort) // obdur:  P0800 A0800 S0800
-      toolDursTemp.put(58.toShort, 1600.toShort)
-      toolDursTemp.put(59.toShort, 1600.toShort)
-      toolDursTemp.put(145.toShort, 200.toShort) // alumin: P0100 A0100 S0050
-      toolDursTemp.put(146.toShort, 200.toShort)
-      toolDursTemp.put(147.toShort, 100.toShort)
-      toolDursTemp.put(148.toShort, 2400.toShort) // lead:   P1200 A1200 S0800
-      toolDursTemp.put(149.toShort, 2400.toShort)
-      toolDursTemp.put(150.toShort, 1600.toShort)
-      toolDursTemp.put(154.toShort, 200.toShort) // wood:   P0100 A0100 S0050
-      toolDursTemp.put(155.toShort, 200.toShort)
-      toolDursTemp.put(156.toShort, 100.toShort)
-      toolDursTemp.put(157.toShort, 300.toShort) // stone:  P0150 A0150 S0075
-      toolDursTemp.put(158.toShort, 300.toShort)
-      toolDursTemp.put(159.toShort, 150.toShort)
-      toolDursTemp.put(169.toShort, 1200.toShort) // magne:  P0600 A0600 S0600
-      toolDursTemp.put(170.toShort, 1200.toShort)
-      toolDursTemp.put(171.toShort, 1200.toShort)
-      toolDursTemp.put(172.toShort, 4000.toShort) // irrad:  P2000 A2000 S2000
-      toolDursTemp.put(173.toShort, 4000.toShort)
-      toolDursTemp.put(174.toShort, 4000.toShort)
-      toolDursTemp.put(190.toShort, 400.toShort)
-
-      toolDursTemp.put(105.toShort, 200.toShort) // copper: 0300
-      toolDursTemp.put(106.toShort, 200.toShort) // copper: 0300
-      toolDursTemp.put(107.toShort, 200.toShort) // copper: 0300
-      toolDursTemp.put(108.toShort, 200.toShort) // copper: 0300
-      toolDursTemp.put(109.toShort, 200.toShort) // iron:   0400
-      toolDursTemp.put(110.toShort, 200.toShort) // iron:   0400
-      toolDursTemp.put(111.toShort, 200.toShort) // iron:   0400
-      toolDursTemp.put(112.toShort, 200.toShort) // iron:   0400
-      toolDursTemp.put(113.toShort, 200.toShort) // silver: 0550
-      toolDursTemp.put(114.toShort, 200.toShort) // silver: 0550
-      toolDursTemp.put(115.toShort, 200.toShort) // silver: 0550
-      toolDursTemp.put(116.toShort, 200.toShort) // silver: 0550
-      toolDursTemp.put(117.toShort, 200.toShort) // gold:   0700
-      toolDursTemp.put(118.toShort, 200.toShort) // gold:   0700
-      toolDursTemp.put(119.toShort, 200.toShort) // gold:   0700
-      toolDursTemp.put(120.toShort, 200.toShort) // gold:   0700
-      toolDursTemp.put(121.toShort, 200.toShort) // zinc:   0875
-      toolDursTemp.put(122.toShort, 200.toShort) // zinc:   0875
-      toolDursTemp.put(123.toShort, 200.toShort) // zinc:   0875
-      toolDursTemp.put(124.toShort, 200.toShort) // zinc:   0875
-      toolDursTemp.put(125.toShort, 200.toShort) // rhyme:  1000
-      toolDursTemp.put(126.toShort, 200.toShort) // rhyme:  1000
-      toolDursTemp.put(127.toShort, 200.toShort) // rhyme:  1000
-      toolDursTemp.put(128.toShort, 200.toShort) // rhyme:  1000
-      toolDursTemp.put(129.toShort, 200.toShort) // obdur:  1400
-      toolDursTemp.put(130.toShort, 200.toShort) // obdur:  1400
-      toolDursTemp.put(131.toShort, 200.toShort) // obdur:  1400
-      toolDursTemp.put(132.toShort, 200.toShort) // obdur:  1400
-      toolDursTemp.put(133.toShort, 200.toShort) // alumin: 0150
-      toolDursTemp.put(134.toShort, 200.toShort) // alumin: 0150
-      toolDursTemp.put(135.toShort, 200.toShort) // alumin: 0150
-      toolDursTemp.put(136.toShort, 200.toShort) // alumin: 0150
-      toolDursTemp.put(137.toShort, 200.toShort) // lead:   2000
-      toolDursTemp.put(138.toShort, 200.toShort) // lead:   2000
-      toolDursTemp.put(139.toShort, 200.toShort) // lead:   2000
-      toolDursTemp.put(140.toShort, 200.toShort) // lead:   2000
-
-      TOOLDURS = toolDursTemp.asScala.toMap
-
 
       val fuelsTemp = new jul.HashMap[Short, Double](50)
 
