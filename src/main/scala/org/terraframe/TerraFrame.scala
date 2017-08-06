@@ -1726,7 +1726,25 @@ object TerraFrame {
 
     fspeedTemp.asScala.toMap
   }
-  var DDELAY: Map[Int, Int] = _
+  
+  val DDELAY: Map[Int, Int] = {
+    val ddelayTemp = new jul.HashMap[Int, Int](169)
+
+    (137 until 145).foreach { i =>
+      ddelayTemp.put(i, 10)
+    }
+    (145 until 153).foreach { i =>
+      ddelayTemp.put(i, 20)
+    }
+    (153 until 161).foreach { i =>
+      ddelayTemp.put(i, 40)
+    }
+    (161 until 169).foreach { i =>
+      ddelayTemp.put(i, 80)
+    }
+
+    ddelayTemp.asScala.toMap
+  }
 
   var log: BufferedWriter = _
 
@@ -1944,23 +1962,6 @@ class TerraFrame extends JApplet
       state = "loading_graphics"
 
       repaint()
-
-      val ddelayTemp = new jul.HashMap[Int, Int](169)
-
-      (137 until 145).foreach { i =>
-        ddelayTemp.put(i, 10)
-      }
-      (145 until 153).foreach { i =>
-        ddelayTemp.put(i, 20)
-      }
-      (153 until 161).foreach { i =>
-        ddelayTemp.put(i, 40)
-      }
-      (161 until 169).foreach { i =>
-        ddelayTemp.put(i, 80)
-      }
-
-      DDELAY = ddelayTemp.asScala.toMap
 
 
       sun = loadImage("environment/sun.png")
