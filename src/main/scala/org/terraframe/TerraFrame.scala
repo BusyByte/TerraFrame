@@ -1199,7 +1199,25 @@ object TerraFrame {
 
     uiBlocksTemp.asScala.toMap
   }
-  var UIENTITIES: Map[String, String] = _
+  val UIENTITIES: Map[String, String] = {
+    val uiEntitiesTemp = new jul.HashMap[String, String](15)
+
+    uiEntitiesTemp.put("blue_bubble", "Blue Bubble")
+    uiEntitiesTemp.put("green_bubble", "Green Bubble")
+    uiEntitiesTemp.put("red_bubble", "Red Bubble")
+    uiEntitiesTemp.put("black_bubble", "Black Bubble")
+    uiEntitiesTemp.put("white_bubble", "White Bubble")
+    uiEntitiesTemp.put("zombie", "Zombie")
+    uiEntitiesTemp.put("armored_zombie", "Armored Zombie")
+    uiEntitiesTemp.put("shooting_star", "Shooting Star")
+    uiEntitiesTemp.put("sandbot", "Sandbot")
+    uiEntitiesTemp.put("snowman", "Snowman")
+    uiEntitiesTemp.put("bat", "Bat")
+    uiEntitiesTemp.put("bee", "Bee")
+    uiEntitiesTemp.put("skeleton", "Skeleton")
+
+    uiEntitiesTemp.asScala.toMap
+  }
   var BLOCKCD: Map[Int, Boolean] = _
   var MAXSTACKS: Map[Short, Short] = _
   var SKYLIGHTS: Map[Int, Int] = _
@@ -1468,23 +1486,6 @@ class TerraFrame extends JApplet
       repaint()
 
 
-      val uiEntitiesTemp = new jul.HashMap[String, String](15)
-
-      uiEntitiesTemp.put("blue_bubble", "Blue Bubble")
-      uiEntitiesTemp.put("green_bubble", "Green Bubble")
-      uiEntitiesTemp.put("red_bubble", "Red Bubble")
-      uiEntitiesTemp.put("black_bubble", "Black Bubble")
-      uiEntitiesTemp.put("white_bubble", "White Bubble")
-      uiEntitiesTemp.put("zombie", "Zombie")
-      uiEntitiesTemp.put("armored_zombie", "Armored Zombie")
-      uiEntitiesTemp.put("shooting_star", "Shooting Star")
-      uiEntitiesTemp.put("sandbot", "Sandbot")
-      uiEntitiesTemp.put("snowman", "Snowman")
-      uiEntitiesTemp.put("bat", "Bat")
-      uiEntitiesTemp.put("bee", "Bee")
-      uiEntitiesTemp.put("skeleton", "Skeleton")
-
-      UIENTITIES = uiEntitiesTemp.asScala.toMap
 
 
       val blockCdTemp = new jul.HashMap[Int, Boolean](blockcds.length)
