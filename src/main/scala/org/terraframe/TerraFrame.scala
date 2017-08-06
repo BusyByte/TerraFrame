@@ -11,17 +11,17 @@ package org.terraframe
   *
   **/
 
-import java.awt.{BorderLayout, Color, Dimension, Font, Graphics, Graphics2D, GraphicsConfiguration, GraphicsEnvironment, Point, Rectangle, Transparency}
 import java.awt.event._
 import java.awt.image._
+import java.awt.{BorderLayout, Color, Dimension, Font, Graphics, Graphics2D, GraphicsConfiguration, GraphicsEnvironment, Point, Rectangle, Transparency}
 import java.io._
 import java.{util => jul}
 import javax.swing._
 import javax.swing.event._
 
-import scala.collection.JavaConverters._
-import Images.loadImage
+import org.terraframe.Images.loadImage
 
+import scala.collection.JavaConverters._
 import scala.collection.mutable
 import scala.util.Random
 import scala.util.control.NonFatal
@@ -721,7 +721,7 @@ object TerraFrame {
     durabilityTemp.asScala.toMap
   }
   var dur: Map[Int, Int] = _
-  var BLOCKTOOLS: Map[Int, Array[Short]] = {
+  val BLOCKTOOLS: Map[Int, Array[Short]] = {
     val blocktools: Array2D[Short] = Array(
       Array[Short](),
       Array[Short](7, 8, 9, 10, 51, 54, 57, 145, 148, 154, 157, 169, 172),
@@ -902,7 +902,65 @@ object TerraFrame {
 
     blockToolsTemp.asScala.toMap
   }
-  var TOOLSPEED: Map[Short, Double] = _
+
+  val font: Font = new Font("Chalkboard", Font.BOLD, 12)
+  val mobFont: Font = new Font("Chalkboard", Font.BOLD, 16)
+  val loadFont: Font = new Font("Courier", Font.PLAIN, 12)
+  val menuFont: Font = new Font("Chalkboard", Font.PLAIN, 30)
+  val worldFont: Font = new Font("Andale Mono", Font.BOLD, 16)
+  val CYANISH: Color = new Color(75, 163, 243)
+
+  val TOOLSPEED: Map[Short, Double] = {
+    val toolSpeedTemp = new jul.HashMap[Short, Double](items.length)
+
+    (1 until items.length).foreach { i =>
+      toolSpeedTemp.put(i.toShort, 0.175)
+    }
+
+    toolSpeedTemp.put(154.toShort, 0.100) // wood:   P100 S100
+    toolSpeedTemp.put(155.toShort, 0.100)
+    toolSpeedTemp.put(156.toShort, 0.100)
+    toolSpeedTemp.put(157.toShort, 0.110) // stone:  P110 S105
+    toolSpeedTemp.put(158.toShort, 0.110)
+    toolSpeedTemp.put(159.toShort, 0.105)
+    toolSpeedTemp.put(7.toShort, 0.120) // copper: P120 S110
+    toolSpeedTemp.put(11.toShort, 0.120)
+    toolSpeedTemp.put(16.toShort, 0.110)
+    toolSpeedTemp.put(8.toShort, 0.130) // iron:   P130 S115
+    toolSpeedTemp.put(12.toShort, 0.130)
+    toolSpeedTemp.put(17.toShort, 0.115)
+    toolSpeedTemp.put(9.toShort, 0.140) // silver: P140 S120
+    toolSpeedTemp.put(13.toShort, 0.140)
+    toolSpeedTemp.put(18.toShort, 0.120)
+    toolSpeedTemp.put(10.toShort, 0.150) // gold:   P150 S125
+    toolSpeedTemp.put(14.toShort, 0.150)
+    toolSpeedTemp.put(19.toShort, 0.125)
+    toolSpeedTemp.put(51.toShort, 0.160) // zinc:   P160 S130
+    toolSpeedTemp.put(52.toShort, 0.160)
+    toolSpeedTemp.put(53.toShort, 0.130)
+    toolSpeedTemp.put(54.toShort, 0.170) // rhyme:  P170 S135
+    toolSpeedTemp.put(55.toShort, 0.170)
+    toolSpeedTemp.put(56.toShort, 0.135)
+    toolSpeedTemp.put(57.toShort, 0.180) // obdur:  P180 S140
+    toolSpeedTemp.put(58.toShort, 0.180)
+    toolSpeedTemp.put(59.toShort, 0.140)
+    toolSpeedTemp.put(145.toShort, 0.350) // alumin: P250 S175
+    toolSpeedTemp.put(146.toShort, 0.350)
+    toolSpeedTemp.put(147.toShort, 0.245)
+    toolSpeedTemp.put(148.toShort, 0.130) // lead:   P130 S115
+    toolSpeedTemp.put(149.toShort, 0.130)
+    toolSpeedTemp.put(150.toShort, 0.115)
+    toolSpeedTemp.put(169.toShort, 0.250) // magne:  P350 S245
+    toolSpeedTemp.put(170.toShort, 0.250)
+    toolSpeedTemp.put(171.toShort, 0.175)
+    toolSpeedTemp.put(172.toShort, 0.350) // irrad:  P350 S245
+    toolSpeedTemp.put(173.toShort, 0.350)
+    toolSpeedTemp.put(174.toShort, 0.245)
+
+    toolSpeedTemp.put(33.toShort, 0.125) // stone lighter
+
+    toolSpeedTemp.asScala.toMap
+  }
   var TOOLDAMAGE: Map[Short, Int] = _
   var BLOCKDROPS: Map[Int, Short] = _
   var ITEMBLOCKS: Map[Short, Int] = _
@@ -914,7 +972,21 @@ object TerraFrame {
   var SKYLIGHTS: Map[Int, Int] = _
   var SKYCOLORS: Map[Int, Color] = _
   var LIGHTLEVELS: Map[Int, BufferedImage] = _
-  var blockImgs: Map[String, BufferedImage] = _
+  val blockImgs: Map[String, BufferedImage] = {
+    val blockImgsTemp = new jul.HashMap[String, BufferedImage](blocknames.length)
+
+    (1 until blocknames.length).foreach { i =>
+      (0 until 8).foreach { j =>
+        blockImgsTemp.put("blocks/" + blocknames(i) + "/texture" + (j + 1) + ".png",
+          loadImage("blocks/" + blocknames(i) + "/texture" + (j + 1) + ".png"))
+        if (blockImgsTemp.get("blocks/" + blocknames(i) + "/texture" + (j + 1) + ".png") == null) {
+          println("(ERROR) Could not load block graphic '" + blocknames(i) + "'.")
+        }
+      }
+    }
+
+    blockImgsTemp.asScala.toMap
+  }
   val outlineImgs: Map[String, BufferedImage] = {
     val outlineNameList: Array[String] = Array("default", "wood", "none", "tree", "tree_root", "square", "wire")
 
@@ -994,6 +1066,13 @@ object TerraFrame {
   }
 
   val theSize: Int = CHUNKBLOCKS * 2
+
+  val logo_white: BufferedImage = loadImage("Interface/logo_white.png")
+  val logo_black: BufferedImage = loadImage("Interface/logo_black.png")
+  val title_screen: BufferedImage = loadImage("Interface/title_screen.png")
+  val select_world: BufferedImage = loadImage("Interface/select_world.png")
+  val new_world: BufferedImage = loadImage("Interface/new_world.png")
+  val save_exit: BufferedImage = loadImage("Interface/save_exit.png")
 }
 
 
@@ -1004,8 +1083,8 @@ class TerraFrame extends JApplet
   with MouseMotionListener
   with MouseWheelListener {
 
-  import TerraFrame._
   import MathHelper._
+  import TerraFrame._
 
   var screen: BufferedImage = _
   var bg: Color = _
@@ -1081,23 +1160,20 @@ class TerraFrame extends JApplet
 
   var tp1, tp2, tp3, tp4, tp5: Point = _
 
-  var mousePos, mousePos2: Array[Int] = _
+  val mousePos: Array[Int] = Array.ofDim(2)
+  val mousePos2: Array[Int] = Array.ofDim(2)
 
-  private[this] var font: Font = new Font("Chalkboard", Font.BOLD, 12)
-  var mobFont: Font = new Font("Chalkboard", Font.BOLD, 16)
-  var loadFont: Font = new Font("Courier", Font.PLAIN, 12)
-  var menuFont: Font = new Font("Chalkboard", Font.PLAIN, 30)
-  var worldFont: Font = new Font("Andale Mono", Font.BOLD, 16)
-  var CYANISH: Color = new Color(75, 163, 243)
   var loadTextPos: Int = 0
 
-  var sun, moon, cloud, logo_white, logo_black, title_screen, select_world, new_world, save_exit: BufferedImage = _
+  var sun, moon, cloud: BufferedImage = _
+
+
   var clouds: Array[BufferedImage] = Array(loadImage("environment/cloud1.png"))
   var wcnct_px: BufferedImage = loadImage("misc/wcnct.png")
 
   var thread: Thread = _
   var createWorldTimer: javax.swing.Timer = _
-  var queue: Array[Boolean] = _
+  val queue: Array[Boolean] = Array.ofDim(7) // left(0) right(1) up(2) mouse(3) rightmouse(4) shift(5) down(6)
 
   var done: Boolean = false
   var ready: Boolean = true
@@ -1133,9 +1209,6 @@ class TerraFrame extends JApplet
   var icmatrix: Array3D[ItemCollection] = _
 
   var image, tool, mobImage: BufferedImage = _
-
-
-
 
   var ui_items: Array[String] = Array("Air", "Dirt", "Stone",
     "Copper Ore", "Iron Ore", "Silver Ore", "Gold Ore",
@@ -1216,88 +1289,10 @@ class TerraFrame extends JApplet
 
       screen = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB)
 
-      queue = Array.ofDim(7) // left(0) right(1) up(2) mouse(3) rightmouse(4) shift(5) down(6)
-
-      mousePos = Array.ofDim(2)
-      mousePos2 = Array.ofDim(2)
-
-      logo_white = loadImage("Interface/logo_white.png")
-      logo_black = loadImage("Interface/logo_black.png")
-      title_screen = loadImage("Interface/title_screen.png")
-      select_world = loadImage("Interface/select_world.png")
-      new_world = loadImage("Interface/new_world.png")
-      save_exit = loadImage("Interface/save_exit.png")
 
       state = "loading_graphics"
 
       repaint()
-
-
-      val blockImgsTemp = new jul.HashMap[String, BufferedImage](blocknames.length)
-
-      (1 until blocknames.length).foreach { i =>
-        (0 until 8).foreach { j =>
-          blockImgsTemp.put("blocks/" + blocknames(i) + "/texture" + (j + 1) + ".png",
-            loadImage("blocks/" + blocknames(i) + "/texture" + (j + 1) + ".png"))
-          if (blockImgsTemp.get("blocks/" + blocknames(i) + "/texture" + (j + 1) + ".png") == null) {
-            println("(ERROR) Could not load block graphic '" + blocknames(i) + "'.")
-          }
-        }
-      }
-
-      blockImgs = blockImgsTemp.asScala.toMap
-
-
-      val toolSpeedTemp = new jul.HashMap[Short, Double](items.length)
-
-      (1 until items.length).foreach { i =>
-        toolSpeedTemp.put(i.toShort, 0.175)
-      }
-
-      toolSpeedTemp.put(154.toShort, 0.100) // wood:   P100 S100
-      toolSpeedTemp.put(155.toShort, 0.100)
-      toolSpeedTemp.put(156.toShort, 0.100)
-      toolSpeedTemp.put(157.toShort, 0.110) // stone:  P110 S105
-      toolSpeedTemp.put(158.toShort, 0.110)
-      toolSpeedTemp.put(159.toShort, 0.105)
-      toolSpeedTemp.put(7.toShort, 0.120) // copper: P120 S110
-      toolSpeedTemp.put(11.toShort, 0.120)
-      toolSpeedTemp.put(16.toShort, 0.110)
-      toolSpeedTemp.put(8.toShort, 0.130) // iron:   P130 S115
-      toolSpeedTemp.put(12.toShort, 0.130)
-      toolSpeedTemp.put(17.toShort, 0.115)
-      toolSpeedTemp.put(9.toShort, 0.140) // silver: P140 S120
-      toolSpeedTemp.put(13.toShort, 0.140)
-      toolSpeedTemp.put(18.toShort, 0.120)
-      toolSpeedTemp.put(10.toShort, 0.150) // gold:   P150 S125
-      toolSpeedTemp.put(14.toShort, 0.150)
-      toolSpeedTemp.put(19.toShort, 0.125)
-      toolSpeedTemp.put(51.toShort, 0.160) // zinc:   P160 S130
-      toolSpeedTemp.put(52.toShort, 0.160)
-      toolSpeedTemp.put(53.toShort, 0.130)
-      toolSpeedTemp.put(54.toShort, 0.170) // rhyme:  P170 S135
-      toolSpeedTemp.put(55.toShort, 0.170)
-      toolSpeedTemp.put(56.toShort, 0.135)
-      toolSpeedTemp.put(57.toShort, 0.180) // obdur:  P180 S140
-      toolSpeedTemp.put(58.toShort, 0.180)
-      toolSpeedTemp.put(59.toShort, 0.140)
-      toolSpeedTemp.put(145.toShort, 0.350) // alumin: P250 S175
-      toolSpeedTemp.put(146.toShort, 0.350)
-      toolSpeedTemp.put(147.toShort, 0.245)
-      toolSpeedTemp.put(148.toShort, 0.130) // lead:   P130 S115
-      toolSpeedTemp.put(149.toShort, 0.130)
-      toolSpeedTemp.put(150.toShort, 0.115)
-      toolSpeedTemp.put(169.toShort, 0.250) // magne:  P350 S245
-      toolSpeedTemp.put(170.toShort, 0.250)
-      toolSpeedTemp.put(171.toShort, 0.175)
-      toolSpeedTemp.put(172.toShort, 0.350) // irrad:  P350 S245
-      toolSpeedTemp.put(173.toShort, 0.350)
-      toolSpeedTemp.put(174.toShort, 0.245)
-
-      toolSpeedTemp.put(33.toShort, 0.125) // stone lighter
-
-      TOOLSPEED = toolSpeedTemp.asScala.toMap
-
 
       val toolDamageTemp = new jul.HashMap[Short, Int](items.length)
 
