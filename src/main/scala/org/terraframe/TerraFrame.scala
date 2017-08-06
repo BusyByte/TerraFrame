@@ -1648,7 +1648,39 @@ object TerraFrame {
     torchesrTemp.asScala.toMap
 
   }
-  var TORCHESB: Map[Int, Boolean] = _
+  
+  val TORCHESB: Map[Int, Boolean] = {
+    val torchesbTemp = new jul.HashMap[Int, Boolean](blocknames.length)
+
+    blocknames.indices.foreach { i =>
+      torchesbTemp.put(i, false)
+    }
+
+    torchesbTemp.put(20, true)
+    torchesbTemp.put(21, true)
+    torchesbTemp.put(22, true)
+    torchesbTemp.put(100, true)
+    torchesbTemp.put(24, true)
+    torchesbTemp.put(26, true)
+    torchesbTemp.put(28, true)
+    torchesbTemp.put(101, true)
+    torchesbTemp.put(25, true)
+    torchesbTemp.put(27, true)
+    torchesbTemp.put(29, true)
+    torchesbTemp.put(102, true)
+    torchesbTemp.put(105, true)
+    torchesbTemp.put(106, true)
+    torchesbTemp.put(107, true)
+    torchesbTemp.put(108, true)
+    torchesbTemp.put(109, true)
+    torchesbTemp.put(110, true)
+    torchesbTemp.put(127, true)
+    torchesbTemp.put(128, true)
+    torchesbTemp.put(129, true)
+    torchesbTemp.put(130, true)
+
+    torchesbTemp.asScala.toMap
+  }
   var GSUPPORT: Map[Int, Boolean] = _
   var FSPEED: Map[Short, Double] = _
   var DDELAY: Map[Int, Int] = _
@@ -1869,39 +1901,6 @@ class TerraFrame extends JApplet
       state = "loading_graphics"
 
       repaint()
-
-
-      val torchesbTemp = new jul.HashMap[Int, Boolean](blocknames.length)
-
-      blocknames.indices.foreach { i =>
-        torchesbTemp.put(i, false)
-      }
-
-      torchesbTemp.put(20, true)
-      torchesbTemp.put(21, true)
-      torchesbTemp.put(22, true)
-      torchesbTemp.put(100, true)
-      torchesbTemp.put(24, true)
-      torchesbTemp.put(26, true)
-      torchesbTemp.put(28, true)
-      torchesbTemp.put(101, true)
-      torchesbTemp.put(25, true)
-      torchesbTemp.put(27, true)
-      torchesbTemp.put(29, true)
-      torchesbTemp.put(102, true)
-      torchesbTemp.put(105, true)
-      torchesbTemp.put(106, true)
-      torchesbTemp.put(107, true)
-      torchesbTemp.put(108, true)
-      torchesbTemp.put(109, true)
-      torchesbTemp.put(110, true)
-      torchesbTemp.put(127, true)
-      torchesbTemp.put(128, true)
-      torchesbTemp.put(129, true)
-      torchesbTemp.put(130, true)
-
-      TORCHESB = torchesbTemp.asScala.toMap
-
 
       val gsupportTemp = new jul.HashMap[Int, Boolean](blocknames.length)
 
