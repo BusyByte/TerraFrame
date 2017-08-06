@@ -1238,7 +1238,7 @@ object TerraFrame {
 
     maxStacksTemp.asScala.toMap
   }
-  
+
   val SKYLIGHTS: Map[Int, Int] = {
     val skyLightsTemp = new jul.HashMap[Int, Int](30)
 
@@ -1321,7 +1321,16 @@ object TerraFrame {
     skyColorsTemp.asScala.toMap
 
   }
-  var LIGHTLEVELS: Map[Int, BufferedImage] = _
+  val LIGHTLEVELS: Map[Int, BufferedImage] = {
+    val lightLevelsTemp = new jul.HashMap[Int, BufferedImage](20)
+
+    (0 until 17).foreach { i =>
+      lightLevelsTemp.put(i, loadImage("light/" + i + ".png"))
+    }
+
+    lightLevelsTemp.asScala.toMap
+  }
+
   val blockImgs: Map[String, BufferedImage] = {
     val blockImgsTemp = new jul.HashMap[String, BufferedImage](blocknames.length)
 
@@ -1588,13 +1597,6 @@ class TerraFrame extends JApplet
 
 
 
-      val lightLevelsTemp = new jul.HashMap[Int, BufferedImage](20)
-
-      (0 until 17).foreach { i =>
-        lightLevelsTemp.put(i, loadImage("light/" + i + ".png"))
-      }
-
-      LIGHTLEVELS = lightLevelsTemp.asScala.toMap
 
 
       val blockLightsTemp = new jul.HashMap[Int, Int](blocknames.length)
