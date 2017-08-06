@@ -22,7 +22,8 @@ import javax.swing.event._
 import scala.collection.JavaConverters._
 import Images.loadImage
 
-import scala.collection.mutable.ArrayBuffer
+import scala.collection.mutable
+import scala.util.Random
 import scala.util.control.NonFatal
 
 /*
@@ -458,9 +459,8 @@ object TerraFrame {
   val CHUNKSIZE: Int = CHUNKBLOCKS * BLOCKSIZE
   val PLAYERSIZEX: Int = 20
   val PLAYERSIZEY: Int = 46
-  val seed: Int = new jul.Random().nextInt()
 
-  var random: jul.Random = new jul.Random(seed) // SEED
+  var random = new Random
 
   val BRIGHTEST: Int = 21
   val PMAX: Int = 10
@@ -673,21 +673,21 @@ class TerraFrame extends JApplet
   var lights: Array2D[Float] = _
   var power: Array3D[Float] = _
   var lsources: Array2D[Boolean] = _
-  var lqx, lqy, pqx, pqy, zqx, zqy, pzqx, pzqy: ArrayBuffer[Int] = _
+  var lqx, lqy, pqx, pqy, zqx, zqy, pzqx, pzqy: mutable.ArrayBuffer[Int] = _
   var lqd, zqd, pqd, pzqd: Array2D[Boolean] = _
   var zqn: Array2D[Byte] = _
   var pzqn: Array3D[Byte] = _
   var arbprd: Array3D[Boolean] = _
-  var updatex, updatey, updatet, updatel: ArrayBuffer[Int] = _
+  var updatex, updatey, updatet, updatel: mutable.ArrayBuffer[Int] = _
   var wcnct: Array2D[Boolean] = _
   var drawn, ldrawn, rdrawn: Array2D[Boolean] = _
   var player: Player = _
   var inventory: Inventory = _
 
-  var entities: ArrayBuffer[Entity] = _
-  var cloudsx, cloudsy, cloudsv: ArrayBuffer[Double] = _
-  var cloudsn: ArrayBuffer[Int] = _
-  var machinesx, machinesy: ArrayBuffer[Int] = _
+  var entities: mutable.ArrayBuffer[Entity] = _
+  var cloudsx, cloudsy, cloudsv: mutable.ArrayBuffer[Double] = _
+  var cloudsn: mutable.ArrayBuffer[Int] = _
+  var machinesx, machinesy: mutable.ArrayBuffer[Int] = _
 
   var temporarySaveFile: Array2D[Chunk] = _
   var chunkMatrix: Array2D[Chunk] = _
@@ -781,7 +781,7 @@ class TerraFrame extends JApplet
 
   var image, tool, mobImage: BufferedImage = _
 
-  var toolList: Array[Short] = Array[Short](7, 8, 9, 10, 11, 12, 13, 14, 51, 52, 54, 55, 57, 58, 145, 146, 148, 149, 154, 155, 157, 158, 169, 170, 172, 173)
+  var toolList = Array[Short](7, 8, 9, 10, 11, 12, 13, 14, 51, 52, 54, 55, 57, 58, 145, 146, 148, 149, 154, 155, 157, 158, 169, 170, 172, 173)
 
   var blocknames: Array[String] = Array("air", "dirt", "stone",
     "copper_ore", "iron_ore", "silver_ore", "gold_ore",
@@ -983,7 +983,7 @@ class TerraFrame extends JApplet
 
       val outlineNameList: Array[String] = Array("default", "wood", "none", "tree", "tree_root", "square", "wire")
 
-      val outlineImgsTemp = new jul.HashMap[String, BufferedImage](outlineNameList.length * dirs.length)
+      val outlineImgsTemp = new jul.HashMap[String, BufferedImage](outlineNameList.length * dirs.length * 5)
 
       outlineNameList.foreach { outlineName =>
         dirs.foreach { dir =>
@@ -1404,7 +1404,7 @@ class TerraFrame extends JApplet
       UIBLOCKS = uiBlocksTemp.asScala.toMap
 
 
-      val uiEntitiesTemp = new jul.HashMap[String, String]()
+      val uiEntitiesTemp = new jul.HashMap[String, String](15)
 
       uiEntitiesTemp.put("blue_bubble", "Blue Bubble")
       uiEntitiesTemp.put("green_bubble", "Green Bubble")
@@ -1443,7 +1443,7 @@ class TerraFrame extends JApplet
       MAXSTACKS = maxStacksTemp.asScala.toMap
 
 
-      val skyColorsTemp = new jul.HashMap[Int, Color]()
+      val skyColorsTemp = new jul.HashMap[Int, Color](50)
 
       skyColorsTemp.put(28800, new Color(71, 154, 230))
       skyColorsTemp.put(28980, new Color(67, 146, 218))
@@ -1490,7 +1490,7 @@ class TerraFrame extends JApplet
       SKYCOLORS = skyColorsTemp.asScala.toMap
 
 
-      val skyLightsTemp = new jul.HashMap[Int, Int]()
+      val skyLightsTemp = new jul.HashMap[Int, Int](30)
 
       skyLightsTemp.put(28883, 18)
       skyLightsTemp.put(29146, 17)
@@ -1524,7 +1524,7 @@ class TerraFrame extends JApplet
       SKYLIGHTS = skyLightsTemp.asScala.toMap
 
 
-      val lightLevelsTemp = new jul.HashMap[Int, BufferedImage]()
+      val lightLevelsTemp = new jul.HashMap[Int, BufferedImage](20)
 
       (0 until 17).foreach { i =>
         lightLevelsTemp.put(i, loadImage("light/" + i + ".png"))
@@ -1594,7 +1594,7 @@ class TerraFrame extends JApplet
       BLOCKLIGHTS = blockLightsTemp.asScala.toMap
 
 
-      val grassDirtTemp = new jul.HashMap[Int, Int]()
+      val grassDirtTemp = new jul.HashMap[Int, Int](10)
 
       grassDirtTemp.put(72, 1)
       grassDirtTemp.put(73, 1)
@@ -1654,7 +1654,7 @@ class TerraFrame extends JApplet
       ARMOR = armorTemp.asScala.toMap
 
 
-      val toolDursTemp = new jul.HashMap[Short, Short]()
+      val toolDursTemp = new jul.HashMap[Short, Short](80)
 
       toolDursTemp.put(7.toShort, 400.toShort) // copper: P0200 A0200 S0125
       toolDursTemp.put(8.toShort, 500.toShort) // iron:   P0250 A0250 S0150
@@ -1738,7 +1738,7 @@ class TerraFrame extends JApplet
       TOOLDURS = toolDursTemp.asScala.toMap
 
 
-      val fuelsTemp = new jul.HashMap[Short, Double]()
+      val fuelsTemp = new jul.HashMap[Short, Double](50)
 
       fuelsTemp.put(15.toShort, 0.01)
       fuelsTemp.put(28.toShort, 0.001)
@@ -1777,7 +1777,7 @@ class TerraFrame extends JApplet
       FUELS = fuelsTemp.asScala.toMap
 
 
-      val wirepTemp = new jul.HashMap[Int, Int]()
+      val wirepTemp = new jul.HashMap[Int, Int](10)
 
       wirepTemp.put(0, 94)
       wirepTemp.put(1, 95)
@@ -1789,7 +1789,7 @@ class TerraFrame extends JApplet
       WIREP = wirepTemp.asScala.toMap
 
 
-      val torcheslTemp = new jul.HashMap[Int, Int]()
+      val torcheslTemp = new jul.HashMap[Int, Int](10)
 
       torcheslTemp.put(20, 24)
       torcheslTemp.put(21, 26)
@@ -1803,7 +1803,7 @@ class TerraFrame extends JApplet
       TORCHESL = torcheslTemp.asScala.toMap
 
 
-      val torchesrTemp = new jul.HashMap[Int, Int]()
+      val torchesrTemp = new jul.HashMap[Int, Int](10)
 
       torchesrTemp.put(20, 25)
       torchesrTemp.put(21, 27)
@@ -2033,16 +2033,16 @@ class TerraFrame extends JApplet
                   try {
                     if (ready) {
                       ready = false
-                      uNew = ((player.x - getWidth() / 2 + Player.width) / CHUNKSIZE.toDouble).toInt
-                      vNew = ((player.y - getHeight() / 2 + Player.height) / CHUNKSIZE.toDouble).toInt
+                      uNew = ((player.x - getWidth / 2 + Player.width) / CHUNKSIZE.toDouble).toInt
+                      vNew = ((player.y - getHeight / 2 + Player.height) / CHUNKSIZE.toDouble).toInt
                       if (ou != uNew || ov != vNew) {
                         ou = uNew
                         ov = vNew
-                        val chunkTemp = new jul.ArrayList[Chunk](2 * 2)
+                        val chunkTemp = mutable.ArrayBuffer.empty[Chunk]
                         (0 until 2).foreach { twy =>
                           (0 until 2).foreach { twx =>
                             if (chunkMatrix(twy)(twx) != null) {
-                              chunkTemp.add(chunkMatrix(twy)(twx))
+                              chunkTemp += chunkMatrix(twy)(twx)
                               chunkMatrix(twy)(twx) = null
                             }
                           }
@@ -2051,9 +2051,9 @@ class TerraFrame extends JApplet
                           import scala.util.control.Breaks._
                           breakable {
                             (0 until 2).foreach { twx =>
-                              (chunkTemp.size() - 1 until(-1, -1)).foreach { i =>
-                                if (chunkTemp.get(i).cx == twx && chunkTemp.get(i).cy == twy) {
-                                  chunkMatrix(twy)(twx) = chunkTemp.get(i)
+                              (chunkTemp.length - 1 until(-1, -1)).foreach { i =>
+                                if (chunkTemp(i).cx == twx && chunkTemp(i).cy == twy) {
+                                  chunkMatrix(twy)(twx) = chunkTemp(i)
                                   chunkTemp.remove(i)
                                   break
                                 }
@@ -2069,8 +2069,8 @@ class TerraFrame extends JApplet
                             }
                           }
                         }
-                        (0 until chunkTemp.size()).foreach { i =>
-                          temporarySaveFile(twy)(twx) = chunkTemp.get(i)
+                        chunkTemp.foreach { chunk =>
+                          temporarySaveFile(twy)(twx) = chunk
                         }
                         (0 until 2).foreach { twy =>
                           (0 until 2).foreach { twx =>
@@ -2111,14 +2111,14 @@ class TerraFrame extends JApplet
                         (0 until 2).foreach { twx =>
                           val twxc: Int = twx + ou
                           val twyc: Int = twy + ov
-                          if (((player.ix + getWidth() / 2 + Player.width >= twxc * CHUNKSIZE &&
-                            player.ix + getWidth() / 2 + Player.width <= twxc * CHUNKSIZE + CHUNKSIZE) ||
-                            (player.ix - getWidth() / 2 + Player.width + BLOCKSIZE >= twxc * CHUNKSIZE &&
-                              player.ix - getWidth() / 2 + Player.width - BLOCKSIZE <= twxc * CHUNKSIZE + CHUNKSIZE)) &&
-                            ((player.iy + getHeight() / 2 + Player.height >= twyc * CHUNKSIZE &&
-                              player.iy + getHeight() / 2 + Player.height <= twyc * CHUNKSIZE + CHUNKSIZE) ||
-                              (player.iy - getHeight() / 2 + Player.height >= twyc * CHUNKSIZE &&
-                                player.iy - getHeight() / 2 + Player.height <= twyc * CHUNKSIZE + CHUNKSIZE))) {
+                          if (((player.ix + getWidth / 2 + Player.width >= twxc * CHUNKSIZE &&
+                            player.ix + getWidth / 2 + Player.width <= twxc * CHUNKSIZE + CHUNKSIZE) ||
+                            (player.ix - getWidth / 2 + Player.width + BLOCKSIZE >= twxc * CHUNKSIZE &&
+                              player.ix - getWidth / 2 + Player.width - BLOCKSIZE <= twxc * CHUNKSIZE + CHUNKSIZE)) &&
+                            ((player.iy + getHeight / 2 + Player.height >= twyc * CHUNKSIZE &&
+                              player.iy + getHeight / 2 + Player.height <= twyc * CHUNKSIZE + CHUNKSIZE) ||
+                              (player.iy - getHeight / 2 + Player.height >= twyc * CHUNKSIZE &&
+                                player.iy - getHeight / 2 + Player.height <= twyc * CHUNKSIZE + CHUNKSIZE))) {
                             kworlds(twy)(twx) = true
                             if (worlds(twy)(twx) == null) {
                               worlds(twy)(twx) = config.createCompatibleImage(CHUNKSIZE, CHUNKSIZE, Transparency.TRANSLUCENT)
@@ -2128,10 +2128,10 @@ class TerraFrame extends JApplet
                             if (worlds(twy)(twx) != null) {
                               wg2 = worlds(twy)(twx).createGraphics()
                               fwg2 = fworlds(twy)(twx).createGraphics()
-                              (Math.max(twy * CHUNKSIZE, (player.iy - getHeight() / 2 + Player.height / 2 + v * BLOCKSIZE) - 64) until(Math.min(twy * CHUNKSIZE + CHUNKSIZE, (player.iy + getHeight() / 2 - Player.height / 2 + v * BLOCKSIZE) + 128), BLOCKSIZE)).foreach { tly =>
-                                (Math.max(twx * CHUNKSIZE, (player.ix - getWidth() / 2 + Player.width / 2 + u * BLOCKSIZE) - 64) until(Math.min(twx * CHUNKSIZE + CHUNKSIZE, (player.ix + getWidth() / 2 - Player.width / 2 + u * BLOCKSIZE) + 112), BLOCKSIZE)).foreach { tlx =>
-                                  tx = (tlx / BLOCKSIZE)
-                                  ty = (tly / BLOCKSIZE)
+                              (Math.max(twy * CHUNKSIZE, (player.iy - getHeight / 2 + Player.height / 2 + v * BLOCKSIZE) - 64) until(Math.min(twy * CHUNKSIZE + CHUNKSIZE, (player.iy + getHeight / 2 - Player.height / 2 + v * BLOCKSIZE) + 128), BLOCKSIZE)).foreach { tly =>
+                                (Math.max(twx * CHUNKSIZE, (player.ix - getWidth / 2 + Player.width / 2 + u * BLOCKSIZE) - 64) until(Math.min(twx * CHUNKSIZE + CHUNKSIZE, (player.ix + getWidth / 2 - Player.width / 2 + u * BLOCKSIZE) + 112), BLOCKSIZE)).foreach { tlx =>
+                                  tx = tlx / BLOCKSIZE
+                                  ty = tly / BLOCKSIZE
                                   if (tx >= 0 && tx < theSize && ty >= 0 && ty < theSize) {
                                     if (!drawn(ty)(tx)) {
                                       somevar = true
@@ -2538,7 +2538,7 @@ class TerraFrame extends JApplet
     val durabilityTemp = new jul.HashMap[Short, Map[Int, Int]](toolList.length * toolList.length)
 
     toolList.indices.foreach { i =>
-      val dur = new java.util.HashMap[Int, Int](durList(i).length * durLis2(i).length)
+      val dur = new jul.HashMap[Int, Int](durList(i).length * durLis2(i).length)
       durList(i).indices.foreach { j =>
         dur.put(j, durList(i)(j))
       }
@@ -2706,15 +2706,15 @@ class TerraFrame extends JApplet
     moveNum = 0
     moveDur = 0
 
-    entities = ArrayBuffer.empty[Entity]
+    entities = mutable.ArrayBuffer.empty[Entity]
 
-    cloudsx = ArrayBuffer.empty[Double]
-    cloudsy = ArrayBuffer.empty[Double]
-    cloudsv = ArrayBuffer.empty[Double]
-    cloudsn = ArrayBuffer.empty[Int]
+    cloudsx = mutable.ArrayBuffer.empty[Double]
+    cloudsy = mutable.ArrayBuffer.empty[Double]
+    cloudsv = mutable.ArrayBuffer.empty[Double]
+    cloudsn = mutable.ArrayBuffer.empty[Int]
 
-    machinesx = ArrayBuffer.empty[Int]
-    machinesy = ArrayBuffer.empty[Int]
+    machinesx = mutable.ArrayBuffer.empty[Int]
+    machinesy = mutable.ArrayBuffer.empty[Int]
 
     icmatrix = Array.ofDim(3, HEIGHT, WIDTH)
 
@@ -2722,23 +2722,23 @@ class TerraFrame extends JApplet
     fworlds = Array.ofDim(2, 2)
     kworlds = Array.ofDim(2, 2)
 
-    pqx = ArrayBuffer.empty[Int]
-    pqy = ArrayBuffer.empty[Int]
+    pqx = mutable.ArrayBuffer.empty[Int]
+    pqy = mutable.ArrayBuffer.empty[Int]
 
     println("-> Adding light sources...")
 
-    lqx = ArrayBuffer.empty[Int]
-    lqy = ArrayBuffer.empty[Int]
-    zqx = ArrayBuffer.empty[Int]
-    zqy = ArrayBuffer.empty[Int]
-    pqx = ArrayBuffer.empty[Int]
-    pqy = ArrayBuffer.empty[Int]
-    pzqx = ArrayBuffer.empty[Int]
-    pzqy = ArrayBuffer.empty[Int]
-    updatex = ArrayBuffer.empty[Int]
-    updatey = ArrayBuffer.empty[Int]
-    updatet = ArrayBuffer.empty[Int]
-    updatel = ArrayBuffer.empty[Int]
+    lqx = mutable.ArrayBuffer.empty[Int]
+    lqy = mutable.ArrayBuffer.empty[Int]
+    zqx = mutable.ArrayBuffer.empty[Int]
+    zqy = mutable.ArrayBuffer.empty[Int]
+    pqx = mutable.ArrayBuffer.empty[Int]
+    pqy = mutable.ArrayBuffer.empty[Int]
+    pzqx = mutable.ArrayBuffer.empty[Int]
+    pzqy = mutable.ArrayBuffer.empty[Int]
+    updatex = mutable.ArrayBuffer.empty[Int]
+    updatey = mutable.ArrayBuffer.empty[Int]
+    updatet = mutable.ArrayBuffer.empty[Int]
+    updatel = mutable.ArrayBuffer.empty[Int]
 
     (0 until WIDTH).foreach { x =>
       //            addSunLighting(x, 0)
@@ -3566,8 +3566,8 @@ class TerraFrame extends JApplet
             Math.sqrt(Math.pow(player.x + player.image.getWidth() - ux2 * BLOCKSIZE + BLOCKSIZE / 2 + WIDTH * BLOCKSIZE, 2) + Math.pow(player.y + player.image.getHeight() - uy2 * BLOCKSIZE + BLOCKSIZE / 2, 2)) <= 160 || DEBUG_REACH) {
             ucx = ux - CHUNKBLOCKS * (ux / CHUNKBLOCKS)
             ucy = uy - CHUNKBLOCKS * (uy / CHUNKBLOCKS)
-            if (jul.Arrays.asList(toolList).contains(inventory.tool())) {
-              if (blocks(layer)(uy)(ux) != 0 && jul.Arrays.asList(BLOCKTOOLS.get(blocks(layer)(uy)(ux))).contains(inventory.tool())) {
+            if (toolList.contains(inventory.tool())) {
+              if (blocks(layer)(uy)(ux) != 0 && BLOCKTOOLS.get(blocks(layer)(uy)(ux)).exists(_.contains(inventory.tool()))) {
                 blockdns(uy)(ux) = random.nextInt(5).toByte
                 drawn(uy)(ux) = false
                 if (ux == mx && uy == my && inventory.tool() == miningTool) {
@@ -4459,7 +4459,7 @@ class TerraFrame extends JApplet
             }
             entities.remove(i)
           }
-          if (!jul.Arrays.asList(toolList).contains(inventory.ids(inventory.selection))) {
+          if (!toolList.contains(inventory.ids(inventory.selection))) {
             inventory.durs(inventory.selection) = (inventory.durs(inventory.selection) - 1).toShort
           }
           else {

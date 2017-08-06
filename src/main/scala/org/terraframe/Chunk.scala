@@ -1,6 +1,6 @@
 package org.terraframe
 
-import java.util.Random
+import scala.util.Random
 
 import org.terraframe.World.generateOutlines
 import TerraFrame.{CHUNKBLOCKS => size}

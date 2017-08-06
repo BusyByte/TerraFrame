@@ -1,9 +1,9 @@
 package org.terraframe
 
 import java.io.Serializable
-import java.{util => jul}
 
 import scala.collection.mutable.ArrayBuffer
+import scala.util.Random
 
 case class WorldContainer(
                            blocks: Array3D[Int],
@@ -58,7 +58,7 @@ case class WorldContainer(
                            doMobSpawn: Boolean,
                            WIDTH: Int,
                            HEIGHT: Int,
-                           random: jul.Random,
+                           random: Random,
                            WORLDWIDTH: Int,
                            WORLDHEIGHT: Int,
                            resunlight: Int,

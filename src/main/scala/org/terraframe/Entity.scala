@@ -1,15 +1,13 @@
 package org.terraframe
 
-;
-
 import java.awt._
 import java.awt.image._
 import java.io.Serializable
-import java.util._
 
 import Images.loadImage
 
 import scala.collection.mutable.ArrayBuffer
+import scala.util.Random
 
 
 case class Entity(var x: Double, var y: Double, var vx: Double, var vy: Double, id: Short, num: Short, dur: Short, var mdelay: Int, name: String) extends Serializable {
@@ -36,96 +34,96 @@ case class Entity(var x: Double, var y: Double, var vx: Double, var vy: Double, 
 
   if (name != null) {
     if (name.equals("blue_bubble")) {
-      thp = 18;
-      ap = 0;
-      atk = 2;
-      AI = "bubble";
+      thp = 18
+      ap = 0
+      atk = 2
+      AI = "bubble"
     }
     if (name.equals("green_bubble")) {
-      thp = 25;
-      ap = 0;
-      atk = 4;
-      AI = "bubble";
+      thp = 25
+      ap = 0
+      atk = 4
+      AI = "bubble"
     }
     if (name.equals("red_bubble")) {
-      thp = 40;
-      ap = 0;
-      atk = 6;
-      AI = "bubble";
+      thp = 40
+      ap = 0
+      atk = 6
+      AI = "bubble"
     }
     if (name.equals("yellow_bubble")) {
-      thp = 65;
-      ap = 1;
-      atk = 9;
-      AI = "bubble";
+      thp = 65
+      ap = 1
+      atk = 9
+      AI = "bubble"
     }
     if (name.equals("black_bubble")) {
-      thp = 100;
-      ap = 3;
-      atk = 14;
-      AI = "bubble";
+      thp = 100
+      ap = 3
+      atk = 14
+      AI = "bubble"
     }
     if (name.equals("white_bubble")) {
-      thp = 70;
-      ap = 2;
-      atk = 11;
-      AI = "fast_bubble";
+      thp = 70
+      ap = 2
+      atk = 11
+      AI = "fast_bubble"
     }
     if (name.equals("zombie")) {
-      thp = 35;
-      ap = 0;
-      atk = 5;
-      AI = "zombie";
+      thp = 35
+      ap = 0
+      atk = 5
+      AI = "zombie"
     }
     if (name.equals("armored_zombie")) {
-      thp = 45;
-      ap = 2;
-      atk = 7;
-      AI = "zombie";
+      thp = 45
+      ap = 2
+      atk = 7
+      AI = "zombie"
     }
     if (name.equals("shooting_star")) {
-      thp = 25;
-      ap = 0;
-      atk = 5;
-      AI = "shooting_star";
+      thp = 25
+      ap = 0
+      atk = 5
+      AI = "shooting_star"
     }
     if (name.equals("sandbot")) {
-      thp = 50;
-      ap = 2;
-      atk = 3;
-      AI = "sandbot";
+      thp = 50
+      ap = 2
+      atk = 3
+      AI = "sandbot"
     }
     if (name.equals("sandbot_bullet")) {
-      thp = 1;
-      ap = 0;
-      atk = 7;
-      AI = "bullet";
-      nohit = false;
+      thp = 1
+      ap = 0
+      atk = 7
+      AI = "bullet"
+      nohit = false
     }
     if (name.equals("snowman")) {
-      thp = 40;
-      ap = 0;
-      atk = 6;
-      AI = "zombie";
+      thp = 40
+      ap = 0
+      atk = 6
+      AI = "zombie"
     }
     if (name.equals("bat")) {
-      thp = 15;
-      ap = 0;
-      atk = 5;
-      AI = "bat";
-    };
+      thp = 15
+      ap = 0
+      atk = 5
+      AI = "bat"
+    }
     if (name.equals("bee")) {
-      thp = 1;
-      ap = 0;
-      atk = 5;
-      AI = "bee";
-    };
+      thp = 1
+      ap = 0
+      atk = 5
+      AI = "bee"
+    }
     if (name.equals("skeleton")) {
-      thp = 50;
-      ap = 1;
-      atk = 7;
-      AI = "zombie";
-    };
+      thp = 50
+      ap = 1
+      atk = 7
+      AI = "zombie"
+    }
 
     if (AI == "bubble" || AI == "fast_bubble" || AI == "shooting_star" || AI == "sandbot" || AI == "bullet" || AI == "bee") {
       image = loadImage("sprites/monsters/" + name + "/normal.png")
@@ -563,7 +561,7 @@ case class Entity(var x: Double, var y: Double, var vx: Double, var vy: Double, 
 
     rect = new Rectangle(ix - 1, iy - 1, width + 2, height + 2)
 
-    return rv
+    rv
   }
 
   def hit(damage: Int, player: Player): Boolean = {
@@ -588,7 +586,7 @@ case class Entity(var x: Double, var y: Double, var vx: Double, var vy: Double, 
         vy -= 1.2
       }
     }
-    return hp <= 0
+    hp <= 0
   }
 
   def drops(): ArrayBuffer[Short] = {
