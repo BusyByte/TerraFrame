@@ -1362,7 +1362,7 @@ object TerraFrame {
 
     outlineImgsTemp.asScala.toMap
   }
-  
+
   val BLOCKLIGHTS: Map[Int, Int] = {
     val blockLightsTemp = new jul.HashMap[Int, Int](blocknames.length)
 
