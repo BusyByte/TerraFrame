@@ -6,8 +6,8 @@ object World {
   import MathHelper._
   import TerraFrame.random
 
-  var coordlist:Array2D[Boolean] = _
-  var coordlist2:Array2D[Boolean] = _
+  var coordlist: Array2D[Boolean] = _
+  var coordlist2: Array2D[Boolean] = _
 
 
   def generateOutlines(blocks: Array2D[Int]): Array2D[Byte] = {
@@ -684,21 +684,21 @@ object World {
     if (msg) {
       println("-> Creating outlines...")
     }
-    val blockds: Array2D[Byte] = Array.ofDim(height,width)
+    val blockds: Array2D[Byte] = Array.ofDim(height, width)
     //val blockdns: Array2D[Byte] = Array.ofDim(height,width)
     var left, right, up, down, upleft, upright, downleft, downright: Boolean = false
     (0 until height).foreach { y =>
       (0 until width).foreach { x2 =>
-        x = mod(x2,width)
-        if (y > 0 && y < height-1 && blocks(y)(x) != 0) {
-          left = connect(x-1, y, x, y, blocks)
-          right = connect(x+1, y, x, y, blocks)
-          up = connect(x, y-1, x, y, blocks)
-          down = connect(x, y+1, x, y, blocks)
-          upleft = connect(x-1, y-1, x, y, blocks)
-          upright = connect(x+1, y-1, x, y, blocks)
-          downleft = connect(x-1, y+1, x, y, blocks)
-          downright = connect(x+1, y+1, x, y, blocks)
+        x = mod(x2, width)
+        if (y > 0 && y < height - 1 && blocks(y)(x) != 0) {
+          left = connect(x - 1, y, x, y, blocks)
+          right = connect(x + 1, y, x, y, blocks)
+          up = connect(x, y - 1, x, y, blocks)
+          down = connect(x, y + 1, x, y, blocks)
+          upleft = connect(x - 1, y - 1, x, y, blocks)
+          upright = connect(x + 1, y - 1, x, y, blocks)
+          downleft = connect(x - 1, y + 1, x, y, blocks)
+          downright = connect(x + 1, y + 1, x, y, blocks)
           if (left) {
             if (right) {
               if (up) {
@@ -866,18 +866,18 @@ object World {
     val width: Int = blocks(0).length
     val height: Int = blocks.length
     var left, right, up, down, upleft, upright, downleft, downright: Boolean = false
-    (ypos-1 until ypos+2).foreach { y =>
-      (xpos-1 until xpos+2).foreach { x2 =>
-        x = mod(x2,width)
-        if (y > 0 && y < height-1 && blocks(y)(x) != 0) {
-          left = connect(x-1, y, x, y, blocks)
-          right = connect(x+1, y, x, y, blocks)
-          up = connect(x, y-1, x, y, blocks)
-          down = connect(x, y+1, x, y, blocks)
-          upleft = connect(x-1, y-1, x, y, blocks)
-          upright = connect(x+1, y-1, x, y, blocks)
-          downleft = connect(x-1, y+1, x, y, blocks)
-          downright = connect(x+1, y+1, x, y, blocks)
+    (ypos - 1 until ypos + 2).foreach { y =>
+      (xpos - 1 until xpos + 2).foreach { x2 =>
+        x = mod(x2, width)
+        if (y > 0 && y < height - 1 && blocks(y)(x) != 0) {
+          left = connect(x - 1, y, x, y, blocks)
+          right = connect(x + 1, y, x, y, blocks)
+          up = connect(x, y - 1, x, y, blocks)
+          down = connect(x, y + 1, x, y, blocks)
+          upleft = connect(x - 1, y - 1, x, y, blocks)
+          upright = connect(x + 1, y - 1, x, y, blocks)
+          downleft = connect(x - 1, y + 1, x, y, blocks)
+          downright = connect(x + 1, y + 1, x, y, blocks)
           if (left) {
             if (right) {
               if (up) {
@@ -1058,7 +1058,7 @@ object World {
   }
 
   def connect(x1: Int, y1: Int, x2: Int, y2: Int, blocks: Array2D[Int]): Boolean = {
-    y1 > 0 && y1 < blocks.length-1 && connect(blocks(y1)(mod(x1,blocks(0).length)), blocks(y2)(mod(x2,blocks(0).length)))
+    y1 > 0 && y1 < blocks.length - 1 && connect(blocks(y1)(mod(x1, blocks(0).length)), blocks(y2)(mod(x2, blocks(0).length)))
     /*        WIDTH: Int = blocks(0).length
             HEIGHT: Int = blocks.length
             blockcds: Array[Boolean] = TerraFrame.getBLOCKCDS()
@@ -1076,7 +1076,8 @@ object World {
                 b2 == 1 && b1 == 73 && (blocks(2*y1-y2)(2*x1-x2) == 0 || !blockcds(blocks(2*y1-y2)(2*x1-x2)) || blocks(2*y1-y2)(2*x1-x2) == 73) ||
                 b1 == 75 && b2 == 74 && (blocks(2*y2-y1)(2*x2-x1) == 0 || !blockcds(blocks(2*y2-y1)(2*x2-x1)) || blocks(2*y2-y1)(2*x2-x1) == 74) ||
                 b2 == 75 && b1 == 74 && (blocks(2*y1-y2)(2*x1-x2) == 0 || !blockcds(blocks(2*y1-y2)(2*x1-x2)) || blocks(2*y1-y2)(2*x1-x2) == 74))
-    */    }
+    */
+  }
 
   def generate3(blocks: Array2D[Int], terrain: Array[Double], stonelayer: Array[Double], inst: TerraFrame): Array2D[Byte] = {
     println("-> Creating background...")
@@ -1096,8 +1097,8 @@ object World {
     }
     (0 until height).foreach { y =>
       (0 until width).foreach { x =>
-        if (!(x == 0 || x == width-1 || y == 0 || y == height-1)) {
-          if (blockbgsi(y)(x-1) == 0 && blockbgsi(y)(x+1) == 0) {
+        if (!(x == 0 || x == width - 1 || y == 0 || y == height - 1)) {
+          if (blockbgsi(y)(x - 1) == 0 && blockbgsi(y)(x + 1) == 0) {
             blockbgsi(y)(x) = 0
           }
         }
@@ -1107,138 +1108,138 @@ object World {
     (0 until height).foreach { y =>
       (0 until width).foreach { x =>
         blockbgs(y)(x) = blockbgsi(y)(x)
-        if (!(x == 0 || x == width-1 || y == 0 || y == height-1)) {
+        if (!(x == 0 || x == width - 1 || y == 0 || y == height - 1)) {
           if (blockbgsi(y)(x) == 8) {
-            if (blockbgsi(y-1)(x-1) == 0 && blockbgsi(y+1)(x-1) != 0 &&
-              blockbgsi(y-1)(x+1) == 0 && blockbgsi(y+1)(x+1) == 0 &&
-              blockbgsi(y-1)(x) == 0 && blockbgsi(y+1)(x) != 0 &&
-              blockbgsi(y)(x-1) != 0 && blockbgsi(y)(x+1) == 0) {
+            if (blockbgsi(y - 1)(x - 1) == 0 && blockbgsi(y + 1)(x - 1) != 0 &&
+              blockbgsi(y - 1)(x + 1) == 0 && blockbgsi(y + 1)(x + 1) == 0 &&
+              blockbgsi(y - 1)(x) == 0 && blockbgsi(y + 1)(x) != 0 &&
+              blockbgsi(y)(x - 1) != 0 && blockbgsi(y)(x + 1) == 0) {
               blockbgs(y)(x) = 1
             }
-            if (blockbgsi(y-1)(x-1) != 0 && blockbgsi(y+1)(x-1) != 0 &&
-              blockbgsi(y-1)(x+1) == 0 && blockbgsi(y+1)(x+1) == 0 &&
-              blockbgsi(y-1)(x) == 0 && blockbgsi(y+1)(x) != 0 &&
-              blockbgsi(y)(x-1) != 0 && blockbgsi(y)(x+1) == 0) {
+            if (blockbgsi(y - 1)(x - 1) != 0 && blockbgsi(y + 1)(x - 1) != 0 &&
+              blockbgsi(y - 1)(x + 1) == 0 && blockbgsi(y + 1)(x + 1) == 0 &&
+              blockbgsi(y - 1)(x) == 0 && blockbgsi(y + 1)(x) != 0 &&
+              blockbgsi(y)(x - 1) != 0 && blockbgsi(y)(x + 1) == 0) {
               blockbgs(y)(x) = 1
             }
-            if (blockbgsi(y-1)(x-1) == 0 && blockbgsi(y+1)(x-1) != 0 &&
-              blockbgsi(y-1)(x+1) == 0 && blockbgsi(y+1)(x+1) != 0 &&
-              blockbgsi(y-1)(x) == 0 && blockbgsi(y+1)(x) != 0 &&
-              blockbgsi(y)(x-1) != 0 && blockbgsi(y)(x+1) == 0) {
+            if (blockbgsi(y - 1)(x - 1) == 0 && blockbgsi(y + 1)(x - 1) != 0 &&
+              blockbgsi(y - 1)(x + 1) == 0 && blockbgsi(y + 1)(x + 1) != 0 &&
+              blockbgsi(y - 1)(x) == 0 && blockbgsi(y + 1)(x) != 0 &&
+              blockbgsi(y)(x - 1) != 0 && blockbgsi(y)(x + 1) == 0) {
               blockbgs(y)(x) = 1
             }
-            if (blockbgsi(y-1)(x-1) != 0 && blockbgsi(y+1)(x-1) != 0 &&
-              blockbgsi(y-1)(x+1) == 0 && blockbgsi(y+1)(x+1) != 0 &&
-              blockbgsi(y-1)(x) == 0 && blockbgsi(y+1)(x) != 0 &&
-              blockbgsi(y)(x-1) != 0 && blockbgsi(y)(x+1) == 0) {
+            if (blockbgsi(y - 1)(x - 1) != 0 && blockbgsi(y + 1)(x - 1) != 0 &&
+              blockbgsi(y - 1)(x + 1) == 0 && blockbgsi(y + 1)(x + 1) != 0 &&
+              blockbgsi(y - 1)(x) == 0 && blockbgsi(y + 1)(x) != 0 &&
+              blockbgsi(y)(x - 1) != 0 && blockbgsi(y)(x + 1) == 0) {
               blockbgs(y)(x) = 1
             }
-            if (blockbgsi(y-1)(x-1) == 0 && blockbgsi(y+1)(x-1) == 0 &&
-              blockbgsi(y-1)(x+1) == 0 && blockbgsi(y+1)(x+1) != 0 &&
-              blockbgsi(y-1)(x) == 0 && blockbgsi(y+1)(x) != 0 &&
-              blockbgsi(y)(x-1) == 0 && blockbgsi(y)(x+1) != 0) {
+            if (blockbgsi(y - 1)(x - 1) == 0 && blockbgsi(y + 1)(x - 1) == 0 &&
+              blockbgsi(y - 1)(x + 1) == 0 && blockbgsi(y + 1)(x + 1) != 0 &&
+              blockbgsi(y - 1)(x) == 0 && blockbgsi(y + 1)(x) != 0 &&
+              blockbgsi(y)(x - 1) == 0 && blockbgsi(y)(x + 1) != 0) {
               blockbgs(y)(x) = 2
             }
-            if (blockbgsi(y-1)(x-1) == 0 && blockbgsi(y+1)(x-1) == 0 &&
-              blockbgsi(y-1)(x+1) != 0 && blockbgsi(y+1)(x+1) != 0 &&
-              blockbgsi(y-1)(x) == 0 && blockbgsi(y+1)(x) != 0 &&
-              blockbgsi(y)(x-1) == 0 && blockbgsi(y)(x+1) != 0) {
+            if (blockbgsi(y - 1)(x - 1) == 0 && blockbgsi(y + 1)(x - 1) == 0 &&
+              blockbgsi(y - 1)(x + 1) != 0 && blockbgsi(y + 1)(x + 1) != 0 &&
+              blockbgsi(y - 1)(x) == 0 && blockbgsi(y + 1)(x) != 0 &&
+              blockbgsi(y)(x - 1) == 0 && blockbgsi(y)(x + 1) != 0) {
               blockbgs(y)(x) = 2
             }
-            if (blockbgsi(y-1)(x-1) == 0 && blockbgsi(y+1)(x-1) != 0 &&
-              blockbgsi(y-1)(x+1) == 0 && blockbgsi(y+1)(x+1) != 0 &&
-              blockbgsi(y-1)(x) == 0 && blockbgsi(y+1)(x) != 0 &&
-              blockbgsi(y)(x-1) == 0 && blockbgsi(y)(x+1) != 0) {
+            if (blockbgsi(y - 1)(x - 1) == 0 && blockbgsi(y + 1)(x - 1) != 0 &&
+              blockbgsi(y - 1)(x + 1) == 0 && blockbgsi(y + 1)(x + 1) != 0 &&
+              blockbgsi(y - 1)(x) == 0 && blockbgsi(y + 1)(x) != 0 &&
+              blockbgsi(y)(x - 1) == 0 && blockbgsi(y)(x + 1) != 0) {
               blockbgs(y)(x) = 2
             }
-            if (blockbgsi(y-1)(x-1) == 0 && blockbgsi(y+1)(x-1) != 0 &&
-              blockbgsi(y-1)(x+1) != 0 && blockbgsi(y+1)(x+1) != 0 &&
-              blockbgsi(y-1)(x) == 0 && blockbgsi(y+1)(x) != 0 &&
-              blockbgsi(y)(x-1) == 0 && blockbgsi(y)(x+1) != 0) {
+            if (blockbgsi(y - 1)(x - 1) == 0 && blockbgsi(y + 1)(x - 1) != 0 &&
+              blockbgsi(y - 1)(x + 1) != 0 && blockbgsi(y + 1)(x + 1) != 0 &&
+              blockbgsi(y - 1)(x) == 0 && blockbgsi(y + 1)(x) != 0 &&
+              blockbgsi(y)(x - 1) == 0 && blockbgsi(y)(x + 1) != 0) {
               blockbgs(y)(x) = 2
             }
-            if (blockbgsi(y-1)(x-1) == 0 && blockbgsi(y+1)(x-1) == 0 &&
-              blockbgsi(y-1)(x+1) != 0 && blockbgsi(y+1)(x+1) != 0 &&
-              blockbgsi(y-1)(x) != 0 && blockbgsi(y+1)(x) != 0 &&
-              blockbgsi(y)(x-1) == 0 && blockbgsi(y)(x+1) != 0) {
+            if (blockbgsi(y - 1)(x - 1) == 0 && blockbgsi(y + 1)(x - 1) == 0 &&
+              blockbgsi(y - 1)(x + 1) != 0 && blockbgsi(y + 1)(x + 1) != 0 &&
+              blockbgsi(y - 1)(x) != 0 && blockbgsi(y + 1)(x) != 0 &&
+              blockbgsi(y)(x - 1) == 0 && blockbgsi(y)(x + 1) != 0) {
               blockbgs(y)(x) = 3
             }
-            if (blockbgsi(y-1)(x-1) != 0 && blockbgsi(y+1)(x-1) == 0 &&
-              blockbgsi(y-1)(x+1) != 0 && blockbgsi(y+1)(x+1) != 0 &&
-              blockbgsi(y-1)(x) != 0 && blockbgsi(y+1)(x) != 0 &&
-              blockbgsi(y)(x-1) == 0 && blockbgsi(y)(x+1) != 0) {
+            if (blockbgsi(y - 1)(x - 1) != 0 && blockbgsi(y + 1)(x - 1) == 0 &&
+              blockbgsi(y - 1)(x + 1) != 0 && blockbgsi(y + 1)(x + 1) != 0 &&
+              blockbgsi(y - 1)(x) != 0 && blockbgsi(y + 1)(x) != 0 &&
+              blockbgsi(y)(x - 1) == 0 && blockbgsi(y)(x + 1) != 0) {
               blockbgs(y)(x) = 3
             }
-            if (blockbgsi(y-1)(x-1) == 0 && blockbgsi(y+1)(x-1) != 0 &&
-              blockbgsi(y-1)(x+1) != 0 && blockbgsi(y+1)(x+1) != 0 &&
-              blockbgsi(y-1)(x) != 0 && blockbgsi(y+1)(x) != 0 &&
-              blockbgsi(y)(x-1) == 0 && blockbgsi(y)(x+1) != 0) {
+            if (blockbgsi(y - 1)(x - 1) == 0 && blockbgsi(y + 1)(x - 1) != 0 &&
+              blockbgsi(y - 1)(x + 1) != 0 && blockbgsi(y + 1)(x + 1) != 0 &&
+              blockbgsi(y - 1)(x) != 0 && blockbgsi(y + 1)(x) != 0 &&
+              blockbgsi(y)(x - 1) == 0 && blockbgsi(y)(x + 1) != 0) {
               blockbgs(y)(x) = 3
             }
-            if (blockbgsi(y-1)(x-1) != 0 && blockbgsi(y+1)(x-1) != 0 &&
-              blockbgsi(y-1)(x+1) != 0 && blockbgsi(y+1)(x+1) != 0 &&
-              blockbgsi(y-1)(x) != 0 && blockbgsi(y+1)(x) != 0 &&
-              blockbgsi(y)(x-1) == 0 && blockbgsi(y)(x+1) != 0) {
+            if (blockbgsi(y - 1)(x - 1) != 0 && blockbgsi(y + 1)(x - 1) != 0 &&
+              blockbgsi(y - 1)(x + 1) != 0 && blockbgsi(y + 1)(x + 1) != 0 &&
+              blockbgsi(y - 1)(x) != 0 && blockbgsi(y + 1)(x) != 0 &&
+              blockbgsi(y)(x - 1) == 0 && blockbgsi(y)(x + 1) != 0) {
               blockbgs(y)(x) = 3
             }
-            if (blockbgsi(y-1)(x-1) != 0 && blockbgsi(y+1)(x-1) != 0 &&
-              blockbgsi(y-1)(x+1) == 0 && blockbgsi(y+1)(x+1) == 0 &&
-              blockbgsi(y-1)(x) != 0 && blockbgsi(y+1)(x) != 0 &&
-              blockbgsi(y)(x-1) != 0 && blockbgsi(y)(x+1) == 0) {
+            if (blockbgsi(y - 1)(x - 1) != 0 && blockbgsi(y + 1)(x - 1) != 0 &&
+              blockbgsi(y - 1)(x + 1) == 0 && blockbgsi(y + 1)(x + 1) == 0 &&
+              blockbgsi(y - 1)(x) != 0 && blockbgsi(y + 1)(x) != 0 &&
+              blockbgsi(y)(x - 1) != 0 && blockbgsi(y)(x + 1) == 0) {
               blockbgs(y)(x) = 4
             }
-            if (blockbgsi(y-1)(x-1) != 0 && blockbgsi(y+1)(x-1) != 0 &&
-              blockbgsi(y-1)(x+1) != 0 && blockbgsi(y+1)(x+1) == 0 &&
-              blockbgsi(y-1)(x) != 0 && blockbgsi(y+1)(x) != 0 &&
-              blockbgsi(y)(x-1) != 0 && blockbgsi(y)(x+1) == 0) {
+            if (blockbgsi(y - 1)(x - 1) != 0 && blockbgsi(y + 1)(x - 1) != 0 &&
+              blockbgsi(y - 1)(x + 1) != 0 && blockbgsi(y + 1)(x + 1) == 0 &&
+              blockbgsi(y - 1)(x) != 0 && blockbgsi(y + 1)(x) != 0 &&
+              blockbgsi(y)(x - 1) != 0 && blockbgsi(y)(x + 1) == 0) {
               blockbgs(y)(x) = 4
             }
-            if (blockbgsi(y-1)(x-1) != 0 && blockbgsi(y+1)(x-1) != 0 &&
-              blockbgsi(y-1)(x+1) == 0 && blockbgsi(y+1)(x+1) != 0 &&
-              blockbgsi(y-1)(x) != 0 && blockbgsi(y+1)(x) != 0 &&
-              blockbgsi(y)(x-1) != 0 && blockbgsi(y)(x+1) == 0) {
+            if (blockbgsi(y - 1)(x - 1) != 0 && blockbgsi(y + 1)(x - 1) != 0 &&
+              blockbgsi(y - 1)(x + 1) == 0 && blockbgsi(y + 1)(x + 1) != 0 &&
+              blockbgsi(y - 1)(x) != 0 && blockbgsi(y + 1)(x) != 0 &&
+              blockbgsi(y)(x - 1) != 0 && blockbgsi(y)(x + 1) == 0) {
               blockbgs(y)(x) = 4
             }
-            if (blockbgsi(y-1)(x-1) != 0 && blockbgsi(y+1)(x-1) != 0 &&
-              blockbgsi(y-1)(x+1) != 0 && blockbgsi(y+1)(x+1) != 0 &&
-              blockbgsi(y-1)(x) != 0 && blockbgsi(y+1)(x) != 0 &&
-              blockbgsi(y)(x-1) != 0 && blockbgsi(y)(x+1) == 0) {
+            if (blockbgsi(y - 1)(x - 1) != 0 && blockbgsi(y + 1)(x - 1) != 0 &&
+              blockbgsi(y - 1)(x + 1) != 0 && blockbgsi(y + 1)(x + 1) != 0 &&
+              blockbgsi(y - 1)(x) != 0 && blockbgsi(y + 1)(x) != 0 &&
+              blockbgsi(y)(x - 1) != 0 && blockbgsi(y)(x + 1) == 0) {
               blockbgs(y)(x) = 4
             }
-            if (blockbgsi(y-1)(x-1) == 0 && blockbgsi(y+1)(x-1) != 0 &&
-              blockbgsi(y-1)(x+1) == 0 && blockbgsi(y+1)(x+1) != 0 &&
-              blockbgsi(y-1)(x) == 0 && blockbgsi(y+1)(x) != 0 &&
-              blockbgsi(y)(x-1) != 0 && blockbgsi(y)(x+1) != 0) {
+            if (blockbgsi(y - 1)(x - 1) == 0 && blockbgsi(y + 1)(x - 1) != 0 &&
+              blockbgsi(y - 1)(x + 1) == 0 && blockbgsi(y + 1)(x + 1) != 0 &&
+              blockbgsi(y - 1)(x) == 0 && blockbgsi(y + 1)(x) != 0 &&
+              blockbgsi(y)(x - 1) != 0 && blockbgsi(y)(x + 1) != 0) {
               blockbgs(y)(x) = 5
             }
-            if (blockbgsi(y-1)(x-1) != 0 && blockbgsi(y+1)(x-1) != 0 &&
-              blockbgsi(y-1)(x+1) == 0 && blockbgsi(y+1)(x+1) != 0 &&
-              blockbgsi(y-1)(x) == 0 && blockbgsi(y+1)(x) != 0 &&
-              blockbgsi(y)(x-1) != 0 && blockbgsi(y)(x+1) != 0) {
+            if (blockbgsi(y - 1)(x - 1) != 0 && blockbgsi(y + 1)(x - 1) != 0 &&
+              blockbgsi(y - 1)(x + 1) == 0 && blockbgsi(y + 1)(x + 1) != 0 &&
+              blockbgsi(y - 1)(x) == 0 && blockbgsi(y + 1)(x) != 0 &&
+              blockbgsi(y)(x - 1) != 0 && blockbgsi(y)(x + 1) != 0) {
               blockbgs(y)(x) = 5
             }
-            if (blockbgsi(y-1)(x-1) == 0 && blockbgsi(y+1)(x-1) != 0 &&
-              blockbgsi(y-1)(x+1) != 0 && blockbgsi(y+1)(x+1) != 0 &&
-              blockbgsi(y-1)(x) == 0 && blockbgsi(y+1)(x) != 0 &&
-              blockbgsi(y)(x-1) != 0 && blockbgsi(y)(x+1) != 0) {
+            if (blockbgsi(y - 1)(x - 1) == 0 && blockbgsi(y + 1)(x - 1) != 0 &&
+              blockbgsi(y - 1)(x + 1) != 0 && blockbgsi(y + 1)(x + 1) != 0 &&
+              blockbgsi(y - 1)(x) == 0 && blockbgsi(y + 1)(x) != 0 &&
+              blockbgsi(y)(x - 1) != 0 && blockbgsi(y)(x + 1) != 0) {
               blockbgs(y)(x) = 5
             }
-            if (blockbgsi(y-1)(x-1) != 0 && blockbgsi(y+1)(x-1) != 0 &&
-              blockbgsi(y-1)(x+1) != 0 && blockbgsi(y+1)(x+1) != 0 &&
-              blockbgsi(y-1)(x) == 0 && blockbgsi(y+1)(x) != 0 &&
-              blockbgsi(y)(x-1) != 0 && blockbgsi(y)(x+1) != 0) {
+            if (blockbgsi(y - 1)(x - 1) != 0 && blockbgsi(y + 1)(x - 1) != 0 &&
+              blockbgsi(y - 1)(x + 1) != 0 && blockbgsi(y + 1)(x + 1) != 0 &&
+              blockbgsi(y - 1)(x) == 0 && blockbgsi(y + 1)(x) != 0 &&
+              blockbgsi(y)(x - 1) != 0 && blockbgsi(y)(x + 1) != 0) {
               blockbgs(y)(x) = 5
             }
-            if (blockbgsi(y-1)(x-1) == 0 && blockbgsi(y+1)(x-1) != 0 &&
-              blockbgsi(y-1)(x+1) != 0 && blockbgsi(y+1)(x+1) != 0 &&
-              blockbgsi(y-1)(x) != 0 && blockbgsi(y+1)(x) != 0 &&
-              blockbgsi(y)(x-1) != 0 && blockbgsi(y)(x+1) != 0) {
+            if (blockbgsi(y - 1)(x - 1) == 0 && blockbgsi(y + 1)(x - 1) != 0 &&
+              blockbgsi(y - 1)(x + 1) != 0 && blockbgsi(y + 1)(x + 1) != 0 &&
+              blockbgsi(y - 1)(x) != 0 && blockbgsi(y + 1)(x) != 0 &&
+              blockbgsi(y)(x - 1) != 0 && blockbgsi(y)(x + 1) != 0) {
               blockbgs(y)(x) = 6
             }
-            if (blockbgsi(y-1)(x-1) != 0 && blockbgsi(y+1)(x-1) != 0 &&
-              blockbgsi(y-1)(x+1) == 0 && blockbgsi(y+1)(x+1) != 0 &&
-              blockbgsi(y-1)(x) != 0 && blockbgsi(y+1)(x) != 0 &&
-              blockbgsi(y)(x-1) != 0 && blockbgsi(y)(x+1) != 0) {
+            if (blockbgsi(y - 1)(x - 1) != 0 && blockbgsi(y + 1)(x - 1) != 0 &&
+              blockbgsi(y - 1)(x + 1) == 0 && blockbgsi(y + 1)(x + 1) != 0 &&
+              blockbgsi(y - 1)(x) != 0 && blockbgsi(y + 1)(x) != 0 &&
+              blockbgsi(y)(x - 1) != 0 && blockbgsi(y)(x + 1) != 0) {
               blockbgs(y)(x) = 7
             }
           }
@@ -1255,7 +1256,7 @@ object World {
         }
       }
     }
-    val rv: Array2D[Byte] = Array.ofDim(height,width)
+    val rv: Array2D[Byte] = Array.ofDim(height, width)
     (0 until height).foreach { y =>
       (0 until width).foreach { x =>
         rv(y)(x) = blockbgs(y)(x)
@@ -1265,29 +1266,29 @@ object World {
   }
 
   def blob(cwidth: Int, cheight: Int, erosion: Double): Array2D[Boolean] = {
-    coordlist = Array.ofDim(cwidth*2+1,cheight*2+1)
+    coordlist = Array.ofDim(cwidth * 2 + 1, cheight * 2 + 1)
     (-cwidth to cwidth).foreach { x =>
       (-cheight to cheight).foreach { y =>
-        coordlist(x+cwidth)(y+cheight) = Math.pow(x*1.0 / cwidth, 2) + Math.pow(y*1.0 / cheight, 2) < 1 - random.nextDouble() * erosion
+        coordlist(x + cwidth)(y + cheight) = Math.pow(x * 1.0 / cwidth, 2) + Math.pow(y * 1.0 / cheight, 2) < 1 - random.nextDouble() * erosion
       }
     }
     (-cwidth to cwidth).foreach { x =>
       (-cheight to cheight).foreach { y =>
-        if ((x+cwidth <= 0 || !coordlist(x+cwidth-1)(y+cheight)) &&
-        (x+cwidth+1 >= coordlist.length || !coordlist(x+cwidth+1)(y+cheight)) &&
-        (y+cheight <= 0 || !coordlist(x+cwidth)(y+cheight-1)) &&
-        (y+cheight+1 >= coordlist(0).length || !coordlist(x+cwidth)(y+cheight+1))) {
-          coordlist(x+cwidth)(y+cheight) = false
+        if ((x + cwidth <= 0 || !coordlist(x + cwidth - 1)(y + cheight)) &&
+          (x + cwidth + 1 >= coordlist.length || !coordlist(x + cwidth + 1)(y + cheight)) &&
+          (y + cheight <= 0 || !coordlist(x + cwidth)(y + cheight - 1)) &&
+          (y + cheight + 1 >= coordlist(0).length || !coordlist(x + cwidth)(y + cheight + 1))) {
+          coordlist(x + cwidth)(y + cheight) = false
         }
       }
     }
     (-cwidth to cwidth).foreach { x =>
       (-cheight to cheight).foreach { y =>
-        if ((x+cwidth <= 0 || coordlist(x+cwidth-1)(y+cheight)) &&
-        (x+cwidth+1 >= coordlist.length || coordlist(x+cwidth+1)(y+cheight)) &&
-        (y+cheight <= 0 || coordlist(x+cwidth)(y+cheight-1)) &&
-        (y+cheight+1 >= coordlist(0).length || coordlist(x+cwidth)(y+cheight+1))) {
-          coordlist(x+cwidth)(y+cheight) = true
+        if ((x + cwidth <= 0 || coordlist(x + cwidth - 1)(y + cheight)) &&
+          (x + cwidth + 1 >= coordlist.length || coordlist(x + cwidth + 1)(y + cheight)) &&
+          (y + cheight <= 0 || coordlist(x + cwidth)(y + cheight - 1)) &&
+          (y + cheight + 1 >= coordlist(0).length || coordlist(x + cwidth)(y + cheight + 1))) {
+          coordlist(x + cwidth)(y + cheight) = true
         }
       }
     }

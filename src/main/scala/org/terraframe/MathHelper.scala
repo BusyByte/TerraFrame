@@ -17,7 +17,7 @@ object MathHelper {
     Math.max(Math.max(a, b), Math.max(c, d))
   }
 
-  def max(a: Float, b: Float, c: Float, d: Float): Float =  {
+  def max(a: Float, b: Float, c: Float, d: Float): Float = {
     Math.max(Math.max(a, b), Math.max(c, d))
   }
 
