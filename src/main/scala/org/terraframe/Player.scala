@@ -4,24 +4,18 @@ import java.awt._
 import java.awt.image._
 import java.io._
 import Images.loadImage
+import TerraFrame.BLOCKSIZE
 
 object Player {
-    val BLOCKSIZE: Int = TerraFrame.BLOCKSIZE
-
-    val width = TerraFrame.PLAYERSIZEX
-    val height = TerraFrame.PLAYERSIZEY
-
+  val width = TerraFrame.PLAYERSIZEX
+  val height = TerraFrame.PLAYERSIZEY
 }
 
 case class Player(var x: Double, var y: Double) extends Serializable {
-    import Player._
-    var ix, iy, ivx, ivy, width, height, bx1, by1, bx2, by2, thp, hp: Int = _
+  import Player._
+    var ix, iy, ivx, ivy, bx1, by1, bx2, by2, thp, hp: Int = _
     var onGround, onGroundDelay, grounded: Boolean = _
-    var ghost: Boolean = true
     var rect: Rectangle = _
-    var blocklist:Array[Short] = _
-
-    var i, j, n: Int = _
 
     var imgDelay: Int = _
     var imgState: String = _
@@ -41,8 +35,8 @@ case class Player(var x: Double, var y: Double) extends Serializable {
 
     ix = x.toInt
     iy = y.toInt
-    ivx = ivx
-    ivy = ivy
+    ivx = vx.toInt
+    ivy = vy.toInt
 
     rect = new Rectangle(ix, iy, width, height)
 

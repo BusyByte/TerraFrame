@@ -63,5 +63,4 @@ case class WorldContainer(
     ic: ItemCollection,
     kworlds: Array2D[Boolean],
     icmatrix: Array3D[ItemCollection],
-    version: String)
-        extends Serializable
+    version: String) extends Serializable

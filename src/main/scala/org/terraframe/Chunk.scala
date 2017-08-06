@@ -3,6 +3,7 @@ package org.terraframe
 import java.util.Random
 
 import org.terraframe.World.generateOutlines
+import TerraFrame.{CHUNKBLOCKS => size}
 
 case class Chunk(
                   cx: Int,
@@ -25,7 +26,6 @@ case class Chunk(
                 )
 
 object Chunk {
-    val size: Int = TerraFrame.CHUNKBLOCKS
 
     def apply(cx: Int, cy: Int, random: Random): Chunk = {
         val blocks: Array3D[Int] = Array.ofDim(3,size,size)

@@ -20,10 +20,8 @@ case class Entity(var x: Double, var y: Double, var vx: Double, var vy: Double, 
     var AI, imgState: String = _
     var onGround, immune, grounded, onGroundDelay: Boolean = _
 
-    var dframes: Int = _
     var n: Double = _
     var bx1, bx2, by1, by2: Int = _
-    var i, j, k: Int = _
 
     var newMob: Entity = _
 
@@ -95,7 +93,6 @@ case class Entity(var x: Double, var y: Double, var vx: Double, var vy: Double, 
             imgState = "still right"
         }
     } else {
-        dframes = 0
         TerraFrame.itemImgs.get(id).foreach { i =>
             image = i
         }
@@ -522,7 +519,7 @@ case class Entity(var x: Double, var y: Double, var vx: Double, var vy: Double, 
             hp -= Math.max(1, damage - ap)
             immune = true
             if (AI == "shooting_star") {
-                if (player.x + player.width/2 < x + width/2) {
+                if (player.x + Player.width/2 < x + width/2) {
                     vx = 4
                 }
                 else {
@@ -530,7 +527,7 @@ case class Entity(var x: Double, var y: Double, var vx: Double, var vy: Double, 
                 }
             }
             else {
-                if (player.x + player.width/2 < x + width/2) {
+                if (player.x + Player.width/2 < x + width/2) {
                     vx += 4
                 }
                 else {

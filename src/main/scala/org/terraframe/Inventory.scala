@@ -23,9 +23,8 @@ object Inventory {
 class Inventory extends Serializable {
     import Inventory._
 
-    var i, j, k, x, y, n, px, py, selection, width, height: Int = _
+    var n, px, py, selection, width, height: Int = _
     var fpx, fpy: Double = _
-    var r: Short = _
 
     @transient var image, box, box_selected: BufferedImage = _
     val font = new Font("Chalkboard", Font.PLAIN, 12)
@@ -35,9 +34,6 @@ class Inventory extends Serializable {
     var ids:Array[Short] = _
     var nums:Array[Short] = _
     var durs:Array[Short] = _
-    var list_thing:Array2D[Short] = _
-    var r1:Array2D[Short] = _
-    var r2:Array[Short] = _
 
     var trolx: Int = 37
     var troly: Int = 17
@@ -45,8 +41,6 @@ class Inventory extends Serializable {
     var CX, CY: Int = _
 
     var valid: Boolean = false
-
-    var ic: ItemCollection = _
 
     var RECIPES: Map[String,Array2D[Short]] = _
 

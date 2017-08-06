@@ -17,6 +17,6 @@ object Images {
     catch {
       case NonFatal(_) => println("(ERROR) could not load image '" + path + "'.")
     }
-    return image
+    image
   }
 }

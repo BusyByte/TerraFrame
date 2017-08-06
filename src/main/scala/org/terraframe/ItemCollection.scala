@@ -8,5 +8,4 @@ case class ItemCollection(`type`: String, ids: Array[Short], nums: Array[Short],
     var FUELP: Double = 0
     var SMELTP: Double = 0
     var F_ON: Boolean = false
-    var recipeNum: Short = _
 }

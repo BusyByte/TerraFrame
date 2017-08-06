@@ -858,7 +858,7 @@ object World {
         }
       }
     }
-    return blockds
+    blockds
   }
 
   def generate2b(blocks: Array2D[Int], blockds: Array2D[Byte], xpos: Int, ypos: Int): Array2D[Byte] = {
@@ -1037,11 +1037,11 @@ object World {
         }
       }
     }
-    return blockds
+    blockds
   }
 
   def connect(b1: Int, b2: Int): Boolean = {
-    return (b1 != 0 && b1 == b2 ||
+    b1 != 0 && b1 == b2 ||
       b1 == 1 && b2 == 72 ||
       b2 == 1 && b1 == 72 ||
       b1 == 1 && b2 == 73 ||
@@ -1054,11 +1054,11 @@ object World {
       b1 == 103 && b2 == 104 ||
       b2 == 103 && b1 == 104 ||
       b1 == 15 && b2 == 83 ||
-      b2 == 83 && b1 == 15)
+      b2 == 83 && b1 == 15
   }
 
   def connect(x1: Int, y1: Int, x2: Int, y2: Int, blocks: Array2D[Int]): Boolean = {
-    return y1 > 0 && y1 < blocks.length-1 && connect(blocks(y1)(mod(x1,blocks(0).length)), blocks(y2)(mod(x2,blocks(0).length)))
+    y1 > 0 && y1 < blocks.length-1 && connect(blocks(y1)(mod(x1,blocks(0).length)), blocks(y2)(mod(x2,blocks(0).length)))
     /*        WIDTH: Int = blocks(0).length
             HEIGHT: Int = blocks.length
             blockcds: Array[Boolean] = TerraFrame.getBLOCKCDS()
@@ -1261,7 +1261,7 @@ object World {
         rv(y)(x) = blockbgs(y)(x)
       }
     }
-    return rv
+    rv
   }
 
   def blob(cwidth: Int, cheight: Int, erosion: Double): Array2D[Boolean] = {
@@ -1271,25 +1271,23 @@ object World {
         coordlist(x+cwidth)(y+cheight) = Math.pow(x*1.0 / cwidth, 2) + Math.pow(y*1.0 / cheight, 2) < 1 - random.nextDouble() * erosion
       }
     }
-    (0 until 2).foreach { n =>
-      (-cwidth to cwidth).foreach { x =>
-        (-cheight to cheight).foreach { y =>
-          if ((x+cwidth <= 0 || !coordlist(x+cwidth-1)(y+cheight)) &&
-          (x+cwidth+1 >= coordlist.length || !coordlist(x+cwidth+1)(y+cheight)) &&
-          (y+cheight <= 0 || !coordlist(x+cwidth)(y+cheight-1)) &&
-          (y+cheight+1 >= coordlist(0).length || !coordlist(x+cwidth)(y+cheight+1))) {
-            coordlist(x+cwidth)(y+cheight) = false
-          }
+    (-cwidth to cwidth).foreach { x =>
+      (-cheight to cheight).foreach { y =>
+        if ((x+cwidth <= 0 || !coordlist(x+cwidth-1)(y+cheight)) &&
+        (x+cwidth+1 >= coordlist.length || !coordlist(x+cwidth+1)(y+cheight)) &&
+        (y+cheight <= 0 || !coordlist(x+cwidth)(y+cheight-1)) &&
+        (y+cheight+1 >= coordlist(0).length || !coordlist(x+cwidth)(y+cheight+1))) {
+          coordlist(x+cwidth)(y+cheight) = false
         }
       }
-      (-cwidth to cwidth).foreach { x =>
-        (-cheight to cheight).foreach { y =>
-          if ((x+cwidth <= 0 || coordlist(x+cwidth-1)(y+cheight)) &&
-          (x+cwidth+1 >= coordlist.length || coordlist(x+cwidth+1)(y+cheight)) &&
-          (y+cheight <= 0 || coordlist(x+cwidth)(y+cheight-1)) &&
-          (y+cheight+1 >= coordlist(0).length || coordlist(x+cwidth)(y+cheight+1))) {
-            coordlist(x+cwidth)(y+cheight) = true
-          }
+    }
+    (-cwidth to cwidth).foreach { x =>
+      (-cheight to cheight).foreach { y =>
+        if ((x+cwidth <= 0 || coordlist(x+cwidth-1)(y+cheight)) &&
+        (x+cwidth+1 >= coordlist.length || coordlist(x+cwidth+1)(y+cheight)) &&
+        (y+cheight <= 0 || coordlist(x+cwidth)(y+cheight-1)) &&
+        (y+cheight+1 >= coordlist(0).length || coordlist(x+cwidth)(y+cheight+1))) {
+          coordlist(x+cwidth)(y+cheight) = true
         }
       }
     }

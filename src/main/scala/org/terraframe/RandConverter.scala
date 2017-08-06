@@ -6,7 +6,7 @@ import java.util._
 import javax.imageio.ImageIO
 import Images.loadImage
 
-object  RandConverter {
+object RandConverter {
 
     val BLOCKSIZE: Int = 16
     val IMAGESIZE: Int = 8

@@ -2058,8 +2058,8 @@ class TerraFrame extends JApplet
                                     try {
                                         if (ready) {
                                             ready = false
-                                            uNew = ((player.x - getWidth()/2 + player.width) / CHUNKSIZE.toDouble).toInt
-                                            vNew = ((player.y - getHeight()/2 + player.height) / CHUNKSIZE.toDouble).toInt
+                                            uNew = ((player.x - getWidth()/2 + Player.width) / CHUNKSIZE.toDouble).toInt
+                                            vNew = ((player.y - getHeight()/2 + Player.height) / CHUNKSIZE.toDouble).toInt
                                             if (ou != uNew || ov != vNew) {
                                                 ou = uNew
                                                 ov = vNew
@@ -2136,14 +2136,14 @@ class TerraFrame extends JApplet
                                                 (0 until 2).foreach { twx =>
                                                     val twxc: Int = twx + ou
                                                     val twyc: Int = twy + ov
-                                                    if (((player.ix + getWidth()/2 + player.width >= twxc*CHUNKSIZE &&
-                                                          player.ix + getWidth()/2 + player.width <= twxc*CHUNKSIZE+CHUNKSIZE) ||
-                                                         (player.ix - getWidth()/2 + player.width + BLOCKSIZE >= twxc*CHUNKSIZE &&
-                                                          player.ix - getWidth()/2 + player.width - BLOCKSIZE <= twxc*CHUNKSIZE+CHUNKSIZE)) &&
-                                                        ((player.iy + getHeight()/2 + player.height >= twyc*CHUNKSIZE &&
-                                                          player.iy + getHeight()/2 + player.height <= twyc*CHUNKSIZE+CHUNKSIZE) ||
-                                                         (player.iy - getHeight()/2 + player.height >= twyc*CHUNKSIZE &&
-                                                          player.iy - getHeight()/2 + player.height <= twyc*CHUNKSIZE+CHUNKSIZE))) {
+                                                    if (((player.ix + getWidth()/2 + Player.width >= twxc*CHUNKSIZE &&
+                                                          player.ix + getWidth()/2 + Player.width <= twxc*CHUNKSIZE+CHUNKSIZE) ||
+                                                         (player.ix - getWidth()/2 + Player.width + BLOCKSIZE >= twxc*CHUNKSIZE &&
+                                                          player.ix - getWidth()/2 + Player.width - BLOCKSIZE <= twxc*CHUNKSIZE+CHUNKSIZE)) &&
+                                                        ((player.iy + getHeight()/2 + Player.height >= twyc*CHUNKSIZE &&
+                                                          player.iy + getHeight()/2 + Player.height <= twyc*CHUNKSIZE+CHUNKSIZE) ||
+                                                         (player.iy - getHeight()/2 + Player.height >= twyc*CHUNKSIZE &&
+                                                          player.iy - getHeight()/2 + Player.height <= twyc*CHUNKSIZE+CHUNKSIZE))) {
                                                         kworlds(twy)(twx) = true
                                                         if (worlds(twy)(twx) == null) {
                                                             worlds(twy)(twx) = config.createCompatibleImage(CHUNKSIZE, CHUNKSIZE, Transparency.TRANSLUCENT)
@@ -2153,8 +2153,8 @@ class TerraFrame extends JApplet
                                                         if (worlds(twy)(twx) != null) {
                                                             wg2 = worlds(twy)(twx).createGraphics()
                                                             fwg2 = fworlds(twy)(twx).createGraphics()
-                                                            (Math.max(twy*CHUNKSIZE, (player.iy-getHeight()/2+player.height/2+v*BLOCKSIZE)-64) until(Math.min(twy*CHUNKSIZE+CHUNKSIZE, (player.iy+getHeight()/2-player.height/2+v*BLOCKSIZE).toInt+128),BLOCKSIZE)).foreach { tly =>
-                                                                (Math.max(twx*CHUNKSIZE, (player.ix-getWidth()/2+player.width/2+u*BLOCKSIZE)-64) until(Math.min(twx*CHUNKSIZE+CHUNKSIZE, (player.ix+getWidth()/2-player.width/2+u*BLOCKSIZE).toInt+112),BLOCKSIZE)).foreach { tlx =>
+                                                            (Math.max(twy*CHUNKSIZE, (player.iy-getHeight()/2+Player.height/2+v*BLOCKSIZE)-64) until(Math.min(twy*CHUNKSIZE+CHUNKSIZE, (player.iy+getHeight()/2-Player.height/2+v*BLOCKSIZE)+128),BLOCKSIZE)).foreach { tly =>
+                                                                (Math.max(twx*CHUNKSIZE, (player.ix-getWidth()/2+Player.width/2+u*BLOCKSIZE)-64) until(Math.min(twx*CHUNKSIZE+CHUNKSIZE, (player.ix+getWidth()/2-Player.width/2+u*BLOCKSIZE)+112),BLOCKSIZE)).foreach { tlx =>
                                                                     tx = (tlx/BLOCKSIZE)
                                                                     ty = (tly/BLOCKSIZE)
                                                                     if (tx >= 0 && tx < theSize && ty >= 0 && ty < theSize) {
@@ -2785,8 +2785,8 @@ class TerraFrame extends JApplet
     }
 
     def updateApp(): Unit = {
-        mousePos2(0) = mousePos(0) + player.ix - getWidth()/2 + player.width/2
-        mousePos2(1) = mousePos(1) + player.iy - getHeight()/2 + player.height/2
+        mousePos2(0) = mousePos(0) + player.ix - getWidth()/2 + Player.width/2
+        mousePos2(1) = mousePos(1) + player.iy - getHeight()/2 + Player.height/2
 
         currentSkyLight = skycolors(0)
         (0 until skycolors.length).foreach { i =>
@@ -4355,7 +4355,7 @@ class TerraFrame extends JApplet
                         }
                         rgnc1 = 750
                         immune = 40
-                        if (player.x + player.width/2 < entities.get(i).x + entities.get(i).width/2) {
+                        if (player.x + Player.width/2 < entities.get(i).x + entities.get(i).width/2) {
                             player.vx -= 8
                         }
                         else {
@@ -4456,26 +4456,26 @@ class TerraFrame extends JApplet
         }
         if (showTool) {
             if (player.imgState.equals("still right") || player.imgState.equals("walk right 1") || player.imgState.equals("walk right 2")) {
-                tp1 = new Point((player.x + player.width/2 + 6).toInt, (player.y + player.height/2).toInt)
-                tp2 = new Point((player.x + player.width/2 + 6 + tool.getWidth()*2*Math.cos(toolAngle) + tool.getHeight()*2*Math.sin(toolAngle)).toInt,
-                                (player.y + player.height/2 + tool.getWidth()*2*Math.sin(toolAngle) - tool.getHeight()*2*Math.cos(toolAngle)).toInt)
-                tp3 = new Point((player.x + player.width/2 + 6 + tool.getWidth()*1*Math.cos(toolAngle) + tool.getHeight()*1*Math.sin(toolAngle)).toInt,
-                                (player.y + player.height/2 + tool.getWidth()*1*Math.sin(toolAngle) - tool.getHeight()*1*Math.cos(toolAngle)).toInt)
-                tp4 = new Point((player.x + player.width/2 + 6 + tool.getWidth()*0.5*Math.cos(toolAngle) + tool.getHeight()*0.5*Math.sin(toolAngle)).toInt,
-                                (player.y + player.height/2 + tool.getWidth()*0.5*Math.sin(toolAngle) - tool.getHeight()*0.5*Math.cos(toolAngle)).toInt)
-                tp5 = new Point((player.x + player.width/2 + 6 + tool.getWidth()*1.5*Math.cos(toolAngle) + tool.getHeight()*1.5*Math.sin(toolAngle)).toInt,
-                                (player.y + player.height/2 + tool.getWidth()*1.5*Math.sin(toolAngle) - tool.getHeight()*1.5*Math.cos(toolAngle)).toInt)
+                tp1 = new Point((player.x + Player.width/2 + 6).toInt, (player.y + Player.height/2).toInt)
+                tp2 = new Point((player.x + Player.width/2 + 6 + tool.getWidth()*2*Math.cos(toolAngle) + tool.getHeight()*2*Math.sin(toolAngle)).toInt,
+                                (player.y + Player.height/2 + tool.getWidth()*2*Math.sin(toolAngle) - tool.getHeight()*2*Math.cos(toolAngle)).toInt)
+                tp3 = new Point((player.x + Player.width/2 + 6 + tool.getWidth()*1*Math.cos(toolAngle) + tool.getHeight()*1*Math.sin(toolAngle)).toInt,
+                                (player.y + Player.height/2 + tool.getWidth()*1*Math.sin(toolAngle) - tool.getHeight()*1*Math.cos(toolAngle)).toInt)
+                tp4 = new Point((player.x + Player.width/2 + 6 + tool.getWidth()*0.5*Math.cos(toolAngle) + tool.getHeight()*0.5*Math.sin(toolAngle)).toInt,
+                                (player.y + Player.height/2 + tool.getWidth()*0.5*Math.sin(toolAngle) - tool.getHeight()*0.5*Math.cos(toolAngle)).toInt)
+                tp5 = new Point((player.x + Player.width/2 + 6 + tool.getWidth()*1.5*Math.cos(toolAngle) + tool.getHeight()*1.5*Math.sin(toolAngle)).toInt,
+                                (player.y + Player.height/2 + tool.getWidth()*1.5*Math.sin(toolAngle) - tool.getHeight()*1.5*Math.cos(toolAngle)).toInt)
             }
             if (player.imgState.equals("still left") || player.imgState.equals("walk left 1") || player.imgState.equals("walk left 2")) {
-                tp1 = new Point((player.x + player.width/2 - 6).toInt, (player.y + player.height/2).toInt)
-                tp2 = new Point((player.x + player.width/2 - 6 + tool.getWidth()*2*Math.cos((Math.PI * 1.5) - toolAngle) + tool.getHeight()*2*Math.sin((Math.PI * 1.5) - toolAngle)).toInt,
-                                (player.y + player.height/2 + tool.getWidth()*2*Math.sin((Math.PI * 1.5) - toolAngle) - tool.getHeight()*2*Math.cos((Math.PI * 1.5) - toolAngle)).toInt)
-                tp3 = new Point((player.x + player.width/2 - 6 + tool.getWidth()*1*Math.cos((Math.PI * 1.5) - toolAngle) + tool.getHeight()*1*Math.sin((Math.PI * 1.5) - toolAngle)).toInt,
-                                (player.y + player.height/2 + tool.getWidth()*1*Math.sin((Math.PI * 1.5) - toolAngle) - tool.getHeight()*1*Math.cos((Math.PI * 1.5) - toolAngle)).toInt)
-                tp4 = new Point((player.x + player.width/2 - 6 + tool.getWidth()*0.5*Math.cos((Math.PI * 1.5) - toolAngle) + tool.getHeight()*0.5*Math.sin((Math.PI * 1.5) - toolAngle)).toInt,
-                                (player.y + player.height/2 + tool.getWidth()*0.5*Math.sin((Math.PI * 1.5) - toolAngle) - tool.getHeight()*0.5*Math.cos((Math.PI * 1.5) - toolAngle)).toInt)
-                tp5 = new Point((player.x + player.width/2 - 6 + tool.getWidth()*1.5*Math.cos((Math.PI * 1.5) - toolAngle) + tool.getHeight()*1.5*Math.sin((Math.PI * 1.5) - toolAngle)).toInt,
-                                (player.y + player.height/2 + tool.getWidth()*1.5*Math.sin((Math.PI * 1.5) - toolAngle) - tool.getHeight()*1.5*Math.cos((Math.PI * 1.5) - toolAngle)).toInt)
+                tp1 = new Point((player.x + Player.width/2 - 6).toInt, (player.y + Player.height/2).toInt)
+                tp2 = new Point((player.x + Player.width/2 - 6 + tool.getWidth()*2*Math.cos((Math.PI * 1.5) - toolAngle) + tool.getHeight()*2*Math.sin((Math.PI * 1.5) - toolAngle)).toInt,
+                                (player.y + Player.height/2 + tool.getWidth()*2*Math.sin((Math.PI * 1.5) - toolAngle) - tool.getHeight()*2*Math.cos((Math.PI * 1.5) - toolAngle)).toInt)
+                tp3 = new Point((player.x + Player.width/2 - 6 + tool.getWidth()*1*Math.cos((Math.PI * 1.5) - toolAngle) + tool.getHeight()*1*Math.sin((Math.PI * 1.5) - toolAngle)).toInt,
+                                (player.y + Player.height/2 + tool.getWidth()*1*Math.sin((Math.PI * 1.5) - toolAngle) - tool.getHeight()*1*Math.cos((Math.PI * 1.5) - toolAngle)).toInt)
+                tp4 = new Point((player.x + Player.width/2 - 6 + tool.getWidth()*0.5*Math.cos((Math.PI * 1.5) - toolAngle) + tool.getHeight()*0.5*Math.sin((Math.PI * 1.5) - toolAngle)).toInt,
+                                (player.y + Player.height/2 + tool.getWidth()*0.5*Math.sin((Math.PI * 1.5) - toolAngle) - tool.getHeight()*0.5*Math.cos((Math.PI * 1.5) - toolAngle)).toInt)
+                tp5 = new Point((player.x + Player.width/2 - 6 + tool.getWidth()*1.5*Math.cos((Math.PI * 1.5) - toolAngle) + tool.getHeight()*1.5*Math.sin((Math.PI * 1.5) - toolAngle)).toInt,
+                                (player.y + Player.height/2 + tool.getWidth()*1.5*Math.sin((Math.PI * 1.5) - toolAngle) - tool.getHeight()*1.5*Math.cos((Math.PI * 1.5) - toolAngle)).toInt)
             }
             (entities.size()-1 to(0, -1)).foreach { i =>
                 if (entities.get(i).name != null && !entities.get(i).nohit && showTool && (entities.get(i).rect.contains(tp1) || entities.get(i).rect.contains(tp2) || entities.get(i).rect.contains(tp3) || entities.get(i).rect.contains(tp4) || entities.get(i).rect.contains(tp5)) && (!entities.get(i).name.equals("bee") || random.nextInt(4) == 0)) {
@@ -4502,8 +4502,8 @@ class TerraFrame extends JApplet
 
         (-1 until entities.size()).foreach { i =>
             if (i == -1) {
-                width = player.width
-                height = player.height
+                width = Player.width
+                height = Player.height
                 p = player.x
                 q = player.y
             }
@@ -5906,16 +5906,16 @@ class TerraFrame extends JApplet
                     val pwxc: Int = pwx + ou
                     val pwyc: Int = pwy + ov
                     if (worlds(pwy)(pwx) != null) {
-                        if (((player.ix + getWidth() / 2 + player.width >= pwxc * CHUNKSIZE &&
-                          player.ix + getWidth() / 2 + player.width <= pwxc * CHUNKSIZE + CHUNKSIZE) ||
-                          (player.ix - getWidth() / 2 + player.width + BLOCKSIZE >= pwxc * CHUNKSIZE &&
-                            player.ix - getWidth() / 2 + player.width - BLOCKSIZE <= pwxc * CHUNKSIZE + CHUNKSIZE)) &&
-                          ((player.iy + getHeight() / 2 + player.height >= pwyc * CHUNKSIZE &&
-                            player.iy + getHeight() / 2 + player.height <= pwyc * CHUNKSIZE + CHUNKSIZE) ||
-                            (player.iy - getHeight() / 2 + player.height >= pwyc * CHUNKSIZE &&
-                              player.iy - getHeight() / 2 + player.height <= pwyc * CHUNKSIZE + CHUNKSIZE))) {
+                        if (((player.ix + getWidth() / 2 + Player.width >= pwxc * CHUNKSIZE &&
+                          player.ix + getWidth() / 2 + Player.width <= pwxc * CHUNKSIZE + CHUNKSIZE) ||
+                          (player.ix - getWidth() / 2 + Player.width + BLOCKSIZE >= pwxc * CHUNKSIZE &&
+                            player.ix - getWidth() / 2 + Player.width - BLOCKSIZE <= pwxc * CHUNKSIZE + CHUNKSIZE)) &&
+                          ((player.iy + getHeight() / 2 + Player.height >= pwyc * CHUNKSIZE &&
+                            player.iy + getHeight() / 2 + Player.height <= pwyc * CHUNKSIZE + CHUNKSIZE) ||
+                            (player.iy - getHeight() / 2 + Player.height >= pwyc * CHUNKSIZE &&
+                              player.iy - getHeight() / 2 + Player.height <= pwyc * CHUNKSIZE + CHUNKSIZE))) {
                             pg2.drawImage(worlds(pwy)(pwx),
-                                pwxc * CHUNKSIZE - player.ix + getWidth() / 2 - player.width / 2, pwyc * CHUNKSIZE - player.iy + getHeight() / 2 - player.height / 2, pwxc * CHUNKSIZE - player.ix + getWidth() / 2 - player.width / 2 + CHUNKSIZE, pwyc * CHUNKSIZE - player.iy + getHeight() / 2 - player.height / 2 + CHUNKSIZE,
+                                pwxc * CHUNKSIZE - player.ix + getWidth() / 2 - Player.width / 2, pwyc * CHUNKSIZE - player.iy + getHeight() / 2 - Player.height / 2, pwxc * CHUNKSIZE - player.ix + getWidth() / 2 - Player.width / 2 + CHUNKSIZE, pwyc * CHUNKSIZE - player.iy + getHeight() / 2 - Player.height / 2 + CHUNKSIZE,
                                 0, 0, CHUNKSIZE, CHUNKSIZE,
                                 null)
                         }
@@ -5924,22 +5924,22 @@ class TerraFrame extends JApplet
             }
 
             pg2.drawImage(player.image,
-                getWidth() / 2 - player.width / 2, getHeight() / 2 - player.height / 2, getWidth() / 2 + player.width / 2, getHeight() / 2 + player.height / 2,
+                getWidth() / 2 - Player.width / 2, getHeight() / 2 - Player.height / 2, getWidth() / 2 + Player.width / 2, getHeight() / 2 + Player.height / 2,
                 0, 0, player.image.getWidth(), player.image.getHeight(),
                 null)
 
             (0 until entities.size()).foreach { i =>
                 entity = entities.get(i)
                 pg2.drawImage(entity.image,
-                    entity.ix - player.ix + getWidth() / 2 - player.width / 2, entity.iy - player.iy + getHeight() / 2 - player.height / 2, entity.ix - player.ix + getWidth() / 2 - player.width / 2 + entity.width, entity.iy - player.iy + getHeight() / 2 - player.height / 2 + entity.height,
+                    entity.ix - player.ix + getWidth() / 2 - Player.width / 2, entity.iy - player.iy + getHeight() / 2 - Player.height / 2, entity.ix - player.ix + getWidth() / 2 - Player.width / 2 + entity.width, entity.iy - player.iy + getHeight() / 2 - Player.height / 2 + entity.height,
                     0, 0, entity.image.getWidth(), entity.image.getHeight(),
                     null)
                 pg2.drawImage(entity.image,
-                    entity.ix - player.ix + getWidth() / 2 - player.width / 2 - WIDTH * BLOCKSIZE, entity.iy - player.iy + getHeight() / 2 - player.height / 2, entity.ix - player.ix + getWidth() / 2 - player.width / 2 + entity.width - WIDTH * BLOCKSIZE, entity.iy - player.iy + getHeight() / 2 - player.height / 2 + entity.height,
+                    entity.ix - player.ix + getWidth() / 2 - Player.width / 2 - WIDTH * BLOCKSIZE, entity.iy - player.iy + getHeight() / 2 - Player.height / 2, entity.ix - player.ix + getWidth() / 2 - Player.width / 2 + entity.width - WIDTH * BLOCKSIZE, entity.iy - player.iy + getHeight() / 2 - Player.height / 2 + entity.height,
                     0, 0, entity.image.getWidth(), entity.image.getHeight(),
                     null)
                 pg2.drawImage(entity.image,
-                    entity.ix - player.ix + getWidth() / 2 - player.width / 2 + WIDTH * BLOCKSIZE, entity.iy - player.iy + getHeight() / 2 - player.height / 2, entity.ix - player.ix + getWidth() / 2 - player.width / 2 + entity.width + WIDTH * BLOCKSIZE, entity.iy - player.iy + getHeight() / 2 - player.height / 2 + entity.height,
+                    entity.ix - player.ix + getWidth() / 2 - Player.width / 2 + WIDTH * BLOCKSIZE, entity.iy - player.iy + getHeight() / 2 - Player.height / 2, entity.ix - player.ix + getWidth() / 2 - Player.width / 2 + entity.width + WIDTH * BLOCKSIZE, entity.iy - player.iy + getHeight() / 2 - Player.height / 2 + entity.height,
                     0, 0, entity.image.getWidth(), entity.image.getHeight(),
                     null)
             }
@@ -5976,16 +5976,16 @@ class TerraFrame extends JApplet
                     val pwxc: Int = pwx + ou
                     val pwyc: Int = pwy + ov
                     if (fworlds(pwy)(pwx) != null) {
-                        if (((player.ix + getWidth() / 2 + player.width >= pwxc * CHUNKSIZE &&
-                          player.ix + getWidth() / 2 + player.width <= pwxc * CHUNKSIZE + CHUNKSIZE) ||
-                          (player.ix - getWidth() / 2 + player.width + BLOCKSIZE >= pwxc * CHUNKSIZE &&
-                            player.ix - getWidth() / 2 + player.width - BLOCKSIZE <= pwxc * CHUNKSIZE + CHUNKSIZE)) &&
-                          ((player.iy + getHeight() / 2 + player.height >= pwyc * CHUNKSIZE &&
-                            player.iy + getHeight() / 2 + player.height <= pwyc * CHUNKSIZE + CHUNKSIZE) ||
-                            (player.iy - getHeight() / 2 + player.height >= pwyc * CHUNKSIZE &&
-                              player.iy - getHeight() / 2 + player.height <= pwyc * CHUNKSIZE + CHUNKSIZE))) {
+                        if (((player.ix + getWidth() / 2 + Player.width >= pwxc * CHUNKSIZE &&
+                          player.ix + getWidth() / 2 + Player.width <= pwxc * CHUNKSIZE + CHUNKSIZE) ||
+                          (player.ix - getWidth() / 2 + Player.width + BLOCKSIZE >= pwxc * CHUNKSIZE &&
+                            player.ix - getWidth() / 2 + Player.width - BLOCKSIZE <= pwxc * CHUNKSIZE + CHUNKSIZE)) &&
+                          ((player.iy + getHeight() / 2 + Player.height >= pwyc * CHUNKSIZE &&
+                            player.iy + getHeight() / 2 + Player.height <= pwyc * CHUNKSIZE + CHUNKSIZE) ||
+                            (player.iy - getHeight() / 2 + Player.height >= pwyc * CHUNKSIZE &&
+                              player.iy - getHeight() / 2 + Player.height <= pwyc * CHUNKSIZE + CHUNKSIZE))) {
                             pg2.drawImage(fworlds(pwy)(pwx),
-                                pwxc * CHUNKSIZE - player.ix + getWidth() / 2 - player.width / 2, pwyc * CHUNKSIZE - player.iy + getHeight() / 2 - player.height / 2, pwxc * CHUNKSIZE - player.ix + getWidth() / 2 - player.width / 2 + CHUNKSIZE, pwyc * CHUNKSIZE - player.iy + getHeight() / 2 - player.height / 2 + CHUNKSIZE,
+                                pwxc * CHUNKSIZE - player.ix + getWidth() / 2 - Player.width / 2, pwyc * CHUNKSIZE - player.iy + getHeight() / 2 - Player.height / 2, pwxc * CHUNKSIZE - player.ix + getWidth() / 2 - Player.width / 2 + CHUNKSIZE, pwyc * CHUNKSIZE - player.iy + getHeight() / 2 - Player.height / 2 + CHUNKSIZE,
                                 0, 0, CHUNKSIZE, CHUNKSIZE,
                                 null)
                         }
