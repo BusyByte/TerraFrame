@@ -1227,7 +1227,17 @@ object TerraFrame {
 
     blockCdTemp.asScala.toMap
   }
-  var MAXSTACKS: Map[Short, Short] = _
+  val MAXSTACKS: Map[Short, Short] = {
+    val maxStacksTemp = new jul.HashMap[Short, Short](items.length)
+
+    val stacks: Array[Short] = Array[Short](100, 100, 100, 100, 100, 100, 100, 1, 1, 1, 1, 1, 1, 1, 1, 100, 1, 1, 1, 1, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 1, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 1, 1, 1, 1, 1, 1, 1, 1, 1, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 100, 100, 100, 1, 1, 1, 1, 1, 1, 100, 100, 100, 100, 100, 100, 100, 100, 100, 1, 1, 1, 1, 1, 1, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 1)
+
+    items.indices.foreach { i =>
+      maxStacksTemp.put(i.toShort, stacks(i))
+    }
+
+    maxStacksTemp.asScala.toMap
+  }
   var SKYLIGHTS: Map[Int, Int] = _
   var SKYCOLORS: Map[Int, Color] = _
   var LIGHTLEVELS: Map[Int, BufferedImage] = _
@@ -1488,21 +1498,9 @@ class TerraFrame extends JApplet
 
       screen = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB)
 
-
       state = "loading_graphics"
 
       repaint()
-
-      val maxStacksTemp = new jul.HashMap[Short, Short](items.length)
-
-      val stacks: Array[Short] = Array[Short](100, 100, 100, 100, 100, 100, 100, 1, 1, 1, 1, 1, 1, 1, 1, 100, 1, 1, 1, 1, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 1, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 1, 1, 1, 1, 1, 1, 1, 1, 1, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 100, 100, 100, 1, 1, 1, 1, 1, 1, 100, 100, 100, 100, 100, 100, 100, 100, 100, 1, 1, 1, 1, 1, 1, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 1)
-
-      items.indices.foreach { i =>
-        maxStacksTemp.put(i.toShort, stacks(i))
-      }
-
-      MAXSTACKS = maxStacksTemp.asScala.toMap
-
 
       val skyColorsTemp = new jul.HashMap[Int, Color](50)
 
