@@ -1362,7 +1362,68 @@ object TerraFrame {
 
     outlineImgsTemp.asScala.toMap
   }
-  var BLOCKLIGHTS: Map[Int, Int] = _
+  
+  val BLOCKLIGHTS: Map[Int, Int] = {
+    val blockLightsTemp = new jul.HashMap[Int, Int](blocknames.length)
+
+    blocknames.indices.foreach { i =>
+      blockLightsTemp.put(i, 0)
+    }
+
+    blockLightsTemp.put(19, 21)
+    blockLightsTemp.put(20, 15)
+    blockLightsTemp.put(21, 18)
+    blockLightsTemp.put(22, 21)
+    blockLightsTemp.put(23, 15)
+    blockLightsTemp.put(24, 15)
+    blockLightsTemp.put(25, 15)
+    blockLightsTemp.put(26, 18)
+    blockLightsTemp.put(27, 18)
+    blockLightsTemp.put(28, 21)
+    blockLightsTemp.put(29, 21)
+    blockLightsTemp.put(36, 15)
+    blockLightsTemp.put(36, 15)
+    blockLightsTemp.put(38, 18)
+    blockLightsTemp.put(51, 15)
+    blockLightsTemp.put(52, 15)
+    blockLightsTemp.put(53, 15)
+    blockLightsTemp.put(95, 6)
+    blockLightsTemp.put(96, 7)
+    blockLightsTemp.put(97, 8)
+    blockLightsTemp.put(98, 9)
+    blockLightsTemp.put(99, 10)
+    blockLightsTemp.put(100, 12)
+    blockLightsTemp.put(101, 12)
+    blockLightsTemp.put(102, 12)
+    blockLightsTemp.put(104, 21)
+    blockLightsTemp.put(112, 12)
+    blockLightsTemp.put(114, 12)
+    blockLightsTemp.put(116, 12)
+    blockLightsTemp.put(118, 12)
+    blockLightsTemp.put(123, 12)
+    blockLightsTemp.put(124, 12)
+    blockLightsTemp.put(125, 12)
+    blockLightsTemp.put(126, 12)
+
+    blockLightsTemp.put(137, 12)
+    blockLightsTemp.put(138, 12)
+    blockLightsTemp.put(139, 12)
+    blockLightsTemp.put(140, 12)
+    blockLightsTemp.put(145, 12)
+    blockLightsTemp.put(146, 12)
+    blockLightsTemp.put(147, 12)
+    blockLightsTemp.put(148, 12)
+    blockLightsTemp.put(153, 12)
+    blockLightsTemp.put(154, 12)
+    blockLightsTemp.put(155, 12)
+    blockLightsTemp.put(156, 12)
+    blockLightsTemp.put(161, 12)
+    blockLightsTemp.put(162, 12)
+    blockLightsTemp.put(163, 12)
+    blockLightsTemp.put(164, 12)
+
+    blockLightsTemp.asScala.toMap
+  }
   var GRASSDIRT: Map[Int, Int] = _
   var ARMOR: Map[Short, Int] = _
   var TOOLDURS: Map[Short, Short] = _
@@ -1593,71 +1654,6 @@ class TerraFrame extends JApplet
       repaint()
 
 
-
-
-
-
-
-
-      val blockLightsTemp = new jul.HashMap[Int, Int](blocknames.length)
-
-      blocknames.indices.foreach { i =>
-        blockLightsTemp.put(i, 0)
-      }
-
-      blockLightsTemp.put(19, 21)
-      blockLightsTemp.put(20, 15)
-      blockLightsTemp.put(21, 18)
-      blockLightsTemp.put(22, 21)
-      blockLightsTemp.put(23, 15)
-      blockLightsTemp.put(24, 15)
-      blockLightsTemp.put(25, 15)
-      blockLightsTemp.put(26, 18)
-      blockLightsTemp.put(27, 18)
-      blockLightsTemp.put(28, 21)
-      blockLightsTemp.put(29, 21)
-      blockLightsTemp.put(36, 15)
-      blockLightsTemp.put(36, 15)
-      blockLightsTemp.put(38, 18)
-      blockLightsTemp.put(51, 15)
-      blockLightsTemp.put(52, 15)
-      blockLightsTemp.put(53, 15)
-      blockLightsTemp.put(95, 6)
-      blockLightsTemp.put(96, 7)
-      blockLightsTemp.put(97, 8)
-      blockLightsTemp.put(98, 9)
-      blockLightsTemp.put(99, 10)
-      blockLightsTemp.put(100, 12)
-      blockLightsTemp.put(101, 12)
-      blockLightsTemp.put(102, 12)
-      blockLightsTemp.put(104, 21)
-      blockLightsTemp.put(112, 12)
-      blockLightsTemp.put(114, 12)
-      blockLightsTemp.put(116, 12)
-      blockLightsTemp.put(118, 12)
-      blockLightsTemp.put(123, 12)
-      blockLightsTemp.put(124, 12)
-      blockLightsTemp.put(125, 12)
-      blockLightsTemp.put(126, 12)
-
-      blockLightsTemp.put(137, 12)
-      blockLightsTemp.put(138, 12)
-      blockLightsTemp.put(139, 12)
-      blockLightsTemp.put(140, 12)
-      blockLightsTemp.put(145, 12)
-      blockLightsTemp.put(146, 12)
-      blockLightsTemp.put(147, 12)
-      blockLightsTemp.put(148, 12)
-      blockLightsTemp.put(153, 12)
-      blockLightsTemp.put(154, 12)
-      blockLightsTemp.put(155, 12)
-      blockLightsTemp.put(156, 12)
-      blockLightsTemp.put(161, 12)
-      blockLightsTemp.put(162, 12)
-      blockLightsTemp.put(163, 12)
-      blockLightsTemp.put(164, 12)
-
-      BLOCKLIGHTS = blockLightsTemp.asScala.toMap
 
 
       val grassDirtTemp = new jul.HashMap[Int, Int](10)
