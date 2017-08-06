@@ -3,6 +3,8 @@ package org.terraframe
 import java.io.Serializable
 import java.{util => jul}
 
+import scala.collection.mutable.ArrayBuffer
+
 case class WorldContainer(
     blocks: Array3D[Int],
     blockds: Array3D[Byte],
@@ -17,16 +19,16 @@ case class WorldContainer(
     player: Player,
     inventory: Inventory,
     cic: ItemCollection,
-    entities: jul.List[Entity],
-    cloudsx: jul.List[Double],
-    cloudsy: jul.List[Double],
-    cloudsv: jul.List[Double],
-    cloudsn: jul.List[Int],
-    machinesx: jul.List[Int],
-    machinesy: jul.List[Int],
+    entities: ArrayBuffer[Entity],
+    cloudsx: ArrayBuffer[Double],
+    cloudsy: ArrayBuffer[Double],
+    cloudsv: ArrayBuffer[Double],
+    cloudsn: ArrayBuffer[Int],
+    machinesx: ArrayBuffer[Int],
+    machinesy: ArrayBuffer[Int],
     lsources: Array2D[Boolean],
-    lqx: jul.List[Int],
-    lqy: jul.List[Int],
+    lqx: ArrayBuffer[Int],
+    lqy: ArrayBuffer[Int],
     lqd: Array2D[Boolean],
     rgnc1: Int,
     rgnc2: Int,

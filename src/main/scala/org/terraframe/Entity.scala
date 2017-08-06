@@ -4,7 +4,10 @@ import java.awt._
 import java.awt.image._
 import java.io.Serializable
 import java.util._
+
 import Images.loadImage
+
+import scala.collection.mutable.ArrayBuffer
 
 
 case class Entity(var x: Double, var y: Double, var vx: Double, var vy: Double, id: Short, num: Short, dur: Short, var mdelay: Int, name: String) extends Serializable {
@@ -539,83 +542,83 @@ case class Entity(var x: Double, var y: Double, var vx: Double, var vy: Double, 
         return hp <= 0
     }
 
-    def drops(): ArrayList[Short] = {
-        val dropList = new ArrayList[Short]()
+    def drops(): ArrayBuffer[Short] = {
+        val dropList = ArrayBuffer.empty[Short]
         val random: Random = TerraFrame.random
         if (name == "blue_bubble") {
             (0 until random.nextInt(3)).foreach { i =>
-                dropList.add(97.toShort)
+                dropList += 97.toShort
             }
         }
         if (name == "green_bubble") {
             (0 until random.nextInt(3)).foreach { i =>
-                dropList.add(98.toShort)
+                dropList += 98.toShort
             }
         }
         if (name == "red_bubble") {
             (0 until random.nextInt(3)).foreach { i =>
-                dropList.add(99.toShort)
+                dropList += 99.toShort
             }
         }
         if (name == "yellow_bubble") {
             (0 until random.nextInt(3)).foreach { i =>
-                dropList.add(100.toShort)
+                dropList += 100.toShort
             }
         }
         if (name == "black_bubble") {
             (0 until random.nextInt(3)).foreach { i =>
-                dropList.add(101.toShort)
+                dropList += 101.toShort
             }
         }
         if (name == "white_bubble") {
             (0 until random.nextInt(3)).foreach { i =>
-                dropList.add(102.toShort)
+                dropList += 102.toShort
             }
         }
         if (name == "shooting_star") {
             (0 until random.nextInt(2)).foreach { i =>
-                dropList.add(103.toShort)
+                dropList += 103.toShort
             }
         }
         if (name == "zombie") {
             (0 until random.nextInt(3)).foreach { i =>
-                dropList.add(104.toShort)
+                dropList += 104.toShort
             }
         }
         if (name == "armored_zombie") {
             (0 until random.nextInt(3)).foreach { i =>
-                dropList.add(104.toShort)
+                dropList += 104.toShort
             }
             if (random.nextInt(15) == 0) {
-                dropList.add(109.toShort)
+                dropList += 109.toShort
             }
             if (random.nextInt(15) == 0) {
-                dropList.add(110.toShort)
+                dropList += 110.toShort
             }
             if (random.nextInt(15) == 0) {
-                dropList.add(111.toShort)
+                dropList += 111.toShort
             }
             if (random.nextInt(15) == 0) {
-                dropList.add(112.toShort)
+                dropList += 112.toShort
             }
         }
         if (name == "sandbot") {
             (0 until random.nextInt(3)).foreach { i =>
-                dropList.add(74.toShort)
+                dropList += 74.toShort
             }
             if (random.nextInt(2) == 0) {
-                dropList.add(44.toShort)
+                dropList += 44.toShort
             }
             if (random.nextInt(6) == 0) {
-                dropList.add(45.toShort)
+                dropList += 45.toShort
             }
         }
         if (name == "snowman") {
             (0 until random.nextInt(3)).foreach { i =>
-                dropList.add(75.toShort)
+                dropList += 75.toShort
             }
         }
-        return dropList
+        dropList
     }
 
     def reloadImage(): Unit = {
