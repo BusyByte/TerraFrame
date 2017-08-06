@@ -1434,7 +1434,56 @@ object TerraFrame {
 
     grassDirtTemp.asScala.toMap
   }
-  var ARMOR: Map[Short, Int] = _
+  val ARMOR: Map[Short, Int] = {
+    val armorTemp = new jul.HashMap[Short, Int](items.length)
+
+    items.indices.foreach { i =>
+      armorTemp.put(i.toShort, 0)
+    }
+
+    armorTemp.put(105.toShort, 1)
+    armorTemp.put(106.toShort, 2)
+    armorTemp.put(107.toShort, 1)
+    armorTemp.put(108.toShort, 1)
+    armorTemp.put(109.toShort, 1)
+    armorTemp.put(110.toShort, 3)
+    armorTemp.put(111.toShort, 2)
+    armorTemp.put(112.toShort, 1)
+    armorTemp.put(113.toShort, 2)
+    armorTemp.put(114.toShort, 4)
+    armorTemp.put(115.toShort, 3)
+    armorTemp.put(116.toShort, 1)
+    armorTemp.put(117.toShort, 3)
+    armorTemp.put(118.toShort, 6)
+    armorTemp.put(119.toShort, 5)
+    armorTemp.put(120.toShort, 2)
+    armorTemp.put(121.toShort, 4)
+    armorTemp.put(122.toShort, 7)
+    armorTemp.put(123.toShort, 6)
+    armorTemp.put(124.toShort, 3)
+    armorTemp.put(125.toShort, 5)
+    armorTemp.put(126.toShort, 9)
+    armorTemp.put(127.toShort, 7)
+    armorTemp.put(128.toShort, 4)
+    armorTemp.put(129.toShort, 7)
+    armorTemp.put(130.toShort, 12)
+    armorTemp.put(131.toShort, 10)
+    armorTemp.put(132.toShort, 6)
+    armorTemp.put(133.toShort, 4)
+    armorTemp.put(134.toShort, 7)
+    armorTemp.put(135.toShort, 6)
+    armorTemp.put(136.toShort, 3)
+    armorTemp.put(137.toShort, 2)
+    armorTemp.put(138.toShort, 4)
+    armorTemp.put(139.toShort, 3)
+    armorTemp.put(140.toShort, 1)
+    armorTemp.put(141.toShort, 10)
+    armorTemp.put(142.toShort, 18)
+    armorTemp.put(143.toShort, 14)
+    armorTemp.put(144.toShort, 8)
+
+    armorTemp.asScala.toMap
+  }
   var TOOLDURS: Map[Short, Short] = _
   var FUELS: Map[Short, Double] = _
   var WIREP: Map[Int, Int] = _
@@ -1661,58 +1710,6 @@ class TerraFrame extends JApplet
       state = "loading_graphics"
 
       repaint()
-
-
-
-      val armorTemp = new jul.HashMap[Short, Int](items.length)
-
-      items.indices.foreach { i =>
-        armorTemp.put(i.toShort, 0)
-      }
-
-      armorTemp.put(105.toShort, 1)
-      armorTemp.put(106.toShort, 2)
-      armorTemp.put(107.toShort, 1)
-      armorTemp.put(108.toShort, 1)
-      armorTemp.put(109.toShort, 1)
-      armorTemp.put(110.toShort, 3)
-      armorTemp.put(111.toShort, 2)
-      armorTemp.put(112.toShort, 1)
-      armorTemp.put(113.toShort, 2)
-      armorTemp.put(114.toShort, 4)
-      armorTemp.put(115.toShort, 3)
-      armorTemp.put(116.toShort, 1)
-      armorTemp.put(117.toShort, 3)
-      armorTemp.put(118.toShort, 6)
-      armorTemp.put(119.toShort, 5)
-      armorTemp.put(120.toShort, 2)
-      armorTemp.put(121.toShort, 4)
-      armorTemp.put(122.toShort, 7)
-      armorTemp.put(123.toShort, 6)
-      armorTemp.put(124.toShort, 3)
-      armorTemp.put(125.toShort, 5)
-      armorTemp.put(126.toShort, 9)
-      armorTemp.put(127.toShort, 7)
-      armorTemp.put(128.toShort, 4)
-      armorTemp.put(129.toShort, 7)
-      armorTemp.put(130.toShort, 12)
-      armorTemp.put(131.toShort, 10)
-      armorTemp.put(132.toShort, 6)
-      armorTemp.put(133.toShort, 4)
-      armorTemp.put(134.toShort, 7)
-      armorTemp.put(135.toShort, 6)
-      armorTemp.put(136.toShort, 3)
-      armorTemp.put(137.toShort, 2)
-      armorTemp.put(138.toShort, 4)
-      armorTemp.put(139.toShort, 3)
-      armorTemp.put(140.toShort, 1)
-      armorTemp.put(141.toShort, 10)
-      armorTemp.put(142.toShort, 18)
-      armorTemp.put(143.toShort, 14)
-      armorTemp.put(144.toShort, 8)
-
-      ARMOR = armorTemp.asScala.toMap
-
 
       val toolDursTemp = new jul.HashMap[Short, Short](80)
 
