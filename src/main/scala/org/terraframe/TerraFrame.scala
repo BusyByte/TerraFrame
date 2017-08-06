@@ -1620,7 +1620,20 @@ object TerraFrame {
 
     wirepTemp.asScala.toMap
   }
-  var TORCHESL: Map[Int, Int] = _
+  val TORCHESL: Map[Int, Int] = {
+    val torcheslTemp = new jul.HashMap[Int, Int](10)
+
+    torcheslTemp.put(20, 24)
+    torcheslTemp.put(21, 26)
+    torcheslTemp.put(22, 28)
+    torcheslTemp.put(100, 101)
+    torcheslTemp.put(105, 107)
+    torcheslTemp.put(106, 108)
+    torcheslTemp.put(127, 127)
+    torcheslTemp.put(128, 128)
+
+    torcheslTemp.asScala.toMap
+  }
   var TORCHESR: Map[Int, Int] = _
   var TORCHESB: Map[Int, Boolean] = _
   var GSUPPORT: Map[Int, Boolean] = _
@@ -1845,18 +1858,6 @@ class TerraFrame extends JApplet
       repaint()
 
 
-      val torcheslTemp = new jul.HashMap[Int, Int](10)
-
-      torcheslTemp.put(20, 24)
-      torcheslTemp.put(21, 26)
-      torcheslTemp.put(22, 28)
-      torcheslTemp.put(100, 101)
-      torcheslTemp.put(105, 107)
-      torcheslTemp.put(106, 108)
-      torcheslTemp.put(127, 127)
-      torcheslTemp.put(128, 128)
-
-      TORCHESL = torcheslTemp.asScala.toMap
 
 
       val torchesrTemp = new jul.HashMap[Int, Int](10)
