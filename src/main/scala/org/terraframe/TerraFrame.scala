@@ -5889,7 +5889,7 @@ class TerraFrame extends JApplet
                             (player.iy - getHeight / 2 + Player.height >= pwyc * CHUNKSIZE &&
                               player.iy - getHeight / 2 + Player.height <= pwyc * CHUNKSIZE + CHUNKSIZE))) {
                             pg2.drawImage(worlds(pwy)(pwx),
-                                pwxc * CHUNKSIZE - player.ix + getWidth / 2 - Player.width / 2, pwyc * CHUNKSIZE - player.iy + getHeight / 2 - Player.height / 2, pwxc * CHUNKSIZE - player.ix + getWidth() / 2 - Player.width / 2 + CHUNKSIZE, pwyc * CHUNKSIZE - player.iy + getHeight() / 2 - Player.height / 2 + CHUNKSIZE,
+                                pwxc * CHUNKSIZE - player.ix + getWidth / 2 - Player.width / 2, pwyc * CHUNKSIZE - player.iy + getHeight / 2 - Player.height / 2, pwxc * CHUNKSIZE - player.ix + getWidth / 2 - Player.width / 2 + CHUNKSIZE, pwyc * CHUNKSIZE - player.iy + getHeight / 2 - Player.height / 2 + CHUNKSIZE,
                                 0, 0, CHUNKSIZE, CHUNKSIZE,
                                 null)
                         }
@@ -5905,11 +5905,11 @@ class TerraFrame extends JApplet
             entities.indices.foreach { i =>
                 entity = entities(i)
                 pg2.drawImage(entity.image,
-                    entity.ix - player.ix + getWidth / 2 - Player.width / 2, entity.iy - player.iy + getHeight / 2 - Player.height / 2, entity.ix - player.ix + getWidth() / 2 - Player.width / 2 + entity.width, entity.iy - player.iy + getHeight() / 2 - Player.height / 2 + entity.height,
+                    entity.ix - player.ix + getWidth / 2 - Player.width / 2, entity.iy - player.iy + getHeight / 2 - Player.height / 2, entity.ix - player.ix + getWidth / 2 - Player.width / 2 + entity.width, entity.iy - player.iy + getHeight / 2 - Player.height / 2 + entity.height,
                     0, 0, entity.image.getWidth(), entity.image.getHeight(),
                     null)
                 pg2.drawImage(entity.image,
-                    entity.ix - player.ix + getWidth / 2 - Player.width / 2 - WIDTH * BLOCKSIZE, entity.iy - player.iy + getHeight / 2 - Player.height / 2, entity.ix - player.ix + getWidth() / 2 - Player.width / 2 + entity.width - WIDTH * BLOCKSIZE, entity.iy - player.iy + getHeight() / 2 - Player.height / 2 + entity.height,
+                    entity.ix - player.ix + getWidth / 2 - Player.width / 2 - WIDTH * BLOCKSIZE, entity.iy - player.iy + getHeight / 2 - Player.height / 2, entity.ix - player.ix + getWidth / 2 - Player.width / 2 + entity.width - WIDTH * BLOCKSIZE, entity.iy - player.iy + getHeight / 2 - Player.height / 2 + entity.height,
                     0, 0, entity.image.getWidth(), entity.image.getHeight(),
                     null)
                 pg2.drawImage(entity.image,
