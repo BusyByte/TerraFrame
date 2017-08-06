@@ -611,6 +611,68 @@ object TerraFrame {
     "zythium_delayer_8_right", "zythium_delayer_8_down", "zythium_delayer_8_left", "zythium_delayer_8_up",
     "zythium_delayer_8_right_on", "zythium_delayer_8_down_on", "zythium_delayer_8_left_on", "zythium_delayer_8_up_on")
 
+
+  val ui_items: Array[String] = Array("Air", "Dirt", "Stone",
+    "Copper Ore", "Iron Ore", "Silver Ore", "Gold Ore",
+    "Copper Pick", "Iron Pick", "Silver Pick", "Gold Pick",
+    "Copper Axe", "Iron Axe", "Silver Axe", "Gold Axe",
+    "Wood", "Copper Sword", "Iron Sword", "Silver Sword", "Gold Sword",
+    "Workbench",
+    "Wooden Chest", "Stone Chest",
+    "Copper Chest", "Iron Chest", "Silver Chest", "Gold Chest",
+    "Furnace", "Coal",
+    "Copper Ingot", "Iron Ingot", "Silver Ingot", "Gold Ingot",
+    "Stone Lighter", "Lumenstone",
+    "Wooden Torch", "Coal Torch", "Lumenstone Torch",
+    "Zinc Ore", "Rhymestone Ore", "Obdurite Ore",
+    "Aluminum Ore", "Lead Ore", "Uranium Ore",
+    "Zythium Ore", "Silicon Ore",
+    "Irradium Ore", "Nullstone", "Meltstone", "Skystone",
+    "Magnetite Ore",
+    "Zinc Pick", "Zinc Axe", "Zinc Sword",
+    "Rhymestone Pick", "Rhymestone Axe", "Rhymestone Sword",
+    "Obdurite Pick", "Obdurite Axe", "Obdurite Sword",
+    "Zinc Ingot", "Rhymestone Ingot", "Obdurite Ingot",
+    "Aluminum Ingot", "Lead Ingot", "Uranium Bar", "Refined Uranium",
+    "Zythium Bar", "Silicon Bar",
+    "Irradium Ingot", "Nullstone Bar", "Meltstone Bar", "Skystone Bar",
+    "Magnetite Ingot",
+    "Sand", "Snow", "Glass",
+    "Sunflower Seeds", "Sunflower", "Moonflower Seeds", "Moonflower",
+    "Dryweed Seeds", "Dryweed", "Greenleaf Seeds", "Greenleaf",
+    "Frostleaf Seeds", "Frostleaf", "Caveroot Seeds", "Caveroot",
+    "Skyblossom Seeds", "Skyblossom", "Void Rot Seeds", "Void Rot",
+    "Mud", "Sandstone",
+    "Marshleaf Seeds", "Marshleaf",
+    "Blue Goo", "Green Goo", "Red Goo", "Yellow Goo", "Black Goo", "White Goo",
+    "Astral Shard", "Rotten Chunk",
+    "Copper Helmet", "Copper Chestplate", "Copper Leggings", "Copper Greaves",
+    "Iron Helmet", "Iron Chestplate", "Iron Leggings", "Iron Greaves",
+    "Silver Helmet", "Silver Chestplate", "Silver Leggings", "Silver Greaves",
+    "Gold Helmet", "Gold Chestplate", "Gold Leggings", "Gold Greaves",
+    "Zinc Helmet", "Zinc Chestplate", "Zinc Leggings", "Zinc Greaves",
+    "Rhymestone Helmet", "Rhymestone Chestplate", "Rhymestone Leggings", "Rhymestone Greaves",
+    "Obdurite Helmet", "Obdurite Chestplate", "Obdurite Leggings", "Obdurite Greaves",
+    "Aluminum Helmet", "Aluminum Chestplate", "Aluminum Leggings", "Aluminum Greaves",
+    "Lead Helmet", "Lead Chestplate", "Lead Leggings", "Lead Greaves",
+    "Zythium Helmet", "Zythium Chestplate", "Zythium Leggings", "Zythium Greaves",
+    "Aluminum Pick", "Aluminum Axe", "Aluminum Sword",
+    "Lead Pick", "Lead Axe", "Lead Sword",
+    "Zinc Chest", "Rhymestone Chest", "Obdurite Chest",
+    "Wooden Pick", "Wooden Axe", "Wooden Sword",
+    "Stone Pick", "Stone Axe", "Stone Sword",
+    "Bark", "Cobblestone",
+    "Chiseled Stone", "Chiseled Cobblestone", "Stone Bricks",
+    "Clay", "Clay Bricks", "Varnish", "Varnished Wood",
+    "Magnetite Pick", "Magnetite Axe", "Magnetite Sword",
+    "Irradium Pick", "Irradium Axe", "Irradium Sword",
+    "Zythium Wire", "Zythium Torch", "Zythium Lamp", "Lever",
+    "Charcoal", "Zythium Amplifier", "Zythium Inverter", "Button",
+    "Wooden Pressure Plate", "Stone Pressure Plate", "Zythium Pressure Plate",
+    "Zythium Delayer", "Zythium Delayer", "Zythium Delayer", "Zythium Delayer", "Wrench")
+
+
+
   var version: String = "0.3_01"
 
   val blockcds: Array[Boolean] = Array(false, true, true, true, true, true, true, true, false, false, false, false, false, false, false, false, false, false, true, true, false, false, false, false, false, false, false, false, false, false, false, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, true, true, true, true, true, false, false, false, false, false, false, false, true, true, true, true, true, true, true, true, true, true, false, false, false, false, false, false, false, false, false, true, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false)
@@ -1031,7 +1093,7 @@ object TerraFrame {
 
     itemBlocksTemp.asScala.toMap
   }
-  
+
   val OUTLINES: Map[Int, String] = {
     val outlinesTemp = new jul.HashMap[Int, String](blocknames.length)
 
@@ -1128,7 +1190,15 @@ object TerraFrame {
 
     outlinesTemp.asScala.toMap
   }
-  var UIBLOCKS: Map[String, String] = _
+  val UIBLOCKS: Map[String, String] = {
+    val uiBlocksTemp = new jul.HashMap[String, String](items.length)
+
+    (1 until items.length).foreach { i =>
+      uiBlocksTemp.put(items(i), ui_items(i))
+    }
+
+    uiBlocksTemp.asScala.toMap
+  }
   var UIENTITIES: Map[String, String] = _
   var BLOCKCD: Map[Int, Boolean] = _
   var MAXSTACKS: Map[Short, Short] = _
@@ -1373,66 +1443,6 @@ class TerraFrame extends JApplet
 
   var image, tool, mobImage: BufferedImage = _
 
-  var ui_items: Array[String] = Array("Air", "Dirt", "Stone",
-    "Copper Ore", "Iron Ore", "Silver Ore", "Gold Ore",
-    "Copper Pick", "Iron Pick", "Silver Pick", "Gold Pick",
-    "Copper Axe", "Iron Axe", "Silver Axe", "Gold Axe",
-    "Wood", "Copper Sword", "Iron Sword", "Silver Sword", "Gold Sword",
-    "Workbench",
-    "Wooden Chest", "Stone Chest",
-    "Copper Chest", "Iron Chest", "Silver Chest", "Gold Chest",
-    "Furnace", "Coal",
-    "Copper Ingot", "Iron Ingot", "Silver Ingot", "Gold Ingot",
-    "Stone Lighter", "Lumenstone",
-    "Wooden Torch", "Coal Torch", "Lumenstone Torch",
-    "Zinc Ore", "Rhymestone Ore", "Obdurite Ore",
-    "Aluminum Ore", "Lead Ore", "Uranium Ore",
-    "Zythium Ore", "Silicon Ore",
-    "Irradium Ore", "Nullstone", "Meltstone", "Skystone",
-    "Magnetite Ore",
-    "Zinc Pick", "Zinc Axe", "Zinc Sword",
-    "Rhymestone Pick", "Rhymestone Axe", "Rhymestone Sword",
-    "Obdurite Pick", "Obdurite Axe", "Obdurite Sword",
-    "Zinc Ingot", "Rhymestone Ingot", "Obdurite Ingot",
-    "Aluminum Ingot", "Lead Ingot", "Uranium Bar", "Refined Uranium",
-    "Zythium Bar", "Silicon Bar",
-    "Irradium Ingot", "Nullstone Bar", "Meltstone Bar", "Skystone Bar",
-    "Magnetite Ingot",
-    "Sand", "Snow", "Glass",
-    "Sunflower Seeds", "Sunflower", "Moonflower Seeds", "Moonflower",
-    "Dryweed Seeds", "Dryweed", "Greenleaf Seeds", "Greenleaf",
-    "Frostleaf Seeds", "Frostleaf", "Caveroot Seeds", "Caveroot",
-    "Skyblossom Seeds", "Skyblossom", "Void Rot Seeds", "Void Rot",
-    "Mud", "Sandstone",
-    "Marshleaf Seeds", "Marshleaf",
-    "Blue Goo", "Green Goo", "Red Goo", "Yellow Goo", "Black Goo", "White Goo",
-    "Astral Shard", "Rotten Chunk",
-    "Copper Helmet", "Copper Chestplate", "Copper Leggings", "Copper Greaves",
-    "Iron Helmet", "Iron Chestplate", "Iron Leggings", "Iron Greaves",
-    "Silver Helmet", "Silver Chestplate", "Silver Leggings", "Silver Greaves",
-    "Gold Helmet", "Gold Chestplate", "Gold Leggings", "Gold Greaves",
-    "Zinc Helmet", "Zinc Chestplate", "Zinc Leggings", "Zinc Greaves",
-    "Rhymestone Helmet", "Rhymestone Chestplate", "Rhymestone Leggings", "Rhymestone Greaves",
-    "Obdurite Helmet", "Obdurite Chestplate", "Obdurite Leggings", "Obdurite Greaves",
-    "Aluminum Helmet", "Aluminum Chestplate", "Aluminum Leggings", "Aluminum Greaves",
-    "Lead Helmet", "Lead Chestplate", "Lead Leggings", "Lead Greaves",
-    "Zythium Helmet", "Zythium Chestplate", "Zythium Leggings", "Zythium Greaves",
-    "Aluminum Pick", "Aluminum Axe", "Aluminum Sword",
-    "Lead Pick", "Lead Axe", "Lead Sword",
-    "Zinc Chest", "Rhymestone Chest", "Obdurite Chest",
-    "Wooden Pick", "Wooden Axe", "Wooden Sword",
-    "Stone Pick", "Stone Axe", "Stone Sword",
-    "Bark", "Cobblestone",
-    "Chiseled Stone", "Chiseled Cobblestone", "Stone Bricks",
-    "Clay", "Clay Bricks", "Varnish", "Varnished Wood",
-    "Magnetite Pick", "Magnetite Axe", "Magnetite Sword",
-    "Irradium Pick", "Irradium Axe", "Irradium Sword",
-    "Zythium Wire", "Zythium Torch", "Zythium Lamp", "Lever",
-    "Charcoal", "Zythium Amplifier", "Zythium Inverter", "Button",
-    "Wooden Pressure Plate", "Stone Pressure Plate", "Zythium Pressure Plate",
-    "Zythium Delayer", "Zythium Delayer", "Zythium Delayer", "Zythium Delayer", "Wrench")
-
-
   var FRI1, FRN1, FRI2, FRN2: List[Short] = _
 
   var g2, wg2, fwg2, ug2, pg2: Graphics2D = _
@@ -1456,17 +1466,6 @@ class TerraFrame extends JApplet
       state = "loading_graphics"
 
       repaint()
-
-
-
-
-      val uiBlocksTemp = new jul.HashMap[String, String](items.length)
-
-      (1 until items.length).foreach { i =>
-        uiBlocksTemp.put(items(i), ui_items(i))
-      }
-
-      UIBLOCKS = uiBlocksTemp.asScala.toMap
 
 
       val uiEntitiesTemp = new jul.HashMap[String, String](15)
