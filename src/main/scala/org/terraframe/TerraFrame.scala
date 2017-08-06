@@ -1238,7 +1238,41 @@ object TerraFrame {
 
     maxStacksTemp.asScala.toMap
   }
-  var SKYLIGHTS: Map[Int, Int] = _
+  
+  val SKYLIGHTS: Map[Int, Int] = {
+    val skyLightsTemp = new jul.HashMap[Int, Int](30)
+
+    skyLightsTemp.put(28883, 18)
+    skyLightsTemp.put(29146, 17)
+    skyLightsTemp.put(29409, 16)
+    skyLightsTemp.put(29672, 15)
+    skyLightsTemp.put(29935, 14)
+    skyLightsTemp.put(30198, 13)
+    skyLightsTemp.put(30461, 12)
+    skyLightsTemp.put(30724, 11)
+    skyLightsTemp.put(30987, 10)
+    skyLightsTemp.put(31250, 9)
+    skyLightsTemp.put(31513, 8)
+    skyLightsTemp.put(31776, 7)
+    skyLightsTemp.put(32039, 6)
+    skyLightsTemp.put(32302, 5)
+    skyLightsTemp.put(72093, 6)
+    skyLightsTemp.put(72336, 7)
+    skyLightsTemp.put(72639, 8)
+    skyLightsTemp.put(72912, 9)
+    skyLightsTemp.put(73185, 10)
+    skyLightsTemp.put(73458, 11)
+    skyLightsTemp.put(73731, 12)
+    skyLightsTemp.put(74004, 13)
+    skyLightsTemp.put(74277, 14)
+    skyLightsTemp.put(74550, 15)
+    skyLightsTemp.put(74823, 16)
+    skyLightsTemp.put(75096, 17)
+    skyLightsTemp.put(75369, 18)
+    skyLightsTemp.put(75642, 19)
+
+    skyLightsTemp.asScala.toMap
+  }
   val SKYCOLORS: Map[Int, Color] = {
     val skyColorsTemp = new jul.HashMap[Int, Color](50)
 
@@ -1551,38 +1585,7 @@ class TerraFrame extends JApplet
 
 
 
-      val skyLightsTemp = new jul.HashMap[Int, Int](30)
 
-      skyLightsTemp.put(28883, 18)
-      skyLightsTemp.put(29146, 17)
-      skyLightsTemp.put(29409, 16)
-      skyLightsTemp.put(29672, 15)
-      skyLightsTemp.put(29935, 14)
-      skyLightsTemp.put(30198, 13)
-      skyLightsTemp.put(30461, 12)
-      skyLightsTemp.put(30724, 11)
-      skyLightsTemp.put(30987, 10)
-      skyLightsTemp.put(31250, 9)
-      skyLightsTemp.put(31513, 8)
-      skyLightsTemp.put(31776, 7)
-      skyLightsTemp.put(32039, 6)
-      skyLightsTemp.put(32302, 5)
-      skyLightsTemp.put(72093, 6)
-      skyLightsTemp.put(72336, 7)
-      skyLightsTemp.put(72639, 8)
-      skyLightsTemp.put(72912, 9)
-      skyLightsTemp.put(73185, 10)
-      skyLightsTemp.put(73458, 11)
-      skyLightsTemp.put(73731, 12)
-      skyLightsTemp.put(74004, 13)
-      skyLightsTemp.put(74277, 14)
-      skyLightsTemp.put(74550, 15)
-      skyLightsTemp.put(74823, 16)
-      skyLightsTemp.put(75096, 17)
-      skyLightsTemp.put(75369, 18)
-      skyLightsTemp.put(75642, 19)
-
-      SKYLIGHTS = skyLightsTemp.asScala.toMap
 
 
       val lightLevelsTemp = new jul.HashMap[Int, BufferedImage](20)
