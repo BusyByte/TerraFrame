@@ -1726,7 +1726,7 @@ object TerraFrame {
 
     fspeedTemp.asScala.toMap
   }
-  
+
   val DDELAY: Map[Int, Int] = {
     val ddelayTemp = new jul.HashMap[Int, Int](169)
 
@@ -1895,7 +1895,9 @@ class TerraFrame extends JApplet
 
   var loadTextPos: Int = 0
 
-  var sun, moon, cloud: BufferedImage = _
+  val sun: BufferedImage = loadImage("environment/sun.png")
+  val moon: BufferedImage = loadImage("environment/moon.png")
+  var cloud: BufferedImage = _
 
 
   var clouds: Array[BufferedImage] = Array(loadImage("environment/cloud1.png"))
@@ -1964,8 +1966,7 @@ class TerraFrame extends JApplet
       repaint()
 
 
-      sun = loadImage("environment/sun.png")
-      moon = loadImage("environment/moon.png")
+
       val fri1Temp = new jul.ArrayList[Short](180)
       val frn1Temp = new jul.ArrayList[Short](180)
       val fri2Temp = new jul.ArrayList[Short](180)
