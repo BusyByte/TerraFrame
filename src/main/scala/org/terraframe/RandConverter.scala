@@ -2,9 +2,12 @@ package org.terraframe
 
 import java.awt.image._
 import java.io._
-import java.util._
 import javax.imageio.ImageIO
+
 import Images.loadImage
+
+import scala.io.StdIn
+import scala.util.Random
 
 object RandConverter {
 
@@ -22,12 +25,12 @@ object RandConverter {
 
   def main(args: Array[String]): Unit = {
     System.out.print("[D]uplicate, [R]andomize, or [O]utline? ")
-    val option: Char = new Scanner(System.in).next().charAt(0)
+    val option: Char = StdIn.readChar()
     import scala.util.control.Breaks._
     breakable {
       while (true) {
         System.out.print("Generate new textures for: ")
-        val name: String = new Scanner(System.in).nextLine()
+        val name: String = StdIn.readLine()
         if (name.equals("exit")) {
           break
         }
@@ -62,7 +65,7 @@ object RandConverter {
         }
         else {
           val texture: BufferedImage = loadImage("blocks/" + name + "/texture1.png")
-          val coords: Array2D[Int] = Array.ofDim(IMAGESIZE * IMAGESIZE, 2)
+          var coords: Array2D[Int] = Array.ofDim(IMAGESIZE * IMAGESIZE, 2)
           (0 until 7).foreach { i =>
             (0 until IMAGESIZE).foreach { x =>
               (0 until IMAGESIZE).foreach { y =>
@@ -71,7 +74,7 @@ object RandConverter {
               }
             }
             if (option == 'R') {
-              Collections.shuffle(Arrays.asList(coords))
+              coords = Random.shuffle(coords.toList).toArray
             }
             val result = new BufferedImage(IMAGESIZE, IMAGESIZE, BufferedImage.TYPE_INT_ARGB)
             (0 until IMAGESIZE).foreach { x =>

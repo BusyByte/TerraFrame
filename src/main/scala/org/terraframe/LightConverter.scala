@@ -2,9 +2,11 @@ package org.terraframe
 
 import java.awt.image._
 import java.io._
-import java.util._
 import javax.imageio.ImageIO
+
 import Images.loadImage
+
+import scala.io.StdIn
 
 object LightConverter {
 
@@ -22,8 +24,8 @@ object LightConverter {
 
   def main(args: Array[String]): Unit = {
     (0 until 17).foreach { i =>
-      System.out.print("Generate new textures [" + i + "] for: ")
-      val name: String = new Scanner(System.in).nextLine()
+      print("Generate new textures [" + i + "] for: ")
+      val name: String = StdIn.readLine()
       val light: BufferedImage = loadImage("light/" + i + ".png")
       (1 until 9).foreach { j =>
         val texture: BufferedImage = loadImage("blocks/" + name + "/texture" + j + ".png")
