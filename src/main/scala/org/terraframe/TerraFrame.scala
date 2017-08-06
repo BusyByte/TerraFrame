@@ -1424,7 +1424,16 @@ object TerraFrame {
 
     blockLightsTemp.asScala.toMap
   }
-  var GRASSDIRT: Map[Int, Int] = _
+  val GRASSDIRT: Map[Int, Int] = {
+    val grassDirtTemp = new jul.HashMap[Int, Int](10)
+
+    grassDirtTemp.put(72, 1)
+    grassDirtTemp.put(73, 1)
+    grassDirtTemp.put(74, 75)
+    grassDirtTemp.put(93, 91)
+
+    grassDirtTemp.asScala.toMap
+  }
   var ARMOR: Map[Short, Int] = _
   var TOOLDURS: Map[Short, Short] = _
   var FUELS: Map[Short, Double] = _
@@ -1653,17 +1662,6 @@ class TerraFrame extends JApplet
 
       repaint()
 
-
-
-
-      val grassDirtTemp = new jul.HashMap[Int, Int](10)
-
-      grassDirtTemp.put(72, 1)
-      grassDirtTemp.put(73, 1)
-      grassDirtTemp.put(74, 75)
-      grassDirtTemp.put(93, 91)
-
-      GRASSDIRT = grassDirtTemp.asScala.toMap
 
 
       val armorTemp = new jul.HashMap[Short, Int](items.length)
