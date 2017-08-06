@@ -32,9 +32,9 @@ class Inventory extends Serializable {
 
   @transient var g2: Graphics2D = _
 
-  var ids: Array[Short] = _
-  var nums: Array[Short] = _
-  var durs: Array[Short] = _
+  val ids: Array[Short]  = Array.fill(40)(0)
+  val nums: Array[Short] = Array.fill(40)(0)
+  val durs: Array[Short] = Array.fill(40)(0)
 
   var trolx: Int = 37
   var troly: Int = 17
@@ -43,18 +43,10 @@ class Inventory extends Serializable {
 
   var valid: Boolean = false
 
-  var RECIPES: Map[String, Array2D[Short]] = _
+  val RECIPES: Map[String, Array2D[Short]]  = createRecipies
 
   //Begin Constructor
 
-  ids = Array.ofDim(40)
-  nums = Array.ofDim(40)
-  durs = Array.ofDim(40)
-  (0 until 40).foreach { i =>
-    ids(i) = 0
-    nums(i) = 0
-    durs(i) = 0
-  }
   selection = 0
   image = new BufferedImage(466, 190, BufferedImage.TYPE_INT_ARGB)
   box = loadImage("interface/inventory.png")
@@ -86,8 +78,6 @@ class Inventory extends Serializable {
       }
     }
   }
-
-  RECIPES = createRecipies
 
 
   def createRecipies: Map[String, Array2D[Short]] = {
