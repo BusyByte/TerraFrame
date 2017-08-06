@@ -1942,7 +1942,138 @@ class TerraFrame extends JApplet
 
   var image, tool, mobImage: BufferedImage = _
 
-  var FRI1, FRN1, FRI2, FRN2: List[Short] = _
+  val FRI1: List[Short] = {
+    val fri1Temp = new jul.ArrayList[Short](180)
+
+    fri1Temp.add(3.toShort)
+    fri1Temp.add(4.toShort)
+    fri1Temp.add(5.toShort)
+    fri1Temp.add(6.toShort)
+    fri1Temp.add(38.toShort)
+    fri1Temp.add(39.toShort)
+    fri1Temp.add(40.toShort)
+    fri1Temp.add(41.toShort)
+    fri1Temp.add(42.toShort)
+    fri1Temp.add(43.toShort)
+    fri1Temp.add(44.toShort)
+    fri1Temp.add(45.toShort)
+    fri1Temp.add(46.toShort)
+    fri1Temp.add(47.toShort)
+    fri1Temp.add(48.toShort)
+    fri1Temp.add(49.toShort)
+    fri1Temp.add(50.toShort)
+    (8 until(2, -1)).foreach { i =>
+      fri1Temp.add(74.toShort)
+      fri1Temp.add(2.toShort)
+      fri1Temp.add(161.toShort)
+      fri1Temp.add(165.toShort)
+      fri1Temp.add(15.toShort)
+    }
+    (97 until 103).foreach { j =>
+      fri1Temp.add(j.toShort)
+    }
+
+   fri1Temp.asScala.toList
+  }
+  val FRN1: List[Short] = {
+    val frn1Temp = new jul.ArrayList[Short](180)
+
+    frn1Temp.add(4.toShort)
+    frn1Temp.add(4.toShort)
+    frn1Temp.add(4.toShort)
+    frn1Temp.add(4.toShort)
+    frn1Temp.add(4.toShort)
+    frn1Temp.add(4.toShort)
+    frn1Temp.add(4.toShort)
+    frn1Temp.add(4.toShort)
+    frn1Temp.add(4.toShort)
+    frn1Temp.add(4.toShort)
+    frn1Temp.add(4.toShort)
+    frn1Temp.add(4.toShort)
+    frn1Temp.add(4.toShort)
+    frn1Temp.add(4.toShort)
+    frn1Temp.add(4.toShort)
+    frn1Temp.add(4.toShort)
+    frn1Temp.add(4.toShort)
+    (8 until(2, -1)).foreach { i =>
+      frn1Temp.add(i.toShort)
+      frn1Temp.add(i.toShort)
+      frn1Temp.add(i.toShort)
+      frn1Temp.add(i.toShort)
+      frn1Temp.add(i.toShort)
+    }
+    (97 until 103).foreach { j =>
+      frn1Temp.add(1.toShort)
+    }
+
+    frn1Temp.asScala.toList
+  }
+  val FRI2: List[Short] = {
+    val fri2Temp = new jul.ArrayList[Short](180)
+
+    fri2Temp.add(29.toShort)
+    fri2Temp.add(30.toShort)
+    fri2Temp.add(31.toShort)
+    fri2Temp.add(32.toShort)
+    fri2Temp.add(60.toShort)
+    fri2Temp.add(61.toShort)
+    fri2Temp.add(62.toShort)
+    fri2Temp.add(63.toShort)
+    fri2Temp.add(64.toShort)
+    fri2Temp.add(65.toShort)
+    fri2Temp.add(67.toShort)
+    fri2Temp.add(68.toShort)
+    fri2Temp.add(69.toShort)
+    fri2Temp.add(70.toShort)
+    fri2Temp.add(71.toShort)
+    fri2Temp.add(72.toShort)
+    fri2Temp.add(73.toShort)
+    (8 until(2, -1)).foreach { i =>
+      fri2Temp.add(76.toShort)
+      fri2Temp.add(162.toShort)
+      fri2Temp.add(163.toShort)
+      fri2Temp.add(166.toShort)
+      fri2Temp.add(179.toShort)
+    }
+    (97 until 103).foreach { j =>
+      fri2Temp.add(167.toShort)
+    }
+
+    fri2Temp.asScala.toList
+  }
+  val FRN2: List[Short] = {
+    val frn2Temp = new jul.ArrayList[Short](180)
+
+    frn2Temp.add(1.toShort)
+    frn2Temp.add(1.toShort)
+    frn2Temp.add(1.toShort)
+    frn2Temp.add(1.toShort)
+    frn2Temp.add(1.toShort)
+    frn2Temp.add(1.toShort)
+    frn2Temp.add(1.toShort)
+    frn2Temp.add(1.toShort)
+    frn2Temp.add(1.toShort)
+    frn2Temp.add(1.toShort)
+    frn2Temp.add(1.toShort)
+    frn2Temp.add(1.toShort)
+    frn2Temp.add(1.toShort)
+    frn2Temp.add(1.toShort)
+    frn2Temp.add(1.toShort)
+    frn2Temp.add(1.toShort)
+    frn2Temp.add(1.toShort)
+    (8 until(2, -1)).foreach { i =>
+      frn2Temp.add(i.toShort)
+      frn2Temp.add(i.toShort)
+      frn2Temp.add(i.toShort)
+      frn2Temp.add(i.toShort)
+      frn2Temp.add(i.toShort)
+    }
+    (97 until 103).foreach { j =>
+      frn2Temp.add(8.toShort)
+    }
+
+    frn2Temp.asScala.toList
+  }
 
   var g2, wg2, fwg2, ug2, pg2: Graphics2D = _
 
@@ -1965,114 +2096,6 @@ class TerraFrame extends JApplet
 
       repaint()
 
-
-
-      val fri1Temp = new jul.ArrayList[Short](180)
-      val frn1Temp = new jul.ArrayList[Short](180)
-      val fri2Temp = new jul.ArrayList[Short](180)
-      val frn2Temp = new jul.ArrayList[Short](180)
-
-      fri1Temp.add(3.toShort)
-      frn1Temp.add(4.toShort)
-      fri2Temp.add(29.toShort)
-      frn2Temp.add(1.toShort)
-      fri1Temp.add(4.toShort)
-      frn1Temp.add(4.toShort)
-      fri2Temp.add(30.toShort)
-      frn2Temp.add(1.toShort)
-      fri1Temp.add(5.toShort)
-      frn1Temp.add(4.toShort)
-      fri2Temp.add(31.toShort)
-      frn2Temp.add(1.toShort)
-      fri1Temp.add(6.toShort)
-      frn1Temp.add(4.toShort)
-      fri2Temp.add(32.toShort)
-      frn2Temp.add(1.toShort)
-      fri1Temp.add(38.toShort)
-      frn1Temp.add(4.toShort)
-      fri2Temp.add(60.toShort)
-      frn2Temp.add(1.toShort)
-      fri1Temp.add(39.toShort)
-      frn1Temp.add(4.toShort)
-      fri2Temp.add(61.toShort)
-      frn2Temp.add(1.toShort)
-      fri1Temp.add(40.toShort)
-      frn1Temp.add(4.toShort)
-      fri2Temp.add(62.toShort)
-      frn2Temp.add(1.toShort)
-      fri1Temp.add(41.toShort)
-      frn1Temp.add(4.toShort)
-      fri2Temp.add(63.toShort)
-      frn2Temp.add(1.toShort)
-      fri1Temp.add(42.toShort)
-      frn1Temp.add(4.toShort)
-      fri2Temp.add(64.toShort)
-      frn2Temp.add(1.toShort)
-      fri1Temp.add(43.toShort)
-      frn1Temp.add(4.toShort)
-      fri2Temp.add(65.toShort)
-      frn2Temp.add(1.toShort)
-      fri1Temp.add(44.toShort)
-      frn1Temp.add(4.toShort)
-      fri2Temp.add(67.toShort)
-      frn2Temp.add(1.toShort)
-      fri1Temp.add(45.toShort)
-      frn1Temp.add(4.toShort)
-      fri2Temp.add(68.toShort)
-      frn2Temp.add(1.toShort)
-      fri1Temp.add(46.toShort)
-      frn1Temp.add(4.toShort)
-      fri2Temp.add(69.toShort)
-      frn2Temp.add(1.toShort)
-      fri1Temp.add(47.toShort)
-      frn1Temp.add(4.toShort)
-      fri2Temp.add(70.toShort)
-      frn2Temp.add(1.toShort)
-      fri1Temp.add(48.toShort)
-      frn1Temp.add(4.toShort)
-      fri2Temp.add(71.toShort)
-      frn2Temp.add(1.toShort)
-      fri1Temp.add(49.toShort)
-      frn1Temp.add(4.toShort)
-      fri2Temp.add(72.toShort)
-      frn2Temp.add(1.toShort)
-      fri1Temp.add(50.toShort)
-      frn1Temp.add(4.toShort)
-      fri2Temp.add(73.toShort)
-      frn2Temp.add(1.toShort)
-      (8 until(2, -1)).foreach { i =>
-        fri1Temp.add(74.toShort)
-        frn1Temp.add(i.toShort)
-        fri2Temp.add(76.toShort)
-        frn2Temp.add(i.toShort)
-        fri1Temp.add(2.toShort)
-        frn1Temp.add(i.toShort)
-        fri2Temp.add(162.toShort)
-        frn2Temp.add(i.toShort)
-        fri1Temp.add(161.toShort)
-        frn1Temp.add(i.toShort)
-        fri2Temp.add(163.toShort)
-        frn2Temp.add(i.toShort)
-        fri1Temp.add(165.toShort)
-        frn1Temp.add(i.toShort)
-        fri2Temp.add(166.toShort)
-        frn2Temp.add(i.toShort)
-        fri1Temp.add(15.toShort)
-        frn1Temp.add(i.toShort)
-        fri2Temp.add(179.toShort)
-        frn2Temp.add(i.toShort)
-      }
-      (97 until 103).foreach { j =>
-        fri1Temp.add(j.toShort)
-        frn1Temp.add(1.toShort)
-        fri2Temp.add(167.toShort)
-        frn2Temp.add(8.toShort)
-      }
-
-      FRI1 = fri1Temp.asScala.toList
-      FRN1 = frn1Temp.asScala.toList
-      FRI2 = fri2Temp.asScala.toList
-      FRN2 = frn2Temp.asScala.toList
 
       bg = CYANISH
       state = "title_screen"
