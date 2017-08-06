@@ -1634,7 +1634,20 @@ object TerraFrame {
 
     torcheslTemp.asScala.toMap
   }
-  var TORCHESR: Map[Int, Int] = _
+  val TORCHESR: Map[Int, Int] = {
+    val torchesrTemp = new jul.HashMap[Int, Int](10)
+
+    torchesrTemp.put(20, 25)
+    torchesrTemp.put(21, 27)
+    torchesrTemp.put(22, 29)
+    torchesrTemp.put(100, 102)
+    torchesrTemp.put(105, 109)
+    torchesrTemp.put(106, 110)
+    torchesrTemp.put(127, 129)
+
+    torchesrTemp.asScala.toMap
+
+  }
   var TORCHESB: Map[Int, Boolean] = _
   var GSUPPORT: Map[Int, Boolean] = _
   var FSPEED: Map[Short, Double] = _
@@ -1856,21 +1869,6 @@ class TerraFrame extends JApplet
       state = "loading_graphics"
 
       repaint()
-
-
-
-
-      val torchesrTemp = new jul.HashMap[Int, Int](10)
-
-      torchesrTemp.put(20, 25)
-      torchesrTemp.put(21, 27)
-      torchesrTemp.put(22, 29)
-      torchesrTemp.put(100, 102)
-      torchesrTemp.put(105, 109)
-      torchesrTemp.put(106, 110)
-      torchesrTemp.put(127, 129)
-
-      TORCHESR = torchesrTemp.asScala.toMap
 
 
       val torchesbTemp = new jul.HashMap[Int, Boolean](blocknames.length)
