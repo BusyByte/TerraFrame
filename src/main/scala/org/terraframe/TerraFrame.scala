@@ -1648,7 +1648,7 @@ object TerraFrame {
     torchesrTemp.asScala.toMap
 
   }
-  
+
   val TORCHESB: Map[Int, Boolean] = {
     val torchesbTemp = new jul.HashMap[Int, Boolean](blocknames.length)
 
@@ -1681,8 +1681,51 @@ object TerraFrame {
 
     torchesbTemp.asScala.toMap
   }
-  var GSUPPORT: Map[Int, Boolean] = _
-  var FSPEED: Map[Short, Double] = _
+
+  val GSUPPORT: Map[Int, Boolean] = {
+    val gsupportTemp = new jul.HashMap[Int, Boolean](blocknames.length)
+
+    blocknames.indices.foreach { i =>
+      gsupportTemp.put(i, false)
+    }
+
+    gsupportTemp.put(15, true)
+    gsupportTemp.put(83, true)
+    gsupportTemp.put(20, true)
+    gsupportTemp.put(21, true)
+    gsupportTemp.put(22, true)
+    gsupportTemp.put(77, true)
+    gsupportTemp.put(78, true)
+    gsupportTemp.put(100, true)
+    gsupportTemp.put(105, true)
+    gsupportTemp.put(106, true)
+    gsupportTemp.put(131, true)
+    gsupportTemp.put(132, true)
+    gsupportTemp.put(133, true)
+    gsupportTemp.put(134, true)
+    gsupportTemp.put(135, true)
+    gsupportTemp.put(136, true)
+
+    (48 until 73).foreach { i =>
+      gsupportTemp.put(i, true)
+    }
+
+    gsupportTemp.asScala.toMap
+
+  }
+  val FSPEED: Map[Short, Double] = {
+    val fspeedTemp = new jul.HashMap[Short, Double](blocknames.length)
+
+    blocknames.indices.foreach { i =>
+      fspeedTemp.put(i.toShort, 0.001)
+    }
+
+    fspeedTemp.put(85.toShort, -0.001)
+    fspeedTemp.put(86.toShort, -0.001)
+
+
+    fspeedTemp.asScala.toMap
+  }
   var DDELAY: Map[Int, Int] = _
 
   var log: BufferedWriter = _
@@ -1901,48 +1944,6 @@ class TerraFrame extends JApplet
       state = "loading_graphics"
 
       repaint()
-
-      val gsupportTemp = new jul.HashMap[Int, Boolean](blocknames.length)
-
-      blocknames.indices.foreach { i =>
-        gsupportTemp.put(i, false)
-      }
-
-      gsupportTemp.put(15, true)
-      gsupportTemp.put(83, true)
-      gsupportTemp.put(20, true)
-      gsupportTemp.put(21, true)
-      gsupportTemp.put(22, true)
-      gsupportTemp.put(77, true)
-      gsupportTemp.put(78, true)
-      gsupportTemp.put(100, true)
-      gsupportTemp.put(105, true)
-      gsupportTemp.put(106, true)
-      gsupportTemp.put(131, true)
-      gsupportTemp.put(132, true)
-      gsupportTemp.put(133, true)
-      gsupportTemp.put(134, true)
-      gsupportTemp.put(135, true)
-      gsupportTemp.put(136, true)
-
-      (48 until 73).foreach { i =>
-        gsupportTemp.put(i, true)
-      }
-
-      GSUPPORT = gsupportTemp.asScala.toMap
-
-
-      val fspeedTemp = new jul.HashMap[Short, Double](blocknames.length)
-
-      blocknames.indices.foreach { i =>
-        fspeedTemp.put(i.toShort, 0.001)
-      }
-
-      fspeedTemp.put(85.toShort, -0.001)
-      fspeedTemp.put(86.toShort, -0.001)
-
-      FSPEED = fspeedTemp.asScala.toMap
-
 
       val ddelayTemp = new jul.HashMap[Int, Int](169)
 
