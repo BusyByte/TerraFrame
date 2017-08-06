@@ -1218,7 +1218,15 @@ object TerraFrame {
 
     uiEntitiesTemp.asScala.toMap
   }
-  var BLOCKCD: Map[Int, Boolean] = _
+  val BLOCKCD: Map[Int, Boolean] = {
+    val blockCdTemp = new jul.HashMap[Int, Boolean](blockcds.length)
+
+    (1 until blockcds.length).foreach { i =>
+      blockCdTemp.put(i, blockcds(i))
+    }
+
+    blockCdTemp.asScala.toMap
+  }
   var MAXSTACKS: Map[Short, Short] = _
   var SKYLIGHTS: Map[Int, Int] = _
   var SKYCOLORS: Map[Int, Color] = _
@@ -1484,18 +1492,6 @@ class TerraFrame extends JApplet
       state = "loading_graphics"
 
       repaint()
-
-
-
-
-      val blockCdTemp = new jul.HashMap[Int, Boolean](blockcds.length)
-
-      (1 until blockcds.length).foreach { i =>
-        blockCdTemp.put(i, blockcds(i))
-      }
-
-      BLOCKCD = blockCdTemp.asScala.toMap
-
 
       val maxStacksTemp = new jul.HashMap[Short, Short](items.length)
 
