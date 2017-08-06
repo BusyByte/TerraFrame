@@ -618,13 +618,13 @@ object TerraFrame {
 
     def postError(e: Throwable): Unit = {
         val sb = new StringBuilder()
-        sb.append("Exception in thread " + e.getClass().getName())
-        if (e.getMessage() != null) {
+        sb.append("Exception in thread " + e.getClass.getName)
+        if (e.getMessage != null) {
             sb.append(": ")
-            sb.append(e.getMessage())
+            sb.append(e.getMessage)
         }
-        e.getStackTrace().foreach { ste =>
-            sb.append("\n        at " + ste.toString())
+        e.getStackTrace.foreach { ste =>
+            sb.append("\n        at " + ste.toString)
         }
         try {
             log = new BufferedWriter(new FileWriter("log.txt"))
@@ -635,7 +635,7 @@ object TerraFrame {
             case _: IOException =>
         }
         finally {
-            println(sb.toString())
+            println(sb.toString)
         }
     }
 
@@ -702,6 +702,7 @@ class TerraFrame extends JApplet
     var layerImg: BufferedImage = _
 
     var entity: Entity = _
+    // TODO: Need sum type
     var state: String = "loading_graphics"
     var msg: String = "If you are reading this then\nplease report an error."
     var mobSpawn: String = _
@@ -1538,7 +1539,7 @@ class TerraFrame extends JApplet
 
             val blockLightsTemp = new jul.HashMap[Int,Int](blocknames.length)
 
-            (0 until blocknames.length).foreach { i =>
+            blocknames.indices.foreach { i =>
                 blockLightsTemp.put(i, 0)
             }
 
@@ -2689,16 +2690,16 @@ class TerraFrame extends JApplet
             }
         }
 
-        val tlist1: Array[Short] = Array[Short](0, 0, 0, 0, 0)
-        val tlist2: Array[Short] = Array[Short](0, 0, 0, 0, 0)
-        val tlist3: Array[Short] = Array[Short](0, 0, 0, 0, 0)
-        cic = new ItemCollection("cic", tlist1, tlist2, tlist3)
+        val tlist1 = Array[Short](0, 0, 0, 0, 0)
+        val tlist2 = Array[Short](0, 0, 0, 0, 0)
+        val tlist3 = Array[Short](0, 0, 0, 0, 0)
+        cic = ItemCollection("cic", tlist1, tlist2, tlist3)
         inventory.renderCollection(cic)
 
-        val tlist4: Array[Short] = Array[Short](0, 0, 0, 0)
-        val tlist5: Array[Short] = Array[Short](0, 0, 0, 0)
-        val tlist6: Array[Short] = Array[Short](0, 0, 0, 0)
-        armor = new ItemCollection("armor", tlist4, tlist5, tlist6)
+        val tlist4 = Array[Short](0, 0, 0, 0)
+        val tlist5 = Array[Short](0, 0, 0, 0)
+        val tlist6 = Array[Short](0, 0, 0, 0)
+        armor = ItemCollection("armor", tlist4, tlist5, tlist6)
         inventory.renderCollection(armor)
 
         toolAngle = 4.7
@@ -2902,7 +2903,7 @@ class TerraFrame extends JApplet
                 if (!ic.`type`.equals("workbench")) {
                     machinesx += icx
                     machinesy += icy
-                    icmatrix(iclayer)(icy)(icx) = new ItemCollection(ic.`type`, ic.ids, ic.nums, ic.durs)
+                    icmatrix(iclayer)(icy)(icx) = ItemCollection(ic.`type`, ic.ids, ic.nums, ic.durs)
                 }
                 if (ic.`type`.equals("workbench")) {
                     if (player.imgState.equals("still right") || player.imgState.equals("walk right 1") || player.imgState.equals("walk right 2")) {
@@ -3072,7 +3073,7 @@ class TerraFrame extends JApplet
                     ((player.ix/BLOCKSIZE)-125 until (player.ix/BLOCKSIZE)+125).foreach { ax =>
                         import scala.util.control.Breaks._
                         breakable {
-                            if (random.nextInt((100000 / DEBUG_HOSTILE)) == 0) {
+                            if (random.nextInt(100000 / DEBUG_HOSTILE) == 0) {
                                 xpos = ax + random.nextInt(20) - 10
                                 ypos = ay + random.nextInt(20) - 10
                                 xpos2 = ax + random.nextInt(20) - 10
@@ -3227,8 +3228,8 @@ class TerraFrame extends JApplet
         if (queue(3)) {
             checkBlocks = true
             if (showInv) {
-                if (mousePos(0) >= getWidth()-save_exit.getWidth()-24 && mousePos(0) <= getWidth()-24 &&
-                    mousePos(1) >= getHeight()-save_exit.getHeight()-24 && mousePos(1) <= getHeight()-24) {
+                if (mousePos(0) >= getWidth-save_exit.getWidth()-24 && mousePos(0) <= getWidth-24 &&
+                    mousePos(1) >= getHeight-save_exit.getHeight()-24 && mousePos(1) <= getHeight-24) {
                     if (mouseClicked) {
                         mouseNoLongerClicked = true
                         saveWorld()
@@ -4036,7 +4037,7 @@ class TerraFrame extends JApplet
                                     val tlist2: Array[Short] = Array[Short](0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
                                     val tlist3: Array[Short] = Array[Short](0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
                                     if (icmatrix(l)(uy)(ux) != null && icmatrix(l)(uy)(ux).`type`.equals("workbench")) {
-                                        ic = new ItemCollection("workbench", icmatrix(l)(uy)(ux).ids, icmatrix(l)(uy)(ux).nums, icmatrix(l)(uy)(ux).durs)
+                                        ic = ItemCollection("workbench", icmatrix(l)(uy)(ux).ids, icmatrix(l)(uy)(ux).nums, icmatrix(l)(uy)(ux).durs)
                                     }
                                     else {
                                         ic = ItemCollection("workbench", tlist1, tlist2, tlist3)
@@ -4319,7 +4320,7 @@ class TerraFrame extends JApplet
         }
         (entities.length-1 to(0, -1)).foreach { i =>
             if (entities(i).newMob != null) {
-                entities += (entities(i).newMob)
+                entities += entities(i).newMob
             }
             if (entities(i).update(blocks(1), player, u, v)) {
                 entities.remove(i)
@@ -4590,21 +4591,18 @@ class TerraFrame extends JApplet
             }
         }
         if (desert > 0) {
-            return "desert"
+            "desert"
+        } else if (jungle > 0) {
+            "jungle"
+        } else if (swamp > 0) {
+            "swamp"
+        } else if (frost > 0) {
+            "frost"
+        } else if (cavern > 0) {
+            "cavern"
+        } else {
+            "other"
         }
-        if (jungle > 0) {
-            return "jungle"
-        }
-        if (swamp > 0) {
-            return "swamp"
-        }
-        if (frost > 0) {
-            return "frost"
-        }
-        if (cavern > 0) {
-            return "cavern"
-        }
-        return "other"
     }
 
     def breakCurrentBlock(): Unit = {
@@ -5034,7 +5032,7 @@ class TerraFrame extends JApplet
         timeOfDay += 1.2*DEBUG_ACCEL
         (cloudsx.length-1 until(-1, -1)).foreach { i =>
             cloudsx.update(i, cloudsx(i) + cloudsv(i))
-            if (cloudsx(i) < -250 || cloudsx(i) > getWidth() + 250) {
+            if (cloudsx(i) < -250 || cloudsx(i) > getWidth + 250) {
                 cloudsx.remove(i)
                 cloudsy.remove(i)
                 cloudsv.remove(i)
@@ -5049,10 +5047,10 @@ class TerraFrame extends JApplet
                 cloudsv += 0.1 * DEBUG_ACCEL
             }
             else {
-                cloudsx += getWidth().toDouble
+                cloudsx += getWidth.toDouble
                 cloudsv += -0.1 * DEBUG_ACCEL
             }
-            cloudsy += (random.nextDouble()*(getHeight()-cloud.getHeight())+cloud.getHeight())
+            cloudsy += (random.nextDouble()*(getHeight-cloud.getHeight())+cloud.getHeight())
         }
     }
 
@@ -5738,10 +5736,10 @@ class TerraFrame extends JApplet
                                             blocks(l)(y2)(x2) >= 153 && blocks(l)(y2)(x2) <= 156 ||
                                             blocks(l)(y2)(x2) >= 161 && blocks(l)(y2)(x2) <= 164) {
                                             println("(DEBUG1)")
-                                            updatex += (x2)
-                                            updatey += (y2)
+                                            updatex += x2
+                                            updatey += y2
                                             DDELAY.get(blocks(l)(y2)(x2)).foreach(updatet.+=)
-                                            updatel += (l)
+                                            updatel += l
                                         }
                                         else {
                                             power(l)(y2)(x2) = power(l)(y)(x) - conducts(blocks(l)(y)(x)).toFloat
@@ -5835,7 +5833,7 @@ class TerraFrame extends JApplet
         if (screen == null) return
         pg2 = screen.createGraphics()
         pg2.setColor(bg)
-        pg2.fillRect(0, 0, getWidth(), getHeight())
+        pg2.fillRect(0, 0, getWidth, getHeight)
         if (state.equals("ingame")) {
             /*            if (SKYLIGHTS.get(timeOfDay.toInt) != null) {
                 sunlightlevel = SKYLIGHTS.get(timeOfDay.toInt)
@@ -5850,23 +5848,23 @@ class TerraFrame extends JApplet
             }
 */
             if (player.y / 16 < HEIGHT * 0.5) {
-                pg2.translate(getWidth() / 2, getHeight() * 0.85)
+                pg2.translate(getWidth / 2, getHeight * 0.85)
                 pg2.rotate((timeOfDay - 70200) / 86400 * Math.PI * 2)
 
                 pg2.drawImage(sun,
-                    (-getWidth() * 0.65).toInt, 0, (-getWidth() * 0.65 + sun.getWidth() * 2).toInt, sun.getHeight() * 2,
+                    (-getWidth * 0.65).toInt, 0, (-getWidth * 0.65 + sun.getWidth() * 2).toInt, sun.getHeight() * 2,
                     0, 0, sun.getWidth(), sun.getHeight(),
                     null)
 
                 pg2.rotate(Math.PI)
 
                 pg2.drawImage(moon,
-                    (-getWidth() * 0.65).toInt, 0, (-getWidth() * 0.65 + moon.getWidth() * 2).toInt, moon.getHeight() * 2,
+                    (-getWidth * 0.65).toInt, 0, (-getWidth * 0.65 + moon.getWidth() * 2).toInt, moon.getHeight() * 2,
                     0, 0, moon.getWidth(), moon.getHeight(),
                     null)
 
                 pg2.rotate(-(timeOfDay - 70200) / 86400 * Math.PI * 2 - Math.PI)
-                pg2.translate(-getWidth() / 2, -getHeight() * 0.85)
+                pg2.translate(-getWidth / 2, -getHeight * 0.85)
 
                 cloudsx.indices.foreach { i =>
                     cloud = clouds(cloudsn(i))
@@ -5882,16 +5880,16 @@ class TerraFrame extends JApplet
                     val pwxc: Int = pwx + ou
                     val pwyc: Int = pwy + ov
                     if (worlds(pwy)(pwx) != null) {
-                        if (((player.ix + getWidth() / 2 + Player.width >= pwxc * CHUNKSIZE &&
-                          player.ix + getWidth() / 2 + Player.width <= pwxc * CHUNKSIZE + CHUNKSIZE) ||
-                          (player.ix - getWidth() / 2 + Player.width + BLOCKSIZE >= pwxc * CHUNKSIZE &&
-                            player.ix - getWidth() / 2 + Player.width - BLOCKSIZE <= pwxc * CHUNKSIZE + CHUNKSIZE)) &&
-                          ((player.iy + getHeight() / 2 + Player.height >= pwyc * CHUNKSIZE &&
-                            player.iy + getHeight() / 2 + Player.height <= pwyc * CHUNKSIZE + CHUNKSIZE) ||
-                            (player.iy - getHeight() / 2 + Player.height >= pwyc * CHUNKSIZE &&
-                              player.iy - getHeight() / 2 + Player.height <= pwyc * CHUNKSIZE + CHUNKSIZE))) {
+                        if (((player.ix + getWidth / 2 + Player.width >= pwxc * CHUNKSIZE &&
+                          player.ix + getWidth / 2 + Player.width <= pwxc * CHUNKSIZE + CHUNKSIZE) ||
+                          (player.ix - getWidth / 2 + Player.width + BLOCKSIZE >= pwxc * CHUNKSIZE &&
+                            player.ix - getWidth / 2 + Player.width - BLOCKSIZE <= pwxc * CHUNKSIZE + CHUNKSIZE)) &&
+                          ((player.iy + getHeight / 2 + Player.height >= pwyc * CHUNKSIZE &&
+                            player.iy + getHeight / 2 + Player.height <= pwyc * CHUNKSIZE + CHUNKSIZE) ||
+                            (player.iy - getHeight / 2 + Player.height >= pwyc * CHUNKSIZE &&
+                              player.iy - getHeight / 2 + Player.height <= pwyc * CHUNKSIZE + CHUNKSIZE))) {
                             pg2.drawImage(worlds(pwy)(pwx),
-                                pwxc * CHUNKSIZE - player.ix + getWidth() / 2 - Player.width / 2, pwyc * CHUNKSIZE - player.iy + getHeight() / 2 - Player.height / 2, pwxc * CHUNKSIZE - player.ix + getWidth() / 2 - Player.width / 2 + CHUNKSIZE, pwyc * CHUNKSIZE - player.iy + getHeight() / 2 - Player.height / 2 + CHUNKSIZE,
+                                pwxc * CHUNKSIZE - player.ix + getWidth / 2 - Player.width / 2, pwyc * CHUNKSIZE - player.iy + getHeight / 2 - Player.height / 2, pwxc * CHUNKSIZE - player.ix + getWidth() / 2 - Player.width / 2 + CHUNKSIZE, pwyc * CHUNKSIZE - player.iy + getHeight() / 2 - Player.height / 2 + CHUNKSIZE,
                                 0, 0, CHUNKSIZE, CHUNKSIZE,
                                 null)
                         }
@@ -5900,29 +5898,29 @@ class TerraFrame extends JApplet
             }
 
             pg2.drawImage(player.image,
-                getWidth() / 2 - Player.width / 2, getHeight() / 2 - Player.height / 2, getWidth() / 2 + Player.width / 2, getHeight() / 2 + Player.height / 2,
+                getWidth / 2 - Player.width / 2, getHeight / 2 - Player.height / 2, getWidth / 2 + Player.width / 2, getHeight / 2 + Player.height / 2,
                 0, 0, player.image.getWidth(), player.image.getHeight(),
                 null)
 
             entities.indices.foreach { i =>
                 entity = entities(i)
                 pg2.drawImage(entity.image,
-                    entity.ix - player.ix + getWidth() / 2 - Player.width / 2, entity.iy - player.iy + getHeight() / 2 - Player.height / 2, entity.ix - player.ix + getWidth() / 2 - Player.width / 2 + entity.width, entity.iy - player.iy + getHeight() / 2 - Player.height / 2 + entity.height,
+                    entity.ix - player.ix + getWidth / 2 - Player.width / 2, entity.iy - player.iy + getHeight / 2 - Player.height / 2, entity.ix - player.ix + getWidth() / 2 - Player.width / 2 + entity.width, entity.iy - player.iy + getHeight() / 2 - Player.height / 2 + entity.height,
                     0, 0, entity.image.getWidth(), entity.image.getHeight(),
                     null)
                 pg2.drawImage(entity.image,
-                    entity.ix - player.ix + getWidth() / 2 - Player.width / 2 - WIDTH * BLOCKSIZE, entity.iy - player.iy + getHeight() / 2 - Player.height / 2, entity.ix - player.ix + getWidth() / 2 - Player.width / 2 + entity.width - WIDTH * BLOCKSIZE, entity.iy - player.iy + getHeight() / 2 - Player.height / 2 + entity.height,
+                    entity.ix - player.ix + getWidth / 2 - Player.width / 2 - WIDTH * BLOCKSIZE, entity.iy - player.iy + getHeight / 2 - Player.height / 2, entity.ix - player.ix + getWidth() / 2 - Player.width / 2 + entity.width - WIDTH * BLOCKSIZE, entity.iy - player.iy + getHeight() / 2 - Player.height / 2 + entity.height,
                     0, 0, entity.image.getWidth(), entity.image.getHeight(),
                     null)
                 pg2.drawImage(entity.image,
-                    entity.ix - player.ix + getWidth() / 2 - Player.width / 2 + WIDTH * BLOCKSIZE, entity.iy - player.iy + getHeight() / 2 - Player.height / 2, entity.ix - player.ix + getWidth() / 2 - Player.width / 2 + entity.width + WIDTH * BLOCKSIZE, entity.iy - player.iy + getHeight() / 2 - Player.height / 2 + entity.height,
+                    entity.ix - player.ix + getWidth / 2 - Player.width / 2 + WIDTH * BLOCKSIZE, entity.iy - player.iy + getHeight / 2 - Player.height / 2, entity.ix - player.ix + getWidth() / 2 - Player.width / 2 + entity.width + WIDTH * BLOCKSIZE, entity.iy - player.iy + getHeight() / 2 - Player.height / 2 + entity.height,
                     0, 0, entity.image.getWidth(), entity.image.getHeight(),
                     null)
             }
 
             if (showTool && tool != null) {
                 if (player.imgState.equals("still right") || player.imgState.equals("walk right 1") || player.imgState.equals("walk right 2")) {
-                    pg2.translate(getWidth() / 2 + 6, getHeight() / 2)
+                    pg2.translate(getWidth / 2 + 6, getHeight / 2)
                     pg2.rotate(toolAngle)
 
                     pg2.drawImage(tool,
@@ -5931,10 +5929,10 @@ class TerraFrame extends JApplet
                         null)
 
                     pg2.rotate(-toolAngle)
-                    pg2.translate(-getWidth() / 2 - 6, -getHeight() / 2)
+                    pg2.translate(-getWidth / 2 - 6, -getHeight / 2)
                 }
                 if (player.imgState.equals("still left") || player.imgState.equals("walk left 1") || player.imgState.equals("walk left 2")) {
-                    pg2.translate(getWidth() / 2 - 6, getHeight() / 2)
+                    pg2.translate(getWidth / 2 - 6, getHeight / 2)
                     pg2.rotate((Math.PI * 1.5) - toolAngle)
 
                     pg2.drawImage(tool,
@@ -5943,7 +5941,7 @@ class TerraFrame extends JApplet
                         null)
 
                     pg2.rotate(-((Math.PI * 1.5) - toolAngle))
-                    pg2.translate(-getWidth() / 2 + 6, -getHeight() / 2)
+                    pg2.translate(-getWidth / 2 + 6, -getHeight / 2)
                 }
             }
 
@@ -5952,16 +5950,16 @@ class TerraFrame extends JApplet
                     val pwxc: Int = pwx + ou
                     val pwyc: Int = pwy + ov
                     if (fworlds(pwy)(pwx) != null) {
-                        if (((player.ix + getWidth() / 2 + Player.width >= pwxc * CHUNKSIZE &&
-                          player.ix + getWidth() / 2 + Player.width <= pwxc * CHUNKSIZE + CHUNKSIZE) ||
-                          (player.ix - getWidth() / 2 + Player.width + BLOCKSIZE >= pwxc * CHUNKSIZE &&
-                            player.ix - getWidth() / 2 + Player.width - BLOCKSIZE <= pwxc * CHUNKSIZE + CHUNKSIZE)) &&
-                          ((player.iy + getHeight() / 2 + Player.height >= pwyc * CHUNKSIZE &&
-                            player.iy + getHeight() / 2 + Player.height <= pwyc * CHUNKSIZE + CHUNKSIZE) ||
-                            (player.iy - getHeight() / 2 + Player.height >= pwyc * CHUNKSIZE &&
-                              player.iy - getHeight() / 2 + Player.height <= pwyc * CHUNKSIZE + CHUNKSIZE))) {
+                        if (((player.ix + getWidth / 2 + Player.width >= pwxc * CHUNKSIZE &&
+                          player.ix + getWidth / 2 + Player.width <= pwxc * CHUNKSIZE + CHUNKSIZE) ||
+                          (player.ix - getWidth / 2 + Player.width + BLOCKSIZE >= pwxc * CHUNKSIZE &&
+                            player.ix - getWidth / 2 + Player.width - BLOCKSIZE <= pwxc * CHUNKSIZE + CHUNKSIZE)) &&
+                          ((player.iy + getHeight / 2 + Player.height >= pwyc * CHUNKSIZE &&
+                            player.iy + getHeight / 2 + Player.height <= pwyc * CHUNKSIZE + CHUNKSIZE) ||
+                            (player.iy - getHeight / 2 + Player.height >= pwyc * CHUNKSIZE &&
+                              player.iy - getHeight / 2 + Player.height <= pwyc * CHUNKSIZE + CHUNKSIZE))) {
                             pg2.drawImage(fworlds(pwy)(pwx),
-                                pwxc * CHUNKSIZE - player.ix + getWidth() / 2 - Player.width / 2, pwyc * CHUNKSIZE - player.iy + getHeight() / 2 - Player.height / 2, pwxc * CHUNKSIZE - player.ix + getWidth() / 2 - Player.width / 2 + CHUNKSIZE, pwyc * CHUNKSIZE - player.iy + getHeight() / 2 - Player.height / 2 + CHUNKSIZE,
+                                pwxc * CHUNKSIZE - player.ix + getWidth / 2 - Player.width / 2, pwyc * CHUNKSIZE - player.iy + getHeight / 2 - Player.height / 2, pwxc * CHUNKSIZE - player.ix + getWidth / 2 - Player.width / 2 + CHUNKSIZE, pwyc * CHUNKSIZE - player.iy + getHeight / 2 - Player.height / 2 + CHUNKSIZE,
                                 0, 0, CHUNKSIZE, CHUNKSIZE,
                                 null)
                         }
@@ -6014,7 +6012,7 @@ class TerraFrame extends JApplet
 
             if (showInv) {
                 pg2.drawImage(save_exit,
-                    getWidth() - save_exit.getWidth() - 24, getHeight() - save_exit.getHeight() - 24, getWidth() - 24, getHeight() - 24,
+                    getWidth - save_exit.getWidth() - 24, getHeight - save_exit.getHeight() - 24, getWidth - 24, getHeight - 24,
                     0, 0, save_exit.getWidth(), save_exit.getHeight(),
                     null)
             }
@@ -6068,12 +6066,12 @@ class TerraFrame extends JApplet
             }
             pg2.setFont(mobFont)
             pg2.setColor(Color.WHITE)
-            pg2.drawString("Health: " + player.hp + "/" + player.thp, getWidth()-125, 20)
-            pg2.drawString("Armor: " + player.sumArmor(), getWidth()-125, 40)
+            pg2.drawString("Health: " + player.hp + "/" + player.thp, getWidth-125, 20)
+            pg2.drawString("Armor: " + player.sumArmor(), getWidth-125, 40)
             if (DEBUG_STATS) {
-                pg2.drawString("(" + (player.ix/16) + ", " + (player.iy/16) + ")", getWidth()-125, 60)
+                pg2.drawString("(" + (player.ix/16) + ", " + (player.iy/16) + ")", getWidth-125, 60)
                 if (player.iy >= 0 && player.iy < HEIGHT*BLOCKSIZE) {
-                    pg2.drawString(checkBiome(player.ix / 16 + u, player.iy / 16 + v) + " " + lights(player.iy / 16 + v)(player.ix / 16 + u), getWidth()-125, 80)
+                    pg2.drawString(checkBiome(player.ix / 16 + u, player.iy / 16 + v) + " " + lights(player.iy / 16 + v)(player.ix / 16 + u), getWidth-125, 80)
                 }
             }
             if (showInv) {
@@ -6528,9 +6526,9 @@ class TerraFrame extends JApplet
             (0 until 8).foreach { dy =>
                 (0 until 8).foreach { dx =>
                     maybeTexture.foreach { texture =>
-                        dirt.setRGB(dx, dy, new Color((pixm(dy)(dx) / 255.0 * new Color(texture.getRGB(dx, dy)).getRed() + (1 - pixm(dy)(dx) / 255.0) * new Color(dirt.getRGB(dx, dy)).getRed()).toInt,
-                            (pixm(dy)(dx) / 255.0 * new Color(texture.getRGB(dx, dy)).getGreen() + (1 - pixm(dy)(dx) / 255.0) * new Color(dirt.getRGB(dx, dy)).getGreen()).toInt,
-                            (pixm(dy)(dx) / 255.0 * new Color(texture.getRGB(dx, dy)).getBlue() + (1 - pixm(dy)(dx) / 255.0) * new Color(dirt.getRGB(dx, dy)).getBlue()).toInt).getRGB())
+                        dirt.setRGB(dx, dy, new Color((pixm(dy)(dx) / 255.0 * new Color(texture.getRGB(dx, dy)).getRed + (1 - pixm(dy)(dx) / 255.0) * new Color(dirt.getRGB(dx, dy)).getRed).toInt,
+                            (pixm(dy)(dx) / 255.0 * new Color(texture.getRGB(dx, dy)).getGreen + (1 - pixm(dy)(dx) / 255.0) * new Color(dirt.getRGB(dx, dy)).getGreen).toInt,
+                            (pixm(dy)(dx) / 255.0 * new Color(texture.getRGB(dx, dy)).getBlue + (1 - pixm(dy)(dx) / 255.0) * new Color(dirt.getRGB(dx, dy)).getBlue).toInt).getRGB)
                     }
                 }
             }
@@ -6556,24 +6554,24 @@ class TerraFrame extends JApplet
     }
 
     def keyPressed(key: KeyEvent): Unit = {
-        //TODO: call getKeyCode once and else if's
-        if (key.getKeyCode() == KeyEvent.VK_LEFT || key.getKeyCode() == KeyEvent.VK_A) {
+        val keyCode = key.getKeyCode
+        if (keyCode == KeyEvent.VK_LEFT || keyCode == KeyEvent.VK_A) {
             queue(0) = true
         }
-        if (key.getKeyCode() == KeyEvent.VK_RIGHT || key.getKeyCode() == KeyEvent.VK_D) {
+        if (keyCode == KeyEvent.VK_RIGHT || keyCode == KeyEvent.VK_D) {
             queue(1) = true
         }
-        if (key.getKeyCode() == KeyEvent.VK_UP || key.getKeyCode() == KeyEvent.VK_W) {
+        if (keyCode == KeyEvent.VK_UP || keyCode == KeyEvent.VK_W) {
             queue(2) = true
         }
-        if (key.getKeyCode() == KeyEvent.VK_DOWN || key.getKeyCode() == KeyEvent.VK_S) {
+        if (keyCode == KeyEvent.VK_DOWN || keyCode == KeyEvent.VK_S) {
             queue(6) = true
         }
-        if (key.getKeyCode() == KeyEvent.VK_SHIFT) {
+        if (keyCode == KeyEvent.VK_SHIFT) {
             queue(5) = true
         }
         if (state.equals("ingame")) {
-            if (key.getKeyCode() == KeyEvent.VK_ESCAPE) {
+            if (keyCode == KeyEvent.VK_ESCAPE) {
                 if (ic != null) {
                     if (!ic.`type`.equals("workbench")) {
                         machinesx += icx
@@ -6631,87 +6629,87 @@ class TerraFrame extends JApplet
                 }
             }
             if (!showTool) {
-                if (key.getKeyCode() == KeyEvent.VK_1) {
+                if (keyCode == KeyEvent.VK_1) {
                     inventory.select(1)
                 }
-                if (key.getKeyCode() == KeyEvent.VK_2) {
+                if (keyCode == KeyEvent.VK_2) {
                     inventory.select(2)
                 }
-                if (key.getKeyCode() == KeyEvent.VK_3) {
+                if (keyCode == KeyEvent.VK_3) {
                     inventory.select(3)
                 }
-                if (key.getKeyCode() == KeyEvent.VK_4) {
+                if (keyCode == KeyEvent.VK_4) {
                     inventory.select(4)
                 }
-                if (key.getKeyCode() == KeyEvent.VK_5) {
+                if (keyCode == KeyEvent.VK_5) {
                     inventory.select(5)
                 }
-                if (key.getKeyCode() == KeyEvent.VK_6) {
+                if (keyCode == KeyEvent.VK_6) {
                     inventory.select(6)
                 }
-                if (key.getKeyCode() == KeyEvent.VK_7) {
+                if (keyCode == KeyEvent.VK_7) {
                     inventory.select(7)
                 }
-                if (key.getKeyCode() == KeyEvent.VK_8) {
+                if (keyCode == KeyEvent.VK_8) {
                     inventory.select(8)
                 }
-                if (key.getKeyCode() == KeyEvent.VK_9) {
+                if (keyCode == KeyEvent.VK_9) {
                     inventory.select(9)
                 }
-                if (key.getKeyCode() == KeyEvent.VK_0) {
+                if (keyCode == KeyEvent.VK_0) {
                     inventory.select(0)
                 }
             }
         }
         var c: Char = 0
-        if (key.getKeyCode() == KeyEvent.VK_Q) c = 'q'
-        if (key.getKeyCode() == KeyEvent.VK_W) c = 'w'
-        if (key.getKeyCode() == KeyEvent.VK_E) c = 'e'
-        if (key.getKeyCode() == KeyEvent.VK_R) c = 'r'
-        if (key.getKeyCode() == KeyEvent.VK_T) c = 't'
-        if (key.getKeyCode() == KeyEvent.VK_Y) c = 'y'
-        if (key.getKeyCode() == KeyEvent.VK_U) c = 'u'
-        if (key.getKeyCode() == KeyEvent.VK_I) c = 'i'
-        if (key.getKeyCode() == KeyEvent.VK_O) c = 'o'
-        if (key.getKeyCode() == KeyEvent.VK_P) c = 'p'
-        if (key.getKeyCode() == KeyEvent.VK_A) c = 'a'
-        if (key.getKeyCode() == KeyEvent.VK_S) c = 's'
-        if (key.getKeyCode() == KeyEvent.VK_D) c = 'd'
-        if (key.getKeyCode() == KeyEvent.VK_F) c = 'f'
-        if (key.getKeyCode() == KeyEvent.VK_G) c = 'g'
-        if (key.getKeyCode() == KeyEvent.VK_H) c = 'h'
-        if (key.getKeyCode() == KeyEvent.VK_J) c = 'j'
-        if (key.getKeyCode() == KeyEvent.VK_K) c = 'k'
-        if (key.getKeyCode() == KeyEvent.VK_L) c = 'l'
-        if (key.getKeyCode() == KeyEvent.VK_Z) c = 'z'
-        if (key.getKeyCode() == KeyEvent.VK_X) c = 'x'
-        if (key.getKeyCode() == KeyEvent.VK_C) c = 'c'
-        if (key.getKeyCode() == KeyEvent.VK_V) c = 'v'
-        if (key.getKeyCode() == KeyEvent.VK_B) c = 'b'
-        if (key.getKeyCode() == KeyEvent.VK_N) c = 'n'
-        if (key.getKeyCode() == KeyEvent.VK_M) c = 'm'
-        if (key.getKeyCode() == KeyEvent.VK_1) c = '1'
-        if (key.getKeyCode() == KeyEvent.VK_2) c = '2'
-        if (key.getKeyCode() == KeyEvent.VK_3) c = '3'
-        if (key.getKeyCode() == KeyEvent.VK_4) c = '4'
-        if (key.getKeyCode() == KeyEvent.VK_5) c = '5'
-        if (key.getKeyCode() == KeyEvent.VK_6) c = '6'
-        if (key.getKeyCode() == KeyEvent.VK_7) c = '7'
-        if (key.getKeyCode() == KeyEvent.VK_8) c = '8'
-        if (key.getKeyCode() == KeyEvent.VK_9) c = '9'
-        if (key.getKeyCode() == KeyEvent.VK_0) c = '0'
-        if (key.getKeyCode() == KeyEvent.VK_SPACE) c = ' '
-        if (key.getKeyCode() == 192) c = '`'
-        if (key.getKeyCode() == KeyEvent.VK_MINUS) c = '-'
-        if (key.getKeyCode() == KeyEvent.VK_EQUALS) c = '='
-        if (key.getKeyCode() == KeyEvent.VK_OPEN_BRACKET) c = '['
-        if (key.getKeyCode() == KeyEvent.VK_CLOSE_BRACKET) c = ']'
-        if (key.getKeyCode() == KeyEvent.VK_BACK_SLASH) c = '\\'
-        if (key.getKeyCode() == KeyEvent.VK_COLON) c = ':'
-        if (key.getKeyCode() == KeyEvent.VK_QUOTE) c = '\''
-        if (key.getKeyCode() == KeyEvent.VK_COMMA) c = ','
-        if (key.getKeyCode() == KeyEvent.VK_PERIOD) c = '.'
-        if (key.getKeyCode() == KeyEvent.VK_SLASH) c = '/'
+        if (keyCode == KeyEvent.VK_Q) c = 'q'
+        if (keyCode == KeyEvent.VK_W) c = 'w'
+        if (keyCode == KeyEvent.VK_E) c = 'e'
+        if (keyCode == KeyEvent.VK_R) c = 'r'
+        if (keyCode == KeyEvent.VK_T) c = 't'
+        if (keyCode == KeyEvent.VK_Y) c = 'y'
+        if (keyCode == KeyEvent.VK_U) c = 'u'
+        if (keyCode == KeyEvent.VK_I) c = 'i'
+        if (keyCode == KeyEvent.VK_O) c = 'o'
+        if (keyCode == KeyEvent.VK_P) c = 'p'
+        if (keyCode == KeyEvent.VK_A) c = 'a'
+        if (keyCode == KeyEvent.VK_S) c = 's'
+        if (keyCode == KeyEvent.VK_D) c = 'd'
+        if (keyCode == KeyEvent.VK_F) c = 'f'
+        if (keyCode == KeyEvent.VK_G) c = 'g'
+        if (keyCode == KeyEvent.VK_H) c = 'h'
+        if (keyCode == KeyEvent.VK_J) c = 'j'
+        if (keyCode == KeyEvent.VK_K) c = 'k'
+        if (keyCode == KeyEvent.VK_L) c = 'l'
+        if (keyCode == KeyEvent.VK_Z) c = 'z'
+        if (keyCode == KeyEvent.VK_X) c = 'x'
+        if (keyCode == KeyEvent.VK_C) c = 'c'
+        if (keyCode == KeyEvent.VK_V) c = 'v'
+        if (keyCode == KeyEvent.VK_B) c = 'b'
+        if (keyCode == KeyEvent.VK_N) c = 'n'
+        if (keyCode == KeyEvent.VK_M) c = 'm'
+        if (keyCode == KeyEvent.VK_1) c = '1'
+        if (keyCode == KeyEvent.VK_2) c = '2'
+        if (keyCode == KeyEvent.VK_3) c = '3'
+        if (keyCode == KeyEvent.VK_4) c = '4'
+        if (keyCode == KeyEvent.VK_5) c = '5'
+        if (keyCode == KeyEvent.VK_6) c = '6'
+        if (keyCode == KeyEvent.VK_7) c = '7'
+        if (keyCode == KeyEvent.VK_8) c = '8'
+        if (keyCode == KeyEvent.VK_9) c = '9'
+        if (keyCode == KeyEvent.VK_0) c = '0'
+        if (keyCode == KeyEvent.VK_SPACE) c = ' '
+        if (keyCode == 192) c = '`'
+        if (keyCode == KeyEvent.VK_MINUS) c = '-'
+        if (keyCode == KeyEvent.VK_EQUALS) c = '='
+        if (keyCode == KeyEvent.VK_OPEN_BRACKET) c = '['
+        if (keyCode == KeyEvent.VK_CLOSE_BRACKET) c = ']'
+        if (keyCode == KeyEvent.VK_BACK_SLASH) c = '\\'
+        if (keyCode == KeyEvent.VK_COLON) c = ':'
+        if (keyCode == KeyEvent.VK_QUOTE) c = '\''
+        if (keyCode == KeyEvent.VK_COMMA) c = ','
+        if (keyCode == KeyEvent.VK_PERIOD) c = '.'
+        if (keyCode == KeyEvent.VK_SLASH) c = '/'
 
         if (queue(5)) {
             if (c == 'q') c = 'Q'
@@ -6771,44 +6769,46 @@ class TerraFrame extends JApplet
                 repaint()
             }
 
-            if (key.getKeyCode() == 8) {
+            if (keyCode == 8) {
                 newWorldName.deleteKey()
                 repaint()
             }
         }
 
-        if (key.getKeyCode() == KeyEvent.VK_EQUALS && layer < 2) {
+        if (keyCode == KeyEvent.VK_EQUALS && layer < 2) {
             layer += 1
         }
-        if (key.getKeyCode() == KeyEvent.VK_MINUS && layer > 0) {
+        if (keyCode == KeyEvent.VK_MINUS && layer > 0) {
             layer -= 1
         }
     }
 
     def keyReleased(key: KeyEvent): Unit = {
-        if (key.getKeyCode() == KeyEvent.VK_LEFT || key.getKeyCode() == KeyEvent.VK_A) {
+        val keyCode = key.getKeyCode
+        if (keyCode == KeyEvent.VK_LEFT || keyCode == KeyEvent.VK_A) {
             queue(0) = false
         }
-        if (key.getKeyCode() == KeyEvent.VK_RIGHT || key.getKeyCode() == KeyEvent.VK_D) {
+        if (keyCode == KeyEvent.VK_RIGHT || keyCode == KeyEvent.VK_D) {
             queue(1) = false
         }
-        if (key.getKeyCode() == KeyEvent.VK_UP || key.getKeyCode() == KeyEvent.VK_W) {
+        if (keyCode == KeyEvent.VK_UP || keyCode == KeyEvent.VK_W) {
             queue(2) = false
         }
-        if (key.getKeyCode() == KeyEvent.VK_SHIFT) {
+        if (keyCode == KeyEvent.VK_SHIFT) {
             queue(5) = false
         }
-        if (key.getKeyCode() == KeyEvent.VK_DOWN || key.getKeyCode() == KeyEvent.VK_S) {
+        if (keyCode == KeyEvent.VK_DOWN || keyCode == KeyEvent.VK_S) {
             queue(6) = false
         }
     }
 
     def mousePressed(e: MouseEvent): Unit = {
+        val button = e.getButton
         if (!queue(3)) {
-            queue(3) = e.getButton() == MouseEvent.BUTTON1
+            queue(3) = button == MouseEvent.BUTTON1
         }
         if (!queue(4)) {
-            queue(4) = e.getButton() == MouseEvent.BUTTON3
+            queue(4) = button == MouseEvent.BUTTON3
         }
     }
 
@@ -6824,14 +6824,14 @@ class TerraFrame extends JApplet
 
     def mouseMoved(e: MouseEvent): Unit = {
         if (mousePos != null) {
-            mousePos(0) = e.getX()
-            mousePos(1) = e.getY()
+            mousePos(0) = e.getX
+            mousePos(1) = e.getY
         }
     }
 
     def mouseDragged(e: MouseEvent): Unit = {
-        mousePos(0) = e.getX()
-        mousePos(1) = e.getY()
+        mousePos(0) = e.getX
+        mousePos(1) = e.getY
     }
 
     override def getPreferredSize(): Dimension = {
