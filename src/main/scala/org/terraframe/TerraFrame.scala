@@ -684,7 +684,7 @@ object TerraFrame {
   val wirec: Array[Boolean] = Array(false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true)
   val skycolors: Array[Int] = Array(28800, 28980, 29160, 29340, 29520, 29700, 29880, 30060, 30240, 30420, 30600, 30780, 30960, 31140, 31320, 31500, 31680, 31860, 32040, 32220, 72000, 72180, 72360, 72540, 72720, 72900, 73080, 73260, 73440, 73620, 73800, 73980, 74160, 74340, 74520, 74700, 74880, 75060, 75240, 75420)
 
-  val backgroundImgs: Map[Byte, BufferedImage] = {
+  lazy val backgroundImgs: Map[Byte, BufferedImage] = {
     val bgs: Array[String] = Array("solid/empty", "dirt_none/downleft", "dirt_none/downright", "dirt_none/left", "dirt_none/right", "dirt_none/up", "dirt_none/upleft", "dirt_none/upright",
       "solid/dirt", "stone_dirt/downleft", "stone_dirt/downright", "stone_dirt/left", "stone_dirt/right", "stone_dirt/up", "stone_dirt/upleft", "stone_dirt/upright",
       "solid/stone", "stone_none/down")
@@ -697,7 +697,7 @@ object TerraFrame {
 
     backgroundImgsTemp.asScala.toMap
   }
-  val itemImgs: Map[Short, BufferedImage] = {
+  lazy val itemImgs: Map[Short, BufferedImage] = {
     val itemImgsTemp = new jul.HashMap[Short, BufferedImage](items.length)
 
     (1 until items.length).foreach { i =>
@@ -709,7 +709,7 @@ object TerraFrame {
 
     itemImgsTemp.asScala.toMap
   }
-  val DURABILITY: Map[Short, Map[Int, Int]] = {
+  lazy val DURABILITY: Map[Short, Map[Int, Int]] = {
     val M: Int = Int.MaxValue
     //                     DirStoCopIroSilGolWooWor                  TreLeaFurCoaLum         Fur                     ZinRhyObdAluLeaUraZytZytSilIrrNulMelSkyMagSanSnoGla                                                                        GraJGrSGrMudSSt                  TreCobCStCCoSBrClaCBrVWoTDiTMaTGrZyW
     val durList: Array2D[Int] = Array(Array(0, 2, 4, 4, 4, 4, M, 0, 0, 0, 2, 2, 2, 2, 2, 0, 0, 4, 3, M, 1, 1, 1, 4, 1, 1, 1, 1, 1, 1, 0, M, M, M, 4, M, M, M, M, M, M, M, M, M, M, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 3, 1, 1, 1, 2, 2, 2, 0, 4, 4, 4, 4, 2, 4, 0, 2, M, 2, 1, 1, 1, 1, 1, 1), // Copper Pick
@@ -783,7 +783,7 @@ object TerraFrame {
     durabilityTemp.asScala.toMap
   }
   var dur: Map[Int, Int] = _
-  val BLOCKTOOLS: Map[Int, Array[Short]] = {
+  lazy val BLOCKTOOLS: Map[Int, Array[Short]] = {
     val blocktools: Array2D[Short] = Array(
       Array[Short](),
       Array[Short](7, 8, 9, 10, 51, 54, 57, 145, 148, 154, 157, 169, 172),
@@ -972,7 +972,7 @@ object TerraFrame {
   val worldFont: Font = new Font("Andale Mono", Font.BOLD, 16)
   val CYANISH: Color = new Color(75, 163, 243)
 
-  val TOOLSPEED: Map[Short, Double] = {
+  lazy val TOOLSPEED: Map[Short, Double] = {
     val toolSpeedTemp = new jul.HashMap[Short, Double](items.length)
 
     (1 until items.length).foreach { i =>
@@ -1023,7 +1023,7 @@ object TerraFrame {
 
     toolSpeedTemp.asScala.toMap
   }
-  val TOOLDAMAGE: Map[Short, Int] =  {
+  lazy val TOOLDAMAGE: Map[Short, Int] =  {
     val toolDamageTemp = new jul.HashMap[Short, Int](items.length)
 
     items.indices.foreach { i =>
@@ -1070,7 +1070,7 @@ object TerraFrame {
     toolDamageTemp.asScala.toMap
   }
 
-  val BLOCKDROPS: Map[Int, Short] = {
+  lazy val BLOCKDROPS: Map[Int, Short] = {
     val drops: Array[Short] = Array[Short](0, 1, 2, 3, 4, 5, 6, 15, 20, 21, 22, 23, 24, 25, 26, 15, 0, 27, 28, 34, 35, 36, 37, 27, 35, 35, 36, 36, 37, 37, 0, 38, 39, 40, 41, 42, 43, 44, 44, 45, 46, 47, 48, 49, 50, 74, 75, 0, 0, 0, 78, 0, 0, 80, 0, 0, 82, 0, 0, 84, 0, 0, 86, 0, 0, 88, 0, 0, 90, 0, 0, 92, 1, 1, 93, 93, 94, 0, 0, 96, 151, 152, 153, 15, 161, 162, 163, 164, 165, 166, 168, 1, 50, 1, 175, 175, 175, 175, 175, 175, 176, 176, 176, 177, 177, 178, 178, 178, 178, 178, 178, 180, 180, 180, 180, 180, 180, 180, 180, 181, 181, 181, 181, 181, 181, 181, 181, 182, 182, 182, 182, 183, 183, 184, 184, 185, 185, 186, 186, 186, 186, 186, 186, 186, 186, 187, 187, 187, 187, 187, 187, 187, 187, 188, 188, 188, 188, 188, 188, 188, 188, 189, 189, 189, 189, 189, 189, 189, 189)
 
     val blockDropsTemp = new jul.HashMap[Int, Short](blocknames.length)
@@ -1082,7 +1082,7 @@ object TerraFrame {
     blockDropsTemp.asScala.toMap
   }
 
-  val ITEMBLOCKS: Map[Short, Int] = {
+  lazy val ITEMBLOCKS: Map[Short, Int] = {
     val itemblocks: Array[Int] = Array(0, 1, 2, 3, 4, 5, 6, 0, 0, 0, 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 8, 9, 10, 11, 12, 13, 14, 17, 18, 0, 0, 0, 0, 0, 19, 20, 21, 22, 31, 32, 33, 34, 35, 36, 37, 39, 40, 41, 42, 43, 44, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 45 /*72*/ , 46, 47, 48, 0, 51, 0, 54, 0, 57, 0, 60, 0, 63, 0, 66, 0, 69, 0, 75, 76, 77, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 80, 81, 82, 0, 0, 0, 0, 0, 0, 0, 84, 85, 86, 87, 88, 89, 0, 90, 0, 0, 0, 0, 0, 0, 94, 100, 103, 105, 0, 111, 119, 127, 131, 133, 135, 137, 145, 153, 161, 0)
 
     val itemBlocksTemp = new jul.HashMap[Short, Int](items.length)
@@ -1094,7 +1094,7 @@ object TerraFrame {
     itemBlocksTemp.asScala.toMap
   }
 
-  val OUTLINES: Map[Int, String] = {
+  lazy val OUTLINES: Map[Int, String] = {
     val outlinesTemp = new jul.HashMap[Int, String](blocknames.length)
 
     (1 until blocknames.length).foreach { i =>
@@ -1190,7 +1190,7 @@ object TerraFrame {
 
     outlinesTemp.asScala.toMap
   }
-  val UIBLOCKS: Map[String, String] = {
+  lazy val UIBLOCKS: Map[String, String] = {
     val uiBlocksTemp = new jul.HashMap[String, String](items.length)
 
     (1 until items.length).foreach { i =>
@@ -1218,7 +1218,7 @@ object TerraFrame {
 
     uiEntitiesTemp.asScala.toMap
   }
-  val BLOCKCD: Map[Int, Boolean] = {
+  lazy val BLOCKCD: Map[Int, Boolean] = {
     val blockCdTemp = new jul.HashMap[Int, Boolean](blockcds.length)
 
     (1 until blockcds.length).foreach { i =>
@@ -1227,7 +1227,7 @@ object TerraFrame {
 
     blockCdTemp.asScala.toMap
   }
-  val MAXSTACKS: Map[Short, Short] = {
+  lazy val MAXSTACKS: Map[Short, Short] = {
     val maxStacksTemp = new jul.HashMap[Short, Short](items.length)
 
     val stacks: Array[Short] = Array[Short](100, 100, 100, 100, 100, 100, 100, 1, 1, 1, 1, 1, 1, 1, 1, 100, 1, 1, 1, 1, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 1, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 1, 1, 1, 1, 1, 1, 1, 1, 1, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 100, 100, 100, 1, 1, 1, 1, 1, 1, 100, 100, 100, 100, 100, 100, 100, 100, 100, 1, 1, 1, 1, 1, 1, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 1)
@@ -1239,7 +1239,7 @@ object TerraFrame {
     maxStacksTemp.asScala.toMap
   }
 
-  val SKYLIGHTS: Map[Int, Int] = {
+  lazy val SKYLIGHTS: Map[Int, Int] = {
     val skyLightsTemp = new jul.HashMap[Int, Int](30)
 
     skyLightsTemp.put(28883, 18)
@@ -1273,7 +1273,7 @@ object TerraFrame {
 
     skyLightsTemp.asScala.toMap
   }
-  val SKYCOLORS: Map[Int, Color] = {
+  lazy val SKYCOLORS: Map[Int, Color] = {
     val skyColorsTemp = new jul.HashMap[Int, Color](50)
 
     skyColorsTemp.put(28800, new Color(71, 154, 230))
@@ -1321,7 +1321,7 @@ object TerraFrame {
     skyColorsTemp.asScala.toMap
 
   }
-  val LIGHTLEVELS: Map[Int, BufferedImage] = {
+  lazy val LIGHTLEVELS: Map[Int, BufferedImage] = {
     val lightLevelsTemp = new jul.HashMap[Int, BufferedImage](20)
 
     (0 until 17).foreach { i =>
@@ -1331,7 +1331,7 @@ object TerraFrame {
     lightLevelsTemp.asScala.toMap
   }
 
-  val blockImgs: Map[String, BufferedImage] = {
+  lazy val blockImgs: Map[String, BufferedImage] = {
     val blockImgsTemp = new jul.HashMap[String, BufferedImage](blocknames.length)
 
     (1 until blocknames.length).foreach { i =>
@@ -1346,7 +1346,7 @@ object TerraFrame {
 
     blockImgsTemp.asScala.toMap
   }
-  val outlineImgs: Map[String, BufferedImage] = {
+  lazy val outlineImgs: Map[String, BufferedImage] = {
     val outlineNameList: Array[String] = Array("default", "wood", "none", "tree", "tree_root", "square", "wire")
 
     val outlineImgsTemp = new jul.HashMap[String, BufferedImage](outlineNameList.length * dirs.length * 5)
@@ -1363,7 +1363,7 @@ object TerraFrame {
     outlineImgsTemp.asScala.toMap
   }
 
-  val BLOCKLIGHTS: Map[Int, Int] = {
+  lazy val BLOCKLIGHTS: Map[Int, Int] = {
     val blockLightsTemp = new jul.HashMap[Int, Int](blocknames.length)
 
     blocknames.indices.foreach { i =>
@@ -1424,7 +1424,7 @@ object TerraFrame {
 
     blockLightsTemp.asScala.toMap
   }
-  val GRASSDIRT: Map[Int, Int] = {
+  lazy val GRASSDIRT: Map[Int, Int] = {
     val grassDirtTemp = new jul.HashMap[Int, Int](10)
 
     grassDirtTemp.put(72, 1)
@@ -1434,7 +1434,7 @@ object TerraFrame {
 
     grassDirtTemp.asScala.toMap
   }
-  val ARMOR: Map[Short, Int] = {
+  lazy val ARMOR: Map[Short, Int] = {
     val armorTemp = new jul.HashMap[Short, Int](items.length)
 
     items.indices.foreach { i =>
@@ -1484,7 +1484,7 @@ object TerraFrame {
 
     armorTemp.asScala.toMap
   }
-  val TOOLDURS: Map[Short, Short] = {
+  lazy val TOOLDURS: Map[Short, Short] = {
     val toolDursTemp = new jul.HashMap[Short, Short](80)
 
     toolDursTemp.put(7.toShort, 400.toShort) // copper: P0200 A0200 S0125
@@ -1569,7 +1569,7 @@ object TerraFrame {
     toolDursTemp.asScala.toMap
 
   }
-  val FUELS: Map[Short, Double] = {
+  lazy val FUELS: Map[Short, Double] = {
     val fuelsTemp = new jul.HashMap[Short, Double](50)
 
     fuelsTemp.put(15.toShort, 0.01)
@@ -1608,7 +1608,7 @@ object TerraFrame {
 
     fuelsTemp.asScala.toMap
   }
-  val WIREP: Map[Int, Int] = {
+  lazy val WIREP: Map[Int, Int] = {
     val wirepTemp = new jul.HashMap[Int, Int](10)
 
     wirepTemp.put(0, 94)
@@ -1620,7 +1620,7 @@ object TerraFrame {
 
     wirepTemp.asScala.toMap
   }
-  val TORCHESL: Map[Int, Int] = {
+  lazy val TORCHESL: Map[Int, Int] = {
     val torcheslTemp = new jul.HashMap[Int, Int](10)
 
     torcheslTemp.put(20, 24)
@@ -1634,7 +1634,7 @@ object TerraFrame {
 
     torcheslTemp.asScala.toMap
   }
-  val TORCHESR: Map[Int, Int] = {
+  lazy val TORCHESR: Map[Int, Int] = {
     val torchesrTemp = new jul.HashMap[Int, Int](10)
 
     torchesrTemp.put(20, 25)
@@ -1649,7 +1649,7 @@ object TerraFrame {
 
   }
 
-  val TORCHESB: Map[Int, Boolean] = {
+  lazy val TORCHESB: Map[Int, Boolean] = {
     val torchesbTemp = new jul.HashMap[Int, Boolean](blocknames.length)
 
     blocknames.indices.foreach { i =>
@@ -1713,7 +1713,7 @@ object TerraFrame {
     gsupportTemp.asScala.toMap
 
   }
-  val FSPEED: Map[Short, Double] = {
+  lazy val FSPEED: Map[Short, Double] = {
     val fspeedTemp = new jul.HashMap[Short, Double](blocknames.length)
 
     blocknames.indices.foreach { i =>
@@ -1727,7 +1727,7 @@ object TerraFrame {
     fspeedTemp.asScala.toMap
   }
 
-  val DDELAY: Map[Int, Int] = {
+  lazy val DDELAY: Map[Int, Int] = {
     val ddelayTemp = new jul.HashMap[Int, Int](169)
 
     (137 until 145).foreach { i =>
@@ -1797,12 +1797,12 @@ object TerraFrame {
 
   val theSize: Int = CHUNKBLOCKS * 2
 
-  val logo_white: BufferedImage = loadImage("Interface/logo_white.png")
-  val logo_black: BufferedImage = loadImage("Interface/logo_black.png")
-  val title_screen: BufferedImage = loadImage("Interface/title_screen.png")
-  val select_world: BufferedImage = loadImage("Interface/select_world.png")
-  val new_world: BufferedImage = loadImage("Interface/new_world.png")
-  val save_exit: BufferedImage = loadImage("Interface/save_exit.png")
+  lazy val logo_white: BufferedImage = loadImage("Interface/logo_white.png")
+  lazy val logo_black: BufferedImage = loadImage("Interface/logo_black.png")
+  lazy val title_screen: BufferedImage = loadImage("Interface/title_screen.png")
+  lazy val select_world: BufferedImage = loadImage("Interface/select_world.png")
+  lazy val new_world: BufferedImage = loadImage("Interface/new_world.png")
+  lazy val save_exit: BufferedImage = loadImage("Interface/save_exit.png")
 }
 
 
@@ -1895,8 +1895,8 @@ class TerraFrame extends JApplet
 
   var loadTextPos: Int = 0
 
-  val sun: BufferedImage = loadImage("environment/sun.png")
-  val moon: BufferedImage = loadImage("environment/moon.png")
+  lazy val sun: BufferedImage = loadImage("environment/sun.png")
+  lazy val moon: BufferedImage = loadImage("environment/moon.png")
   var cloud: BufferedImage = _
 
 
@@ -1942,7 +1942,7 @@ class TerraFrame extends JApplet
 
   var image, tool, mobImage: BufferedImage = _
 
-  val FRI1: List[Short] = {
+  lazy val FRI1: List[Short] = {
     val fri1Temp = new jul.ArrayList[Short](180)
 
     fri1Temp.add(3.toShort)
@@ -1975,7 +1975,7 @@ class TerraFrame extends JApplet
 
    fri1Temp.asScala.toList
   }
-  val FRN1: List[Short] = {
+  lazy val FRN1: List[Short] = {
     val frn1Temp = new jul.ArrayList[Short](180)
 
     frn1Temp.add(4.toShort)
@@ -2008,7 +2008,7 @@ class TerraFrame extends JApplet
 
     frn1Temp.asScala.toList
   }
-  val FRI2: List[Short] = {
+  lazy val FRI2: List[Short] = {
     val fri2Temp = new jul.ArrayList[Short](180)
 
     fri2Temp.add(29.toShort)
@@ -2041,7 +2041,7 @@ class TerraFrame extends JApplet
 
     fri2Temp.asScala.toList
   }
-  val FRN2: List[Short] = {
+  lazy val FRN2: List[Short] = {
     val frn2Temp = new jul.ArrayList[Short](180)
 
     frn2Temp.add(1.toShort)
@@ -2092,10 +2092,52 @@ class TerraFrame extends JApplet
 
       screen = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB)
 
+      logo_white.getWidth
+      logo_black.getWidth
+      title_screen.getWidth
+      select_world.getWidth
+      new_world.getWidth
+      save_exit.getWidth
+
       state = "loading_graphics"
 
       repaint()
 
+      backgroundImgs.size
+      itemImgs.size
+      blockImgs.size
+      outlineImgs.size
+      DURABILITY.size
+      BLOCKTOOLS.size
+      TOOLSPEED.size
+      TOOLDAMAGE.size
+      BLOCKDROPS.size
+      ITEMBLOCKS.size
+      OUTLINES.size
+      UIBLOCKS.size
+      BLOCKCD.size
+      MAXSTACKS.size
+      SKYCOLORS.size
+      SKYLIGHTS.size
+      LIGHTLEVELS.size
+      BLOCKLIGHTS.size
+      GRASSDIRT.size
+      ARMOR.size
+      TOOLDURS.size
+      FUELS.size
+      WIREP.size
+      TORCHESL.size
+      TORCHESR.size
+      TORCHESB.size
+      GSUPPORT.size
+      FSPEED.size
+      DDELAY.size
+      sun.getWidth
+      moon.getWidth
+      FRI1.size
+      FRN1.size
+      FRI2.size
+      FRN2.size
 
       bg = CYANISH
       state = "title_screen"
