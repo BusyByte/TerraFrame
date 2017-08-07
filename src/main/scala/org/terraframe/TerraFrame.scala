@@ -1797,12 +1797,12 @@ object TerraFrame {
 
   val theSize: Int = CHUNKBLOCKS * 2
 
-  lazy val logo_white: BufferedImage = loadImage("Interface/logo_white.png")
-  lazy val logo_black: BufferedImage = loadImage("Interface/logo_black.png")
-  lazy val title_screen: BufferedImage = loadImage("Interface/title_screen.png")
-  lazy val select_world: BufferedImage = loadImage("Interface/select_world.png")
-  lazy val new_world: BufferedImage = loadImage("Interface/new_world.png")
-  lazy val save_exit: BufferedImage = loadImage("Interface/save_exit.png")
+  lazy val logo_white: BufferedImage = loadImage("interface/logo_white.png")
+  lazy val logo_black: BufferedImage = loadImage("interface/logo_black.png")
+  lazy val title_screen: BufferedImage = loadImage("interface/title_screen.png")
+  lazy val select_world: BufferedImage = loadImage("interface/select_world.png")
+  lazy val new_world: BufferedImage = loadImage("interface/new_world.png")
+  lazy val save_exit: BufferedImage = loadImage("interface/save_exit.png")
 }
 
 
