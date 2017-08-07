@@ -1682,7 +1682,7 @@ object TerraFrame {
     torchesbTemp.asScala.toMap
   }
 
-  val GSUPPORT: Map[Int, Boolean] = {
+  lazy val GSUPPORT: Map[Int, Boolean] = {
     val gsupportTemp = new jul.HashMap[Int, Boolean](blocknames.length)
 
     blocknames.indices.foreach { i =>
