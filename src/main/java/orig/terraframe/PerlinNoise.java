@@ -1,3 +1,5 @@
+package orig.terraframe;
+
 import java.lang.Math;
 
 public class PerlinNoise {

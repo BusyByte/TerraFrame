@@ -1,3 +1,5 @@
+package orig.terraframe;
+
 public class Chunk {
 
     int cx, cy;
