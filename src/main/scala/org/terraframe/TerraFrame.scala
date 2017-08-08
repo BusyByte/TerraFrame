@@ -6038,13 +6038,13 @@ class TerraFrame extends JApplet
       }
 
       if (layer == 0) {
-        layerImg = loadImage("Interface/layersB.png")
+        layerImg = loadImage("interface/layersB.png")
       }
       if (layer == 1) {
-        layerImg = loadImage("Interface/layersN.png")
+        layerImg = loadImage("interface/layersN.png")
       }
       if (layer == 2) {
-        layerImg = loadImage("Interface/layersF.png")
+        layerImg = loadImage("interface/layersF.png")
       }
 
       pg2.drawImage(layerImg,
