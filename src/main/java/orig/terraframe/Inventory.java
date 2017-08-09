@@ -1654,7 +1654,7 @@ public class Inventory implements Serializable {
     }
 
     private static BufferedImage loadImage(String path) {
-        URL url = TerraFrame.class.getResource(path);
+        URL url = TerraFrame.class.getResource("/" + path);
         BufferedImage image = null;
         try {
             image = ImageIO.read(url);

@@ -43,7 +43,7 @@ public class LightConverter {
     }
 
     private static BufferedImage loadImage(String path) {
-        URL url = RandConverter.class.getResource(path);
+        URL url = RandConverter.class.getResource("/" + path);
         BufferedImage image = null;
         try {
             image = ImageIO.read(url);

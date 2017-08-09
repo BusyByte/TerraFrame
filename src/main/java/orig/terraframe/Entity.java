@@ -611,7 +611,7 @@ public class Entity implements Serializable {
     }
 
     public static BufferedImage loadImage(String path) {
-        URL url = TerraFrame.class.getResource(path);
+        URL url = TerraFrame.class.getResource("/" + path);
         BufferedImage image = null;
         try {
             image = ImageIO.read(url);
