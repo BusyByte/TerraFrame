@@ -1822,7 +1822,6 @@ class TerraFrame extends JApplet
   val cl: Array2D[Int] = Array(Array(-1, 0), Array(1, 0), Array(0, -1), Array(0, 1))
 
   var timer, menuTimer, paIntTimer: javax.swing.Timer = _
-  var folder: File = _
   var worldFiles, worldNames: List[String] = _
   var currentWorld: String = _
   var newWorldName: TextField = _
@@ -1864,7 +1863,7 @@ class TerraFrame extends JApplet
 
   var entity: Entity = _
   // TODO: Need sum type
-  var state: String = "loading_graphics"
+  var state: GameState = LoadingGraphics
   var msg: String = "If you are reading this then\nplease report an error."
   var mobSpawn: String = _
 
@@ -2099,7 +2098,7 @@ class TerraFrame extends JApplet
       new_world.getWidth
       save_exit.getWidth
 
-      state = "loading_graphics"
+      state = LoadingGraphics
 
       repaint()
 
@@ -2140,7 +2139,7 @@ class TerraFrame extends JApplet
       FRN2.size
 
       bg = CYANISH
-      state = "title_screen"
+      state = TitleScreen
 
       repaint()
 
@@ -2494,27 +2493,27 @@ class TerraFrame extends JApplet
               }
               timer = new javax.swing.Timer(20, mainthread)
 
-              if (state.equals("title_screen") && !menuPressed) {
+              if (state == TitleScreen && !menuPressed) {
                 if (mousePos(0) >= 239 && mousePos(0) <= 557) {
                   if (mousePos(1) >= 213 && mousePos(1) <= 249) { // singleplayer
                     findWorlds()
-                    state = "select_world"
+                    state = SelectWorld
                     repaint()
                     menuPressed = true
                   }
                 }
               }
-              if (state.equals("select_world") && !menuPressed) {
+              if (state == SelectWorld && !menuPressed) {
                 if (mousePos(0) >= 186 && mousePos(0) <= 615 &&
                   mousePos(1) >= 458 && mousePos(1) <= 484) { // create new world
-                  state = "new_world"
+                  state = NewWorld
                   newWorldName = TextField(400, "New World")
                   repaint()
                   menuPressed = true
                 }
                 if (mousePos(0) >= 334 && mousePos(0) <= 457 &&
                   mousePos(1) >= 504 && mousePos(1) <= 530) { // back
-                  state = "title_screen"
+                  state = TitleScreen
                   repaint()
                   menuPressed = true
                 }
@@ -2524,12 +2523,12 @@ class TerraFrame extends JApplet
                     if (mousePos(0) >= 166 && mousePos(0) <= 470 &&
                       mousePos(1) >= 117 + i * 35 && mousePos(1) <= 152 + i * 35) { // load world
                       currentWorld = worldNames(i)
-                      state = "loading_world"
+                      state = LoadingWorld
                       bg = Color.BLACK
                       if (loadWorld(worldFiles(i))) {
                         menuTimer.stop()
                         bg = CYANISH
-                        state = "ingame"
+                        state = InGame
                         ready = true
                         timer.start()
                         break
@@ -2538,7 +2537,7 @@ class TerraFrame extends JApplet
                   }
                 }
               }
-              if (state.equals("new_world") && !menuPressed) {
+              if (state == NewWorld && !menuPressed) {
                 if (mousePos(0) >= 186 && mousePos(0) <= 615 &&
                   mousePos(1) >= 458 && mousePos(1) <= 484) { // create new world
                   if (!newWorldName.text.equals("")) {
@@ -2552,7 +2551,7 @@ class TerraFrame extends JApplet
                     if (doGenerateWorld) {
                       menuTimer.stop()
                       bg = Color.BLACK
-                      state = "generating_world"
+                      state = GeneratingWorld
                       currentWorld = newWorldName.text
                       repaint()
                       val createWorldThread: Action = new AbstractAction() {
@@ -2560,7 +2559,7 @@ class TerraFrame extends JApplet
                           try {
                             createNewWorld()
                             bg = CYANISH
-                            state = "ingame"
+                            state = InGame
                             ready = true
                             timer.start()
                             createWorldTimer.stop()
@@ -2577,7 +2576,7 @@ class TerraFrame extends JApplet
                 }
                 if (mousePos(0) >= 334 && mousePos(0) <= 457 &&
                   mousePos(1) >= 504 && mousePos(1) <= 530) { // back
-                  state = "select_world"
+                  state = SelectWorld
                   repaint()
                   menuPressed = true
                 }
@@ -2599,7 +2598,7 @@ class TerraFrame extends JApplet
   }
 
   def findWorlds(): Unit = {
-    folder = new File("worlds")
+    val folder: File = new File("worlds")
     folder.mkdir()
     val files = folder.listFiles()
 
@@ -3275,7 +3274,7 @@ class TerraFrame extends JApplet
           if (mouseClicked) {
             mouseNoLongerClicked = true
             saveWorld()
-            state = "title_screen"
+            state = TitleScreen
             timer.stop()
             menuTimer.start()
             return
@@ -5876,7 +5875,7 @@ class TerraFrame extends JApplet
     pg2 = screen.createGraphics()
     pg2.setColor(bg)
     pg2.fillRect(0, 0, getWidth, getHeight)
-    if (state.equals("ingame")) {
+    if (state == InGame) {
       /*            if (SKYLIGHTS.get(timeOfDay.toInt) != null) {
                 sunlightlevel = SKYLIGHTS.get(timeOfDay.toInt)
                 resunlight = 0
@@ -6267,18 +6266,18 @@ class TerraFrame extends JApplet
         }
       }
     }
-    if (state.equals("loading_graphics")) {
+    if (state == LoadingGraphics) {
       pg2.setFont(loadFont)
       pg2.setColor(Color.GREEN)
       pg2.drawString("Loading graphics... Please wait.", getWidth() / 2 - 200, getHeight() / 2 - 5)
     }
-    if (state.equals("title_screen")) {
+    if (state == TitleScreen) {
       pg2.drawImage(title_screen,
         0, 0, getWidth(), getHeight(),
         0, 0, getWidth(), getHeight(),
         null)
     }
-    if (state.equals("select_world")) {
+    if (state == SelectWorld) {
       pg2.drawImage(select_world,
         0, 0, getWidth(), getHeight(),
         0, 0, getWidth(), getHeight(),
@@ -6290,7 +6289,7 @@ class TerraFrame extends JApplet
         pg2.fillRect(166, 150 + i * 35, 470, 3)
       }
     }
-    if (state.equals("new_world")) {
+    if (state == NewWorld) {
       pg2.drawImage(new_world,
         0, 0, getWidth(), getHeight(),
         0, 0, getWidth(), getHeight(),
@@ -6300,7 +6299,7 @@ class TerraFrame extends JApplet
         0, 0, 400, 30,
         null)
     }
-    if (state.equals("generating_world")) {
+    if (state == GeneratingWorld) {
       pg2.setFont(loadFont)
       pg2.setColor(Color.GREEN)
       pg2.drawString("Generating new world... Please wait.", getWidth() / 2 - 200, getHeight() / 2 - 5)
@@ -6620,7 +6619,7 @@ class TerraFrame extends JApplet
     if (keyCode == KeyEvent.VK_SHIFT) {
       queue(5) = true
     }
-    if (state.equals("ingame")) {
+    if (state == InGame) {
       if (keyCode == KeyEvent.VK_ESCAPE) {
         if (ic != null) {
           if (!ic.`type`.equals("workbench")) {
@@ -6812,8 +6811,7 @@ class TerraFrame extends JApplet
       if (c == '/') c = '?'
     }
 
-    // TODO: convert state to sum type
-    if (state.equals("new_world") && !newWorldFocus) {
+    if (state == NewWorld && !newWorldFocus) {
       if (c != 0) {
         newWorldName.typeKey(c)
         repaint()
