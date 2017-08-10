@@ -1862,7 +1862,6 @@ class TerraFrame extends JApplet
   var layerImg: BufferedImage = _
 
   var entity: Entity = _
-  // TODO: Need sum type
   var state: GameState = LoadingGraphics
   var msg: String = "If you are reading this then\nplease report an error."
   var mobSpawn: String = _
