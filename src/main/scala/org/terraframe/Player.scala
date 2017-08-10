@@ -49,11 +49,12 @@ case class Player(var x: Double, var y: Double) extends Serializable {
 
   hp = thp
 
-  //end constructor
+  import UserInput.Implicits._
 
+  //end constructor
   def update(blocks: Array2D[Int], queue: Array[Boolean], u: Int, v: Int): Unit = {
     grounded = onGround || onGroundDelay
-    if (queue(0)) {
+    if (queue.isLeftKeyPressed) {
       if (vx > -4 || TerraFrame.DEBUG_SPEED) {
         vx = vx - 0.5
       }
@@ -81,7 +82,7 @@ case class Player(var x: Double, var y: Double) extends Serializable {
         imgDelay = imgDelay - 1
       }
     }
-    if (queue(1)) {
+    if (queue.isRightKeyPressed) {
       if (vx < 4 || TerraFrame.DEBUG_SPEED) {
         vx = vx + 0.5
       }
@@ -109,7 +110,7 @@ case class Player(var x: Double, var y: Double) extends Serializable {
         imgDelay = imgDelay - 1
       }
     }
-    if (queue(2)) {
+    if (queue.isUpKeyPressed) {
       if (TerraFrame.DEBUG_FLIGHT) {
         vy -= 1
         pvy -= 1
@@ -121,7 +122,7 @@ case class Player(var x: Double, var y: Double) extends Serializable {
         }
       }
     }
-    if (queue(6)) {
+    if (queue.isDownKeyPressed) {
       if (TerraFrame.DEBUG_FLIGHT) {
         vy += 1
         pvy += 1
@@ -134,7 +135,7 @@ case class Player(var x: Double, var y: Double) extends Serializable {
         vy = 7
       }
     }
-    if (!queue(0) && !queue(1)) {
+    if (!queue.isLeftKeyPressed && !queue.isRightKeyPressed) {
       if (Math.abs(vx) < 0.3) {
         vx = 0
       }

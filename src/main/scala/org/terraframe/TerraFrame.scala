@@ -1815,6 +1815,7 @@ class TerraFrame extends JApplet
 
   import MathHelper._
   import TerraFrame._
+  import UserInput.Implicits._
 
   var screen: BufferedImage = _
   var bg: Color = _
@@ -2145,9 +2146,10 @@ class TerraFrame extends JApplet
       menuTimer = new javax.swing.Timer(20, null)
 
       menuTimer.addActionListener(new ActionListener() {
+
         def actionPerformed(ae: ActionEvent): Unit = {
           try {
-            if (queue(3)) {
+            if (queue.isLeftMousePressed) {
               val mainthread: Action = new AbstractAction() {
                 def actionPerformed(ae: ActionEvent): Unit = {
                   try {
@@ -3265,7 +3267,7 @@ class TerraFrame extends JApplet
       }
     }
 
-    if (queue(3)) {
+    if (queue.isLeftMousePressed) {
       checkBlocks = true
       if (showInv) {
         if (mousePos(0) >= getWidth - save_exit.getWidth() - 24 && mousePos(0) <= getWidth - 24 &&
@@ -3770,7 +3772,7 @@ class TerraFrame extends JApplet
     else {
       mouseClicked = true
     }
-    if (queue(4)) {
+    if (queue.isRightMousePressed) {
       checkBlocks = true
       if (showInv) {
         (0 until 10).foreach { ux =>
@@ -6604,19 +6606,19 @@ class TerraFrame extends JApplet
   def keyPressed(key: KeyEvent): Unit = {
     val keyCode = key.getKeyCode
     if (keyCode == KeyEvent.VK_LEFT || keyCode == KeyEvent.VK_A) {
-      queue(0) = true
+      queue.setLeftKeyPressed(true)
     }
     if (keyCode == KeyEvent.VK_RIGHT || keyCode == KeyEvent.VK_D) {
-      queue(1) = true
+      queue.setRightKeyPressed(true)
     }
     if (keyCode == KeyEvent.VK_UP || keyCode == KeyEvent.VK_W) {
-      queue(2) = true
+      queue.setUpKeyPressed(true)
     }
     if (keyCode == KeyEvent.VK_DOWN || keyCode == KeyEvent.VK_S) {
-      queue(6) = true
+      queue.setDownKeyPressed(true)
     }
     if (keyCode == KeyEvent.VK_SHIFT) {
-      queue(5) = true
+      queue.setShiftKeyPressed(true)
     }
     if (state == InGame) {
       if (keyCode == KeyEvent.VK_ESCAPE) {
@@ -6759,7 +6761,7 @@ class TerraFrame extends JApplet
     if (keyCode == KeyEvent.VK_PERIOD) c = '.'
     if (keyCode == KeyEvent.VK_SLASH) c = '/'
 
-    if (queue(5)) {
+    if (queue.isShiftKeyPressed) {
       if (c == 'q') c = 'Q'
       if (c == 'w') c = 'W'
       if (c == 'e') c = 'E'
@@ -6833,35 +6835,40 @@ class TerraFrame extends JApplet
   def keyReleased(key: KeyEvent): Unit = {
     val keyCode = key.getKeyCode
     if (keyCode == KeyEvent.VK_LEFT || keyCode == KeyEvent.VK_A) {
-      queue(0) = false
+      queue.setLeftKeyPressed(false)
     }
     if (keyCode == KeyEvent.VK_RIGHT || keyCode == KeyEvent.VK_D) {
-      queue(1) = false
+      queue.setRightKeyPressed(false)
     }
     if (keyCode == KeyEvent.VK_UP || keyCode == KeyEvent.VK_W) {
-      queue(2) = false
+      queue.setUpKeyPressed(false)
     }
     if (keyCode == KeyEvent.VK_SHIFT) {
-      queue(5) = false
+      queue.setShiftKeyPressed(false)
     }
     if (keyCode == KeyEvent.VK_DOWN || keyCode == KeyEvent.VK_S) {
-      queue(6) = false
+      queue.setDownKeyPressed(false)
     }
   }
 
   def mousePressed(e: MouseEvent): Unit = {
     val button = e.getButton
-    if (!queue(3)) {
-      queue(3) = button == MouseEvent.BUTTON1
+    if(button == MouseEvent.BUTTON1) {
+      queue.setLeftMousePressed(true)
     }
-    if (!queue(4)) {
-      queue(4) = button == MouseEvent.BUTTON3
+    if (button == MouseEvent.BUTTON3) {
+      queue.setRightMousePressed(true)
     }
   }
 
   def mouseReleased(e: MouseEvent): Unit = {
-    queue(3) = false
-    queue(4) = false
+    val button = e.getButton
+    if(button == MouseEvent.BUTTON1) {
+      queue.setLeftMousePressed(false)
+    }
+    if(button == MouseEvent.BUTTON3) {
+      queue.setRightMousePressed(false)
+    }
     menuPressed = false
   }
 
