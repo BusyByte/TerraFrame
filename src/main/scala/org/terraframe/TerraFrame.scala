@@ -2733,13 +2733,13 @@ class TerraFrame extends JApplet
     val tlist1 = Array[Short](0, 0, 0, 0, 0)
     val tlist2 = Array[Short](0, 0, 0, 0, 0)
     val tlist3 = Array[Short](0, 0, 0, 0, 0)
-    cic = ItemCollection("cic", tlist1, tlist2, tlist3)
+    cic = ItemCollection(CIC, tlist1, tlist2, tlist3)
     inventory.renderCollection(cic)
 
     val tlist4 = Array[Short](0, 0, 0, 0)
     val tlist5 = Array[Short](0, 0, 0, 0)
     val tlist6 = Array[Short](0, 0, 0, 0)
-    armor = ItemCollection("armor", tlist4, tlist5, tlist6)
+    armor = ItemCollection(Armor, tlist4, tlist5, tlist6)
     inventory.renderCollection(armor)
 
     toolAngle = 4.7
@@ -2844,7 +2844,7 @@ class TerraFrame extends JApplet
       x = machinesx(j)
       y = machinesy(j)
       (0 until 3).foreach { l =>
-        if (icmatrix(l)(y)(x) != null && icmatrix(l)(y)(x).`type`.equals("furnace")) {
+        if (icmatrix(l)(y)(x) != null && icmatrix(l)(y)(x).icType.equals("furnace")) {
           if (icmatrix(l)(y)(x).F_ON) {
             if (icmatrix(l)(y)(x).ids(1) == 0) {
               if (FUELS.get(icmatrix(l)(y)(x).ids(2)) != null) {
@@ -2893,7 +2893,7 @@ class TerraFrame extends JApplet
       }
     }
 
-    if (ic != null && ic.`type`.equals("furnace")) {
+    if (ic != null && ic.icType.equals("furnace")) {
       if (ic.F_ON) {
         if (ic.ids(1) == 0) {
           if (FUELS.get(ic.ids(2)) != null) {
@@ -2942,12 +2942,12 @@ class TerraFrame extends JApplet
     }
     if (Math.sqrt(Math.pow(player.x + player.image.getWidth() - icx * BLOCKSIZE + BLOCKSIZE / 2, 2) + Math.pow(player.y + player.image.getHeight() - icy * BLOCKSIZE + BLOCKSIZE / 2, 2)) > 160) {
       if (ic != null) {
-        if (!ic.`type`.equals("workbench")) {
+        if (!ic.icType.equals("workbench")) {
           machinesx += icx
           machinesy += icy
-          icmatrix(iclayer)(icy)(icx) = ItemCollection(ic.`type`, ic.ids, ic.nums, ic.durs)
+          icmatrix(iclayer)(icy)(icx) = ItemCollection(ic.icType, ic.ids, ic.nums, ic.durs)
         }
-        if (ic.`type`.equals("workbench")) {
+        if (ic.icType.equals("workbench")) {
           if (player.imgState.equals("still right") || player.imgState.equals("walk right 1") || player.imgState.equals("walk right 2")) {
             (0 until 9).foreach { i =>
               if (ic.ids(i) != 0) {
@@ -2963,7 +2963,7 @@ class TerraFrame extends JApplet
             }
           }
         }
-        if (ic.`type`.equals("furnace")) {
+        if (ic.icType.equals("furnace")) {
           icmatrix(iclayer)(icy)(icx).FUELP = ic.FUELP
           icmatrix(iclayer)(icy)(icx).SMELTP = ic.SMELTP
           icmatrix(iclayer)(icy)(icx).F_ON = ic.F_ON
@@ -3368,7 +3368,7 @@ class TerraFrame extends JApplet
           }
         }
         if (ic != null) {
-          if (ic.`type`.equals("workbench")) {
+          if (ic.icType.equals("workbench")) {
             (0 until 3).foreach { ux =>
               (0 until 3).foreach { uy =>
                 if (mouseX >= ux * 40 + 6 && mouseX < ux * 40 + 46 &&
@@ -3420,11 +3420,11 @@ class TerraFrame extends JApplet
               }
             }
           }
-          if (ic.`type`.equals("wooden_chest") || ic.`type`.equals("stone_chest") ||
-            ic.`type`.equals("copper_chest") || ic.`type`.equals("iron_chest") ||
-            ic.`type`.equals("silver_chest") || ic.`type`.equals("gold_chest") ||
-            ic.`type`.equals("zinc_chest") || ic.`type`.equals("rhymestone_chest") ||
-            ic.`type`.equals("obdurite_chest")) {
+          if (ic.icType.equals("wooden_chest") || ic.icType.equals("stone_chest") ||
+            ic.icType.equals("copper_chest") || ic.icType.equals("iron_chest") ||
+            ic.icType.equals("silver_chest") || ic.icType.equals("gold_chest") ||
+            ic.icType.equals("zinc_chest") || ic.icType.equals("rhymestone_chest") ||
+            ic.icType.equals("obdurite_chest")) {
             (0 until inventory.CX).foreach { ux =>
               (0 until inventory.CY).foreach { uy =>
                 if (mouseX >= ux * 46 + 6 && mouseX < ux * 46 + 46 &&
@@ -3454,7 +3454,7 @@ class TerraFrame extends JApplet
               }
             }
           }
-          if (ic.`type`.equals("furnace")) {
+          if (ic.icType.equals("furnace")) {
             if (mouseX >= 6 && mouseX < 46 &&
               mouseY >= inventory.image.getHeight() + 46 &&
               mouseY < inventory.image.getHeight() + 86) {
@@ -3641,7 +3641,7 @@ class TerraFrame extends JApplet
             }
             else if (inventory.tool() == 33) {
               if (blocks(layer)(uy)(ux) == 17 || blocks(layer)(uy)(ux) == 23) {
-                if (icmatrix(layer)(uy)(ux) != null && icmatrix(layer)(uy)(ux).`type`.equals("furnace")) {
+                if (icmatrix(layer)(uy)(ux) != null && icmatrix(layer)(uy)(ux).icType.equals("furnace")) {
                   inventory.durs(inventory.selection) = (inventory.durs(inventory.selection) - 1).toShort
                   icmatrix(layer)(uy)(ux).F_ON = true
                   blocks(layer)(uy)(ux) = 23
@@ -3652,7 +3652,7 @@ class TerraFrame extends JApplet
                   rdrawn(uy)(ux) = false
                 }
                 else {
-                  if (ic != null && ic.`type`.equals("furnace")) {
+                  if (ic != null && ic.icType.equals("furnace")) {
                     inventory.durs(inventory.selection) = (inventory.durs(inventory.selection) - 1).toShort
                     ic.F_ON = true
                     blocks(layer)(icy)(icx) = 23
@@ -3853,7 +3853,7 @@ class TerraFrame extends JApplet
           }
         }
         if (ic != null) {
-          if (ic.`type`.equals("workbench")) {
+          if (ic.icType.equals("workbench")) {
             (0 until 3).foreach { ux =>
               (0 until 3).foreach { uy =>
                 if (mouseX >= ux * 40 + 6 && mouseX < ux * 40 + 46 &&
@@ -3905,11 +3905,11 @@ class TerraFrame extends JApplet
               }
             }
           }
-          if (ic.`type`.equals("wooden_chest") || ic.`type`.equals("stone_chest") ||
-            ic.`type`.equals("copper_chest") || ic.`type`.equals("iron_chest") ||
-            ic.`type`.equals("silver_chest") || ic.`type`.equals("gold_chest") ||
-            ic.`type`.equals("zinc_chest") || ic.`type`.equals("rhymestone_chest") ||
-            ic.`type`.equals("obdurite_chest")) {
+          if (ic.icType.equals("wooden_chest") || ic.icType.equals("stone_chest") ||
+            ic.icType.equals("copper_chest") || ic.icType.equals("iron_chest") ||
+            ic.icType.equals("silver_chest") || ic.icType.equals("gold_chest") ||
+            ic.icType.equals("zinc_chest") || ic.icType.equals("rhymestone_chest") ||
+            ic.icType.equals("obdurite_chest")) {
             (0 until inventory.CX).foreach { ux =>
               (0 until inventory.CY).foreach { uy =>
                 if (mouseX >= ux * 46 + 6 && mouseX < ux * 46 + 46 &&
@@ -3949,7 +3949,7 @@ class TerraFrame extends JApplet
               }
             }
           }
-          if (ic.`type`.equals("furnace")) {
+          if (ic.icType.equals("furnace")) {
             if (mouseX >= 6 && mouseX < 46 &&
               mouseY >= inventory.image.getHeight() + 46 &&
               mouseY < inventory.image.getHeight() + 86) {
@@ -4044,12 +4044,12 @@ class TerraFrame extends JApplet
             ucy = uy - CHUNKBLOCKS * (uy / CHUNKBLOCKS)
             if (blocks(layer)(uy)(ux) >= 8 && blocks(layer)(uy)(ux) <= 14 || blocks(layer)(uy)(ux) == 17 || blocks(layer)(uy)(ux) == 23 || blocks(layer)(uy)(ux) >= 80 && blocks(layer)(uy)(ux) <= 82) {
               if (ic != null) {
-                if (!ic.`type`.equals("workbench")) {
+                if (!ic.icType.equals("workbench")) {
                   machinesx += icx
                   machinesy += icy
-                  icmatrix(iclayer)(icy)(icx) = ItemCollection(ic.`type`, ic.ids, ic.nums, ic.durs)
+                  icmatrix(iclayer)(icy)(icx) = ItemCollection(ic.icType, ic.ids, ic.nums, ic.durs)
                 }
-                if (ic.`type`.equals("workbench")) {
+                if (ic.icType.equals("workbench")) {
                   if (player.imgState.equals("still right") || player.imgState.equals("walk right 1") || player.imgState.equals("walk right 2")) {
                     (0 until 9).foreach { i =>
                       if (ic.ids(i) != 0) {
@@ -4065,7 +4065,7 @@ class TerraFrame extends JApplet
                     }
                   }
                 }
-                if (ic.`type`.equals("furnace")) {
+                if (ic.icType.equals("furnace")) {
                   icmatrix(iclayer)(icy)(icx).FUELP = ic.FUELP
                   icmatrix(iclayer)(icy)(icx).SMELTP = ic.SMELTP
                   icmatrix(iclayer)(icy)(icx).F_ON = ic.F_ON
@@ -4078,11 +4078,11 @@ class TerraFrame extends JApplet
                   val tlist1: Array[Short] = Array[Short](0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
                   val tlist2: Array[Short] = Array[Short](0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
                   val tlist3: Array[Short] = Array[Short](0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
-                  if (icmatrix(l)(uy)(ux) != null && icmatrix(l)(uy)(ux).`type`.equals("workbench")) {
-                    ic = ItemCollection("workbench", icmatrix(l)(uy)(ux).ids, icmatrix(l)(uy)(ux).nums, icmatrix(l)(uy)(ux).durs)
+                  if (icmatrix(l)(uy)(ux) != null && icmatrix(l)(uy)(ux).icType == Workbench) {
+                    ic = ItemCollection(Workbench, icmatrix(l)(uy)(ux).ids, icmatrix(l)(uy)(ux).nums, icmatrix(l)(uy)(ux).durs)
                   }
                   else {
-                    ic = ItemCollection("workbench", tlist1, tlist2, tlist3)
+                    ic = ItemCollection(Workbench, tlist1, tlist2, tlist3)
                   }
                   icx = ux
                   icy = uy
@@ -4090,14 +4090,14 @@ class TerraFrame extends JApplet
                   showInv = true
                 }
                 if (blocks(l)(uy)(ux) == 9) {
-                  val tlist1: Array[Short] = Array[Short](0, 0, 0, 0, 0, 0, 0, 0, 0)
+                  val tlist1: Array[Short] = Array[Short](0, 0, 0, 0, 0, 0, 0, 0, 0)//TODO: move these inside the else block
                   val tlist2: Array[Short] = Array[Short](0, 0, 0, 0, 0, 0, 0, 0, 0)
                   val tlist3: Array[Short] = Array[Short](0, 0, 0, 0, 0, 0, 0, 0, 0)
-                  if (icmatrix(l)(uy)(ux) != null && icmatrix(l)(uy)(ux).`type`.equals("wooden_chest")) {
-                    ic = ItemCollection("wooden_chest", icmatrix(l)(uy)(ux).ids, icmatrix(l)(uy)(ux).nums, icmatrix(l)(uy)(ux).durs)
+                  if (icmatrix(l)(uy)(ux) != null && icmatrix(l)(uy)(ux).icType == WoodenChest) {
+                    ic = ItemCollection(WoodenChest, icmatrix(l)(uy)(ux).ids, icmatrix(l)(uy)(ux).nums, icmatrix(l)(uy)(ux).durs)
                   }
                   else {
-                    ic = ItemCollection("wooden_chest", tlist1, tlist2, tlist3)
+                    ic = ItemCollection(WoodenChest, tlist1, tlist2, tlist3)
                   }
                   icx = ux
                   icy = uy
@@ -4108,11 +4108,11 @@ class TerraFrame extends JApplet
                   val tlist1: Array[Short] = Array[Short](0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
                   val tlist2: Array[Short] = Array[Short](0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
                   val tlist3: Array[Short] = Array[Short](0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
-                  if (icmatrix(l)(uy)(ux) != null && icmatrix(l)(uy)(ux).`type`.equals("stone_chest")) {
-                    ic = ItemCollection("stone_chest", icmatrix(l)(uy)(ux).ids, icmatrix(l)(uy)(ux).nums, icmatrix(l)(uy)(ux).durs)
+                  if (icmatrix(l)(uy)(ux) != null && icmatrix(l)(uy)(ux).icType == StoneChest) {
+                    ic = ItemCollection(StoneChest, icmatrix(l)(uy)(ux).ids, icmatrix(l)(uy)(ux).nums, icmatrix(l)(uy)(ux).durs)
                   }
                   else {
-                    ic = ItemCollection("stone_chest", tlist1, tlist2, tlist3)
+                    ic = ItemCollection(StoneChest, tlist1, tlist2, tlist3)
                   }
                   icx = ux
                   icy = uy
@@ -4123,11 +4123,11 @@ class TerraFrame extends JApplet
                   val tlist1: Array[Short] = Array[Short](0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
                   val tlist2: Array[Short] = Array[Short](0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
                   val tlist3: Array[Short] = Array[Short](0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
-                  if (icmatrix(l)(uy)(ux) != null && icmatrix(l)(uy)(ux).`type`.equals("copper_chest")) {
-                    ic = ItemCollection("copper_chest", icmatrix(l)(uy)(ux).ids, icmatrix(l)(uy)(ux).nums, icmatrix(l)(uy)(ux).durs)
+                  if (icmatrix(l)(uy)(ux) != null && icmatrix(l)(uy)(ux).icType == CopperChest) {
+                    ic = ItemCollection(CopperChest, icmatrix(l)(uy)(ux).ids, icmatrix(l)(uy)(ux).nums, icmatrix(l)(uy)(ux).durs)
                   }
                   else {
-                    ic = ItemCollection("copper_chest", tlist1, tlist2, tlist3)
+                    ic = ItemCollection(CopperChest, tlist1, tlist2, tlist3)
                   }
                   icx = ux
                   icy = uy
@@ -4138,11 +4138,11 @@ class TerraFrame extends JApplet
                   val tlist1: Array[Short] = Array[Short](0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
                   val tlist2: Array[Short] = Array[Short](0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
                   val tlist3: Array[Short] = Array[Short](0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
-                  if (icmatrix(l)(uy)(ux) != null && icmatrix(l)(uy)(ux).`type`.equals("iron_chest")) {
-                    ic = ItemCollection("iron_chest", icmatrix(l)(uy)(ux).ids, icmatrix(l)(uy)(ux).nums, icmatrix(l)(uy)(ux).durs)
+                  if (icmatrix(l)(uy)(ux) != null && icmatrix(l)(uy)(ux).icType == IronChest) {
+                    ic = ItemCollection(IronChest, icmatrix(l)(uy)(ux).ids, icmatrix(l)(uy)(ux).nums, icmatrix(l)(uy)(ux).durs)
                   }
                   else {
-                    ic = ItemCollection("iron_chest", tlist1, tlist2, tlist3)
+                    ic = ItemCollection(IronChest, tlist1, tlist2, tlist3)
                   }
                   icx = ux
                   icy = uy
@@ -4153,11 +4153,11 @@ class TerraFrame extends JApplet
                   val tlist1: Array[Short] = Array[Short](0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
                   val tlist2: Array[Short] = Array[Short](0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
                   val tlist3: Array[Short] = Array[Short](0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
-                  if (icmatrix(l)(uy)(ux) != null && icmatrix(l)(uy)(ux).`type`.equals("silver_chest")) {
-                    ic = ItemCollection("silver_chest", icmatrix(l)(uy)(ux).ids, icmatrix(l)(uy)(ux).nums, icmatrix(l)(uy)(ux).durs)
+                  if (icmatrix(l)(uy)(ux) != null && icmatrix(l)(uy)(ux).icType == SilverChest) {
+                    ic = ItemCollection(SilverChest, icmatrix(l)(uy)(ux).ids, icmatrix(l)(uy)(ux).nums, icmatrix(l)(uy)(ux).durs)
                   }
                   else {
-                    ic = ItemCollection("silver_chest", tlist1, tlist2, tlist3)
+                    ic = ItemCollection(SilverChest, tlist1, tlist2, tlist3)
                   }
                   icx = ux
                   icy = uy
@@ -4168,11 +4168,11 @@ class TerraFrame extends JApplet
                   val tlist1: Array[Short] = Array[Short](0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
                   val tlist2: Array[Short] = Array[Short](0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
                   val tlist3: Array[Short] = Array[Short](0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
-                  if (icmatrix(l)(uy)(ux) != null && icmatrix(l)(uy)(ux).`type`.equals("gold_chest")) {
-                    ic = new ItemCollection("gold_chest", icmatrix(l)(uy)(ux).ids, icmatrix(l)(uy)(ux).nums, icmatrix(l)(uy)(ux).durs)
+                  if (icmatrix(l)(uy)(ux) != null && icmatrix(l)(uy)(ux).icType == GoldChest) {
+                    ic = new ItemCollection(GoldChest, icmatrix(l)(uy)(ux).ids, icmatrix(l)(uy)(ux).nums, icmatrix(l)(uy)(ux).durs)
                   }
                   else {
-                    ic = new ItemCollection("gold_chest", tlist1, tlist2, tlist3)
+                    ic = new ItemCollection(GoldChest, tlist1, tlist2, tlist3)
                   }
                   icx = ux
                   icy = uy
@@ -4183,11 +4183,11 @@ class TerraFrame extends JApplet
                   val tlist1: Array[Short] = Array[Short](0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
                   val tlist2: Array[Short] = Array[Short](0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
                   val tlist3: Array[Short] = Array[Short](0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
-                  if (icmatrix(l)(uy)(ux) != null && icmatrix(l)(uy)(ux).`type`.equals("zinc_chest")) {
-                    ic = ItemCollection("zinc_chest", icmatrix(l)(uy)(ux).ids, icmatrix(l)(uy)(ux).nums, icmatrix(l)(uy)(ux).durs)
+                  if (icmatrix(l)(uy)(ux) != null && icmatrix(l)(uy)(ux).icType == ZincChest) {
+                    ic = ItemCollection(ZincChest, icmatrix(l)(uy)(ux).ids, icmatrix(l)(uy)(ux).nums, icmatrix(l)(uy)(ux).durs)
                   }
                   else {
-                    ic = ItemCollection("zinc_chest", tlist1, tlist2, tlist3)
+                    ic = ItemCollection(ZincChest, tlist1, tlist2, tlist3)
                   }
                   icx = ux
                   icy = uy
@@ -4198,11 +4198,11 @@ class TerraFrame extends JApplet
                   val tlist1: Array[Short] = Array[Short](0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
                   val tlist2: Array[Short] = Array[Short](0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
                   val tlist3: Array[Short] = Array[Short](0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
-                  if (icmatrix(l)(uy)(ux) != null && icmatrix(l)(uy)(ux).`type`.equals("rhymestone_chest")) {
-                    ic = ItemCollection("rhymestone_chest", icmatrix(l)(uy)(ux).ids, icmatrix(l)(uy)(ux).nums, icmatrix(l)(uy)(ux).durs)
+                  if (icmatrix(l)(uy)(ux) != null && icmatrix(l)(uy)(ux).icType == RhymestoneChest) {
+                    ic = ItemCollection(RhymestoneChest, icmatrix(l)(uy)(ux).ids, icmatrix(l)(uy)(ux).nums, icmatrix(l)(uy)(ux).durs)
                   }
                   else {
-                    ic = ItemCollection("rhymestone_chest", tlist1, tlist2, tlist3)
+                    ic = ItemCollection(RhymestoneChest, tlist1, tlist2, tlist3)
                   }
                   icx = ux
                   icy = uy
@@ -4213,11 +4213,11 @@ class TerraFrame extends JApplet
                   val tlist1: Array[Short] = Array[Short](0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
                   val tlist2: Array[Short] = Array[Short](0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
                   val tlist3: Array[Short] = Array[Short](0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
-                  if (icmatrix(l)(uy)(ux) != null && icmatrix(l)(uy)(ux).`type`.equals("obdurite_chest")) {
-                    ic = ItemCollection("obdurite_chest", icmatrix(l)(uy)(ux).ids, icmatrix(l)(uy)(ux).nums, icmatrix(l)(uy)(ux).durs)
+                  if (icmatrix(l)(uy)(ux) != null && icmatrix(l)(uy)(ux).icType == ObduriteChest) {
+                    ic = ItemCollection(ObduriteChest, icmatrix(l)(uy)(ux).ids, icmatrix(l)(uy)(ux).nums, icmatrix(l)(uy)(ux).durs)
                   }
                   else {
-                    ic = ItemCollection("obdurite_chest", tlist1, tlist2, tlist3)
+                    ic = ItemCollection(ObduriteChest, tlist1, tlist2, tlist3)
                   }
                   icx = ux
                   icy = uy
@@ -4228,15 +4228,15 @@ class TerraFrame extends JApplet
                   val tlist1: Array[Short] = Array[Short](0, 0, 0, 0)
                   val tlist2: Array[Short] = Array[Short](0, 0, 0, 0)
                   val tlist3: Array[Short] = Array[Short](0, 0, 0, 0)
-                  if (icmatrix(l)(uy)(ux) != null && icmatrix(l)(uy)(ux).`type`.equals("furnace")) {
-                    ic = ItemCollection("furnace", icmatrix(l)(uy)(ux).ids, icmatrix(l)(uy)(ux).nums, icmatrix(l)(uy)(ux).durs)
+                  if (icmatrix(l)(uy)(ux) != null && icmatrix(l)(uy)(ux).icType == Furnace) {
+                    ic = ItemCollection(Furnace, icmatrix(l)(uy)(ux).ids, icmatrix(l)(uy)(ux).nums, icmatrix(l)(uy)(ux).durs)
                     ic.FUELP = icmatrix(l)(uy)(ux).FUELP
                     ic.SMELTP = icmatrix(l)(uy)(ux).SMELTP
                     ic.F_ON = icmatrix(l)(uy)(ux).F_ON
                     icmatrix(l)(uy)(ux) = null
                   }
                   else {
-                    ic = ItemCollection("furnace", tlist1, tlist2, tlist3)
+                    ic = ItemCollection(Furnace, tlist1, tlist2, tlist3)
                   }
                   icx = ux
                   icy = uy
@@ -4401,12 +4401,12 @@ class TerraFrame extends JApplet
         }
       }
       if (ic != null) {
-        if (!ic.`type`.equals("workbench")) {
+        if (!ic.icType.equals("workbench")) {
           machinesx += icx
           machinesy += icy
-          icmatrix(iclayer)(icy)(icx) = ItemCollection(ic.`type`, ic.ids, ic.nums, ic.durs)
+          icmatrix(iclayer)(icy)(icx) = ItemCollection(ic.icType, ic.ids, ic.nums, ic.durs)
         }
-        if (ic.`type`.equals("workbench")) {
+        if (ic.icType.equals("workbench")) {
           if (player.imgState.equals("still right") || player.imgState.equals("walk right 1") || player.imgState.equals("walk right 2")) {
             (0 until 9).foreach { i =>
               if (ic.ids(i) != 0) {
@@ -4422,7 +4422,7 @@ class TerraFrame extends JApplet
             }
           }
         }
-        if (ic.`type`.equals("furnace")) {
+        if (ic.icType.equals("furnace")) {
           icmatrix(iclayer)(icy)(icx).FUELP = ic.FUELP
           icmatrix(iclayer)(icy)(icx).SMELTP = ic.SMELTP
           icmatrix(iclayer)(icy)(icx).F_ON = ic.F_ON
@@ -4678,14 +4678,14 @@ class TerraFrame extends JApplet
       if (blocks(layer)(uy)(ux) >= 8 && blocks(layer)(uy)(ux) <= 14 || blocks(layer)(uy)(ux) == 17 || blocks(layer)(uy)(ux) == 23 || blocks(layer)(uy)(ux) >= 80 && blocks(layer)(uy)(ux) <= 82) {
         if (ic != null) {
           ic.ids.indices.foreach { i =>
-            if (ic.ids(i) != 0 && !(ic.`type`.equals("furnace") && i == 1)) {
+            if (ic.ids(i) != 0 && !(ic.icType.equals("furnace") && i == 1)) {
               entities += new Entity(ux * BLOCKSIZE, uy * BLOCKSIZE, random.nextDouble() * 4 - 2, -2, ic.ids(i), ic.nums(i), ic.durs(i))
             }
           }
         }
         if (icmatrix(layer)(uy)(ux) != null) {
           icmatrix(layer)(uy)(ux).ids.indices.foreach { i =>
-            if (icmatrix(layer)(uy)(ux).ids(i) != 0 && !(icmatrix(layer)(uy)(ux).`type`.equals("furnace") && i == 1)) {
+            if (icmatrix(layer)(uy)(ux).ids(i) != 0 && !(icmatrix(layer)(uy)(ux).icType.equals("furnace") && i == 1)) {
               entities += new Entity(ux * BLOCKSIZE, uy * BLOCKSIZE, random.nextDouble() * 4 - 2, -2, icmatrix(layer)(uy)(ux).ids(i), icmatrix(layer)(uy)(ux).nums(i), icmatrix(layer)(uy)(ux).durs(i))
             }
           }
@@ -6163,7 +6163,7 @@ class TerraFrame extends JApplet
         }
       }
       if (ic != null) {
-        if (ic.`type`.equals("workbench")) {
+        if (ic.icType.equals("workbench")) {
           (0 until 3).foreach { ux =>
             (0 until 3).foreach { uy =>
               if (mouseX >= ux * 40 + 6 && mouseX < ux * 40 + 46 &&
@@ -6195,11 +6195,11 @@ class TerraFrame extends JApplet
             }
           }
         }
-        if (ic.`type`.equals("wooden_chest") || ic.`type`.equals("stone_chest") ||
-          ic.`type`.equals("copper_chest") || ic.`type`.equals("iron_chest") ||
-          ic.`type`.equals("silver_chest") || ic.`type`.equals("gold_chest") ||
-          ic.`type`.equals("zinc_chest") || ic.`type`.equals("rhymestone_chest") ||
-          ic.`type`.equals("obdurite_chest")) {
+        if (ic.icType.equals("wooden_chest") || ic.icType.equals("stone_chest") ||
+          ic.icType.equals("copper_chest") || ic.icType.equals("iron_chest") ||
+          ic.icType.equals("silver_chest") || ic.icType.equals("gold_chest") ||
+          ic.icType.equals("zinc_chest") || ic.icType.equals("rhymestone_chest") ||
+          ic.icType.equals("obdurite_chest")) {
           (0 until inventory.CX).foreach { ux =>
             (0 until inventory.CY).foreach { uy =>
               if (mouseX >= ux * 46 + 6 && mouseX < ux * 46 + 46 &&
@@ -6218,7 +6218,7 @@ class TerraFrame extends JApplet
             }
           }
         }
-        if (ic.`type`.equals("furnace")) {
+        if (ic.icType.equals("furnace")) {
           if (mouseX >= 6 && mouseX < 46 &&
             mouseY >= inventory.image.getHeight() + 46 && mouseY < inventory.image.getHeight() + 86 &&
             ic.ids(0) != 0) {
@@ -6411,7 +6411,7 @@ class TerraFrame extends JApplet
       val tlist1 = Array[Short](0, 0, 0, 0, 0)
       val tlist2 = Array[Short](0, 0, 0, 0, 0)
       val tlist3 = Array[Short](0, 0, 0, 0, 0)
-      cic = ItemCollection("cic", tlist1, tlist2, tlist3)
+      cic = ItemCollection(CIC, tlist1, tlist2, tlist3)
       inventory.renderCollection(cic)
     }
     if (ic != null) {
@@ -6626,12 +6626,12 @@ class TerraFrame extends JApplet
     if (state == InGame) {
       if (keyCode == KeyEvent.VK_ESCAPE) {
         if (ic != null) {
-          if (!ic.`type`.equals("workbench")) {
+          if (!ic.icType.equals("workbench")) {
             machinesx += icx
             machinesy += icy
-            icmatrix(iclayer)(icy)(icx) = ItemCollection(ic.`type`, ic.ids, ic.nums, ic.durs)
+            icmatrix(iclayer)(icy)(icx) = ItemCollection(ic.icType, ic.ids, ic.nums, ic.durs)
           }
-          if (ic.`type`.equals("workbench")) {
+          if (ic.icType.equals("workbench")) {
             if (player.imgState.equals("still right") || player.imgState.equals("walk right 1") || player.imgState.equals("walk right 2")) {
               (0 until 9).foreach { i =>
                 if (ic.ids(i) != 0) {
@@ -6647,7 +6647,7 @@ class TerraFrame extends JApplet
               }
             }
           }
-          if (ic.`type`.equals("furnace")) {
+          if (ic.icType.equals("furnace")) {
             icmatrix(iclayer)(icy)(icx).FUELP = ic.FUELP
             icmatrix(iclayer)(icy)(icx).SMELTP = ic.SMELTP
             icmatrix(iclayer)(icy)(icx).F_ON = ic.F_ON

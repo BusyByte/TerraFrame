@@ -1081,7 +1081,7 @@ class Inventory extends Serializable {
   }
 
   def renderCollection(ic: ItemCollection): Unit = {
-    if (ic.`type`.equals("cic")) {
+    if (ic.icType.equals("cic")) {
       if (ic.image == null) {
         ic.image = loadImage("interface/cic.png")
         (0 until 4).foreach { i =>
@@ -1089,7 +1089,7 @@ class Inventory extends Serializable {
         }
       }
     }
-    if (ic.`type`.equals("armor")) {
+    if (ic.icType.equals("armor")) {
       if (ic.image == null) {
         ic.image = loadImage("interface/armor.png")
         CX = 1
@@ -1099,7 +1099,7 @@ class Inventory extends Serializable {
         }
       }
     }
-    if (ic.`type`.equals("workbench")) {
+    if (ic.icType.equals("workbench")) {
       if (ic.image == null) {
         ic.image = loadImage("interface/workbench.png")
         (0 until 9).foreach { i =>
@@ -1107,7 +1107,7 @@ class Inventory extends Serializable {
         }
       }
     }
-    if (ic.`type`.equals("wooden_chest")) {
+    if (ic.icType.equals("wooden_chest")) {
       if (ic.image == null) {
         ic.image = loadImage("interface/wooden_chest.png")
         CX = 3
@@ -1117,7 +1117,7 @@ class Inventory extends Serializable {
         }
       }
     }
-    if (ic.`type`.equals("stone_chest")) {
+    if (ic.icType.equals("stone_chest")) {
       if (ic.image == null) {
         ic.image = loadImage("interface/stone_chest.png")
         CX = 5
@@ -1127,7 +1127,7 @@ class Inventory extends Serializable {
         }
       }
     }
-    if (ic.`type`.equals("copper_chest")) {
+    if (ic.icType.equals("copper_chest")) {
       if (ic.image == null) {
         ic.image = loadImage("interface/copper_chest.png")
         CX = 5
@@ -1137,7 +1137,7 @@ class Inventory extends Serializable {
         }
       }
     }
-    if (ic.`type`.equals("iron_chest")) {
+    if (ic.icType.equals("iron_chest")) {
       if (ic.image == null) {
         ic.image = loadImage("interface/iron_chest.png")
         CX = 7
@@ -1147,7 +1147,7 @@ class Inventory extends Serializable {
         }
       }
     }
-    if (ic.`type`.equals("silver_chest")) {
+    if (ic.icType.equals("silver_chest")) {
       if (ic.image == null) {
         ic.image = loadImage("interface/silver_chest.png")
         CX = 7
@@ -1157,7 +1157,7 @@ class Inventory extends Serializable {
         }
       }
     }
-    if (ic.`type`.equals("gold_chest")) {
+    if (ic.icType.equals("gold_chest")) {
       if (ic.image == null) {
         ic.image = loadImage("interface/gold_chest.png")
         CX = 7
@@ -1167,7 +1167,7 @@ class Inventory extends Serializable {
         }
       }
     }
-    if (ic.`type`.equals("zinc_chest")) {
+    if (ic.icType.equals("zinc_chest")) {
       if (ic.image == null) {
         ic.image = loadImage("interface/zinc_chest.png")
         CX = 7
@@ -1177,7 +1177,7 @@ class Inventory extends Serializable {
         }
       }
     }
-    if (ic.`type`.equals("rhymestone_chest")) {
+    if (ic.icType.equals("rhymestone_chest")) {
       if (ic.image == null) {
         ic.image = loadImage("interface/rhymestone_chest.png")
         CX = 8
@@ -1187,7 +1187,7 @@ class Inventory extends Serializable {
         }
       }
     }
-    if (ic.`type`.equals("obdurite_chest")) {
+    if (ic.icType.equals("obdurite_chest")) {
       if (ic.image == null) {
         ic.image = loadImage("interface/obdurite_chest.png")
         CX = 10
@@ -1197,7 +1197,7 @@ class Inventory extends Serializable {
         }
       }
     }
-    if (ic.`type`.equals("furnace")) {
+    if (ic.icType.equals("furnace")) {
       if (ic.image == null) {
         ic.image = loadImage("interface/furnace.png")
         (-1 until 4).foreach { i =>
@@ -1275,7 +1275,7 @@ class Inventory extends Serializable {
   }
 
   def updateIC(ic: ItemCollection, i: Int): Unit = {
-    if (ic.`type`.equals("cic")) {
+    if (ic.icType.equals("cic")) {
       py = i / 2
       px = i - (py * 2)
       (px * 40 until px * 40 + 40).foreach { x =>
@@ -1387,7 +1387,7 @@ class Inventory extends Serializable {
         }
       }
     }
-    if (ic.`type`.equals("armor")) {
+    if (ic.icType.equals("armor")) {
       py = i / CX
       px = i - (py * CX)
       (px * 46 until px * 46 + 40).foreach { x =>
@@ -1418,7 +1418,7 @@ class Inventory extends Serializable {
         }
       }
     }
-    if (ic.`type`.equals("workbench")) {
+    if (ic.icType.equals("workbench")) {
       py = i / 3
       px = i - (py * 3)
       (px * 40 until px * 40 + 40).foreach { x =>
@@ -1528,11 +1528,11 @@ class Inventory extends Serializable {
         }
       }
     }
-    if (ic.`type`.equals("wooden_chest") || ic.`type`.equals("stone_chest") ||
-      ic.`type`.equals("copper_chest") || ic.`type`.equals("iron_chest") ||
-      ic.`type`.equals("silver_chest") || ic.`type`.equals("gold_chest") ||
-      ic.`type`.equals("zinc_chest") || ic.`type`.equals("rhymestone_chest") ||
-      ic.`type`.equals("obdurite_chest")) {
+    if (ic.icType.equals("wooden_chest") || ic.icType.equals("stone_chest") ||
+      ic.icType.equals("copper_chest") || ic.icType.equals("iron_chest") ||
+      ic.icType.equals("silver_chest") || ic.icType.equals("gold_chest") ||
+      ic.icType.equals("zinc_chest") || ic.icType.equals("rhymestone_chest") ||
+      ic.icType.equals("obdurite_chest")) {
       py = i / CX
       px = i - (py * CX)
       (px * 46 until px * 46 + 40).foreach { x =>
@@ -1563,7 +1563,7 @@ class Inventory extends Serializable {
         }
       }
     }
-    if (ic.`type`.equals("furnace")) {
+    if (ic.icType.equals("furnace")) {
       if (i == -1) {
         (0 until 5).foreach { y =>
           (0 until (ic.FUELP * 38).toInt).foreach { x =>
