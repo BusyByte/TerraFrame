@@ -20,7 +20,7 @@ case class Player(var x: Double, var y: Double) extends Serializable {
   var rect: Rectangle = _
 
   var imgDelay: Int = _
-  var imgState: String = _
+  var imgState: String = _  //TODO: sumtype here
 
 
   //begin constructor

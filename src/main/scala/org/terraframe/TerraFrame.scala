@@ -2844,7 +2844,7 @@ class TerraFrame extends JApplet
       x = machinesx(j)
       y = machinesy(j)
       (0 until 3).foreach { l =>
-        if (icmatrix(l)(y)(x) != null && icmatrix(l)(y)(x).icType.equals("furnace")) {
+        if (icmatrix(l)(y)(x) != null && icmatrix(l)(y)(x).icType == Furnace) {
           if (icmatrix(l)(y)(x).F_ON) {
             if (icmatrix(l)(y)(x).ids(1) == 0) {
               if (FUELS.get(icmatrix(l)(y)(x).ids(2)) != null) {
@@ -2893,7 +2893,7 @@ class TerraFrame extends JApplet
       }
     }
 
-    if (ic != null && ic.icType.equals("furnace")) {
+    if (ic != null && ic.icType == Furnace) {
       if (ic.F_ON) {
         if (ic.ids(1) == 0) {
           if (FUELS.get(ic.ids(2)) != null) {
@@ -2942,12 +2942,12 @@ class TerraFrame extends JApplet
     }
     if (Math.sqrt(Math.pow(player.x + player.image.getWidth() - icx * BLOCKSIZE + BLOCKSIZE / 2, 2) + Math.pow(player.y + player.image.getHeight() - icy * BLOCKSIZE + BLOCKSIZE / 2, 2)) > 160) {
       if (ic != null) {
-        if (!ic.icType.equals("workbench")) {
+        if (ic.icType != Workbench) {
           machinesx += icx
           machinesy += icy
           icmatrix(iclayer)(icy)(icx) = ItemCollection(ic.icType, ic.ids, ic.nums, ic.durs)
         }
-        if (ic.icType.equals("workbench")) {
+        if (ic.icType == Workbench) {
           if (player.imgState.equals("still right") || player.imgState.equals("walk right 1") || player.imgState.equals("walk right 2")) {
             (0 until 9).foreach { i =>
               if (ic.ids(i) != 0) {
@@ -2963,7 +2963,7 @@ class TerraFrame extends JApplet
             }
           }
         }
-        if (ic.icType.equals("furnace")) {
+        if (ic.icType == Furnace) {
           icmatrix(iclayer)(icy)(icx).FUELP = ic.FUELP
           icmatrix(iclayer)(icy)(icx).SMELTP = ic.SMELTP
           icmatrix(iclayer)(icy)(icx).F_ON = ic.F_ON
@@ -3368,7 +3368,7 @@ class TerraFrame extends JApplet
           }
         }
         if (ic != null) {
-          if (ic.icType.equals("workbench")) {
+          if (ic.icType == Workbench) {
             (0 until 3).foreach { ux =>
               (0 until 3).foreach { uy =>
                 if (mouseX >= ux * 40 + 6 && mouseX < ux * 40 + 46 &&
@@ -3420,11 +3420,11 @@ class TerraFrame extends JApplet
               }
             }
           }
-          if (ic.icType.equals("wooden_chest") || ic.icType.equals("stone_chest") ||
-            ic.icType.equals("copper_chest") || ic.icType.equals("iron_chest") ||
-            ic.icType.equals("silver_chest") || ic.icType.equals("gold_chest") ||
-            ic.icType.equals("zinc_chest") || ic.icType.equals("rhymestone_chest") ||
-            ic.icType.equals("obdurite_chest")) {
+          if (ic.icType == WoodenChest || ic.icType == StoneChest ||
+            ic.icType == CopperChest || ic.icType == IronChest ||
+            ic.icType == SilverChest || ic.icType == GoldChest ||
+            ic.icType == ZincChest || ic.icType == RhymestoneChest ||
+            ic.icType == ObduriteChest) { //TODO: chest trait?
             (0 until inventory.CX).foreach { ux =>
               (0 until inventory.CY).foreach { uy =>
                 if (mouseX >= ux * 46 + 6 && mouseX < ux * 46 + 46 &&
@@ -3454,7 +3454,7 @@ class TerraFrame extends JApplet
               }
             }
           }
-          if (ic.icType.equals("furnace")) {
+          if (ic.icType == Furnace) {
             if (mouseX >= 6 && mouseX < 46 &&
               mouseY >= inventory.image.getHeight() + 46 &&
               mouseY < inventory.image.getHeight() + 86) {
@@ -3641,7 +3641,7 @@ class TerraFrame extends JApplet
             }
             else if (inventory.tool() == 33) {
               if (blocks(layer)(uy)(ux) == 17 || blocks(layer)(uy)(ux) == 23) {
-                if (icmatrix(layer)(uy)(ux) != null && icmatrix(layer)(uy)(ux).icType.equals("furnace")) {
+                if (icmatrix(layer)(uy)(ux) != null && icmatrix(layer)(uy)(ux).icType == Furnace) {
                   inventory.durs(inventory.selection) = (inventory.durs(inventory.selection) - 1).toShort
                   icmatrix(layer)(uy)(ux).F_ON = true
                   blocks(layer)(uy)(ux) = 23
@@ -3652,7 +3652,7 @@ class TerraFrame extends JApplet
                   rdrawn(uy)(ux) = false
                 }
                 else {
-                  if (ic != null && ic.icType.equals("furnace")) {
+                  if (ic != null && ic.icType == Furnace) {
                     inventory.durs(inventory.selection) = (inventory.durs(inventory.selection) - 1).toShort
                     ic.F_ON = true
                     blocks(layer)(icy)(icx) = 23
@@ -3853,7 +3853,7 @@ class TerraFrame extends JApplet
           }
         }
         if (ic != null) {
-          if (ic.icType.equals("workbench")) {
+          if (ic.icType == Workbench) {
             (0 until 3).foreach { ux =>
               (0 until 3).foreach { uy =>
                 if (mouseX >= ux * 40 + 6 && mouseX < ux * 40 + 46 &&
@@ -3905,11 +3905,11 @@ class TerraFrame extends JApplet
               }
             }
           }
-          if (ic.icType.equals("wooden_chest") || ic.icType.equals("stone_chest") ||
-            ic.icType.equals("copper_chest") || ic.icType.equals("iron_chest") ||
-            ic.icType.equals("silver_chest") || ic.icType.equals("gold_chest") ||
-            ic.icType.equals("zinc_chest") || ic.icType.equals("rhymestone_chest") ||
-            ic.icType.equals("obdurite_chest")) {
+          if (ic.icType == WoodenChest || ic.icType == StoneChest ||
+            ic.icType == CopperChest || ic.icType == IronChest ||
+            ic.icType == SilverChest || ic.icType == GoldChest ||
+            ic.icType == ZincChest || ic.icType == RhymestoneChest ||
+            ic.icType == ObduriteChest) { //TODO: chest trait?
             (0 until inventory.CX).foreach { ux =>
               (0 until inventory.CY).foreach { uy =>
                 if (mouseX >= ux * 46 + 6 && mouseX < ux * 46 + 46 &&
@@ -3949,7 +3949,7 @@ class TerraFrame extends JApplet
               }
             }
           }
-          if (ic.icType.equals("furnace")) {
+          if (ic.icType == Furnace) {
             if (mouseX >= 6 && mouseX < 46 &&
               mouseY >= inventory.image.getHeight() + 46 &&
               mouseY < inventory.image.getHeight() + 86) {
@@ -4044,12 +4044,12 @@ class TerraFrame extends JApplet
             ucy = uy - CHUNKBLOCKS * (uy / CHUNKBLOCKS)
             if (blocks(layer)(uy)(ux) >= 8 && blocks(layer)(uy)(ux) <= 14 || blocks(layer)(uy)(ux) == 17 || blocks(layer)(uy)(ux) == 23 || blocks(layer)(uy)(ux) >= 80 && blocks(layer)(uy)(ux) <= 82) {
               if (ic != null) {
-                if (!ic.icType.equals("workbench")) {
+                if (ic.icType != Workbench) {
                   machinesx += icx
                   machinesy += icy
                   icmatrix(iclayer)(icy)(icx) = ItemCollection(ic.icType, ic.ids, ic.nums, ic.durs)
                 }
-                if (ic.icType.equals("workbench")) {
+                if (ic.icType == Workbench) {
                   if (player.imgState.equals("still right") || player.imgState.equals("walk right 1") || player.imgState.equals("walk right 2")) {
                     (0 until 9).foreach { i =>
                       if (ic.ids(i) != 0) {
@@ -4065,7 +4065,7 @@ class TerraFrame extends JApplet
                     }
                   }
                 }
-                if (ic.icType.equals("furnace")) {
+                if (ic.icType == Furnace) {
                   icmatrix(iclayer)(icy)(icx).FUELP = ic.FUELP
                   icmatrix(iclayer)(icy)(icx).SMELTP = ic.SMELTP
                   icmatrix(iclayer)(icy)(icx).F_ON = ic.F_ON
@@ -4401,12 +4401,12 @@ class TerraFrame extends JApplet
         }
       }
       if (ic != null) {
-        if (!ic.icType.equals("workbench")) {
+        if (ic.icType != Workbench) {
           machinesx += icx
           machinesy += icy
           icmatrix(iclayer)(icy)(icx) = ItemCollection(ic.icType, ic.ids, ic.nums, ic.durs)
         }
-        if (ic.icType.equals("workbench")) {
+        if (ic.icType == Workbench) {
           if (player.imgState.equals("still right") || player.imgState.equals("walk right 1") || player.imgState.equals("walk right 2")) {
             (0 until 9).foreach { i =>
               if (ic.ids(i) != 0) {
@@ -4422,7 +4422,7 @@ class TerraFrame extends JApplet
             }
           }
         }
-        if (ic.icType.equals("furnace")) {
+        if (ic.icType == Furnace) {
           icmatrix(iclayer)(icy)(icx).FUELP = ic.FUELP
           icmatrix(iclayer)(icy)(icx).SMELTP = ic.SMELTP
           icmatrix(iclayer)(icy)(icx).F_ON = ic.F_ON
@@ -4678,14 +4678,14 @@ class TerraFrame extends JApplet
       if (blocks(layer)(uy)(ux) >= 8 && blocks(layer)(uy)(ux) <= 14 || blocks(layer)(uy)(ux) == 17 || blocks(layer)(uy)(ux) == 23 || blocks(layer)(uy)(ux) >= 80 && blocks(layer)(uy)(ux) <= 82) {
         if (ic != null) {
           ic.ids.indices.foreach { i =>
-            if (ic.ids(i) != 0 && !(ic.icType.equals("furnace") && i == 1)) {
+            if (ic.ids(i) != 0 && !(ic.icType == Furnace && i == 1)) {
               entities += new Entity(ux * BLOCKSIZE, uy * BLOCKSIZE, random.nextDouble() * 4 - 2, -2, ic.ids(i), ic.nums(i), ic.durs(i))
             }
           }
         }
         if (icmatrix(layer)(uy)(ux) != null) {
           icmatrix(layer)(uy)(ux).ids.indices.foreach { i =>
-            if (icmatrix(layer)(uy)(ux).ids(i) != 0 && !(icmatrix(layer)(uy)(ux).icType.equals("furnace") && i == 1)) {
+            if (icmatrix(layer)(uy)(ux).ids(i) != 0 && !(icmatrix(layer)(uy)(ux).icType == Furnace && i == 1)) {
               entities += new Entity(ux * BLOCKSIZE, uy * BLOCKSIZE, random.nextDouble() * 4 - 2, -2, icmatrix(layer)(uy)(ux).ids(i), icmatrix(layer)(uy)(ux).nums(i), icmatrix(layer)(uy)(ux).durs(i))
             }
           }
@@ -6163,7 +6163,7 @@ class TerraFrame extends JApplet
         }
       }
       if (ic != null) {
-        if (ic.icType.equals("workbench")) {
+        if (ic.icType == Workbench) {
           (0 until 3).foreach { ux =>
             (0 until 3).foreach { uy =>
               if (mouseX >= ux * 40 + 6 && mouseX < ux * 40 + 46 &&
@@ -6195,11 +6195,11 @@ class TerraFrame extends JApplet
             }
           }
         }
-        if (ic.icType.equals("wooden_chest") || ic.icType.equals("stone_chest") ||
-          ic.icType.equals("copper_chest") || ic.icType.equals("iron_chest") ||
-          ic.icType.equals("silver_chest") || ic.icType.equals("gold_chest") ||
-          ic.icType.equals("zinc_chest") || ic.icType.equals("rhymestone_chest") ||
-          ic.icType.equals("obdurite_chest")) {
+        if (ic.icType == WoodenChest|| ic.icType == StoneChest ||
+          ic.icType == CopperChest || ic.icType == IronChest ||
+          ic.icType == SilverChest || ic.icType == GoldChest ||
+          ic.icType == ZincChest || ic.icType == RhymestoneChest ||
+          ic.icType == ObduriteChest) { //TODO: chest trait?
           (0 until inventory.CX).foreach { ux =>
             (0 until inventory.CY).foreach { uy =>
               if (mouseX >= ux * 46 + 6 && mouseX < ux * 46 + 46 &&
@@ -6218,7 +6218,7 @@ class TerraFrame extends JApplet
             }
           }
         }
-        if (ic.icType.equals("furnace")) {
+        if (ic.icType == Furnace) {
           if (mouseX >= 6 && mouseX < 46 &&
             mouseY >= inventory.image.getHeight() + 46 && mouseY < inventory.image.getHeight() + 86 &&
             ic.ids(0) != 0) {
@@ -6626,12 +6626,12 @@ class TerraFrame extends JApplet
     if (state == InGame) {
       if (keyCode == KeyEvent.VK_ESCAPE) {
         if (ic != null) {
-          if (!ic.icType.equals("workbench")) {
+          if (ic.icType != Workbench) {
             machinesx += icx
             machinesy += icy
             icmatrix(iclayer)(icy)(icx) = ItemCollection(ic.icType, ic.ids, ic.nums, ic.durs)
           }
-          if (ic.icType.equals("workbench")) {
+          if (ic.icType == Workbench) { // TODO: can these be if / else instead?
             if (player.imgState.equals("still right") || player.imgState.equals("walk right 1") || player.imgState.equals("walk right 2")) {
               (0 until 9).foreach { i =>
                 if (ic.ids(i) != 0) {
@@ -6647,7 +6647,7 @@ class TerraFrame extends JApplet
               }
             }
           }
-          if (ic.icType.equals("furnace")) {
+          if (ic.icType == Furnace) {
             icmatrix(iclayer)(icy)(icx).FUELP = ic.FUELP
             icmatrix(iclayer)(icy)(icx).SMELTP = ic.SMELTP
             icmatrix(iclayer)(icy)(icx).F_ON = ic.F_ON
