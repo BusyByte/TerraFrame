@@ -1815,7 +1815,6 @@ class TerraFrame extends JApplet
 
   import MathHelper._
   import TerraFrame._
-  import UserInput.Implicits._
 
   var screen: BufferedImage = _
   var bg: Color = _
@@ -1889,9 +1888,6 @@ class TerraFrame extends JApplet
 
   var tp1, tp2, tp3, tp4, tp5: Point = _
 
-  val mousePos: Array[Int] = Array.ofDim(2)
-  val mousePos2: Array[Int] = Array.ofDim(2)
-
   var loadTextPos: Int = 0
 
   lazy val sun: BufferedImage = loadImage("environment/sun.png")
@@ -1904,7 +1900,8 @@ class TerraFrame extends JApplet
 
   var thread: Thread = _
   var createWorldTimer: javax.swing.Timer = _
-  val queue: Array[Boolean] = Array.ofDim(7) // left(0) right(1) up(2) mouse(3) rightmouse(4) shift(5) down(6)
+
+  val userInput = UserInput()
 
   var done: Boolean = false
   var ready: Boolean = true
@@ -2149,7 +2146,7 @@ class TerraFrame extends JApplet
 
         def actionPerformed(ae: ActionEvent): Unit = {
           try {
-            if (queue.isLeftMousePressed) {
+            if (userInput.isLeftMousePressed) {
               val mainthread: Action = new AbstractAction() {
                 def actionPerformed(ae: ActionEvent): Unit = {
                   try {
@@ -2478,7 +2475,7 @@ class TerraFrame extends JApplet
                       }
                       updateApp()
                       updateEnvironment()
-                      player.update(blocks(1), queue, u, v)
+                      player.update(blocks(1), userInput, u, v)
                       if (timeOfDay >= 86400) {
                         timeOfDay = 0
                         day += 1
@@ -2494,9 +2491,10 @@ class TerraFrame extends JApplet
               }
               timer = new javax.swing.Timer(20, mainthread)
 
+              val (mouseX, mouseY) = userInput.currentMousePosition
               if (state == TitleScreen && !menuPressed) {
-                if (mousePos(0) >= 239 && mousePos(0) <= 557) {
-                  if (mousePos(1) >= 213 && mousePos(1) <= 249) { // singleplayer
+                if (mouseX >= 239 && mouseX <= 557) {
+                  if (mouseY >= 213 && mouseY <= 249) { // singleplayer
                     findWorlds()
                     state = SelectWorld
                     repaint()
@@ -2505,15 +2503,15 @@ class TerraFrame extends JApplet
                 }
               }
               if (state == SelectWorld && !menuPressed) {
-                if (mousePos(0) >= 186 && mousePos(0) <= 615 &&
-                  mousePos(1) >= 458 && mousePos(1) <= 484) { // create new world
+                if (mouseX >= 186 && mouseX <= 615 &&
+                  mouseY >= 458 && mouseY <= 484) { // create new world
                   state = NewWorld
                   newWorldName = TextField(400, "New World")
                   repaint()
                   menuPressed = true
                 }
-                if (mousePos(0) >= 334 && mousePos(0) <= 457 &&
-                  mousePos(1) >= 504 && mousePos(1) <= 530) { // back
+                if (mouseX >= 334 && mouseX <= 457 &&
+                  mouseY >= 504 && mouseY <= 530) { // back
                   state = TitleScreen
                   repaint()
                   menuPressed = true
@@ -2521,8 +2519,8 @@ class TerraFrame extends JApplet
                 import scala.util.control.Breaks._
                 breakable {
                   worldFiles.indices.foreach { i =>
-                    if (mousePos(0) >= 166 && mousePos(0) <= 470 &&
-                      mousePos(1) >= 117 + i * 35 && mousePos(1) <= 152 + i * 35) { // load world
+                    if (mouseX >= 166 && mouseX <= 470 &&
+                      mouseY >= 117 + i * 35 && mouseY <= 152 + i * 35) { // load world
                       currentWorld = worldNames(i)
                       state = LoadingWorld
                       bg = Color.BLACK
@@ -2539,8 +2537,8 @@ class TerraFrame extends JApplet
                 }
               }
               if (state == NewWorld && !menuPressed) {
-                if (mousePos(0) >= 186 && mousePos(0) <= 615 &&
-                  mousePos(1) >= 458 && mousePos(1) <= 484) { // create new world
+                if (mouseX >= 186 && mouseX <= 615 &&
+                  mouseY >= 458 && mouseY <= 484) { // create new world
                   if (!newWorldName.text.equals("")) {
                     findWorlds()
                     doGenerateWorld = true
@@ -2575,8 +2573,8 @@ class TerraFrame extends JApplet
                     }
                   }
                 }
-                if (mousePos(0) >= 334 && mousePos(0) <= 457 &&
-                  mousePos(1) >= 504 && mousePos(1) <= 530) { // back
+                if (mouseX >= 334 && mouseX <= 457 &&
+                  mouseY >= 504 && mouseY <= 530) { // back
                   state = SelectWorld
                   repaint()
                   menuPressed = true
@@ -2807,8 +2805,10 @@ class TerraFrame extends JApplet
   }
 
   def updateApp(): Unit = {
-    mousePos2(0) = mousePos(0) + player.ix - getWidth() / 2 + Player.width / 2
-    mousePos2(1) = mousePos(1) + player.iy - getHeight() / 2 + Player.height / 2
+    val (mouseX, mouseY) = userInput.currentMousePosition
+
+    val playerMouseXOffset = mouseX + player.ix - getWidth() / 2 + Player.width / 2
+    val playerMouseYOffset = mouseY + player.iy - getHeight() / 2 + Player.height / 2
 
     currentSkyLight = skycolors(0)
     skycolors.indices.foreach { i =>
@@ -2840,7 +2840,7 @@ class TerraFrame extends JApplet
       rgnc1 -= 1
     }
 
-    (0 until machinesx.length).foreach { j =>
+    machinesx.indices.foreach { j =>
       x = machinesx(j)
       y = machinesy(j)
       (0 until 3).foreach { l =>
@@ -3267,11 +3267,11 @@ class TerraFrame extends JApplet
       }
     }
 
-    if (queue.isLeftMousePressed) {
+    if (userInput.isLeftMousePressed) {
       checkBlocks = true
       if (showInv) {
-        if (mousePos(0) >= getWidth - save_exit.getWidth() - 24 && mousePos(0) <= getWidth - 24 &&
-          mousePos(1) >= getHeight - save_exit.getHeight() - 24 && mousePos(1) <= getHeight - 24) {
+        if (mouseX >= getWidth - save_exit.getWidth() - 24 && mouseX <= getWidth - 24 &&
+          mouseY >= getHeight - save_exit.getHeight() - 24 && mouseY <= getHeight - 24) {
           if (mouseClicked) {
             mouseNoLongerClicked = true
             saveWorld()
@@ -3283,8 +3283,8 @@ class TerraFrame extends JApplet
         }
         (0 until 10).foreach { ux =>
           (0 until 4).foreach { uy =>
-            if (mousePos(0) >= ux * 46 + 6 && mousePos(0) < ux * 46 + 46 &&
-              mousePos(1) >= uy * 46 + 6 && mousePos(1) < uy * 46 + 46) {
+            if (mouseX >= ux * 46 + 6 && mouseX < ux * 46 + 46 &&
+              mouseY >= uy * 46 + 6 && mouseY < uy * 46 + 46) {
               checkBlocks = false
               if (mouseClicked) {
                 mouseNoLongerClicked = true
@@ -3315,9 +3315,9 @@ class TerraFrame extends JApplet
         }
         (0 until 2).foreach { ux =>
           (0 until 2).foreach { uy =>
-            if (mousePos(0) >= inventory.image.getWidth() + ux * 40 + 75 &&
-              mousePos(0) < inventory.image.getWidth() + ux * 40 + 115 &&
-              mousePos(1) >= uy * 40 + 52 && mousePos(1) < uy * 40 + 92) {
+            if (mouseX >= inventory.image.getWidth() + ux * 40 + 75 &&
+              mouseX < inventory.image.getWidth() + ux * 40 + 115 &&
+              mouseY >= uy * 40 + 52 && mouseY < uy * 40 + 92) {
               checkBlocks = false
               if (mouseClicked) {
                 mouseNoLongerClicked = true
@@ -3344,9 +3344,9 @@ class TerraFrame extends JApplet
             }
           }
         }
-        if (mousePos(0) >= inventory.image.getWidth() + 3 * 40 + 81 &&
-          mousePos(0) < inventory.image.getWidth() + 3 * 40 + 121 &&
-          mousePos(1) >= 20 + 52 && mousePos(1) < 20 + 92) {
+        if (mouseX >= inventory.image.getWidth() + 3 * 40 + 81 &&
+          mouseX < inventory.image.getWidth() + 3 * 40 + 121 &&
+          mouseY >= 20 + 52 && mouseY < 20 + 92) {
           checkBlocks = false
           if (mouseClicked) {
             if (moveItem == cic.ids(4)) {
@@ -3371,9 +3371,9 @@ class TerraFrame extends JApplet
           if (ic.`type`.equals("workbench")) {
             (0 until 3).foreach { ux =>
               (0 until 3).foreach { uy =>
-                if (mousePos(0) >= ux * 40 + 6 && mousePos(0) < ux * 40 + 46 &&
-                  mousePos(1) >= uy * 40 + inventory.image.getHeight() + 46 &&
-                  mousePos(1) < uy * 40 + inventory.image.getHeight() + 86) {
+                if (mouseX >= ux * 40 + 6 && mouseX < ux * 40 + 46 &&
+                  mouseY >= uy * 40 + inventory.image.getHeight() + 46 &&
+                  mouseY < uy * 40 + inventory.image.getHeight() + 86) {
                   checkBlocks = false
                   if (mouseClicked) {
                     mouseNoLongerClicked = true
@@ -3397,9 +3397,9 @@ class TerraFrame extends JApplet
                 }
               }
             }
-            if (mousePos(0) >= 4 * 40 + 6 && mousePos(0) < 4 * 40 + 46 &&
-              mousePos(1) >= 1 * 40 + inventory.image.getHeight() + 46 &&
-              mousePos(1) < 1 * 40 + inventory.image.getHeight() + 86) {
+            if (mouseX >= 4 * 40 + 6 && mouseX < 4 * 40 + 46 &&
+              mouseY >= 1 * 40 + inventory.image.getHeight() + 46 &&
+              mouseY < 1 * 40 + inventory.image.getHeight() + 86) {
               checkBlocks = false
               if (mouseClicked) {
                 MAXSTACKS.get(ic.ids(9)).foreach { maxstacks =>
@@ -3427,9 +3427,9 @@ class TerraFrame extends JApplet
             ic.`type`.equals("obdurite_chest")) {
             (0 until inventory.CX).foreach { ux =>
               (0 until inventory.CY).foreach { uy =>
-                if (mousePos(0) >= ux * 46 + 6 && mousePos(0) < ux * 46 + 46 &&
-                  mousePos(1) >= uy * 46 + inventory.image.getHeight() + 46 &&
-                  mousePos(1) < uy * 46 + inventory.image.getHeight() + 86) {
+                if (mouseX >= ux * 46 + 6 && mouseX < ux * 46 + 46 &&
+                  mouseY >= uy * 46 + inventory.image.getHeight() + 46 &&
+                  mouseY < uy * 46 + inventory.image.getHeight() + 86) {
                   checkBlocks = false
                   if (mouseClicked) {
                     mouseNoLongerClicked = true
@@ -3455,9 +3455,9 @@ class TerraFrame extends JApplet
             }
           }
           if (ic.`type`.equals("furnace")) {
-            if (mousePos(0) >= 6 && mousePos(0) < 46 &&
-              mousePos(1) >= inventory.image.getHeight() + 46 &&
-              mousePos(1) < inventory.image.getHeight() + 86) {
+            if (mouseX >= 6 && mouseX < 46 &&
+              mouseY >= inventory.image.getHeight() + 46 &&
+              mouseY < inventory.image.getHeight() + 86) {
               checkBlocks = false
               if (mouseClicked) {
                 mouseNoLongerClicked = true
@@ -3480,9 +3480,9 @@ class TerraFrame extends JApplet
                 }
               }
             }
-            if (mousePos(0) >= 6 && mousePos(0) < 46 &&
-              mousePos(1) >= inventory.image.getHeight() + 142 &&
-              mousePos(1) < inventory.image.getHeight() + 182) {
+            if (mouseX >= 6 && mouseX < 46 &&
+              mouseY >= inventory.image.getHeight() + 142 &&
+              mouseY < inventory.image.getHeight() + 182) {
               checkBlocks = false
               if (mouseClicked) {
                 mouseNoLongerClicked = true
@@ -3504,9 +3504,9 @@ class TerraFrame extends JApplet
                 }
               }
             }
-            if (mousePos(0) >= 62 && mousePos(0) < 102 &&
-              mousePos(1) >= inventory.image.getHeight() + 46 &&
-              mousePos(1) < inventory.image.getHeight() + 86) {
+            if (mouseX >= 62 && mouseX < 102 &&
+              mouseY >= inventory.image.getHeight() + 46 &&
+              mouseY < inventory.image.getHeight() + 86) {
               checkBlocks = false
               if (mouseClicked) {
                 mouseNoLongerClicked = true
@@ -3530,8 +3530,8 @@ class TerraFrame extends JApplet
           }
         }
         (0 until 4).foreach { uy =>
-          if (mousePos(0) >= inventory.image.getWidth() + 6 && mousePos(0) < inventory.image.getWidth() + 6 + armor.image.getWidth() &&
-            mousePos(1) >= 6 + uy * 46 && mousePos(1) < 6 + uy * 46 + 40) {
+          if (mouseX >= inventory.image.getWidth() + 6 && mouseX < inventory.image.getWidth() + 6 + armor.image.getWidth() &&
+            mouseY >= 6 + uy * 46 && mouseY < 6 + uy * 46 + 40) {
             checkBlocks = false
             if (mouseClicked) {
               mouseNoLongerClicked = true
@@ -3574,8 +3574,8 @@ class TerraFrame extends JApplet
       else {
         (0 until 10).foreach { ux =>
           uy = 0
-          if (mousePos(0) >= ux * 46 + 6 && mousePos(0) < ux * 46 + 46 &&
-            mousePos(1) >= uy * 46 + 6 && mousePos(1) < uy * 46 + 46) {
+          if (mouseX >= ux * 46 + 6 && mouseX < ux * 46 + 46 &&
+            mouseY >= uy * 46 + 6 && mouseY < uy * 46 + 46) {
             checkBlocks = false
             if (mouseClicked) {
               mouseNoLongerClicked = true
@@ -3605,10 +3605,10 @@ class TerraFrame extends JApplet
           }
           showTool = true
           toolAngle = 4.7
-          ux = mousePos2(0) / BLOCKSIZE
-          uy = mousePos2(1) / BLOCKSIZE
-          ux2 = mousePos2(0) / BLOCKSIZE
-          uy2 = mousePos2(1) / BLOCKSIZE
+          ux = playerMouseXOffset / BLOCKSIZE
+          uy = playerMouseYOffset / BLOCKSIZE
+          ux2 = playerMouseXOffset / BLOCKSIZE
+          uy2 = playerMouseYOffset / BLOCKSIZE
           if (Math.sqrt(Math.pow(player.x + player.image.getWidth() - ux2 * BLOCKSIZE + BLOCKSIZE / 2, 2) + Math.pow(player.y + player.image.getHeight() - uy2 * BLOCKSIZE + BLOCKSIZE / 2, 2)) <= 160 ||
             Math.sqrt(Math.pow(player.x + player.image.getWidth() - ux2 * BLOCKSIZE + BLOCKSIZE / 2 + WIDTH * BLOCKSIZE, 2) + Math.pow(player.y + player.image.getHeight() - uy2 * BLOCKSIZE + BLOCKSIZE / 2, 2)) <= 160 || DEBUG_REACH) {
             ucx = ux - CHUNKBLOCKS * (ux / CHUNKBLOCKS)
@@ -3772,13 +3772,13 @@ class TerraFrame extends JApplet
     else {
       mouseClicked = true
     }
-    if (queue.isRightMousePressed) {
+    if (userInput.isRightMousePressed) {
       checkBlocks = true
       if (showInv) {
         (0 until 10).foreach { ux =>
           (0 until 4).foreach { uy =>
-            if (mousePos(0) >= ux * 46 + 6 && mousePos(0) < ux * 46 + 46 &&
-              mousePos(1) >= uy * 46 + 6 && mousePos(1) < uy * 46 + 46) {
+            if (mouseX >= ux * 46 + 6 && mouseX < ux * 46 + 46 &&
+              mouseY >= uy * 46 + 6 && mouseY < uy * 46 + 46) {
               checkBlocks = false
               if (mouseClicked2) {
                 mouseNoLongerClicked2 = true
@@ -3817,9 +3817,9 @@ class TerraFrame extends JApplet
         }
         (0 until 2).foreach { ux =>
           (0 until 2).foreach { uy =>
-            if (mousePos(0) >= inventory.image.getWidth() + ux * 40 + 75 &&
-              mousePos(0) < inventory.image.getWidth() + ux * 40 + 121 &&
-              mousePos(1) >= uy * 40 + 52 && mousePos(1) < uy * 40 + 92) {
+            if (mouseX >= inventory.image.getWidth() + ux * 40 + 75 &&
+              mouseX < inventory.image.getWidth() + ux * 40 + 121 &&
+              mouseY >= uy * 40 + 52 && mouseY < uy * 40 + 92) {
               checkBlocks = false
               if (mouseClicked2) {
                 mouseNoLongerClicked2 = true
@@ -3856,9 +3856,9 @@ class TerraFrame extends JApplet
           if (ic.`type`.equals("workbench")) {
             (0 until 3).foreach { ux =>
               (0 until 3).foreach { uy =>
-                if (mousePos(0) >= ux * 40 + 6 && mousePos(0) < ux * 40 + 46 &&
-                  mousePos(1) >= uy * 40 + inventory.image.getHeight() + 46 &&
-                  mousePos(1) < uy * 40 + inventory.image.getHeight() + 86) {
+                if (mouseX >= ux * 40 + 6 && mouseX < ux * 40 + 46 &&
+                  mouseY >= uy * 40 + inventory.image.getHeight() + 46 &&
+                  mouseY < uy * 40 + inventory.image.getHeight() + 86) {
                   checkBlocks = false
                   if (mouseClicked2) {
                     mouseNoLongerClicked2 = true
@@ -3896,9 +3896,9 @@ class TerraFrame extends JApplet
                 }
               }
             }
-            if (mousePos(0) >= 4 * 40 + 6 && mousePos(0) < 4 * 40 + 46 &&
-              mousePos(1) >= 1 * 40 + inventory.image.getHeight() + 46 &&
-              mousePos(1) < 1 * 40 + inventory.image.getHeight() + 86) {
+            if (mouseX >= 4 * 40 + 6 && mouseX < 4 * 40 + 46 &&
+              mouseY >= 1 * 40 + inventory.image.getHeight() + 46 &&
+              mouseY < 1 * 40 + inventory.image.getHeight() + 86) {
               checkBlocks = false
               if (mouseClicked2) {
                 //
@@ -3912,9 +3912,9 @@ class TerraFrame extends JApplet
             ic.`type`.equals("obdurite_chest")) {
             (0 until inventory.CX).foreach { ux =>
               (0 until inventory.CY).foreach { uy =>
-                if (mousePos(0) >= ux * 46 + 6 && mousePos(0) < ux * 46 + 46 &&
-                  mousePos(1) >= uy * 46 + inventory.image.getHeight() + 46 &&
-                  mousePos(1) < uy * 46 + inventory.image.getHeight() + 86) {
+                if (mouseX >= ux * 46 + 6 && mouseX < ux * 46 + 46 &&
+                  mouseY >= uy * 46 + inventory.image.getHeight() + 46 &&
+                  mouseY < uy * 46 + inventory.image.getHeight() + 86) {
                   checkBlocks = false
                   if (mouseClicked2) {
                     mouseNoLongerClicked2 = true
@@ -3950,9 +3950,9 @@ class TerraFrame extends JApplet
             }
           }
           if (ic.`type`.equals("furnace")) {
-            if (mousePos(0) >= 6 && mousePos(0) < 46 &&
-              mousePos(1) >= inventory.image.getHeight() + 46 &&
-              mousePos(1) < inventory.image.getHeight() + 86) {
+            if (mouseX >= 6 && mouseX < 46 &&
+              mouseY >= inventory.image.getHeight() + 46 &&
+              mouseY < inventory.image.getHeight() + 86) {
               checkBlocks = false
               if (mouseClicked2) {
                 mouseNoLongerClicked2 = true
@@ -3983,9 +3983,9 @@ class TerraFrame extends JApplet
                 }
               }
             }
-            if (mousePos(0) >= 6 && mousePos(0) < 46 &&
-              mousePos(1) >= inventory.image.getHeight() + 142 &&
-              mousePos(1) < inventory.image.getHeight() + 182) {
+            if (mouseX >= 6 && mouseX < 46 &&
+              mouseY >= inventory.image.getHeight() + 142 &&
+              mouseY < inventory.image.getHeight() + 182) {
               checkBlocks = false
               if (mouseClicked2) {
                 mouseNoLongerClicked2 = true
@@ -4016,9 +4016,9 @@ class TerraFrame extends JApplet
                 }
               }
             }
-            if (mousePos(0) >= 62 && mousePos(0) < 102 &&
-              mousePos(1) >= inventory.image.getHeight() + 46 &&
-              mousePos(1) < inventory.image.getHeight() + 86) {
+            if (mouseX >= 62 && mouseX < 102 &&
+              mouseY >= inventory.image.getHeight() + 46 &&
+              mouseY < inventory.image.getHeight() + 86) {
               checkBlocks = false
               if (mouseClicked2) {
                 mouseNoLongerClicked2 = true
@@ -4035,10 +4035,10 @@ class TerraFrame extends JApplet
         }
       }
       if (checkBlocks) {
-        if (!(mousePos2(0) < 0 || mousePos2(0) >= WIDTH * BLOCKSIZE ||
-          mousePos2(1) < 0 || mousePos2(1) >= HEIGHT * BLOCKSIZE)) {
-          ux = mousePos2(0) / BLOCKSIZE
-          uy = mousePos2(1) / BLOCKSIZE
+        if (!(playerMouseXOffset < 0 || playerMouseXOffset >= WIDTH * BLOCKSIZE ||
+          playerMouseYOffset < 0 || playerMouseYOffset >= HEIGHT * BLOCKSIZE)) {
+          ux = playerMouseXOffset / BLOCKSIZE
+          uy = playerMouseYOffset / BLOCKSIZE
           if (DEBUG_REACH || Math.sqrt(Math.pow(player.x + player.image.getWidth() - ux * BLOCKSIZE + BLOCKSIZE / 2, 2) + Math.pow(player.y + player.image.getHeight() - uy * BLOCKSIZE + BLOCKSIZE / 2, 2)) <= 160) {
             ucx = ux - CHUNKBLOCKS * (ux / CHUNKBLOCKS)
             ucy = uy - CHUNKBLOCKS * (uy / CHUNKBLOCKS)
@@ -5873,6 +5873,9 @@ class TerraFrame extends JApplet
 
   override def paint(g: Graphics): Unit = {
     if (screen == null) return
+    val (mouseX, mouseY) = userInput.currentMousePosition
+    val playerMouseXOffset = mouseX + player.ix - getWidth() / 2 + Player.width / 2
+    val playerMouseYOffset = mouseY + player.iy - getHeight() / 2 + Player.height / 2
     pg2 = screen.createGraphics()
     pg2.setColor(bg)
     pg2.fillRect(0, 0, getWidth, getHeight)
@@ -6038,7 +6041,7 @@ class TerraFrame extends JApplet
       }
 
       if (layer == 0) {
-        layerImg = loadImage("interface/layersB.png")
+        layerImg = loadImage("interface/layersB.png")//TODO: why are we loading images in the paint method?
       }
       if (layer == 1) {
         layerImg = loadImage("interface/layersN.png")
@@ -6063,7 +6066,7 @@ class TerraFrame extends JApplet
         itemImgs.get(moveItem).foreach { i =>
           width = i.getWidth
           height = i.getHeight
-          pg2.drawImage(i, mousePos(0) + 12 + ((24 - 12.toDouble / max(width, height, 12) * width * 2) / 2).toInt, mousePos(1) + 12 + ((24 - 12.toDouble / max(width, height, 12) * height * 2) / 2).toInt, mousePos(0) + 36 - ((24 - 12.toDouble / max(width, height, 12) * width * 2) / 2).toInt, mousePos(1) + 36 - ((24 - 12.toDouble / max(width, height, 12) * height * 2) / 2).toInt,
+          pg2.drawImage(i, mouseX + 12 + ((24 - 12.toDouble / max(width, height, 12) * width * 2) / 2).toInt, mouseY + 12 + ((24 - 12.toDouble / max(width, height, 12) * height * 2) / 2).toInt, mouseX + 36 - ((24 - 12.toDouble / max(width, height, 12) * width * 2) / 2).toInt, mouseY + 36 - ((24 - 12.toDouble / max(width, height, 12) * height * 2) / 2).toInt,
             0, 0, width, height,
             null)
         }
@@ -6071,16 +6074,16 @@ class TerraFrame extends JApplet
         if (moveNum > 1) {
           pg2.setFont(font)
           pg2.setColor(Color.WHITE)
-          pg2.drawString(moveNum + " ", mousePos(0) + 13, mousePos(1) + 38)
+          pg2.drawString(moveNum + " ", mouseX + 13, mouseY + 38)
         }
       }
       import scala.util.control.Breaks._
       breakable {
         entities.indices.foreach { i =>
-          if (UIENTITIES.get(entities(i).name) != null && entities(i).rect != null && entities(i).rect.contains(new Point(mousePos2(0), mousePos2(1)))) {
+          if (UIENTITIES.get(entities(i).name) != null && entities(i).rect != null && entities(i).rect.contains(new Point(playerMouseXOffset, playerMouseYOffset))) {
             pg2.setFont(mobFont)
             pg2.setColor(Color.WHITE)
-            pg2.drawString(UIENTITIES.get(entities(i).name) + " (" + entities(i).hp + "/" + entities(i).thp + ")", mousePos(0), mousePos(1))
+            pg2.drawString(UIENTITIES.get(entities(i).name) + " (" + entities(i).hp + "/" + entities(i).thp + ")", mouseX, mouseY)
             break
           }
         }
@@ -6093,15 +6096,15 @@ class TerraFrame extends JApplet
       }
       (0 until 10).foreach { ux =>
         (0 until ymax).foreach { uy =>
-          if (mousePos(0) >= ux * 46 + 6 && mousePos(0) <= ux * 46 + 46 &&
-            mousePos(1) >= uy * 46 + 6 && mousePos(1) <= uy * 46 + 46 && inventory.ids(uy * 10 + ux) != 0) {
+          if (mouseX >= ux * 46 + 6 && mouseX <= ux * 46 + 46 &&
+            mouseY >= uy * 46 + 6 && mouseY <= uy * 46 + 46 && inventory.ids(uy * 10 + ux) != 0) {
             pg2.setFont(mobFont)
             pg2.setColor(Color.WHITE)
 
             TOOLDURS.get(inventory.ids(uy * 10 + ux)).fold {
-              UIBLOCKS.get(items(inventory.ids(uy * 10 + ux))).foreach(pg2.drawString(_, mousePos(0), mousePos(1)))
+              UIBLOCKS.get(items(inventory.ids(uy * 10 + ux))).foreach(pg2.drawString(_, mouseX, mouseY))
             } { t =>
-              UIBLOCKS.get(items(inventory.ids(uy * 10 + ux))).foreach(u => pg2.drawString(u + " (" + (inventory.durs(uy * 10 + ux).toDouble / t * 100).toInt + "%)", mousePos(0), mousePos(1)))
+              UIBLOCKS.get(items(inventory.ids(uy * 10 + ux))).foreach(u => pg2.drawString(u + " (" + (inventory.durs(uy * 10 + ux).toDouble / t * 100).toInt + "%)", mouseX, mouseY))
             }
           }
         }
@@ -6119,41 +6122,41 @@ class TerraFrame extends JApplet
       if (showInv) {
         (0 until 2).foreach { ux =>
           (0 until 2).foreach { uy =>
-            if (mousePos(0) >= inventory.image.getWidth() + ux * 40 + 75 &&
-              mousePos(0) < inventory.image.getWidth() + ux * 40 + 115 &&
-              mousePos(1) >= uy * 40 + 52 && mousePos(1) < uy * 40 + 92 && cic.ids(uy * 2 + ux) != 0) {
+            if (mouseX >= inventory.image.getWidth() + ux * 40 + 75 &&
+              mouseX < inventory.image.getWidth() + ux * 40 + 115 &&
+              mouseY >= uy * 40 + 52 && mouseY < uy * 40 + 92 && cic.ids(uy * 2 + ux) != 0) {
               pg2.setFont(mobFont)
               pg2.setColor(Color.WHITE)
               TOOLDURS.get(cic.ids(uy * 2 + ux)).fold {
-                UIBLOCKS.get(items(cic.ids(uy * 2 + ux))).foreach(pg2.drawString(_, mousePos(0), mousePos(1)))
+                UIBLOCKS.get(items(cic.ids(uy * 2 + ux))).foreach(pg2.drawString(_, mouseX, mouseY))
               } { t =>
-                UIBLOCKS.get(items(cic.ids(uy * 2 + ux))).foreach(u => pg2.drawString(u + " (" + (cic.durs(uy * 2 + ux).toDouble / t * 100).toInt + "%)", mousePos(0), mousePos(1)))
+                UIBLOCKS.get(items(cic.ids(uy * 2 + ux))).foreach(u => pg2.drawString(u + " (" + (cic.durs(uy * 2 + ux).toDouble / t * 100).toInt + "%)", mouseX, mouseY))
               }
             }
           }
         }
-        if (mousePos(0) >= inventory.image.getWidth() + 3 * 40 + 75 &&
-          mousePos(0) < inventory.image.getWidth() + 3 * 40 + 115 &&
-          mousePos(1) >= 20 + 52 && mousePos(1) < 20 + 92 && cic.ids(4) != 0) {
+        if (mouseX >= inventory.image.getWidth() + 3 * 40 + 75 &&
+          mouseX < inventory.image.getWidth() + 3 * 40 + 115 &&
+          mouseY >= 20 + 52 && mouseY < 20 + 92 && cic.ids(4) != 0) {
           pg2.setFont(mobFont)
           pg2.setColor(Color.WHITE)
           TOOLDURS.get(cic.ids(4)).fold {
-            UIBLOCKS.get(items(cic.ids(4))).foreach(pg2.drawString(_, mousePos(0), mousePos(1)))
+            UIBLOCKS.get(items(cic.ids(4))).foreach(pg2.drawString(_, mouseX, mouseY))
           } { t =>
-            UIBLOCKS.get(items(cic.ids(4))).foreach(u => pg2.drawString(u + " (" + (cic.durs(4).toDouble / t * 100).toInt + "%)", mousePos(0), mousePos(1)))
+            UIBLOCKS.get(items(cic.ids(4))).foreach(u => pg2.drawString(u + " (" + (cic.durs(4).toDouble / t * 100).toInt + "%)", mouseX, mouseY))
           }
 
         }
         (0 until 4).foreach { uy =>
-          if (mousePos(0) >= inventory.image.getWidth() + 6 && mousePos(0) < inventory.image.getWidth() + 6 + armor.image.getWidth() &&
-            mousePos(1) >= 6 + uy * 46 && mousePos(1) < 6 + uy * 46 + 46 && armor.ids(uy) != 0) {
+          if (mouseX >= inventory.image.getWidth() + 6 && mouseX < inventory.image.getWidth() + 6 + armor.image.getWidth() &&
+            mouseY >= 6 + uy * 46 && mouseY < 6 + uy * 46 + 46 && armor.ids(uy) != 0) {
             pg2.setFont(mobFont)
             pg2.setColor(Color.WHITE)
 
             TOOLDURS.get(armor.ids(uy)).fold {
-              UIBLOCKS.get(items(armor.ids(uy))).foreach(pg2.drawString(_, mousePos(0), mousePos(1)))
+              UIBLOCKS.get(items(armor.ids(uy))).foreach(pg2.drawString(_, mouseX, mouseY))
             } { t =>
-              UIBLOCKS.get(items(armor.ids(uy))).foreach(u => pg2.drawString(u + " (" + (armor.durs(uy).toDouble / t * 100).toInt + "%)", mousePos(0), mousePos(1)))
+              UIBLOCKS.get(items(armor.ids(uy))).foreach(u => pg2.drawString(u + " (" + (armor.durs(uy).toDouble / t * 100).toInt + "%)", mouseX, mouseY))
             }
 
           }
@@ -6163,32 +6166,32 @@ class TerraFrame extends JApplet
         if (ic.`type`.equals("workbench")) {
           (0 until 3).foreach { ux =>
             (0 until 3).foreach { uy =>
-              if (mousePos(0) >= ux * 40 + 6 && mousePos(0) < ux * 40 + 46 &&
-                mousePos(1) >= uy * 40 + inventory.image.getHeight() + 46 &&
-                mousePos(1) < uy * 40 + inventory.image.getHeight() + 86 &&
+              if (mouseX >= ux * 40 + 6 && mouseX < ux * 40 + 46 &&
+                mouseY >= uy * 40 + inventory.image.getHeight() + 46 &&
+                mouseY < uy * 40 + inventory.image.getHeight() + 86 &&
                 ic.ids(uy * 3 + ux) != 0) {
                 pg2.setFont(mobFont)
                 pg2.setColor(Color.WHITE)
 
                 TOOLDURS.get(ic.ids(uy * 3 + ux)).fold {
-                  UIBLOCKS.get(items(ic.ids(uy * 3 + ux))).foreach(pg2.drawString(_, mousePos(0), mousePos(1)))
+                  UIBLOCKS.get(items(ic.ids(uy * 3 + ux))).foreach(pg2.drawString(_, mouseX, mouseY))
                 } { t =>
-                  UIBLOCKS.get(items(ic.ids(uy * 3 + ux))).foreach(u => pg2.drawString(u + " (" + (ic.durs(uy * 3 + ux).toDouble / t * 100).toInt + "%)", mousePos(0), mousePos(1)))
+                  UIBLOCKS.get(items(ic.ids(uy * 3 + ux))).foreach(u => pg2.drawString(u + " (" + (ic.durs(uy * 3 + ux).toDouble / t * 100).toInt + "%)", mouseX, mouseY))
                 }
               }
             }
           }
-          if (mousePos(0) >= 4 * 40 + 6 && mousePos(0) < 4 * 40 + 46 &&
-            mousePos(1) >= 1 * 40 + inventory.image.getHeight() + 46 &&
-            mousePos(1) < 1 * 40 + inventory.image.getHeight() + 86 &&
+          if (mouseX >= 4 * 40 + 6 && mouseX < 4 * 40 + 46 &&
+            mouseY >= 1 * 40 + inventory.image.getHeight() + 46 &&
+            mouseY < 1 * 40 + inventory.image.getHeight() + 86 &&
             ic.ids(9) != 0) {
             pg2.setFont(mobFont)
             pg2.setColor(Color.WHITE)
 
             TOOLDURS.get(ic.ids(9)).fold {
-              UIBLOCKS.get(items(ic.ids(9))).foreach(pg2.drawString(_, mousePos(0), mousePos(1)))
+              UIBLOCKS.get(items(ic.ids(9))).foreach(pg2.drawString(_, mouseX, mouseY))
             } { t =>
-              UIBLOCKS.get(items(ic.ids(9))).foreach(u => pg2.drawString(u + " (" + (ic.durs(9).toDouble / t * 100).toInt + "%)", mousePos(0), mousePos(1)))
+              UIBLOCKS.get(items(ic.ids(9))).foreach(u => pg2.drawString(u + " (" + (ic.durs(9).toDouble / t * 100).toInt + "%)", mouseX, mouseY))
             }
           }
         }
@@ -6199,69 +6202,69 @@ class TerraFrame extends JApplet
           ic.`type`.equals("obdurite_chest")) {
           (0 until inventory.CX).foreach { ux =>
             (0 until inventory.CY).foreach { uy =>
-              if (mousePos(0) >= ux * 46 + 6 && mousePos(0) < ux * 46 + 46 &&
-                mousePos(1) >= uy * 46 + inventory.image.getHeight() + 46 &&
-                mousePos(1) < uy * 46 + inventory.image.getHeight() + 86 &&
+              if (mouseX >= ux * 46 + 6 && mouseX < ux * 46 + 46 &&
+                mouseY >= uy * 46 + inventory.image.getHeight() + 46 &&
+                mouseY < uy * 46 + inventory.image.getHeight() + 86 &&
                 ic.ids(uy * inventory.CX + ux) != 0) {
                 pg2.setFont(mobFont)
                 pg2.setColor(Color.WHITE)
 
                 TOOLDURS.get(ic.ids(uy * inventory.CX + ux)).fold {
-                  UIBLOCKS.get(items(ic.ids(uy * inventory.CX + ux))).foreach(pg2.drawString(_, mousePos(0), mousePos(1)))
+                  UIBLOCKS.get(items(ic.ids(uy * inventory.CX + ux))).foreach(pg2.drawString(_, mouseX, mouseY))
                 } { t =>
-                  UIBLOCKS.get(items(ic.ids(uy * inventory.CX + ux))).foreach(u => pg2.drawString(u + " (" + (ic.durs(uy * inventory.CX + ux).toDouble / t * 100).toInt + "%)", mousePos(0), mousePos(1)))
+                  UIBLOCKS.get(items(ic.ids(uy * inventory.CX + ux))).foreach(u => pg2.drawString(u + " (" + (ic.durs(uy * inventory.CX + ux).toDouble / t * 100).toInt + "%)", mouseX, mouseY))
                 }
               }
             }
           }
         }
         if (ic.`type`.equals("furnace")) {
-          if (mousePos(0) >= 6 && mousePos(0) < 46 &&
-            mousePos(1) >= inventory.image.getHeight() + 46 && mousePos(1) < inventory.image.getHeight() + 86 &&
+          if (mouseX >= 6 && mouseX < 46 &&
+            mouseY >= inventory.image.getHeight() + 46 && mouseY < inventory.image.getHeight() + 86 &&
             ic.ids(0) != 0) {
             pg2.setFont(mobFont)
             pg2.setColor(Color.WHITE)
 
             TOOLDURS.get(ic.ids(0)).fold {
-              UIBLOCKS.get(items(ic.ids(0))).foreach(pg2.drawString(_, mousePos(0), mousePos(1)))
+              UIBLOCKS.get(items(ic.ids(0))).foreach(pg2.drawString(_, mouseX, mouseY))
             } { t =>
-              UIBLOCKS.get(items(ic.ids(0))).foreach(u => pg2.drawString(u + " (" + (ic.durs(0).toDouble / t * 100).toInt + "%)", mousePos(0), mousePos(1)))
+              UIBLOCKS.get(items(ic.ids(0))).foreach(u => pg2.drawString(u + " (" + (ic.durs(0).toDouble / t * 100).toInt + "%)", mouseX, mouseY))
             }
           }
-          if (mousePos(0) >= 6 && mousePos(0) < 46 &&
-            mousePos(1) >= inventory.image.getHeight() + 102 && mousePos(1) < inventory.image.getHeight() + 142 &&
+          if (mouseX >= 6 && mouseX < 46 &&
+            mouseY >= inventory.image.getHeight() + 102 && mouseY < inventory.image.getHeight() + 142 &&
             ic.ids(1) != 0) {
             pg2.setFont(mobFont)
             pg2.setColor(Color.WHITE)
 
             TOOLDURS.get(ic.ids(1)).fold {
-              UIBLOCKS.get(items(ic.ids(1))).foreach(pg2.drawString(_, mousePos(0), mousePos(1)))
+              UIBLOCKS.get(items(ic.ids(1))).foreach(pg2.drawString(_, mouseX, mouseY))
             } { t =>
-              UIBLOCKS.get(items(ic.ids(1))).foreach(u => pg2.drawString(u + " (" + (ic.durs(1).toDouble / t * 100).toInt + "%)", mousePos(1), mousePos(1)))
+              UIBLOCKS.get(items(ic.ids(1))).foreach(u => pg2.drawString(u + " (" + (ic.durs(1).toDouble / t * 100).toInt + "%)", mouseY, mouseY))
             }
           }
-          if (mousePos(0) >= 6 && mousePos(0) < 46 &&
-            mousePos(1) >= inventory.image.getHeight() + 142 && mousePos(1) < inventory.image.getHeight() + 182 &&
+          if (mouseX >= 6 && mouseX < 46 &&
+            mouseY >= inventory.image.getHeight() + 142 && mouseY < inventory.image.getHeight() + 182 &&
             ic.ids(2) != 0) {
             pg2.setFont(mobFont)
             pg2.setColor(Color.WHITE)
 
             TOOLDURS.get(ic.ids(2)).fold {
-              UIBLOCKS.get(items(ic.ids(2))).foreach(pg2.drawString(_, mousePos(0), mousePos(1)))
+              UIBLOCKS.get(items(ic.ids(2))).foreach(pg2.drawString(_, mouseX, mouseY))
             } { t =>
-              UIBLOCKS.get(items(ic.ids(2))).foreach(u => pg2.drawString(u + " (" + (ic.durs(2).toDouble / t * 100).toInt + "%)", mousePos(2), mousePos(1)))
+              UIBLOCKS.get(items(ic.ids(2))).foreach(u => pg2.drawString(u + " (" + (ic.durs(2).toDouble / t * 100).toInt + "%)", mouseX, mouseY))
             }
           }
-          if (mousePos(0) >= 62 && mousePos(0) < 102 &&
-            mousePos(1) >= inventory.image.getHeight() + 46 && mousePos(1) < inventory.image.getHeight() + 86 &&
+          if (mouseX >= 62 && mouseX < 102 &&
+            mouseY >= inventory.image.getHeight() + 46 && mouseY < inventory.image.getHeight() + 86 &&
             ic.ids(3) != 0) {
             pg2.setFont(mobFont)
             pg2.setColor(Color.WHITE)
 
             TOOLDURS.get(ic.ids(3)).fold {
-              UIBLOCKS.get(items(ic.ids(3))).foreach(pg2.drawString(_, mousePos(0), mousePos(1)))
+              UIBLOCKS.get(items(ic.ids(3))).foreach(pg2.drawString(_, mouseX, mouseY))
             } { t =>
-              UIBLOCKS.get(items(ic.ids(3))).foreach(u => pg2.drawString(u + " (" + (ic.durs(3).toDouble / t * 100).toInt + "%)", mousePos(3), mousePos(1)))
+              UIBLOCKS.get(items(ic.ids(3))).foreach(u => pg2.drawString(u + " (" + (ic.durs(3).toDouble / t * 100).toInt + "%)", mouseX, mouseY))
             }
           }
         }
@@ -6606,19 +6609,19 @@ class TerraFrame extends JApplet
   def keyPressed(key: KeyEvent): Unit = {
     val keyCode = key.getKeyCode
     if (keyCode == KeyEvent.VK_LEFT || keyCode == KeyEvent.VK_A) {
-      queue.setLeftKeyPressed(true)
+      userInput.setLeftKeyPressed(true)
     }
     if (keyCode == KeyEvent.VK_RIGHT || keyCode == KeyEvent.VK_D) {
-      queue.setRightKeyPressed(true)
+      userInput.setRightKeyPressed(true)
     }
     if (keyCode == KeyEvent.VK_UP || keyCode == KeyEvent.VK_W) {
-      queue.setUpKeyPressed(true)
+      userInput.setUpKeyPressed(true)
     }
     if (keyCode == KeyEvent.VK_DOWN || keyCode == KeyEvent.VK_S) {
-      queue.setDownKeyPressed(true)
+      userInput.setDownKeyPressed(true)
     }
     if (keyCode == KeyEvent.VK_SHIFT) {
-      queue.setShiftKeyPressed(true)
+      userInput.setShiftKeyPressed(true)
     }
     if (state == InGame) {
       if (keyCode == KeyEvent.VK_ESCAPE) {
@@ -6761,7 +6764,7 @@ class TerraFrame extends JApplet
     if (keyCode == KeyEvent.VK_PERIOD) c = '.'
     if (keyCode == KeyEvent.VK_SLASH) c = '/'
 
-    if (queue.isShiftKeyPressed) {
+    if (userInput.isShiftKeyPressed) {
       if (c == 'q') c = 'Q'
       if (c == 'w') c = 'W'
       if (c == 'e') c = 'E'
@@ -6835,39 +6838,39 @@ class TerraFrame extends JApplet
   def keyReleased(key: KeyEvent): Unit = {
     val keyCode = key.getKeyCode
     if (keyCode == KeyEvent.VK_LEFT || keyCode == KeyEvent.VK_A) {
-      queue.setLeftKeyPressed(false)
+      userInput.setLeftKeyPressed(false)
     }
     if (keyCode == KeyEvent.VK_RIGHT || keyCode == KeyEvent.VK_D) {
-      queue.setRightKeyPressed(false)
+      userInput.setRightKeyPressed(false)
     }
     if (keyCode == KeyEvent.VK_UP || keyCode == KeyEvent.VK_W) {
-      queue.setUpKeyPressed(false)
+      userInput.setUpKeyPressed(false)
     }
     if (keyCode == KeyEvent.VK_SHIFT) {
-      queue.setShiftKeyPressed(false)
+      userInput.setShiftKeyPressed(false)
     }
     if (keyCode == KeyEvent.VK_DOWN || keyCode == KeyEvent.VK_S) {
-      queue.setDownKeyPressed(false)
+      userInput.setDownKeyPressed(false)
     }
   }
 
   def mousePressed(e: MouseEvent): Unit = {
     val button = e.getButton
     if(button == MouseEvent.BUTTON1) {
-      queue.setLeftMousePressed(true)
+      userInput.setLeftMousePressed(true)
     }
-    if (button == MouseEvent.BUTTON3) {
-      queue.setRightMousePressed(true)
+    else if (button == MouseEvent.BUTTON3) {
+      userInput.setRightMousePressed(true)
     }
   }
 
   def mouseReleased(e: MouseEvent): Unit = {
     val button = e.getButton
     if(button == MouseEvent.BUTTON1) {
-      queue.setLeftMousePressed(false)
+      userInput.setLeftMousePressed(false)
     }
-    if(button == MouseEvent.BUTTON3) {
-      queue.setRightMousePressed(false)
+    else if(button == MouseEvent.BUTTON3) {
+      userInput.setRightMousePressed(false)
     }
     menuPressed = false
   }
@@ -6877,15 +6880,11 @@ class TerraFrame extends JApplet
   }
 
   def mouseMoved(e: MouseEvent): Unit = {
-    if (mousePos != null) {
-      mousePos(0) = e.getX
-      mousePos(1) = e.getY
-    }
+    userInput.setCurrentMousePosition(e.getX, e.getY)
   }
 
   def mouseDragged(e: MouseEvent): Unit = {
-    mousePos(0) = e.getX
-    mousePos(1) = e.getY
+    userInput.setCurrentMousePosition(e.getX, e.getY)
   }
 
   override def getPreferredSize(): Dimension = {
