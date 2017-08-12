@@ -26,177 +26,8 @@ import scala.collection.mutable
 import scala.util.Random
 import scala.util.control.NonFatal
 
-/*
 
-0    Air
-1    Dirt
-2    Stone
-3    Copper Ore
-4    Iron Ore
-5    Silver Ore
-6    Gold Ore
-7    Wood
-8    Workbench
-9    Wooden Chest
-10    Stone Chest
-11    Copper Chest
-12    Iron Chest
-13    Silver Chest
-14    Gold Chest
-15    Tree
-16    Leaves
-17    Furnace
-18    Coal
-19    Lumenstone
-20    Wooden Torch
-21    Coal Torch
-22    Lumenstone Torch
-23    Furnace (on)
-24    Wooden Torch (left wall)
-25    Wooden Torch (right wall)
-26    Coal Torch (left wall)
-27    Coal Torch (right wall)
-28    Lumenstone Torch (left wall)
-29    Lumenstone Torch (right wall)
-30    Tree (root)
-31    Zinc Ore
-32    Rhymestone Ore
-33    Obdurite Ore
-34    Aluminum Ore
-35    Lead Ore
-36    Uranium Ore
-37    Zythium Ore
-38    Zythium Ore (on)
-39    Silicon Ore
-40    Irradium Ore
-41    Nullstone
-42    Meltstone
-43    Skystone
-44    Magnetite Ore
-45    Sand
-46    Snow
-47    Glass
-48    Sunflower (stage 1)
-49    Sunflower (stage 2)
-50    Sunflower (stage 3)
-51    Moonflower (stage 1)
-52    Moonflower (stage 2)
-53    Moonflower (stage 3)
-54    Dryweed (stage 1)
-55    Dryweed (stage 2)
-56    Dryweed (stage 3)
-57    Greenleaf (stage 1)
-58    Greenleaf (stage 2)
-59    Greenleaf (stage 3)
-60    Frostleaf (stage 1)
-61    Frostleaf (stage 2)
-62    Frostleaf (stage 3)
-63    Caveroot (stage 1)
-64    Caveroot (stage 2)
-65    Caveroot (stage 3)
-66    Skyblossom (stage 1)
-67    Skyblossom (stage 2)
-68    Skyblossom (stage 3)
-69    Void Rot (stage 1)
-70    Void Rot (stage 2)
-71    Void Rot (stage 3)
-72    Grass
-73    Jungle Grass
-74    Swamp Grass
-75    Mud
-76    Sandstone
-77    Marshleaf (stage 1)
-78    Marshleaf (stage 2)
-79    Marshleaf (stage 3)
-80    Zinc Chest
-81    Rhymestone Chest
-82    Obdurite Chest
-83    Tree (no bark)
-84    Cobblestone
-85    Chiseled Stone
-86    Chiseled Cobblestone
-87    Stone Bricks
-88    Clay
-89    Clay Bricks
-90    Varnished Wood
-91    Dirt (transparent)
-92    Magnetite Ore (transparent)
-93    Grass (transparent)
-94    Zythium Wire
-95    Zythium Wire (1 power)
-96    Zythium Wire (2 power)
-97    Zythium Wire (3 power)
-98    Zythium Wire (4 power)
-99    Zythium Wire (5 power)
-100    Zythium Torch
-101    Zythium Torch (left wall)
-102    Zythium Torch (right wall)
-103    Zythium Lamp
-104    Zythium Lamp (on)
-105    Lever
-106    Lever (on)
-107    Lever (left wall)
-108    Lever (left wall, on)
-109    Lever (right wall)
-110    Lever (right wall, on)
-111    Zythium Amplifier (right)
-112    Zythium Amplifier (down)
-113    Zythium Amplifier (left)
-114    Zythium Amplifier (up)
-115    Zythium Amplifier (right, on)
-116    Zythium Amplifier (down, on)
-117    Zythium Amplifier (left, on)
-118    Zythium Amplifier (up, on)
-119    Zythium Inverter (right)
-120    Zythium Inverter (down)
-121    Zythium Inverter (left)
-122    Zythium Inverter (up)
-123    Zythium Inverter (right, on)
-124    Zythium Inverter (down, on)
-125    Zythium Inverter (left, on)
-126    Zythium Inverter (up, on)
-127    Button (left)
-128    Button (left, on)
-129    Button (right)
-130    Button (right, on)
-131    Wooden Pressure Plate
-132    Wooden Pressure Plate (on)
-133    Stone Pressure Plate
-134    Stone Pressure Plate (on)
-135    Zythium Pressure Plate
-136    Zythium Pressure Plate (on)
-137    Zythium Delayer (1 delay, right)
-138    Zythium Delayer (1 delay, down)
-139    Zythium Delayer (1 delay, left)
-140    Zythium Delayer (1 delay, up)
-141    Zythium Delayer (1 delay, right, on)
-142    Zythium Delayer (1 delay, down, on)
-143    Zythium Delayer (1 delay, left, on)
-144    Zythium Delayer (1 delay, up, on)
-145    Zythium Delayer (2 delay, right)
-146    Zythium Delayer (2 delay, down)
-147    Zythium Delayer (2 delay, left)
-148    Zythium Delayer (2 delay, up)
-149    Zythium Delayer (2 delay, right, on)
-150    Zythium Delayer (2 delay, down, on)
-151    Zythium Delayer (2 delay, left, on)
-152    Zythium Delayer (2 delay, up, on)
-153    Zythium Delayer (4 delay, right)
-154    Zythium Delayer (4 delay, down)
-155    Zythium Delayer (4 delay, left)
-156    Zythium Delayer (4 delay, up)
-157    Zythium Delayer (4 delay, right, on)
-158    Zythium Delayer (4 delay, down, on)
-159    Zythium Delayer (4 delay, left, on)
-160    Zythium Delayer (4 delay, up, on)
-161    Zythium Delayer (8 delay, right)
-162    Zythium Delayer (8 delay, down)
-163    Zythium Delayer (8 delay, left)
-164    Zythium Delayer (8 delay, up)
-165    Zythium Delayer (8 delay, right, on)
-166    Zythium Delayer (8 delay, down, on)
-167    Zythium Delayer (8 delay, left, on)
-168    Zythium Delayer (8 delay, up, on)
+/*
 
 0    center
 1    tdown_both
@@ -2273,7 +2104,7 @@ class TerraFrame extends JApplet
                                             null))
                                       }
                                       (0 until 3).foreach { l =>
-                                        if (blocks(l)(ty)(tx) != 0) {
+                                        if (blocks(l)(ty)(tx) != AirBlockType.id) {
                                           if (l == 2) {
                                             OUTLINES.get(blocks(l)(ty)(tx)).foreach { outlineName =>
                                               fwg2.drawImage(loadBlock(blocks(l)(ty)(tx), blockds(l)(ty)(tx), blockdns(ty)(tx), blockts(ty)(tx), blocknames, dirs, outlineName, tx, ty, l),
@@ -2292,7 +2123,7 @@ class TerraFrame extends JApplet
 
                                           }
                                         }
-                                        if (wcnct(ty)(tx) && blocks(l)(ty)(tx) >= 94 && blocks(l)(ty)(tx) <= 99) {
+                                        if (wcnct(ty)(tx) && blocks(l)(ty)(tx) >= ZythiumWireBlockType.id && blocks(l)(ty)(tx) <= ZythiumWire5PowerBlockType.id) {
                                           if (l == 2) {
                                             fwg2.drawImage(wcnct_px,
                                               tx * BLOCKSIZE - twx * CHUNKSIZE, ty * BLOCKSIZE - twy * CHUNKSIZE, tx * BLOCKSIZE + BLOCKSIZE - twx * CHUNKSIZE, ty * BLOCKSIZE + BLOCKSIZE - twy * CHUNKSIZE,
@@ -2337,7 +2168,7 @@ class TerraFrame extends JApplet
                                           null))
                                       }
                                       (0 until 3).foreach { l =>
-                                        if (blocks(l)(ty)(tx) != 0) {
+                                        if (blocks(l)(ty)(tx) != AirBlockType.id) {
                                           if (l == 2) {
                                             OUTLINES.get(blocks(l)(ty)(tx)).foreach { outlineName =>
                                               fwg2.drawImage(loadBlock(blocks(l)(ty)(tx), blockds(l)(ty)(tx), blockdns(ty)(tx), blockts(ty)(tx), blocknames, dirs, outlineName, tx, ty, l),
@@ -2356,7 +2187,7 @@ class TerraFrame extends JApplet
 
                                           }
                                         }
-                                        if (wcnct(ty)(tx) && blocks(l)(ty)(tx) >= 94 && blocks(l)(ty)(tx) <= 99) {
+                                        if (wcnct(ty)(tx) && blocks(l)(ty)(tx) >= ZythiumWireBlockType.id && blocks(l)(ty)(tx) <= ZythiumWire5PowerBlockType.id) {
                                           if (l == 2) {
                                             fwg2.drawImage(wcnct_px,
                                               tx * BLOCKSIZE - twx * CHUNKSIZE, ty * BLOCKSIZE - twy * CHUNKSIZE, tx * BLOCKSIZE + BLOCKSIZE - twx * CHUNKSIZE, ty * BLOCKSIZE + BLOCKSIZE - twy * CHUNKSIZE,
@@ -2401,7 +2232,7 @@ class TerraFrame extends JApplet
                                           null))
                                       }
                                       (0 until 3).foreach { l =>
-                                        if (blocks(l)(ty)(tx) != 0) {
+                                        if (blocks(l)(ty)(tx) != AirBlockType.id) {
                                           if (l == 2) {
                                             OUTLINES.get(blocks(l)(ty)(tx)).foreach { outlineName =>
                                               fwg2.drawImage(loadBlock(blocks(l)(ty)(tx), blockds(l)(ty)(tx), blockdns(ty)(tx), blockts(ty)(tx), blocknames, dirs, outlineName, tx, ty, l),
@@ -2421,7 +2252,7 @@ class TerraFrame extends JApplet
 
                                           }
                                         }
-                                        if (wcnct(ty)(tx) && blocks(l)(ty)(tx) >= 94 && blocks(l)(ty)(tx) <= 99) {
+                                        if (wcnct(ty)(tx) && blocks(l)(ty)(tx) >= ZythiumWireBlockType.id && blocks(l)(ty)(tx) <= ZythiumWire5PowerBlockType.id) {
                                           if (l == 2) {
                                             fwg2.drawImage(wcnct_px,
                                               tx * BLOCKSIZE - twx * CHUNKSIZE, ty * BLOCKSIZE - twy * CHUNKSIZE, tx * BLOCKSIZE + BLOCKSIZE - twx * CHUNKSIZE, ty * BLOCKSIZE + BLOCKSIZE - twy * CHUNKSIZE,
@@ -2855,7 +2686,7 @@ class TerraFrame extends JApplet
               else {
                 icmatrix(l)(y)(x).F_ON = false
                 removeBlockLighting(x, y)
-                blocks(l)(y)(x) = 17
+                blocks(l)(y)(x) = FurnaceBlockType.id
                 rdrawn(y)(x) = false
               }
             }
@@ -2904,7 +2735,7 @@ class TerraFrame extends JApplet
           else {
             ic.F_ON = false
             removeBlockLighting(icx, icy)
-            blocks(iclayer)(icy)(icx) = 17
+            blocks(iclayer)(icy)(icx) = FurnaceBlockType.id
             rdrawn(icy)(icx) = false
           }
         }
@@ -3013,16 +2844,16 @@ class TerraFrame extends JApplet
           if (random.nextInt(1000) == 0) {
             if (y >= 1 && y < HEIGHT - 1) {
               doGrassGrow = false
-              if (blocks(l)(y)(x) == 1 && hasOpenSpace(x + u, y + v, l) && blocks(l)(y + random.nextInt(3) - 1 + u)(x + random.nextInt(3) - 1 + v) == 72) {
-                blocks(l)(y)(x) = 72
+              if (blocks(l)(y)(x) == DirtBlockType.id && hasOpenSpace(x + u, y + v, l) && blocks(l)(y + random.nextInt(3) - 1 + u)(x + random.nextInt(3) - 1 + v) == GrassBlockType.id) {
+                blocks(l)(y)(x) = GrassBlockType.id
                 doGrassGrow = true
               }
-              if (blocks(l)(y)(x) == 1 && hasOpenSpace(x + u, y + v, l) && blocks(l)(y + random.nextInt(3) - 1 + u)(x + random.nextInt(3) - 1 + v) == 73) {
-                blocks(l)(y)(x) = 73
+              if (blocks(l)(y)(x) == DirtBlockType.id && hasOpenSpace(x + u, y + v, l) && blocks(l)(y + random.nextInt(3) - 1 + u)(x + random.nextInt(3) - 1 + v) == JungleGrassBlockType.id) {
+                blocks(l)(y)(x) = JungleGrassBlockType.id
                 doGrassGrow = true
               }
-              if (blocks(l)(y)(x) == 75 && hasOpenSpace(x + u, y + v, l) && blocks(l)(y + random.nextInt(3) - 1 + u)(x + random.nextInt(3) - 1 + v) == 74) {
-                blocks(l)(y)(x) = 74
+              if (blocks(l)(y)(x) == MudBlockType.id && hasOpenSpace(x + u, y + v, l) && blocks(l)(y + random.nextInt(3) - 1 + u)(x + random.nextInt(3) - 1 + v) == SwampGrassBlockType.id) {
+                blocks(l)(y)(x) = SwampGrassBlockType.id
                 doGrassGrow = true
               }
               if (doGrassGrow) {
@@ -3044,8 +2875,8 @@ class TerraFrame extends JApplet
       (0 until theSize).foreach { y =>
         (0 until theSize).foreach { x =>
           if (random.nextInt(1000) == 0) {
-            if (blocks(1)(y)(x) == 83) {
-              blocks(1)(y)(x) = 15
+            if (blocks(1)(y)(x) == TreeNoBarkBlockType.id) {
+              blocks(1)(y)(x) = TreeBlockType.id
             }
           }
         }
@@ -3055,46 +2886,46 @@ class TerraFrame extends JApplet
     (updatex.length - 1 until(-1, -1)).foreach { i =>
       updatet.update(i, updatet(i) - 1)
       if (updatet(i) <= 0) {
-        if (blocks(updatel(i))(updatey(i))(updatex(i)) == 128) {
+        if (blocks(updatel(i))(updatey(i))(updatex(i)) == ButtonLeftOnBlockType.id) {
           blockTemp = blocks(updatel(i))(updatey(i))(updatex(i))
           removeBlockPower(updatex(i), updatey(i), updatel(i))
-          blocks(updatel(i))(updatey(i))(updatex(i)) = 127
+          blocks(updatel(i))(updatey(i))(updatex(i)) = ButtonLeftBlockType.id
           rdrawn(updatey(i))(updatex(i)) = false
         }
-        else if (blocks(updatel(i))(updatey(i))(updatex(i)) == 130) {
+        else if (blocks(updatel(i))(updatey(i))(updatex(i)) == ButtonRightOnBlockType.id) {
           blockTemp = blocks(updatel(i))(updatey(i))(updatex(i))
           removeBlockPower(updatex(i), updatey(i), updatel(i))
-          blocks(updatel(i))(updatey(i))(updatex(i)) = 129
+          blocks(updatel(i))(updatey(i))(updatex(i)) = ButtonRightBlockType.id
           rdrawn(updatey(i))(updatex(i)) = false
         }
-        else if (blocks(updatel(i))(updatey(i))(updatex(i)) == 132) {
+        else if (blocks(updatel(i))(updatey(i))(updatex(i)) == WoodenPressurePlateOnBlockType.id) {
           blockTemp = blocks(updatel(i))(updatey(i))(updatex(i))
           removeBlockPower(updatex(i), updatey(i), updatel(i))
-          blocks(updatel(i))(updatey(i))(updatex(i)) = 131
+          blocks(updatel(i))(updatey(i))(updatex(i)) = WoodenPressurePlateBlockType.id
           rdrawn(updatey(i))(updatex(i)) = false
         }
-        else if (blocks(updatel(i))(updatey(i))(updatex(i)) == 134) {
+        else if (blocks(updatel(i))(updatey(i))(updatex(i)) == StonePressurePlateOnBlockType.id) {
           blockTemp = blocks(updatel(i))(updatey(i))(updatex(i))
           removeBlockPower(updatex(i), updatey(i), updatel(i))
-          blocks(updatel(i))(updatey(i))(updatex(i)) = 133
+          blocks(updatel(i))(updatey(i))(updatex(i)) = StonePressurePlateBlockType.id
           rdrawn(updatey(i))(updatex(i)) = false
         }
-        else if (blocks(updatel(i))(updatey(i))(updatex(i)) == 136) {
+        else if (blocks(updatel(i))(updatey(i))(updatex(i)) == ZythiumPressurePlateOnBlockType.id) {
           blockTemp = blocks(updatel(i))(updatey(i))(updatex(i))
           removeBlockPower(updatex(i), updatey(i), updatel(i))
-          blocks(updatel(i))(updatey(i))(updatex(i)) = 135
+          blocks(updatel(i))(updatey(i))(updatex(i)) = ZythiumPressurePlateBlockType.id
           rdrawn(updatey(i))(updatex(i)) = false
         }
-        else if (blocks(updatel(i))(updatey(i))(updatex(i)) >= 141 && blocks(updatel(i))(updatey(i))(updatex(i)) <= 144 || blocks(updatel(i))(updatey(i))(updatex(i)) >= 149 && blocks(updatel(i))(updatey(i))(updatex(i)) <= 152 ||
-          blocks(updatel(i))(updatey(i))(updatex(i)) >= 157 && blocks(updatel(i))(updatey(i))(updatex(i)) <= 160 || blocks(updatel(i))(updatey(i))(updatex(i)) >= 165 && blocks(updatel(i))(updatey(i))(updatex(i)) <= 168) {
+        else if (blocks(updatel(i))(updatey(i))(updatex(i)) >= ZythiumDelayer1DelayRightOnBlockType.id && blocks(updatel(i))(updatey(i))(updatex(i)) <= ZythiumDelayer1DelayUpOnBlockType.id || blocks(updatel(i))(updatey(i))(updatex(i)) >= ZythiumDelayer2DelayRightOnBlockType.id && blocks(updatel(i))(updatey(i))(updatex(i)) <= ZythiumDelayer2DelayUpOnBlockType.id ||
+          blocks(updatel(i))(updatey(i))(updatex(i)) >= ZythiumDelayer4DelayRightOnBlockType.id && blocks(updatel(i))(updatey(i))(updatex(i)) <= ZythiumDelayer4DelayUpOnBlockType.id || blocks(updatel(i))(updatey(i))(updatex(i)) >= ZythiumDelayer8DelayRightOnBlockType.id && blocks(updatel(i))(updatey(i))(updatex(i)) <= ZythiumDelayer8DelayUpOnBlockType.id) {
           println("(DEBUG2R)")
           blockTemp = blocks(updatel(i))(updatey(i))(updatex(i))
           removeBlockPower(updatex(i), updatey(i), updatel(i), false)
           blocks(updatel(i))(updatey(i))(updatex(i)) -= 4
           rdrawn(updatey(i))(updatex(i)) = false
         }
-        else if (blocks(updatel(i))(updatey(i))(updatex(i)) >= 137 && blocks(updatel(i))(updatey(i))(updatex(i)) <= 140 || blocks(updatel(i))(updatey(i))(updatex(i)) >= 145 && blocks(updatel(i))(updatey(i))(updatex(i)) <= 148 ||
-          blocks(updatel(i))(updatey(i))(updatex(i)) >= 153 && blocks(updatel(i))(updatey(i))(updatex(i)) <= 156 || blocks(updatel(i))(updatey(i))(updatex(i)) >= 161 && blocks(updatel(i))(updatey(i))(updatex(i)) <= 164) {
+        else if (blocks(updatel(i))(updatey(i))(updatex(i)) >= ZythiumDelayer1DelayRightBlockType.id && blocks(updatel(i))(updatey(i))(updatex(i)) <= ZythiumDelayer1DelayUpBlockType.id || blocks(updatel(i))(updatey(i))(updatex(i)) >= ZythiumDelayer2DelayRightBlockType.id && blocks(updatel(i))(updatey(i))(updatex(i)) <= ZythiumDelayer2DelayUpBlockType.id ||
+          blocks(updatel(i))(updatey(i))(updatex(i)) >= ZythiumDelayer4DelayRightBlockType.id && blocks(updatel(i))(updatey(i))(updatex(i)) <= ZythiumDelayer4DelayUpBlockType.id || blocks(updatel(i))(updatey(i))(updatex(i)) >= ZythiumDelayer8DelayRightBlockType.id && blocks(updatel(i))(updatey(i))(updatex(i)) <= ZythiumDelayer8DelayUpBlockType.id) {
           println("(DEBUG2A)")
           blocks(updatel(i))(updatey(i))(updatex(i)) += 4
           power(updatel(i))(updatey(i))(updatex(i)) = 5.toFloat
@@ -3120,8 +2951,8 @@ class TerraFrame extends JApplet
                 ypos = ay + random.nextInt(20) - 10
                 xpos2 = ax + random.nextInt(20) - 10
                 ypos2 = ay + random.nextInt(20) - 10
-                if (xpos > 0 && xpos < WIDTH - 1 && ypos > 0 && ypos < HEIGHT - 1 && (blocks(1)(ypos)(xpos) == 0 || !blockcds(blocks(1)(ypos)(xpos)) &&
-                  xpos2 > 0 && xpos2 < WIDTH - 1 && ypos2 > 0 && ypos2 < HEIGHT - 1 && blocks(1)(ypos2)(xpos2) != 0 && blockcds(blocks(1)(ypos2)(xpos2)))) {
+                if (xpos > 0 && xpos < WIDTH - 1 && ypos > 0 && ypos < HEIGHT - 1 && (blocks(1)(ypos)(xpos) == AirBlockType.id || !blockcds(blocks(1)(ypos)(xpos)) &&
+                  xpos2 > 0 && xpos2 < WIDTH - 1 && ypos2 > 0 && ypos2 < HEIGHT - 1 && blocks(1)(ypos2)(xpos2) != AirBlockType.id && blockcds(blocks(1)(ypos2)(xpos2)))) {
                   mobSpawn = null
                   if (!checkBiome(xpos, ypos).equals("underground")) {
                     if ((day != 0 || DEBUG_HOSTILE > 1) && (timeOfDay >= 75913 || timeOfDay < 28883)) {
@@ -3233,7 +3064,7 @@ class TerraFrame extends JApplet
                   doMobSpawn = true
                   ((xpos / BLOCKSIZE) until (xpos / BLOCKSIZE + xmax)).foreach { x =>
                     ((ypos / BLOCKSIZE) until (ypos / BLOCKSIZE + ymax)).foreach { y =>
-                      if (y > 0 && y < HEIGHT - 1 && blocks(1)(y)(x) != 0 && blockcds(blocks(1)(y)(x))) {
+                      if (y > 0 && y < HEIGHT - 1 && blocks(1)(y)(x) != AirBlockType.id && blockcds(blocks(1)(y)(x))) {
                         doMobSpawn = false
                       }
                     }
@@ -3614,7 +3445,7 @@ class TerraFrame extends JApplet
             ucx = ux - CHUNKBLOCKS * (ux / CHUNKBLOCKS)
             ucy = uy - CHUNKBLOCKS * (uy / CHUNKBLOCKS)
             if (toolList.contains(inventory.tool())) {
-              if (blocks(layer)(uy)(ux) != 0 && BLOCKTOOLS.get(blocks(layer)(uy)(ux)).exists(_.contains(inventory.tool()))) {
+              if (blocks(layer)(uy)(ux) != AirBlockType.id && BLOCKTOOLS.get(blocks(layer)(uy)(ux)).exists(_.contains(inventory.tool()))) {
                 blockdns(uy)(ux) = random.nextInt(5).toByte
                 drawn(uy)(ux) = false
                 if (ux == mx && uy == my && inventory.tool() == miningTool) {
@@ -3640,11 +3471,11 @@ class TerraFrame extends JApplet
               }
             }
             else if (inventory.tool() == 33) {
-              if (blocks(layer)(uy)(ux) == 17 || blocks(layer)(uy)(ux) == 23) {
+              if (blocks(layer)(uy)(ux) == FurnaceBlockType.id || blocks(layer)(uy)(ux) == FurnaceOnBlockType.id) {
                 if (icmatrix(layer)(uy)(ux) != null && icmatrix(layer)(uy)(ux).icType == Furnace) {
                   inventory.durs(inventory.selection) = (inventory.durs(inventory.selection) - 1).toShort
                   icmatrix(layer)(uy)(ux).F_ON = true
-                  blocks(layer)(uy)(ux) = 23
+                  blocks(layer)(uy)(ux) = FurnaceOnBlockType.id
                   addBlockLighting(ux, uy)
                   if (inventory.durs(inventory.selection) <= 0) {
                     inventory.removeLocation(inventory.selection, inventory.nums(inventory.selection))
@@ -3655,7 +3486,7 @@ class TerraFrame extends JApplet
                   if (ic != null && ic.icType == Furnace) {
                     inventory.durs(inventory.selection) = (inventory.durs(inventory.selection) - 1).toShort
                     ic.F_ON = true
-                    blocks(layer)(icy)(icx) = 23
+                    blocks(layer)(icy)(icx) = FurnaceOnBlockType.id
                     addBlockLighting(ux, uy)
                     rdrawn(icy)(icx) = false
                     if (inventory.durs(inventory.selection) <= 0) {
@@ -3666,7 +3497,7 @@ class TerraFrame extends JApplet
               }
             }
             else if (inventory.tool() == 190) {
-              if (blocks(layer)(uy)(ux) >= 137 && blocks(layer)(uy)(ux) <= 160) {
+              if (blocks(layer)(uy)(ux) >= ZythiumDelayer1DelayRightBlockType.id && blocks(layer)(uy)(ux) <= ZythiumDelayer4DelayUpOnBlockType.id) {
                 inventory.durs(inventory.selection) = (inventory.durs(inventory.selection) - 1).toShort
                 blocks(layer)(uy)(ux) += 8
                 rdrawn(uy)(ux) = false
@@ -3674,7 +3505,7 @@ class TerraFrame extends JApplet
                   inventory.removeLocation(inventory.selection, inventory.nums(inventory.selection))
                 }
               }
-              else if (blocks(layer)(uy)(ux) >= 161 && blocks(layer)(uy)(ux) <= 168) {
+              else if (blocks(layer)(uy)(ux) >= ZythiumDelayer8DelayRightBlockType.id && blocks(layer)(uy)(ux) <= ZythiumDelayer8DelayUpOnBlockType.id) {
                 inventory.durs(inventory.selection) = (inventory.durs(inventory.selection) - 1).toShort
                 blocks(layer)(uy)(ux) -= 24
                 rdrawn(uy)(ux) = false
@@ -3687,30 +3518,30 @@ class TerraFrame extends JApplet
               ITEMBLOCKS.get(inventory.tool()).foreach { t =>
                 blockTemp = t
               }
-              if (uy >= 1 && (blocks(layer)(uy)(ux) == 0) &&
+              if (uy >= 1 && (blocks(layer)(uy)(ux) == AirBlockType.id) &&
                 (layer == 0 && (
-                  blocks(layer)(uy)(ux - 1) != 0 || blocks(layer)(uy)(ux + 1) != 0 ||
-                    blocks(layer)(uy - 1)(ux) != 0 || blocks(layer)(uy + 1)(ux) != 0 ||
-                    blocks(layer + 1)(uy)(ux) != 0) ||
+                  blocks(layer)(uy)(ux - 1) != AirBlockType.id || blocks(layer)(uy)(ux + 1) != AirBlockType.id ||
+                    blocks(layer)(uy - 1)(ux) != AirBlockType.id || blocks(layer)(uy + 1)(ux) != AirBlockType.id ||
+                    blocks(layer + 1)(uy)(ux) != AirBlockType.id) ||
                   layer == 1 && (
-                    blocks(layer)(uy)(ux - 1) != 0 || blocks(layer)(uy)(ux + 1) != 0 ||
-                      blocks(layer)(uy - 1)(ux) != 0 || blocks(layer)(uy + 1)(ux) != 0 ||
-                      blocks(layer - 1)(uy)(ux) != 0 || blocks(layer + 1)(uy)(ux) != 0) ||
+                    blocks(layer)(uy)(ux - 1) != AirBlockType.id || blocks(layer)(uy)(ux + 1) != AirBlockType.id ||
+                      blocks(layer)(uy - 1)(ux) != AirBlockType.id || blocks(layer)(uy + 1)(ux) != AirBlockType.id ||
+                      blocks(layer - 1)(uy)(ux) != AirBlockType.id || blocks(layer + 1)(uy)(ux) != AirBlockType.id) ||
                   layer == 2 && (
-                    blocks(layer)(uy)(ux - 1) != 0 || blocks(layer)(uy)(ux + 1) != 0 ||
-                      blocks(layer)(uy - 1)(ux) != 0 || blocks(layer)(uy + 1)(ux) != 0 ||
-                      blocks(layer - 1)(uy)(ux) != 0)) &&
-                !(blockTemp == 48 && (blocks(layer)(uy + 1)(ux) != 1 && blocks(layer)(uy + 1)(ux) != 72 && blocks(layer)(uy + 1)(ux) != 73) || // sunflower
-                  blockTemp == 51 && (blocks(layer)(uy + 1)(ux) != 1 && blocks(layer)(uy + 1)(ux) != 72 && blocks(layer)(uy + 1)(ux) != 73) || // moonflower
-                  blockTemp == 54 && (blocks(layer)(uy + 1)(ux) != 45) || // dryweed
-                  blockTemp == 57 && (blocks(layer)(uy + 1)(ux) != 73) || // greenleaf
-                  blockTemp == 60 && (blocks(layer)(uy + 1)(ux) != 46) || // frostleaf
-                  blockTemp == 63 && (blocks(layer)(uy + 1)(ux) != 2) || // caveroot
-                  blockTemp == 66 && (blocks(layer)(uy + 1)(ux) != 1 && blocks(layer)(uy + 1)(ux) != 72 && blocks(layer)(uy + 1)(ux) != 73) || // skyblossom
-                  blockTemp == 69 && (blocks(layer)(uy + 1)(ux) != 2))) { // void_rot
-                if (TORCHESL.get(blockTemp).isEmpty || uy < HEIGHT - 1 && (solid(blocks(layer)(uy + 1)(ux)) && blockTemp != 127 || solid(blocks(layer)(uy)(ux + 1)) || solid(blocks(layer)(uy)(ux - 1)))) {
+                    blocks(layer)(uy)(ux - 1) != AirBlockType.id || blocks(layer)(uy)(ux + 1) != AirBlockType.id ||
+                      blocks(layer)(uy - 1)(ux) != AirBlockType.id || blocks(layer)(uy + 1)(ux) != AirBlockType.id ||
+                      blocks(layer - 1)(uy)(ux) != AirBlockType.id)) &&
+                !(blockTemp == SunflowerStage1BlockType.id && (blocks(layer)(uy + 1)(ux) != DirtBlockType.id && blocks(layer)(uy + 1)(ux) != GrassBlockType.id && blocks(layer)(uy + 1)(ux) != JungleGrassBlockType.id) || // sunflower
+                  blockTemp == MoonflowerStage1BlockType.id && (blocks(layer)(uy + 1)(ux) != DirtBlockType.id && blocks(layer)(uy + 1)(ux) != GrassBlockType.id && blocks(layer)(uy + 1)(ux) != JungleGrassBlockType.id) || // moonflower
+                  blockTemp == DryweedStage1BlockType.id && (blocks(layer)(uy + 1)(ux) != SandBlockType.id) || // dryweed
+                  blockTemp == GreenleafStage1BlockType.id && (blocks(layer)(uy + 1)(ux) != JungleGrassBlockType.id) || // greenleaf
+                  blockTemp == FrostleafStage1BlockType.id && (blocks(layer)(uy + 1)(ux) != SnowBlockType.id) || // frostleaf
+                  blockTemp == CaverootStage1BlockType.id && (blocks(layer)(uy + 1)(ux) != StoneBlockType.id) || // caveroot
+                  blockTemp == SkyblossomStage1BlockType.id && (blocks(layer)(uy + 1)(ux) != DirtBlockType.id && blocks(layer)(uy + 1)(ux) != GrassBlockType.id && blocks(layer)(uy + 1)(ux) != JungleGrassBlockType.id) || // skyblossom
+                  blockTemp == VoidRotStage1BlockType.id && (blocks(layer)(uy + 1)(ux) != StoneBlockType.id))) { // void_rot
+                if (TORCHESL.get(blockTemp).isEmpty || uy < HEIGHT - 1 && (solid(blocks(layer)(uy + 1)(ux)) && blockTemp != ButtonLeftBlockType.id || solid(blocks(layer)(uy)(ux + 1)) || solid(blocks(layer)(uy)(ux - 1)))) {
                   if (TORCHESL.get(blockTemp).isDefined) {
-                    if (solid(blocks(layer)(uy + 1)(ux)) && blockTemp != 127) {
+                    if (solid(blocks(layer)(uy + 1)(ux)) && blockTemp != ButtonLeftBlockType.id) {
                       blockTemp = blockTemp
                     }
                     else if (solid(blocks(layer)(uy)(ux - 1))) {
@@ -3727,14 +3558,14 @@ class TerraFrame extends JApplet
                   if (layer == 1 && !DEBUG_GPLACE && blockcds(blockTemp)) {
                     entities.foreach { entity: Entity =>
                       if (entity.name != null && entity.rect.intersects(new Rectangle(ux * BLOCKSIZE, uy * BLOCKSIZE, BLOCKSIZE, BLOCKSIZE))) {
-                        blockTemp = 0
+                        blockTemp = AirBlockType.id
                       }
                     }
                     if (player.rect.intersects(new Rectangle(ux * BLOCKSIZE, uy * BLOCKSIZE, BLOCKSIZE, BLOCKSIZE))) {
-                      blockTemp = 0
+                      blockTemp = AirBlockType.id
                     }
                   }
-                  if (blockTemp != 0) {
+                  if (blockTemp != AirBlockType.id) {
                     blocks(layer)(uy)(ux) = blockTemp
                     if (receives(blocks(layer)(uy)(ux))) {
                       addAdjacentTilesToPQueue(ux, uy)
@@ -3748,7 +3579,7 @@ class TerraFrame extends JApplet
                     }
                     addBlockLighting(ux, uy)
                   }
-                  if (blockTemp != 0) {
+                  if (blockTemp != AirBlockType.id) {
                     inventory.removeLocation(inventory.selection, 1.toShort)
                     blockds(layer) = World.generate2b(blocks(layer), blockds(layer), ux, uy)
                     (uy - 1 until uy + 2).foreach { uly =>
@@ -4042,7 +3873,7 @@ class TerraFrame extends JApplet
           if (DEBUG_REACH || Math.sqrt(Math.pow(player.x + player.image.getWidth() - ux * BLOCKSIZE + BLOCKSIZE / 2, 2) + Math.pow(player.y + player.image.getHeight() - uy * BLOCKSIZE + BLOCKSIZE / 2, 2)) <= 160) {
             ucx = ux - CHUNKBLOCKS * (ux / CHUNKBLOCKS)
             ucy = uy - CHUNKBLOCKS * (uy / CHUNKBLOCKS)
-            if (blocks(layer)(uy)(ux) >= 8 && blocks(layer)(uy)(ux) <= 14 || blocks(layer)(uy)(ux) == 17 || blocks(layer)(uy)(ux) == 23 || blocks(layer)(uy)(ux) >= 80 && blocks(layer)(uy)(ux) <= 82) {
+            if (blocks(layer)(uy)(ux) >= WorkbenchBlockType.id && blocks(layer)(uy)(ux) <= GoldChestBlockType.id || blocks(layer)(uy)(ux) == FurnaceBlockType.id || blocks(layer)(uy)(ux) == FurnaceOnBlockType.id || blocks(layer)(uy)(ux) >= ZincChestBlockType.id && blocks(layer)(uy)(ux) <= ObduriteChestBlockType.id) {
               if (ic != null) {
                 if (ic.icType != Workbench) {
                   machinesx += icx
@@ -4074,7 +3905,7 @@ class TerraFrame extends JApplet
               }
               iclayer = layer
               (0 until 3).foreach { l =>
-                if (blocks(l)(uy)(ux) == 8) {
+                if (blocks(l)(uy)(ux) == WorkbenchBlockType.id) {
                   val tlist1: Array[Short] = Array[Short](0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
                   val tlist2: Array[Short] = Array[Short](0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
                   val tlist3: Array[Short] = Array[Short](0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
@@ -4089,7 +3920,7 @@ class TerraFrame extends JApplet
                   inventory.renderCollection(ic)
                   showInv = true
                 }
-                if (blocks(l)(uy)(ux) == 9) {
+                if (blocks(l)(uy)(ux) == WoodenChestBlockType.id) {
                   val tlist1: Array[Short] = Array[Short](0, 0, 0, 0, 0, 0, 0, 0, 0)//TODO: move these inside the else block
                   val tlist2: Array[Short] = Array[Short](0, 0, 0, 0, 0, 0, 0, 0, 0)
                   val tlist3: Array[Short] = Array[Short](0, 0, 0, 0, 0, 0, 0, 0, 0)
@@ -4104,7 +3935,7 @@ class TerraFrame extends JApplet
                   inventory.renderCollection(ic)
                   showInv = true
                 }
-                if (blocks(l)(uy)(ux) == 10) {
+                if (blocks(l)(uy)(ux) == StoneChestBlockType.id) {
                   val tlist1: Array[Short] = Array[Short](0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
                   val tlist2: Array[Short] = Array[Short](0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
                   val tlist3: Array[Short] = Array[Short](0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
@@ -4119,7 +3950,7 @@ class TerraFrame extends JApplet
                   inventory.renderCollection(ic)
                   showInv = true
                 }
-                if (blocks(l)(uy)(ux) == 11) {
+                if (blocks(l)(uy)(ux) == CopperChestBlockType.id) {
                   val tlist1: Array[Short] = Array[Short](0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
                   val tlist2: Array[Short] = Array[Short](0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
                   val tlist3: Array[Short] = Array[Short](0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
@@ -4134,7 +3965,7 @@ class TerraFrame extends JApplet
                   inventory.renderCollection(ic)
                   showInv = true
                 }
-                if (blocks(l)(uy)(ux) == 12) {
+                if (blocks(l)(uy)(ux) == IronChestBlockType.id) {
                   val tlist1: Array[Short] = Array[Short](0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
                   val tlist2: Array[Short] = Array[Short](0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
                   val tlist3: Array[Short] = Array[Short](0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
@@ -4149,7 +3980,7 @@ class TerraFrame extends JApplet
                   inventory.renderCollection(ic)
                   showInv = true
                 }
-                if (blocks(l)(uy)(ux) == 13) {
+                if (blocks(l)(uy)(ux) == SilverChestBlockType.id) {
                   val tlist1: Array[Short] = Array[Short](0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
                   val tlist2: Array[Short] = Array[Short](0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
                   val tlist3: Array[Short] = Array[Short](0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
@@ -4164,7 +3995,7 @@ class TerraFrame extends JApplet
                   inventory.renderCollection(ic)
                   showInv = true
                 }
-                if (blocks(l)(uy)(ux) == 14) {
+                if (blocks(l)(uy)(ux) == GoldChestBlockType.id) {
                   val tlist1: Array[Short] = Array[Short](0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
                   val tlist2: Array[Short] = Array[Short](0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
                   val tlist3: Array[Short] = Array[Short](0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
@@ -4179,7 +4010,7 @@ class TerraFrame extends JApplet
                   inventory.renderCollection(ic)
                   showInv = true
                 }
-                if (blocks(l)(uy)(ux) == 80) {
+                if (blocks(l)(uy)(ux) == ZincChestBlockType.id) {
                   val tlist1: Array[Short] = Array[Short](0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
                   val tlist2: Array[Short] = Array[Short](0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
                   val tlist3: Array[Short] = Array[Short](0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
@@ -4194,7 +4025,7 @@ class TerraFrame extends JApplet
                   inventory.renderCollection(ic)
                   showInv = true
                 }
-                if (blocks(l)(uy)(ux) == 81) {
+                if (blocks(l)(uy)(ux) == RhymestoneChestBlockType.id) {
                   val tlist1: Array[Short] = Array[Short](0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
                   val tlist2: Array[Short] = Array[Short](0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
                   val tlist3: Array[Short] = Array[Short](0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
@@ -4209,7 +4040,7 @@ class TerraFrame extends JApplet
                   inventory.renderCollection(ic)
                   showInv = true
                 }
-                if (blocks(l)(uy)(ux) == 82) {
+                if (blocks(l)(uy)(ux) == ObduriteChestBlockType.id) {
                   val tlist1: Array[Short] = Array[Short](0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
                   val tlist2: Array[Short] = Array[Short](0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
                   val tlist3: Array[Short] = Array[Short](0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
@@ -4224,7 +4055,7 @@ class TerraFrame extends JApplet
                   inventory.renderCollection(ic)
                   showInv = true
                 }
-                if (blocks(l)(uy)(ux) == 17 || blocks(l)(uy)(ux) == 23) {
+                if (blocks(l)(uy)(ux) == FurnaceBlockType.id || blocks(l)(uy)(ux) == FurnaceOnBlockType.id) {
                   val tlist1: Array[Short] = Array[Short](0, 0, 0, 0)
                   val tlist2: Array[Short] = Array[Short](0, 0, 0, 0)
                   val tlist3: Array[Short] = Array[Short](0, 0, 0, 0)
@@ -4243,7 +4074,7 @@ class TerraFrame extends JApplet
                   inventory.renderCollection(ic)
                   showInv = true
                 }
-                if (ic != null && blocks(l)(uy)(ux) != 8) {
+                if (ic != null && blocks(l)(uy)(ux) != WorkbenchBlockType.id) {
                   (machinesx.length - 1 until(-1, -1)).foreach { i =>
                     if (machinesx(i) == icx && machinesy(i) == icy) {
                       machinesx.remove(i)
@@ -4253,21 +4084,21 @@ class TerraFrame extends JApplet
                 }
               }
             }
-            if (blocks(layer)(uy)(ux) == 15) {
+            if (blocks(layer)(uy)(ux) == TreeBlockType.id) {
               if (random.nextInt(2) == 0) {
                 entities += new Entity(ux * BLOCKSIZE, uy * BLOCKSIZE, random.nextDouble() * 8 - 4, -3, 160.toShort, 1.toShort)
               }
-              blocks(layer)(uy)(ux) = 83
+              blocks(layer)(uy)(ux) = TreeNoBarkBlockType.id
             }
             if (mouseClicked2) {
               mouseNoLongerClicked2 = true
               blockTemp = blocks(layer)(uy)(ux)
-              if (blocks(layer)(uy)(ux) == 105 || blocks(layer)(uy)(ux) == 107 || blocks(layer)(uy)(ux) == 109) {
+              if (blocks(layer)(uy)(ux) == LeverBlockType.id || blocks(layer)(uy)(ux) == LeverLeftWallBlockType.id || blocks(layer)(uy)(ux) == LeverLightWallBlockType.id) {
                 blocks(layer)(uy)(ux) += 1
                 addBlockPower(ux, uy)
                 rdrawn(uy)(ux) = false
               }
-              else if (blocks(layer)(uy)(ux) == 106 || blocks(layer)(uy)(ux) == 108 || blocks(layer)(uy)(ux) == 110) {
+              else if (blocks(layer)(uy)(ux) == LeverOnBlockType.id || blocks(layer)(uy)(ux) == LeverLeftWallOnBlockType.id || blocks(layer)(uy)(ux) == LeverRightWallOnBlockType.id) {
                 removeBlockPower(ux, uy, layer)
                 if (wcnct(uy)(ux)) {
                   (0 until 3).foreach { l =>
@@ -4279,14 +4110,14 @@ class TerraFrame extends JApplet
                 blocks(layer)(uy)(ux) -= 1
                 rdrawn(uy)(ux) = false
               }
-              if (blocks(layer)(uy)(ux) >= 94 && blocks(layer)(uy)(ux) <= 99) {
+              if (blocks(layer)(uy)(ux) >= ZythiumWireBlockType.id && blocks(layer)(uy)(ux) <= ZythiumWire5PowerBlockType.id) {
                 wcnct(uy)(ux) = !wcnct(uy)(ux)
                 rdrawn(uy)(ux) = false
                 redoBlockPower(ux, uy, layer)
               }
-              if (blocks(layer)(uy)(ux) >= 111 && blocks(layer)(uy)(ux) <= 118) {
+              if (blocks(layer)(uy)(ux) >= ZythiumAmplifierRightBlockType.id && blocks(layer)(uy)(ux) <= ZythiumAmplifierUpOnBlockType.id) {
                 removeBlockPower(ux, uy, layer)
-                if (blocks(layer)(uy)(ux) >= 111 && blocks(layer)(uy)(ux) <= 113 || blocks(layer)(uy)(ux) >= 115 && blocks(layer)(uy)(ux) <= 117) {
+                if (blocks(layer)(uy)(ux) >= ZythiumAmplifierRightBlockType.id && blocks(layer)(uy)(ux) <= ZythiumAmplifierLeftBlockType.id || blocks(layer)(uy)(ux) >= ZythiumAmplifierRightOnBlockType.id && blocks(layer)(uy)(ux) <= ZythiumAmplifierLeftOnBlockType.id) {
                   blocks(layer)(uy)(ux) += 1
                 }
                 else {
@@ -4296,9 +4127,9 @@ class TerraFrame extends JApplet
                 rdrawn(uy)(ux) = false
                 addAdjacentTilesToPQueueConditionally(ux, uy)
               }
-              if (blocks(layer)(uy)(ux) >= 119 && blocks(layer)(uy)(ux) <= 126) {
+              if (blocks(layer)(uy)(ux) >= ZythiumInverterRightBlockType.id && blocks(layer)(uy)(ux) <= ZythiumInverterUpOnBlockType.id) {
                 removeBlockPower(ux, uy, layer)
-                if (blocks(layer)(uy)(ux) >= 119 && blocks(layer)(uy)(ux) <= 121 || blocks(layer)(uy)(ux) >= 123 && blocks(layer)(uy)(ux) <= 125) {
+                if (blocks(layer)(uy)(ux) >= ZythiumInverterRightBlockType.id && blocks(layer)(uy)(ux) <= ZythiumInverterLeftBlockType.id || blocks(layer)(uy)(ux) >= ZythiumInverterRightOnBlockType.id && blocks(layer)(uy)(ux) <= ZythiumInverterLeftOnBlockType.id) {
                   blocks(layer)(uy)(ux) += 1
                 }
                 else {
@@ -4308,21 +4139,21 @@ class TerraFrame extends JApplet
                 rdrawn(uy)(ux) = false
                 addAdjacentTilesToPQueueConditionally(ux, uy)
               }
-              if (blocks(layer)(uy)(ux) == 127 || blocks(layer)(uy)(ux) == 129) {
+              if (blocks(layer)(uy)(ux) == ButtonLeftBlockType.id || blocks(layer)(uy)(ux) == ButtonRightBlockType.id) {
                 blocks(layer)(uy)(ux) += 1
                 addBlockPower(ux, uy)
                 rdrawn(uy)(ux) = false
-                println("Srsly?")
+                println("Srsly?")//TODO: should not use print in tight loops, should use asychronous logging
                 updatex += ux
                 updatey += uy
                 updatet += 50
                 updatel += layer
               }
-              if (blocks(layer)(uy)(ux) >= 137 && blocks(layer)(uy)(ux) <= 168) {
-                if (blocks(layer)(uy)(ux) >= 137 && blocks(layer)(uy)(ux) <= 139 || blocks(layer)(uy)(ux) >= 141 && blocks(layer)(uy)(ux) <= 143 ||
-                  blocks(layer)(uy)(ux) >= 145 && blocks(layer)(uy)(ux) <= 147 || blocks(layer)(uy)(ux) >= 149 && blocks(layer)(uy)(ux) <= 151 ||
-                  blocks(layer)(uy)(ux) >= 153 && blocks(layer)(uy)(ux) <= 155 || blocks(layer)(uy)(ux) >= 157 && blocks(layer)(uy)(ux) <= 159 ||
-                  blocks(layer)(uy)(ux) >= 161 && blocks(layer)(uy)(ux) <= 163 || blocks(layer)(uy)(ux) >= 165 && blocks(layer)(uy)(ux) <= 167) {
+              if (blocks(layer)(uy)(ux) >= ZythiumDelayer1DelayRightBlockType.id && blocks(layer)(uy)(ux) <= ZythiumDelayer8DelayUpOnBlockType.id) {
+                if (blocks(layer)(uy)(ux) >= ZythiumDelayer1DelayRightBlockType.id && blocks(layer)(uy)(ux) <= ZythiumDelayer1DelayLeftBlockType.id || blocks(layer)(uy)(ux) >= ZythiumDelayer1DelayRightOnBlockType.id && blocks(layer)(uy)(ux) <= ZythiumDelayer1DelayLeftOnBlockType.id ||
+                  blocks(layer)(uy)(ux) >= ZythiumDelayer2DelayRightBlockType.id && blocks(layer)(uy)(ux) <= ZythiumDelayer2DelayLeftBlockType.id || blocks(layer)(uy)(ux) >= ZythiumDelayer2DelayRightOnBlockType.id && blocks(layer)(uy)(ux) <= ZythiumDelayer2DelayLeftOnBlockType.id ||
+                  blocks(layer)(uy)(ux) >= ZythiumDelayer4DelayRightBlockType.id && blocks(layer)(uy)(ux) <= ZythiumDelayer4DelayLeftBlockType.id || blocks(layer)(uy)(ux) >= ZythiumDelayer4DelayRightOnBlockType.id && blocks(layer)(uy)(ux) <= ZythiumDelayer4DelayLeftOnBlockType.id ||
+                  blocks(layer)(uy)(ux) >= ZythiumDelayer8DelayRightBlockType.id && blocks(layer)(uy)(ux) <= ZythiumDelayer8DelayLeftBlockType.id || blocks(layer)(uy)(ux) >= ZythiumDelayer8DelayRightOnBlockType.id && blocks(layer)(uy)(ux) <= ZythiumDelayer8DelayLeftOnBlockType.id) {
                   blocks(layer)(uy)(ux) += 1
                 }
                 else {
@@ -4544,8 +4375,8 @@ class TerraFrame extends JApplet
 
       (bx1 to bx2).foreach { x =>
         (by1 to by2).foreach { y =>
-          if (blocks(layer)(y)(x) >= 131 && blocks(layer)(y)(x) <= 136 && (i == -1 || blocks(layer)(y)(x) <= 134 && (x != -1 && entities(i).name != null || blocks(layer)(y)(x) <= 132))) {
-            if (blocks(layer)(y)(x) == 131 || blocks(layer)(y)(x) == 133 || blocks(layer)(y)(x) == 135) {
+          if (blocks(layer)(y)(x) >= WoodenPressurePlateBlockType.id && blocks(layer)(y)(x) <= ZythiumPressurePlateOnBlockType.id && (i == -1 || blocks(layer)(y)(x) <= StonePressurePlateOnBlockType.id && (x != -1 && entities(i).name != null || blocks(layer)(y)(x) <= WoodenPressurePlateOnBlockType.id))) {
+            if (blocks(layer)(y)(x) == WoodenPressurePlateBlockType.id || blocks(layer)(y)(x) == StonePressurePlateBlockType.id || blocks(layer)(y)(x) == ZythiumPressurePlateBlockType.id) {
               blocks(layer)(y)(x) += 1
               rdrawn(y)(x) = false
               addBlockPower(x, y)
@@ -4567,14 +4398,14 @@ class TerraFrame extends JApplet
 
   def hasOpenSpace(x: Int, y: Int, l: Int): Boolean = {
     try {
-      blocks(l)(y - 1)(x - 1) == 0 || !blockcds(blocks(l)(y - 1)(x - 1)) ||
-        blocks(l)(y - 1)(x) == 0 || !blockcds(blocks(l)(y - 1)(x)) ||
-        blocks(l)(y - 1)(x + 1) == 0 || !blockcds(blocks(l)(y - 1)(x + 1)) ||
-        blocks(l)(y)(x - 1) == 0 || !blockcds(blocks(l)(y)(x - 1)) ||
-        blocks(l)(y)(x + 1) == 0 || !blockcds(blocks(l)(y)(x + 1)) ||
-        blocks(l)(y + 1)(x - 1) == 0 || !blockcds(blocks(l)(y + 1)(x - 1)) ||
-        blocks(l)(y + 1)(x) == 0 || !blockcds(blocks(l)(y + 1)(x)) ||
-        blocks(l)(y + 1)(x + 1) == 0 || !blockcds(blocks(l)(y + 1)(x + 1))
+      blocks(l)(y - 1)(x - 1) == AirBlockType.id || !blockcds(blocks(l)(y - 1)(x - 1)) ||
+        blocks(l)(y - 1)(x) == AirBlockType.id || !blockcds(blocks(l)(y - 1)(x)) ||
+        blocks(l)(y - 1)(x + 1) == AirBlockType.id || !blockcds(blocks(l)(y - 1)(x + 1)) ||
+        blocks(l)(y)(x - 1) == AirBlockType.id || !blockcds(blocks(l)(y)(x - 1)) ||
+        blocks(l)(y)(x + 1) == AirBlockType.id || !blockcds(blocks(l)(y)(x + 1)) ||
+        blocks(l)(y + 1)(x - 1) == AirBlockType.id || !blockcds(blocks(l)(y + 1)(x - 1)) ||
+        blocks(l)(y + 1)(x) == AirBlockType.id || !blockcds(blocks(l)(y + 1)(x)) ||
+        blocks(l)(y + 1)(x + 1) == AirBlockType.id || !blockcds(blocks(l)(y + 1)(x + 1))
     }
     catch {
       case _: ArrayIndexOutOfBoundsException => false
@@ -4582,9 +4413,9 @@ class TerraFrame extends JApplet
   }
 
   def empty(x: Int, y: Int): Boolean = {
-    (blocks(0)(y)(x) == 0 || BLOCKLIGHTS.get(blocks(0)(y)(x)).fold(true)(_ == 0)) &&
-      (blocks(1)(y)(x) == 0 || BLOCKLIGHTS.get(blocks(1)(y)(x)).fold(true)(_ == 0)) &&
-      (blocks(2)(y)(x) == 0 || BLOCKLIGHTS.get(blocks(2)(y)(x)).fold(true)(_ == 0))
+    (blocks(0)(y)(x) == AirBlockType.id || BLOCKLIGHTS.get(blocks(0)(y)(x)).fold(true)(_ == 0)) &&
+      (blocks(1)(y)(x) == AirBlockType.id || BLOCKLIGHTS.get(blocks(1)(y)(x)).fold(true)(_ == 0)) &&
+      (blocks(2)(y)(x) == AirBlockType.id || BLOCKLIGHTS.get(blocks(2)(y)(x)).fold(true)(_ == 0))
   }
 
   def checkBiome(x: Int, y: Int): String = {
@@ -4596,34 +4427,34 @@ class TerraFrame extends JApplet
     (x - 15 until x + 16).foreach { x2 =>
       (y - 15 until y + 16).foreach { y2 =>
         if (x2 + u >= 0 && x2 + u < WIDTH && y2 + v >= 0 && y2 + v < HEIGHT) {
-          if (blocks(1)(y2 + v)(x2 + u) == 45 || blocks(1)(y2 + v)(x2 + u) == 76) {
+          if (blocks(1)(y2 + v)(x2 + u) == SandBlockType.id || blocks(1)(y2 + v)(x2 + u) == SandstoneBlockType.id) {
             desert += 1
           }
-          else if (blocks(1)(y2 + v)(x2 + u) != 0) {
+          else if (blocks(1)(y2 + v)(x2 + u) != AirBlockType.id) {
             desert -= 1
           }
-          if (blocks(1)(y2 + v)(x2 + u) == 1 || blocks(1)(y2 + v)(x2 + u) == 72 || blocks(1)(y2 + v)(x2 + u) == 73) {
+          if (blocks(1)(y2 + v)(x2 + u) == DirtBlockType.id || blocks(1)(y2 + v)(x2 + u) == GrassBlockType.id || blocks(1)(y2 + v)(x2 + u) == JungleGrassBlockType.id) {
             jungle += 1
           }
-          else if (blocks(1)(y2 + v)(x2 + u) != 0) {
+          else if (blocks(1)(y2 + v)(x2 + u) != AirBlockType.id) {
             jungle -= 1
           }
-          if (blocks(1)(y2 + v)(x2 + u) == 74 || blocks(1)(y2 + v)(x2 + u) == 75) {
+          if (blocks(1)(y2 + v)(x2 + u) == SwampGrassBlockType.id || blocks(1)(y2 + v)(x2 + u) == MudBlockType.id) {
             swamp += 1
           }
-          else if (blocks(1)(y2 + v)(x2 + u) != 0) {
+          else if (blocks(1)(y2 + v)(x2 + u) != AirBlockType.id) {
             swamp -= 1
           }
-          if (blocks(1)(y2 + v)(x2 + u) == 46) {
+          if (blocks(1)(y2 + v)(x2 + u) == SnowBlockType.id) {
             frost += 1
           }
-          else if (blocks(1)(y2 + v)(x2 + u) != 0) {
+          else if (blocks(1)(y2 + v)(x2 + u) != AirBlockType.id) {
             frost -= 1
           }
           if (blockbgs(y2 + v)(x2 + u) == 0) {
             cavern += 1
           }
-          if (blocks(1)(y2 + v)(x2 + u) == 1 || blocks(1)(y2 + v)(x2 + u) == 2) {
+          if (blocks(1)(y2 + v)(x2 + u) == DirtBlockType.id || blocks(1)(y2 + v)(x2 + u) == StoneBlockType.id) {
             cavern += 1
           }
           else {
@@ -4649,8 +4480,8 @@ class TerraFrame extends JApplet
 
   def breakCurrentBlock(): Unit = {
     if (DEBUG_INSTAMINE || DURABILITY.get(inventory.tool()).flatMap(_.get(blocks(layer)(uy)(ux))).exists(mining >= _)) {
-      if (blocks(0)(uy)(ux) == 30) {
-        blocks(0)(uy)(ux) = 0
+      if (blocks(0)(uy)(ux) == TreeRootBlockType.id) {
+        blocks(0)(uy)(ux) = AirBlockType.id
         (uy - 1 until uy + 2).foreach { uly =>
           (ux - 1 until ux + 2).foreach { ulx =>
             blockdns(uly)(ulx) = random.nextInt(5).toByte
@@ -4662,8 +4493,8 @@ class TerraFrame extends JApplet
           }
         }
       }
-      if (blocks(0)(uy + 1)(ux) == 30) {
-        blocks(0)(uy + 1)(ux) = 0
+      if (blocks(0)(uy + 1)(ux) == TreeRootBlockType.id) {
+        blocks(0)(uy + 1)(ux) = AirBlockType.id
         (uy until uy + 3).foreach { uly =>
           (ux - 1 until ux + 2).foreach { ulx =>
             blockdns(uly)(ulx) = random.nextInt(5).toByte
@@ -4675,7 +4506,7 @@ class TerraFrame extends JApplet
           }
         }
       }
-      if (blocks(layer)(uy)(ux) >= 8 && blocks(layer)(uy)(ux) <= 14 || blocks(layer)(uy)(ux) == 17 || blocks(layer)(uy)(ux) == 23 || blocks(layer)(uy)(ux) >= 80 && blocks(layer)(uy)(ux) <= 82) {
+      if (blocks(layer)(uy)(ux) >= WorkbenchBlockType.id && blocks(layer)(uy)(ux) <= GoldChestBlockType.id || blocks(layer)(uy)(ux) == FurnaceBlockType.id || blocks(layer)(uy)(ux) == FurnaceOnBlockType.id || blocks(layer)(uy)(ux) >= ZincChestBlockType.id && blocks(layer)(uy)(ux) <= ObduriteChestBlockType.id) {
         if (ic != null) {
           ic.ids.indices.foreach { i =>
             if (ic.ids(i) != 0 && !(ic.icType == Furnace && i == 1)) {
@@ -4704,92 +4535,92 @@ class TerraFrame extends JApplet
         }
       }
       BLOCKDROPS.get(blocks(layer)(uy)(ux)).foreach { blockdrops =>
-        if (blocks(layer)(uy)(ux) != 0 && blockdrops != 0) {
+        if (blocks(layer)(uy)(ux) != AirBlockType.id && blockdrops != 0) {
           entities += new Entity(ux * BLOCKSIZE, uy * BLOCKSIZE, random.nextDouble() * 4 - 2, -2, blockdrops, 1.toShort)
         }
       }
 
       t = 0
       blocks(layer)(uy)(ux) match {
-        case 48 =>
+        case SunflowerStage1BlockType.id =>
           t = 77
           n = random.nextInt(4) - 2
-        case 49 =>
+        case SunflowerStage2BlockType.id =>
           t = 77
           n = random.nextInt(2)
-        case 50 =>
+        case SunflowerStage3BlockType.id =>
           t = 77
           n = random.nextInt(3) + 1
-        case 51 =>
+        case MoonflowerStage1BlockType.id =>
           t = 79
           n = random.nextInt(4) - 2
-        case 52 =>
+        case MoonflowerStage2BlockType.id =>
           t = 79
           n = random.nextInt(2)
-        case 53 =>
+        case MoonflowerStage3BlockType.id =>
           t = 79
           n = random.nextInt(3) + 1
-        case 54 =>
+        case DryweedStage1BlockType.id =>
           t = 81
           n = random.nextInt(4) - 2
-        case 55 =>
+        case DryweedStage2BlockType.id =>
           t = 81
           n = random.nextInt(2)
-        case 56 =>
+        case DryweedStage3BlockType.id =>
           t = 81
           n = random.nextInt(3) + 1
-        case 57 =>
+        case GreenleafStage1BlockType.id =>
           t = 83
           n = random.nextInt(4) - 2
-        case 58 =>
+        case GreenleafStage2BlockType.id =>
           t = 83
           n = random.nextInt(2)
-        case 59 =>
+        case GreenleafStage3BlockType.id =>
           t = 83
           n = random.nextInt(3) + 1
-        case 60 =>
+        case FrostleafStage1BlockType.id =>
           t = 85
           n = random.nextInt(4) - 2
-        case 61 =>
+        case FrostleafStage2BlockType.id =>
           t = 85
           n = random.nextInt(2)
-        case 62 =>
+        case FrostleafStage3BlockType.id =>
           t = 85
           n = random.nextInt(3) + 1
-        case 63 =>
+        case CaverootStage1BlockType.id =>
           t = 87
           n = random.nextInt(4) - 2
-        case 64 =>
+        case CaverootStage2BlockType.id =>
           t = 87
           n = random.nextInt(2)
-        case 65 =>
+        case CaverootStage3BlockType.id =>
           t = 87
           n = random.nextInt(3) + 1
-        case 66 =>
+        case SkyblossomStage1BlockType.id =>
           t = 89
           n = random.nextInt(4) - 2
-        case 67 =>
+        case SkyblossomStage2BlockType.id =>
           t = 89
           n = random.nextInt(2)
-        case 68 =>
+        case SkyblossomStage3BlockType.id =>
           t = 89
           n = random.nextInt(3) + 1
-        case 69 =>
+        case VoidRotStage1BlockType.id =>
           t = 91
           n = random.nextInt(4) - 2
-        case 70 =>
+        case VoidRotStage2BlockType.id =>
           t = 91
           n = random.nextInt(2)
-        case 71 =>
+        case VoidRotStage3BlockType.id =>
           t = 91
           n = random.nextInt(3) + 1
-        case 77 =>
+        case MarshleafStage1BlockType.id =>
           t = 95
           n = random.nextInt(4) - 2
-        case 78 =>
+        case MarshleafStage2BlockType.id =>
           t = 95
           n = random.nextInt(2)
-        case 79 =>
+        case MarshleafStage3BlockType.id =>
           t = 95
           n = random.nextInt(3) + 1
         case _ =>
@@ -4802,7 +4633,7 @@ class TerraFrame extends JApplet
       removeBlockLighting(ux, uy)
       blockTemp = blocks(layer)(uy)(ux)
       blocks(layer)(uy)(ux) = 0
-      if (blockTemp >= 94 && blockTemp <= 99) {
+      if (blockTemp >= ZythiumWireBlockType.id && blockTemp <= ZythiumWire5PowerBlockType.id) {
         redoBlockPower(ux, uy, layer)
       }
       if (powers(blockTemp)) {
@@ -4827,14 +4658,14 @@ class TerraFrame extends JApplet
       (uy - 4 until uy + 5).foreach { uly =>
         (ux - 4 until ux + 5).foreach { ulx =>
           (0 until(3, 2)).foreach { l =>
-            if (uly >= 0 && uly < HEIGHT && blocks(l)(uly)(ulx) == 16) {
+            if (uly >= 0 && uly < HEIGHT && blocks(l)(uly)(ulx) == LeavesBlockType.id) {
               keepLeaf = false
               import scala.util.control.Breaks._
               breakable {
                 (uly - 4 until uly + 5).foreach { uly2 =>
                   breakable {
                     (ulx - 4 until ulx + 5).foreach { ulx2 =>
-                      if (uly2 >= 0 && uly2 < HEIGHT && (blocks(1)(uly2)(ulx2) == 15 || blocks(1)(uly2)(ulx2) == 83)) {
+                      if (uly2 >= 0 && uly2 < HEIGHT && (blocks(1)(uly2)(ulx2) == TreeBlockType.id || blocks(1)(uly2)(ulx2) == TreeNoBarkBlockType.id)) {
                         keepLeaf = true
                         break
                       }
@@ -4844,7 +4675,7 @@ class TerraFrame extends JApplet
                 }
               }
               if (!keepLeaf) {
-                blocks(l)(uly)(ulx) = 0
+                blocks(l)(uly)(ulx) = AirBlockType.id
                 blockds(l) = World.generate2b(blocks(l), blockds(l), ulx, uly)
                 (uly - 1 until uly + 2).foreach { uly2 =>
                   (ulx - 1 until ulx + 2).foreach { ulx2 =>
@@ -4871,8 +4702,8 @@ class TerraFrame extends JApplet
                 addSunLighting(ux - 1, uy)
               }
               blockTemp = blocks(layer)(uy)(ux - 1)
-              blocks(layer)(uy)(ux - 1) = 0
-              if (blockTemp >= 94 && blockTemp <= 99) {
+              blocks(layer)(uy)(ux - 1) = AirBlockType.id
+              if (blockTemp >= ZythiumWireBlockType.id && blockTemp <= ZythiumWire5PowerBlockType.id) {
                 redoBlockPower(ux, uy, layer)
               }
               if (powers(blockTemp)) {
@@ -4895,8 +4726,8 @@ class TerraFrame extends JApplet
                 addSunLighting(ux + 1, uy)
               }
               blockTemp = blocks(layer)(uy)(ux + 1)
-              blocks(layer)(uy)(ux + 1) = 0
-              if (blockTemp >= 94 && blockTemp <= 99) {
+              blocks(layer)(uy)(ux + 1) = AirBlockType.id
+              if (blockTemp >= ZythiumWireBlockType.id && blockTemp <= ZythiumWire5PowerBlockType.id) {
                 redoBlockPower(ux, uy, layer)
               }
               if (powers(blockTemp)) {
@@ -4920,85 +4751,85 @@ class TerraFrame extends JApplet
 
           t = 0
           blocks(layer)(uy)(ux) match {
-            case 48 =>
+            case SunflowerStage1BlockType.id =>
               t = 77
               n = random.nextInt(4) - 2
-            case 49 =>
+            case SunflowerStage2BlockType.id =>
               t = 77
               n = random.nextInt(2)
-            case 50 =>
+            case SunflowerStage3BlockType.id =>
               t = 77
               n = random.nextInt(3) + 1
-            case 51 =>
+            case MoonflowerStage1BlockType.id =>
               t = 79
               n = random.nextInt(4) - 2
-            case 52 =>
+            case MoonflowerStage2BlockType.id =>
               t = 79
               n = random.nextInt(2)
-            case 53 =>
+            case MoonflowerStage3BlockType.id =>
               t = 79
               n = random.nextInt(3) + 1
-            case 54 =>
+            case DryweedStage1BlockType.id =>
               t = 81
               n = random.nextInt(4) - 2
-            case 55 =>
+            case DryweedStage2BlockType.id =>
               t = 81
               n = random.nextInt(2)
-            case 56 =>
+            case DryweedStage3BlockType.id =>
               t = 81
               n = random.nextInt(3) + 1
-            case 57 =>
+            case GreenleafStage1BlockType.id =>
               t = 83
               n = random.nextInt(4) - 2
-            case 58 =>
+            case GreenleafStage2BlockType.id =>
               t = 83
               n = random.nextInt(2)
-            case 59 =>
+            case GreenleafStage3BlockType.id =>
               t = 83
               n = random.nextInt(3) + 1
-            case 60 =>
+            case FrostleafStage1BlockType.id =>
               t = 85
               n = random.nextInt(4) - 2
-            case 61 =>
+            case FrostleafStage2BlockType.id =>
               t = 85
               n = random.nextInt(2)
-            case 62 =>
+            case FrostleafStage3BlockType.id =>
               t = 85
               n = random.nextInt(3) + 1
-            case 63 =>
+            case CaverootStage1BlockType.id =>
               t = 87
               n = random.nextInt(4) - 2
-            case 64 =>
+            case CaverootStage2BlockType.id =>
               t = 87
               n = random.nextInt(2)
-            case 65 =>
+            case CaverootStage3BlockType.id =>
               t = 87
               n = random.nextInt(3) + 1
-            case 66 =>
+            case SkyblossomStage1BlockType.id =>
               t = 89
               n = random.nextInt(4) - 2
-            case 67 =>
+            case SkyblossomStage2BlockType.id =>
               t = 89
               n = random.nextInt(2)
-            case 68 =>
+            case SkyblossomStage3BlockType.id =>
               t = 89
               n = random.nextInt(3) + 1
-            case 69 =>
+            case VoidRotStage1BlockType.id =>
               t = 91
               n = random.nextInt(4) - 2
-            case 70 =>
+            case VoidRotStage2BlockType.id =>
               t = 91
               n = random.nextInt(2)
-            case 71 =>
+            case VoidRotStage3BlockType.id =>
               t = 91
               n = random.nextInt(3) + 1
-            case 77 =>
+            case MarshleafStage1BlockType.id =>
               t = 95
               n = random.nextInt(4) - 2
-            case 78 =>
+            case MarshleafStage2BlockType.id =>
               t = 95
               n = random.nextInt(2)
-            case 79 =>
+            case MarshleafStage3BlockType.id =>
               t = 95
               n = random.nextInt(3) + 1
             case _ =>
@@ -5010,8 +4841,8 @@ class TerraFrame extends JApplet
           }
           removeBlockLighting(ux, uy)
           blockTemp = blocks(layer)(uy)(ux)
-          blocks(layer)(uy)(ux) = 0
-          if (blockTemp >= 94 && blockTemp <= 99) {
+          blocks(layer)(uy)(ux) = AirBlockType.id
+          if (blockTemp >= ZythiumWireBlockType.id && blockTemp <= ZythiumWire5PowerBlockType.id) {
             redoBlockPower(ux, uy, layer)
           }
           if (powers(blockTemp)) {
@@ -5036,13 +4867,13 @@ class TerraFrame extends JApplet
           (uy - 4 until uy + 5).foreach { uly =>
             (ux - 4 until ux + 5).foreach { ulx =>
               (0 until(3, 2)).foreach { l =>
-                if (uly >= 0 && uly < HEIGHT && blocks(l)(uly)(ulx) == 16) {
+                if (uly >= 0 && uly < HEIGHT && blocks(l)(uly)(ulx) == LeavesBlockType.id) {
                   keepLeaf = false
                   breakable {
                     (uly - 4 until uly + 5).foreach { uly2 =>
                       breakable {
                         (ulx - 4 until ulx + 5).foreach { ulx2 =>
-                          if (uly2 >= 0 && uly2 < HEIGHT && (blocks(1)(uly2)(ulx2) == 15 || blocks(1)(uly2)(ulx2) == 83)) {
+                          if (uly2 >= 0 && uly2 < HEIGHT && (blocks(1)(uly2)(ulx2) == TreeBlockType.id || blocks(1)(uly2)(ulx2) == TreeNoBarkBlockType.id)) {
                             keepLeaf = true
                             break
                           }
@@ -5052,7 +4883,7 @@ class TerraFrame extends JApplet
                     }
                   }
                   if (!keepLeaf) {
-                    blocks(l)(uly)(ulx) = 0
+                    blocks(l)(uly)(ulx) = AirBlockType.id
                     blockds(l) = World.generate2b(blocks(l), blockds(l), ulx, uly)
                     (uly - 1 until uly + 2).foreach { uly2 =>
                       (ulx - 1 until ulx + 2).foreach { ulx2 =>
@@ -5108,7 +4939,7 @@ class TerraFrame extends JApplet
 
   def addBlockPower(ux: Int, uy: Int): Unit = {
     if (powers(blocks(1)(uy)(ux))) {
-      if (blocks(1)(uy)(ux) >= 137 && blocks(1)(uy)(ux) <= 168) {
+      if (blocks(1)(uy)(ux) >= ZythiumDelayer1DelayRightBlockType.id && blocks(1)(uy)(ux) <= ZythiumDelayer8DelayUpOnBlockType.id) {
         println("Whaaat?")
         updatex += ux
         updatey += uy
@@ -5130,7 +4961,7 @@ class TerraFrame extends JApplet
       }
     }
     if (powers(blocks(0)(uy)(ux))) {
-      if (blocks(0)(uy)(ux) >= 137 && blocks(0)(uy)(ux) <= 168) {
+      if (blocks(0)(uy)(ux) >= ZythiumDelayer1DelayRightBlockType.id && blocks(0)(uy)(ux) <= ZythiumDelayer8DelayUpOnBlockType.id) {
         println("Whaaat?")
         updatex += ux
         updatey += uy
@@ -5152,7 +4983,7 @@ class TerraFrame extends JApplet
       }
     }
     if (powers(blocks(2)(uy)(ux))) {
-      if (blocks(2)(uy)(ux) >= 137 && blocks(2)(uy)(ux) <= 168) {
+      if (blocks(2)(uy)(ux) >= ZythiumDelayer1DelayRightBlockType.id && blocks(2)(uy)(ux) <= ZythiumDelayer8DelayUpOnBlockType.id) {
         println("Whaaat?")
         updatex += ux
         updatey += uy
@@ -5214,19 +5045,19 @@ class TerraFrame extends JApplet
       ay3 = uy + cl(ir)(1)
       if (ay3 >= 0 && ay3 < HEIGHT && power(lyr)(ay3)(ax3) != 0) {
         if (power(lyr)(ay3)(ax3) != 0 && !(power(lyr)(ay3)(ax3) == power(lyr)(uy)(ux) - conducts(blocks(lyr)(uy)(ux))) &&
-          (!(blocks(lyr)(ay3)(ax3) >= 111 && blocks(lyr)(ay3)(ax3) <= 118 || blocks(lyr)(ay3)(ax3) >= 119 && blocks(lyr)(ay3)(ax3) <= 126) ||
-            !(blocks(lyr)(ay3)(ax3) >= 111 && blocks(lyr)(ay3)(ax3) <= 118 && ux > ax3 && blocks(lyr)(ay3)(ax3) != 111 && blocks(lyr)(ay3)(ax3) != 115 ||
-              blocks(lyr)(ay3)(ax3) >= 111 && blocks(lyr)(ay3)(ax3) <= 118 && uy > ay3 && blocks(lyr)(ay3)(ax3) != 112 && blocks(lyr)(ay3)(ax3) != 116 ||
-              blocks(lyr)(ay3)(ax3) >= 111 && blocks(lyr)(ay3)(ax3) <= 118 && ux < ax3 && blocks(lyr)(ay3)(ax3) != 113 && blocks(lyr)(ay3)(ax3) != 117 ||
-              blocks(lyr)(ay3)(ax3) >= 111 && blocks(lyr)(ay3)(ax3) <= 118 && uy < ay3 && blocks(lyr)(ay3)(ax3) != 114 && blocks(lyr)(ay3)(ax3) != 118) &&
-              !(blocks(lyr)(ay3)(ax3) >= 119 && blocks(lyr)(ay3)(ax3) <= 126 && ux > ax3 && blocks(lyr)(ay3)(ax3) != 119 && blocks(lyr)(ay3)(ax3) != 123 ||
-                blocks(lyr)(ay3)(ax3) >= 119 && blocks(lyr)(ay3)(ax3) <= 126 && uy > ay3 && blocks(lyr)(ay3)(ax3) != 120 && blocks(lyr)(ay3)(ax3) != 124 ||
-                blocks(lyr)(ay3)(ax3) >= 119 && blocks(lyr)(ay3)(ax3) <= 126 && ux < ax3 && blocks(lyr)(ay3)(ax3) != 121 && blocks(lyr)(ay3)(ax3) != 125 ||
-                blocks(lyr)(ay3)(ax3) >= 119 && blocks(lyr)(ay3)(ax3) <= 126 && uy < ay3 && blocks(lyr)(ay3)(ax3) != 122 && blocks(lyr)(ay3)(ax3) != 126) &&
-              !(blocks(lyr)(ay3)(ax3) >= 137 && blocks(lyr)(ay3)(ax3) <= 168 && ux > ax3 && blocks(lyr)(ay3)(ax3) != 137 && blocks(lyr)(ay3)(ax3) != 141 && blocks(lyr)(ay3)(ax3) != 145 && blocks(lyr)(ay3)(ax3) != 149 && blocks(lyr)(ay3)(ax3) != 153 && blocks(lyr)(ay3)(ax3) != 157 && blocks(lyr)(ay3)(ax3) != 161 && blocks(lyr)(ay3)(ax3) != 165 ||
-                blocks(lyr)(ay3)(ax3) >= 137 && blocks(lyr)(ay3)(ax3) <= 168 && uy > ay3 && blocks(lyr)(ay3)(ax3) != 138 && blocks(lyr)(ay3)(ax3) != 142 && blocks(lyr)(ay3)(ax3) != 146 && blocks(lyr)(ay3)(ax3) != 150 && blocks(lyr)(ay3)(ax3) != 154 && blocks(lyr)(ay3)(ax3) != 158 && blocks(lyr)(ay3)(ax3) != 162 && blocks(lyr)(ay3)(ax3) != 166 ||
-                blocks(lyr)(ay3)(ax3) >= 137 && blocks(lyr)(ay3)(ax3) <= 168 && ux < ax3 && blocks(lyr)(ay3)(ax3) != 139 && blocks(lyr)(ay3)(ax3) != 143 && blocks(lyr)(ay3)(ax3) != 147 && blocks(lyr)(ay3)(ax3) != 151 && blocks(lyr)(ay3)(ax3) != 155 && blocks(lyr)(ay3)(ax3) != 159 && blocks(lyr)(ay3)(ax3) != 163 && blocks(lyr)(ay3)(ax3) != 167 ||
-                blocks(lyr)(ay3)(ax3) >= 137 && blocks(lyr)(ay3)(ax3) <= 168 && uy < ay3 && blocks(lyr)(ay3)(ax3) != 140 && blocks(lyr)(ay3)(ax3) != 144 && blocks(lyr)(ay3)(ax3) != 148 && blocks(lyr)(ay3)(ax3) != 152 && blocks(lyr)(ay3)(ax3) != 156 && blocks(lyr)(ay3)(ax3) != 160 && blocks(lyr)(ay3)(ax3) != 164 && blocks(lyr)(ay3)(ax3) != 168))) {
+          (!(blocks(lyr)(ay3)(ax3) >= ZythiumAmplifierRightBlockType.id && blocks(lyr)(ay3)(ax3) <= ZythiumAmplifierUpOnBlockType.id || blocks(lyr)(ay3)(ax3) >= ZythiumInverterRightBlockType.id && blocks(lyr)(ay3)(ax3) <= ZythiumInverterUpOnBlockType.id) ||
+            !(blocks(lyr)(ay3)(ax3) >= ZythiumAmplifierRightBlockType.id && blocks(lyr)(ay3)(ax3) <= ZythiumAmplifierUpOnBlockType.id && ux > ax3 && blocks(lyr)(ay3)(ax3) != ZythiumAmplifierRightBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumAmplifierRightOnBlockType.id ||
+              blocks(lyr)(ay3)(ax3) >= ZythiumAmplifierRightBlockType.id && blocks(lyr)(ay3)(ax3) <= ZythiumAmplifierUpOnBlockType.id && uy > ay3 && blocks(lyr)(ay3)(ax3) != ZythiumAmplifierDownBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumAmplifierDownOnBlockType.id ||
+              blocks(lyr)(ay3)(ax3) >= ZythiumAmplifierRightBlockType.id && blocks(lyr)(ay3)(ax3) <= ZythiumAmplifierUpOnBlockType.id && ux < ax3 && blocks(lyr)(ay3)(ax3) != ZythiumAmplifierLeftBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumAmplifierLeftOnBlockType.id ||
+              blocks(lyr)(ay3)(ax3) >= ZythiumAmplifierRightBlockType.id && blocks(lyr)(ay3)(ax3) <= ZythiumAmplifierUpOnBlockType.id && uy < ay3 && blocks(lyr)(ay3)(ax3) != ZythiumAmplifierUpBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumAmplifierUpOnBlockType.id) &&
+              !(blocks(lyr)(ay3)(ax3) >= ZythiumInverterRightBlockType.id && blocks(lyr)(ay3)(ax3) <= ZythiumInverterUpOnBlockType.id && ux > ax3 && blocks(lyr)(ay3)(ax3) != ZythiumInverterRightBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumInverterRightOnBlockType.id ||
+                blocks(lyr)(ay3)(ax3) >= ZythiumInverterRightBlockType.id && blocks(lyr)(ay3)(ax3) <= ZythiumInverterUpOnBlockType.id && uy > ay3 && blocks(lyr)(ay3)(ax3) != ZythiumInverterDownBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumInverterDownOnBlockType.id ||
+                blocks(lyr)(ay3)(ax3) >= ZythiumInverterRightBlockType.id && blocks(lyr)(ay3)(ax3) <= ZythiumInverterUpOnBlockType.id && ux < ax3 && blocks(lyr)(ay3)(ax3) != ZythiumInverterLeftBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumInverterLeftOnBlockType.id ||
+                blocks(lyr)(ay3)(ax3) >= ZythiumInverterRightBlockType.id && blocks(lyr)(ay3)(ax3) <= ZythiumInverterUpOnBlockType.id && uy < ay3 && blocks(lyr)(ay3)(ax3) != ZythiumInverterUpBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumInverterUpOnBlockType.id) &&
+              !(blocks(lyr)(ay3)(ax3) >= ZythiumDelayer1DelayRightBlockType.id && blocks(lyr)(ay3)(ax3) <= ZythiumDelayer8DelayUpOnBlockType.id && ux > ax3 && blocks(lyr)(ay3)(ax3) != ZythiumDelayer1DelayRightBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer1DelayRightOnBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer2DelayRightBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer2DelayRightOnBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer4DelayRightBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer4DelayRightOnBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer8DelayRightBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer8DelayRightOnBlockType.id ||
+                blocks(lyr)(ay3)(ax3) >= ZythiumDelayer1DelayRightBlockType.id && blocks(lyr)(ay3)(ax3) <= ZythiumDelayer8DelayUpOnBlockType.id && uy > ay3 && blocks(lyr)(ay3)(ax3) != ZythiumDelayer1DelayDownBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer1DelayDownOnBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer2DelayDownBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer2DelayDownOnBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer4DelayDownBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer4DelayDownOnBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer8DelayDownBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer8DelayDownOnBlockType.id ||
+                blocks(lyr)(ay3)(ax3) >= ZythiumDelayer1DelayRightBlockType.id && blocks(lyr)(ay3)(ax3) <= ZythiumDelayer8DelayUpOnBlockType.id && ux < ax3 && blocks(lyr)(ay3)(ax3) != ZythiumDelayer1DelayLeftBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer1DelayLeftOnBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer2DelayLeftBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer2DelayLeftOnBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer4DelayLeftBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer4DelayLeftOnBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer8DelayLeftBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer8DelayLeftOnBlockType.id ||
+                blocks(lyr)(ay3)(ax3) >= ZythiumDelayer1DelayRightBlockType.id && blocks(lyr)(ay3)(ax3) <= ZythiumDelayer8DelayUpOnBlockType.id && uy < ay3 && blocks(lyr)(ay3)(ax3) != ZythiumDelayer1DelayUpBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer1DelayUpOnBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer2DelayUpBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer2DelayUpOnBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer4DelayUpBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer4DelayUpOnBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer8DelayUpBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer8DelayUpOnBlockType.id))) {
           println("Added tile " + ax3 + " " + ay3 + " to PQueue.")
           addTileToPQueue(ax3, ay3)
           remember(ir) = true
@@ -5241,19 +5072,19 @@ class TerraFrame extends JApplet
       if (ay3 >= 0 && ay3 < HEIGHT && power(lyr)(ay3)(ax3) != 0) {
         println("(rbpRecur) " + power(lyr)(ay3)(ax3) + " " + power(lyr)(uy)(ux) + " " + conducts(blocks(lyr)(uy)(ux)))
         if ((power(lyr)(ay3)(ax3) == power(lyr)(uy)(ux) - conducts(blocks(lyr)(uy)(ux))) &&
-          (!(blocks(lyr)(ay3)(ax3) >= 111 && blocks(lyr)(ay3)(ax3) <= 118 || blocks(lyr)(ay3)(ax3) >= 119 && blocks(lyr)(ay3)(ax3) <= 126) ||
-            !(blocks(lyr)(uy)(ux) >= 111 && blocks(lyr)(uy)(ux) <= 118 && ux < ax3 && blocks(lyr)(uy)(ux) != 111 && blocks(lyr)(uy)(ux) != 115 ||
-              blocks(lyr)(uy)(ux) >= 111 && blocks(lyr)(uy)(ux) <= 118 && uy < ay3 && blocks(lyr)(uy)(ux) != 112 && blocks(lyr)(uy)(ux) != 116 ||
-              blocks(lyr)(uy)(ux) >= 111 && blocks(lyr)(uy)(ux) <= 118 && ux > ax3 && blocks(lyr)(uy)(ux) != 113 && blocks(lyr)(uy)(ux) != 117 ||
-              blocks(lyr)(uy)(ux) >= 111 && blocks(lyr)(uy)(ux) <= 118 && uy > ay3 && blocks(lyr)(uy)(ux) != 114 && blocks(lyr)(uy)(ux) != 118) &&
-              !(blocks(lyr)(uy)(ux) >= 119 && blocks(lyr)(uy)(ux) <= 126 && ux < ax3 && blocks(lyr)(uy)(ux) != 119 && blocks(lyr)(uy)(ux) != 123 ||
-                blocks(lyr)(uy)(ux) >= 119 && blocks(lyr)(uy)(ux) <= 126 && uy < ay3 && blocks(lyr)(uy)(ux) != 120 && blocks(lyr)(uy)(ux) != 124 ||
-                blocks(lyr)(uy)(ux) >= 119 && blocks(lyr)(uy)(ux) <= 126 && ux > ax3 && blocks(lyr)(uy)(ux) != 121 && blocks(lyr)(uy)(ux) != 125 ||
-                blocks(lyr)(uy)(ux) >= 119 && blocks(lyr)(uy)(ux) <= 126 && uy > ay3 && blocks(lyr)(uy)(ux) != 122 && blocks(lyr)(uy)(ux) != 126) &&
-              !(blocks(lyr)(uy)(ux) >= 137 && blocks(lyr)(uy)(ux) <= 168 && ux < ax3 && blocks(lyr)(uy)(ux) != 137 && blocks(lyr)(uy)(ux) != 141 && blocks(lyr)(uy)(ux) != 145 && blocks(lyr)(uy)(ux) != 149 && blocks(lyr)(uy)(ux) != 153 && blocks(lyr)(uy)(ux) != 157 && blocks(lyr)(uy)(ux) != 161 && blocks(lyr)(uy)(ux) != 165 ||
-                blocks(lyr)(uy)(ux) >= 137 && blocks(lyr)(uy)(ux) <= 168 && uy < ay3 && blocks(lyr)(uy)(ux) != 138 && blocks(lyr)(uy)(ux) != 142 && blocks(lyr)(uy)(ux) != 146 && blocks(lyr)(uy)(ux) != 150 && blocks(lyr)(uy)(ux) != 154 && blocks(lyr)(uy)(ux) != 158 && blocks(lyr)(uy)(ux) != 162 && blocks(lyr)(uy)(ux) != 166 ||
-                blocks(lyr)(uy)(ux) >= 137 && blocks(lyr)(uy)(ux) <= 168 && ux > ax3 && blocks(lyr)(uy)(ux) != 139 && blocks(lyr)(uy)(ux) != 143 && blocks(lyr)(uy)(ux) != 147 && blocks(lyr)(uy)(ux) != 151 && blocks(lyr)(uy)(ux) != 155 && blocks(lyr)(uy)(ux) != 159 && blocks(lyr)(uy)(ux) != 163 && blocks(lyr)(uy)(ux) != 167 ||
-                blocks(lyr)(uy)(ux) >= 137 && blocks(lyr)(uy)(ux) <= 168 && uy > ay3 && blocks(lyr)(uy)(ux) != 140 && blocks(lyr)(uy)(ux) != 144 && blocks(lyr)(uy)(ux) != 148 && blocks(lyr)(uy)(ux) != 152 && blocks(lyr)(uy)(ux) != 156 && blocks(lyr)(uy)(ux) != 160 && blocks(lyr)(uy)(ux) != 164 && blocks(lyr)(uy)(ux) != 168))) {
+          (!(blocks(lyr)(ay3)(ax3) >= ZythiumAmplifierRightBlockType.id && blocks(lyr)(ay3)(ax3) <= ZythiumAmplifierUpOnBlockType.id || blocks(lyr)(ay3)(ax3) >= ZythiumInverterRightBlockType.id && blocks(lyr)(ay3)(ax3) <= ZythiumInverterUpOnBlockType.id) ||
+            !(blocks(lyr)(uy)(ux) >= ZythiumAmplifierRightBlockType.id && blocks(lyr)(uy)(ux) <= ZythiumAmplifierUpOnBlockType.id && ux < ax3 && blocks(lyr)(uy)(ux) != ZythiumAmplifierRightBlockType.id && blocks(lyr)(uy)(ux) != ZythiumAmplifierRightOnBlockType.id ||
+              blocks(lyr)(uy)(ux) >= ZythiumAmplifierRightBlockType.id && blocks(lyr)(uy)(ux) <= ZythiumAmplifierUpOnBlockType.id && uy < ay3 && blocks(lyr)(uy)(ux) != ZythiumAmplifierDownBlockType.id && blocks(lyr)(uy)(ux) != ZythiumAmplifierDownOnBlockType.id ||
+              blocks(lyr)(uy)(ux) >= ZythiumAmplifierRightBlockType.id && blocks(lyr)(uy)(ux) <= ZythiumAmplifierUpOnBlockType.id && ux > ax3 && blocks(lyr)(uy)(ux) != ZythiumAmplifierLeftBlockType.id && blocks(lyr)(uy)(ux) != ZythiumAmplifierLeftOnBlockType.id ||
+              blocks(lyr)(uy)(ux) >= ZythiumAmplifierRightBlockType.id && blocks(lyr)(uy)(ux) <= ZythiumAmplifierUpOnBlockType.id && uy > ay3 && blocks(lyr)(uy)(ux) != ZythiumAmplifierUpBlockType.id && blocks(lyr)(uy)(ux) != ZythiumAmplifierUpOnBlockType.id) &&
+              !(blocks(lyr)(uy)(ux) >= ZythiumInverterRightBlockType.id && blocks(lyr)(uy)(ux) <= ZythiumInverterUpOnBlockType.id && ux < ax3 && blocks(lyr)(uy)(ux) != ZythiumInverterRightBlockType.id && blocks(lyr)(uy)(ux) != ZythiumInverterRightOnBlockType.id ||
+                blocks(lyr)(uy)(ux) >= ZythiumInverterRightBlockType.id && blocks(lyr)(uy)(ux) <= ZythiumInverterUpOnBlockType.id && uy < ay3 && blocks(lyr)(uy)(ux) != ZythiumInverterDownBlockType.id && blocks(lyr)(uy)(ux) != ZythiumInverterDownOnBlockType.id ||
+                blocks(lyr)(uy)(ux) >= ZythiumInverterRightBlockType.id && blocks(lyr)(uy)(ux) <= ZythiumInverterUpOnBlockType.id && ux > ax3 && blocks(lyr)(uy)(ux) != ZythiumInverterLeftBlockType.id && blocks(lyr)(uy)(ux) != ZythiumInverterLeftOnBlockType.id ||
+                blocks(lyr)(uy)(ux) >= ZythiumInverterRightBlockType.id && blocks(lyr)(uy)(ux) <= ZythiumInverterUpOnBlockType.id && uy > ay3 && blocks(lyr)(uy)(ux) != ZythiumInverterUpBlockType.id && blocks(lyr)(uy)(ux) != ZythiumInverterUpOnBlockType.id) &&
+              !(blocks(lyr)(uy)(ux) >= ZythiumDelayer1DelayRightBlockType.id && blocks(lyr)(uy)(ux) <= ZythiumDelayer8DelayUpOnBlockType.id && ux < ax3 && blocks(lyr)(uy)(ux) != ZythiumDelayer1DelayRightBlockType.id && blocks(lyr)(uy)(ux) != ZythiumDelayer1DelayRightOnBlockType.id && blocks(lyr)(uy)(ux) != ZythiumDelayer2DelayRightBlockType.id && blocks(lyr)(uy)(ux) != ZythiumDelayer2DelayRightOnBlockType.id && blocks(lyr)(uy)(ux) != ZythiumDelayer4DelayRightBlockType.id && blocks(lyr)(uy)(ux) != ZythiumDelayer4DelayRightOnBlockType.id && blocks(lyr)(uy)(ux) != ZythiumDelayer8DelayRightBlockType.id && blocks(lyr)(uy)(ux) != ZythiumDelayer8DelayRightOnBlockType.id ||
+                blocks(lyr)(uy)(ux) >= ZythiumDelayer1DelayRightBlockType.id && blocks(lyr)(uy)(ux) <= ZythiumDelayer8DelayUpOnBlockType.id && uy < ay3 && blocks(lyr)(uy)(ux) != ZythiumDelayer1DelayDownBlockType.id && blocks(lyr)(uy)(ux) != ZythiumDelayer1DelayDownOnBlockType.id && blocks(lyr)(uy)(ux) != ZythiumDelayer2DelayDownBlockType.id && blocks(lyr)(uy)(ux) != ZythiumDelayer2DelayDownOnBlockType.id && blocks(lyr)(uy)(ux) != ZythiumDelayer4DelayDownBlockType.id && blocks(lyr)(uy)(ux) != ZythiumDelayer4DelayDownOnBlockType.id && blocks(lyr)(uy)(ux) != ZythiumDelayer8DelayDownBlockType.id && blocks(lyr)(uy)(ux) != ZythiumDelayer8DelayDownOnBlockType.id ||
+                blocks(lyr)(uy)(ux) >= ZythiumDelayer1DelayRightBlockType.id && blocks(lyr)(uy)(ux) <= ZythiumDelayer8DelayUpOnBlockType.id && ux > ax3 && blocks(lyr)(uy)(ux) != ZythiumDelayer1DelayLeftBlockType.id && blocks(lyr)(uy)(ux) != ZythiumDelayer1DelayLeftOnBlockType.id && blocks(lyr)(uy)(ux) != ZythiumDelayer2DelayLeftBlockType.id && blocks(lyr)(uy)(ux) != ZythiumDelayer2DelayLeftOnBlockType.id && blocks(lyr)(uy)(ux) != ZythiumDelayer4DelayLeftBlockType.id && blocks(lyr)(uy)(ux) != ZythiumDelayer4DelayLeftOnBlockType.id && blocks(lyr)(uy)(ux) != ZythiumDelayer8DelayLeftBlockType.id && blocks(lyr)(uy)(ux) != ZythiumDelayer8DelayLeftOnBlockType.id ||
+                blocks(lyr)(uy)(ux) >= ZythiumDelayer1DelayRightBlockType.id && blocks(lyr)(uy)(ux) <= ZythiumDelayer8DelayUpOnBlockType.id && uy > ay3 && blocks(lyr)(uy)(ux) != ZythiumDelayer1DelayUpBlockType.id && blocks(lyr)(uy)(ux) != ZythiumDelayer1DelayUpOnBlockType.id && blocks(lyr)(uy)(ux) != ZythiumDelayer2DelayUpBlockType.id && blocks(lyr)(uy)(ux) != ZythiumDelayer2DelayUpOnBlockType.id && blocks(lyr)(uy)(ux) != ZythiumDelayer4DelayUpBlockType.id && blocks(lyr)(uy)(ux) != ZythiumDelayer4DelayUpOnBlockType.id && blocks(lyr)(uy)(ux) != ZythiumDelayer8DelayUpBlockType.id && blocks(lyr)(uy)(ux) != ZythiumDelayer8DelayUpOnBlockType.id))) {
           if (!arbprd(lyr)(ay3)(ax3)) {
             rbpRecur(ax3, ay3, lyr)
             if (conducts(blocks(lyr)(ay3)(ax3)) >= 0 && wcnct(ay3)(ax3)) {
@@ -5303,20 +5134,20 @@ class TerraFrame extends JApplet
           }
         }
       }
-      if (blocks(lyr)(ay3)(ax3) == 104 || (blocks(lyr)(ay3)(ax3) >= 111 && blocks(lyr)(ay3)(ax3) <= 118 || blocks(lyr)(ay3)(ax3) >= 119 && blocks(lyr)(ay3)(ax3) <= 126 || blocks(lyr)(ay3)(ax3) >= 137 && blocks(lyr)(ay3)(ax3) <= 168) &&
-        !(blocks(lyr)(ay3)(ax3) >= 111 && blocks(lyr)(ay3)(ax3) <= 118 && ux < ax3 && blocks(lyr)(ay3)(ax3) != 111 && blocks(lyr)(ay3)(ax3) != 115 ||
-          blocks(lyr)(ay3)(ax3) >= 111 && blocks(lyr)(ay3)(ax3) <= 118 && uy < ay3 && blocks(lyr)(ay3)(ax3) != 112 && blocks(lyr)(ay3)(ax3) != 116 ||
-          blocks(lyr)(ay3)(ax3) >= 111 && blocks(lyr)(ay3)(ax3) <= 118 && ux > ax3 && blocks(lyr)(ay3)(ax3) != 113 && blocks(lyr)(ay3)(ax3) != 117 ||
-          blocks(lyr)(ay3)(ax3) >= 111 && blocks(lyr)(ay3)(ax3) <= 118 && uy > ay3 && blocks(lyr)(ay3)(ax3) != 114 && blocks(lyr)(ay3)(ax3) != 118) &&
-        !(blocks(lyr)(ay3)(ax3) >= 119 && blocks(lyr)(ay3)(ax3) <= 126 && ux < ax3 && blocks(lyr)(ay3)(ax3) != 119 && blocks(lyr)(ay3)(ax3) != 123 ||
-          blocks(lyr)(ay3)(ax3) >= 119 && blocks(lyr)(ay3)(ax3) <= 126 && uy < ay3 && blocks(lyr)(ay3)(ax3) != 120 && blocks(lyr)(ay3)(ax3) != 124 ||
-          blocks(lyr)(ay3)(ax3) >= 119 && blocks(lyr)(ay3)(ax3) <= 126 && ux > ax3 && blocks(lyr)(ay3)(ax3) != 121 && blocks(lyr)(ay3)(ax3) != 125 ||
-          blocks(lyr)(ay3)(ax3) >= 119 && blocks(lyr)(ay3)(ax3) <= 126 && uy > ay3 && blocks(lyr)(ay3)(ax3) != 122 && blocks(lyr)(ay3)(ax3) != 126) &&
-        !(blocks(lyr)(ay3)(ax3) >= 137 && blocks(lyr)(ay3)(ax3) <= 168 && ux < ax3 && blocks(lyr)(ay3)(ax3) != 137 && blocks(lyr)(ay3)(ax3) != 141 && blocks(lyr)(ay3)(ax3) != 145 && blocks(lyr)(ay3)(ax3) != 149 && blocks(lyr)(ay3)(ax3) != 153 && blocks(lyr)(ay3)(ax3) != 157 && blocks(lyr)(ay3)(ax3) != 161 && blocks(lyr)(ay3)(ax3) != 165 ||
-          blocks(lyr)(ay3)(ax3) >= 137 && blocks(lyr)(ay3)(ax3) <= 168 && uy < ay3 && blocks(lyr)(ay3)(ax3) != 138 && blocks(lyr)(ay3)(ax3) != 142 && blocks(lyr)(ay3)(ax3) != 146 && blocks(lyr)(ay3)(ax3) != 150 && blocks(lyr)(ay3)(ax3) != 154 && blocks(lyr)(ay3)(ax3) != 158 && blocks(lyr)(ay3)(ax3) != 162 && blocks(lyr)(ay3)(ax3) != 166 ||
-          blocks(lyr)(ay3)(ax3) >= 137 && blocks(lyr)(ay3)(ax3) <= 168 && ux > ax3 && blocks(lyr)(ay3)(ax3) != 139 && blocks(lyr)(ay3)(ax3) != 143 && blocks(lyr)(ay3)(ax3) != 147 && blocks(lyr)(ay3)(ax3) != 151 && blocks(lyr)(ay3)(ax3) != 155 && blocks(lyr)(ay3)(ax3) != 159 && blocks(lyr)(ay3)(ax3) != 163 && blocks(lyr)(ay3)(ax3) != 167 ||
-          blocks(lyr)(ay3)(ax3) >= 137 && blocks(lyr)(ay3)(ax3) <= 168 && uy > ay3 && blocks(lyr)(ay3)(ax3) != 140 && blocks(lyr)(ay3)(ax3) != 144 && blocks(lyr)(ay3)(ax3) != 148 && blocks(lyr)(ay3)(ax3) != 152 && blocks(lyr)(ay3)(ax3) != 156 && blocks(lyr)(ay3)(ax3) != 160 && blocks(lyr)(ay3)(ax3) != 164 && blocks(lyr)(ay3)(ax3) != 168)) {
-        if (blocks(lyr)(ay3)(ax3) >= 123 && blocks(lyr)(ay3)(ax3) <= 126) {
+      if (blocks(lyr)(ay3)(ax3) == ZythiumLampOnBlockType.id || (blocks(lyr)(ay3)(ax3) >= ZythiumAmplifierRightBlockType.id && blocks(lyr)(ay3)(ax3) <= ZythiumAmplifierUpOnBlockType.id || blocks(lyr)(ay3)(ax3) >= ZythiumInverterRightBlockType.id && blocks(lyr)(ay3)(ax3) <= ZythiumInverterUpOnBlockType.id || blocks(lyr)(ay3)(ax3) >= ZythiumDelayer1DelayRightBlockType.id && blocks(lyr)(ay3)(ax3) <= ZythiumDelayer8DelayUpOnBlockType.id) &&
+        !(blocks(lyr)(ay3)(ax3) >= ZythiumAmplifierRightBlockType.id && blocks(lyr)(ay3)(ax3) <= ZythiumAmplifierUpOnBlockType.id && ux < ax3 && blocks(lyr)(ay3)(ax3) != ZythiumAmplifierRightBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumAmplifierRightOnBlockType.id ||
+          blocks(lyr)(ay3)(ax3) >= ZythiumAmplifierRightBlockType.id && blocks(lyr)(ay3)(ax3) <= ZythiumAmplifierUpOnBlockType.id && uy < ay3 && blocks(lyr)(ay3)(ax3) != ZythiumAmplifierDownBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumAmplifierDownOnBlockType.id ||
+          blocks(lyr)(ay3)(ax3) >= ZythiumAmplifierRightBlockType.id && blocks(lyr)(ay3)(ax3) <= ZythiumAmplifierUpOnBlockType.id && ux > ax3 && blocks(lyr)(ay3)(ax3) != ZythiumAmplifierLeftBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumAmplifierLeftOnBlockType.id ||
+          blocks(lyr)(ay3)(ax3) >= ZythiumAmplifierRightBlockType.id && blocks(lyr)(ay3)(ax3) <= ZythiumAmplifierUpOnBlockType.id && uy > ay3 && blocks(lyr)(ay3)(ax3) != ZythiumAmplifierUpBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumAmplifierUpOnBlockType.id) &&
+        !(blocks(lyr)(ay3)(ax3) >= ZythiumInverterRightBlockType.id && blocks(lyr)(ay3)(ax3) <= ZythiumInverterUpOnBlockType.id && ux < ax3 && blocks(lyr)(ay3)(ax3) != ZythiumInverterRightBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumInverterRightOnBlockType.id ||
+          blocks(lyr)(ay3)(ax3) >= ZythiumInverterRightBlockType.id && blocks(lyr)(ay3)(ax3) <= ZythiumInverterUpOnBlockType.id && uy < ay3 && blocks(lyr)(ay3)(ax3) != ZythiumInverterDownBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumInverterDownOnBlockType.id ||
+          blocks(lyr)(ay3)(ax3) >= ZythiumInverterRightBlockType.id && blocks(lyr)(ay3)(ax3) <= ZythiumInverterUpOnBlockType.id && ux > ax3 && blocks(lyr)(ay3)(ax3) != ZythiumInverterLeftBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumInverterLeftOnBlockType.id ||
+          blocks(lyr)(ay3)(ax3) >= ZythiumInverterRightBlockType.id && blocks(lyr)(ay3)(ax3) <= ZythiumInverterUpOnBlockType.id && uy > ay3 && blocks(lyr)(ay3)(ax3) != ZythiumInverterUpBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumInverterUpOnBlockType.id) &&
+        !(blocks(lyr)(ay3)(ax3) >= ZythiumDelayer1DelayRightBlockType.id && blocks(lyr)(ay3)(ax3) <= ZythiumDelayer8DelayUpOnBlockType.id && ux < ax3 && blocks(lyr)(ay3)(ax3) != ZythiumDelayer1DelayRightBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer1DelayRightOnBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer2DelayRightBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer2DelayRightOnBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer4DelayRightBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer4DelayRightOnBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer8DelayRightBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer8DelayRightOnBlockType.id ||
+          blocks(lyr)(ay3)(ax3) >= ZythiumDelayer1DelayRightBlockType.id && blocks(lyr)(ay3)(ax3) <= ZythiumDelayer8DelayUpOnBlockType.id && uy < ay3 && blocks(lyr)(ay3)(ax3) != ZythiumDelayer1DelayDownBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer1DelayDownOnBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer2DelayDownBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer2DelayDownOnBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer4DelayDownBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer4DelayDownOnBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer8DelayDownBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer8DelayDownOnBlockType.id ||
+          blocks(lyr)(ay3)(ax3) >= ZythiumDelayer1DelayRightBlockType.id && blocks(lyr)(ay3)(ax3) <= ZythiumDelayer8DelayUpOnBlockType.id && ux > ax3 && blocks(lyr)(ay3)(ax3) != ZythiumDelayer1DelayLeftBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer1DelayLeftOnBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer2DelayLeftBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer2DelayLeftOnBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer4DelayLeftBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer4DelayLeftOnBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer8DelayLeftBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer8DelayLeftOnBlockType.id ||
+          blocks(lyr)(ay3)(ax3) >= ZythiumDelayer1DelayRightBlockType.id && blocks(lyr)(ay3)(ax3) <= ZythiumDelayer8DelayUpOnBlockType.id && uy > ay3 && blocks(lyr)(ay3)(ax3) != ZythiumDelayer1DelayUpBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer1DelayUpOnBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer2DelayUpBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer2DelayUpOnBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer4DelayUpBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer4DelayUpOnBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer8DelayUpBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer8DelayUpOnBlockType.id)) {
+        if (blocks(lyr)(ay3)(ax3) >= ZythiumInverterRightOnBlockType.id && blocks(lyr)(ay3)(ax3) <= ZythiumInverterUpOnBlockType.id) {
           blocks(lyr)(ay3)(ax3) -= 4
           println("Adding power for inverter at (" + ax3 + ", " + ay3 + ").")
           addBlockPower(ax3, ay3)
@@ -5342,26 +5173,26 @@ class TerraFrame extends JApplet
   def removeBlockPower(ux: Int, uy: Int, lyr: Int, turnOffDelayer: Boolean): Unit = {
     arbprd(lyr)(uy)(ux) = true
     println("[rbp ] " + ux + " " + uy + " " + lyr + " " + turnOffDelayer)
-    if (!((blocks(lyr)(uy)(ux) >= 141 && blocks(lyr)(uy)(ux) <= 144 || blocks(lyr)(uy)(ux) >= 149 && blocks(lyr)(uy)(ux) <= 152 || blocks(lyr)(uy)(ux) >= 157 && blocks(lyr)(uy)(ux) <= 160 || blocks(lyr)(uy)(ux) >= 165 && blocks(lyr)(uy)(ux) <= 168) && turnOffDelayer)) {
+    if (!((blocks(lyr)(uy)(ux) >= ZythiumDelayer1DelayRightOnBlockType.id && blocks(lyr)(uy)(ux) <= ZythiumDelayer1DelayUpOnBlockType.id || blocks(lyr)(uy)(ux) >= ZythiumDelayer2DelayRightOnBlockType.id && blocks(lyr)(uy)(ux) <= ZythiumDelayer2DelayUpOnBlockType.id || blocks(lyr)(uy)(ux) >= ZythiumDelayer4DelayRightOnBlockType.id && blocks(lyr)(uy)(ux) <= ZythiumDelayer4DelayUpOnBlockType.id || blocks(lyr)(uy)(ux) >= ZythiumDelayer8DelayRightOnBlockType.id && blocks(lyr)(uy)(ux) <= ZythiumDelayer8DelayUpOnBlockType.id) && turnOffDelayer)) {
       var ax3, ay3: Int = 0
       (0 until 4).foreach { ir =>
         ax3 = ux + cl(ir)(0)
         ay3 = uy + cl(ir)(1)
         if (ay3 >= 0 && ay3 < HEIGHT && power(lyr)(ay3)(ax3) != 0) {
           if (!(power(lyr)(ay3)(ax3) == power(lyr)(uy)(ux) - conducts(blocks(lyr)(uy)(ux))) &&
-            (!(blocks(lyr)(ay3)(ax3) >= 111 && blocks(lyr)(ay3)(ax3) <= 118 || blocks(lyr)(ay3)(ax3) >= 119 && blocks(lyr)(ay3)(ax3) <= 126) ||
-              !(blocks(lyr)(ay3)(ax3) >= 111 && blocks(lyr)(ay3)(ax3) <= 118 && ux > ax3 && blocks(lyr)(ay3)(ax3) != 111 && blocks(lyr)(ay3)(ax3) != 115 ||
-                blocks(lyr)(ay3)(ax3) >= 111 && blocks(lyr)(ay3)(ax3) <= 118 && uy > ay3 && blocks(lyr)(ay3)(ax3) != 112 && blocks(lyr)(ay3)(ax3) != 116 ||
-                blocks(lyr)(ay3)(ax3) >= 111 && blocks(lyr)(ay3)(ax3) <= 118 && ux < ax3 && blocks(lyr)(ay3)(ax3) != 113 && blocks(lyr)(ay3)(ax3) != 117 ||
-                blocks(lyr)(ay3)(ax3) >= 111 && blocks(lyr)(ay3)(ax3) <= 118 && uy < ay3 && blocks(lyr)(ay3)(ax3) != 114 && blocks(lyr)(ay3)(ax3) != 118) &&
-                !(blocks(lyr)(ay3)(ax3) >= 119 && blocks(lyr)(ay3)(ax3) <= 126 && ux > ax3 && blocks(lyr)(ay3)(ax3) != 119 && blocks(lyr)(ay3)(ax3) != 123 ||
-                  blocks(lyr)(ay3)(ax3) >= 119 && blocks(lyr)(ay3)(ax3) <= 126 && uy > ay3 && blocks(lyr)(ay3)(ax3) != 120 && blocks(lyr)(ay3)(ax3) != 124 ||
-                  blocks(lyr)(ay3)(ax3) >= 119 && blocks(lyr)(ay3)(ax3) <= 126 && ux < ax3 && blocks(lyr)(ay3)(ax3) != 121 && blocks(lyr)(ay3)(ax3) != 125 ||
-                  blocks(lyr)(ay3)(ax3) >= 119 && blocks(lyr)(ay3)(ax3) <= 126 && uy < ay3 && blocks(lyr)(ay3)(ax3) != 122 && blocks(lyr)(ay3)(ax3) != 126) &&
-                !(blocks(lyr)(ay3)(ax3) >= 137 && blocks(lyr)(ay3)(ax3) <= 168 && ux > ax3 && blocks(lyr)(ay3)(ax3) != 137 && blocks(lyr)(ay3)(ax3) != 141 && blocks(lyr)(ay3)(ax3) != 145 && blocks(lyr)(ay3)(ax3) != 149 && blocks(lyr)(ay3)(ax3) != 153 && blocks(lyr)(ay3)(ax3) != 157 && blocks(lyr)(ay3)(ax3) != 161 && blocks(lyr)(ay3)(ax3) != 165 ||
-                  blocks(lyr)(ay3)(ax3) >= 137 && blocks(lyr)(ay3)(ax3) <= 168 && uy > ay3 && blocks(lyr)(ay3)(ax3) != 138 && blocks(lyr)(ay3)(ax3) != 142 && blocks(lyr)(ay3)(ax3) != 146 && blocks(lyr)(ay3)(ax3) != 150 && blocks(lyr)(ay3)(ax3) != 154 && blocks(lyr)(ay3)(ax3) != 158 && blocks(lyr)(ay3)(ax3) != 162 && blocks(lyr)(ay3)(ax3) != 166 ||
-                  blocks(lyr)(ay3)(ax3) >= 137 && blocks(lyr)(ay3)(ax3) <= 168 && ux < ax3 && blocks(lyr)(ay3)(ax3) != 139 && blocks(lyr)(ay3)(ax3) != 143 && blocks(lyr)(ay3)(ax3) != 147 && blocks(lyr)(ay3)(ax3) != 151 && blocks(lyr)(ay3)(ax3) != 155 && blocks(lyr)(ay3)(ax3) != 159 && blocks(lyr)(ay3)(ax3) != 163 && blocks(lyr)(ay3)(ax3) != 167 ||
-                  blocks(lyr)(ay3)(ax3) >= 137 && blocks(lyr)(ay3)(ax3) <= 168 && uy < ay3 && blocks(lyr)(ay3)(ax3) != 140 && blocks(lyr)(ay3)(ax3) != 144 && blocks(lyr)(ay3)(ax3) != 148 && blocks(lyr)(ay3)(ax3) != 152 && blocks(lyr)(ay3)(ax3) != 156 && blocks(lyr)(ay3)(ax3) != 160 && blocks(lyr)(ay3)(ax3) != 164 && blocks(lyr)(ay3)(ax3) != 168))) {
+            (!(blocks(lyr)(ay3)(ax3) >= ZythiumAmplifierRightBlockType.id && blocks(lyr)(ay3)(ax3) <= ZythiumAmplifierUpOnBlockType.id || blocks(lyr)(ay3)(ax3) >= ZythiumInverterRightBlockType.id && blocks(lyr)(ay3)(ax3) <= ZythiumInverterUpOnBlockType.id) ||
+              !(blocks(lyr)(ay3)(ax3) >= ZythiumAmplifierRightBlockType.id && blocks(lyr)(ay3)(ax3) <= ZythiumAmplifierUpOnBlockType.id && ux > ax3 && blocks(lyr)(ay3)(ax3) != ZythiumAmplifierRightBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumAmplifierRightOnBlockType.id ||
+                blocks(lyr)(ay3)(ax3) >= ZythiumAmplifierRightBlockType.id && blocks(lyr)(ay3)(ax3) <= ZythiumAmplifierUpOnBlockType.id && uy > ay3 && blocks(lyr)(ay3)(ax3) != ZythiumAmplifierDownBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumAmplifierDownOnBlockType.id ||
+                blocks(lyr)(ay3)(ax3) >= ZythiumAmplifierRightBlockType.id && blocks(lyr)(ay3)(ax3) <= ZythiumAmplifierUpOnBlockType.id && ux < ax3 && blocks(lyr)(ay3)(ax3) != ZythiumAmplifierLeftBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumAmplifierLeftOnBlockType.id ||
+                blocks(lyr)(ay3)(ax3) >= ZythiumAmplifierRightBlockType.id && blocks(lyr)(ay3)(ax3) <= ZythiumAmplifierUpOnBlockType.id && uy < ay3 && blocks(lyr)(ay3)(ax3) != ZythiumAmplifierUpBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumAmplifierUpOnBlockType.id) &&
+                !(blocks(lyr)(ay3)(ax3) >= ZythiumInverterRightBlockType.id && blocks(lyr)(ay3)(ax3) <= ZythiumInverterUpOnBlockType.id && ux > ax3 && blocks(lyr)(ay3)(ax3) != ZythiumInverterRightBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumInverterRightOnBlockType.id ||
+                  blocks(lyr)(ay3)(ax3) >= ZythiumInverterRightBlockType.id && blocks(lyr)(ay3)(ax3) <= ZythiumInverterUpOnBlockType.id && uy > ay3 && blocks(lyr)(ay3)(ax3) != ZythiumInverterDownBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumInverterDownOnBlockType.id ||
+                  blocks(lyr)(ay3)(ax3) >= ZythiumInverterRightBlockType.id && blocks(lyr)(ay3)(ax3) <= ZythiumInverterUpOnBlockType.id && ux < ax3 && blocks(lyr)(ay3)(ax3) != ZythiumInverterLeftBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumInverterLeftOnBlockType.id ||
+                  blocks(lyr)(ay3)(ax3) >= ZythiumInverterRightBlockType.id && blocks(lyr)(ay3)(ax3) <= ZythiumInverterUpOnBlockType.id && uy < ay3 && blocks(lyr)(ay3)(ax3) != ZythiumInverterUpBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumInverterUpOnBlockType.id) &&
+                !(blocks(lyr)(ay3)(ax3) >= ZythiumDelayer1DelayRightBlockType.id && blocks(lyr)(ay3)(ax3) <= ZythiumDelayer8DelayUpOnBlockType.id && ux > ax3 && blocks(lyr)(ay3)(ax3) != ZythiumDelayer1DelayRightBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer1DelayRightOnBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer2DelayRightBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer2DelayRightOnBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer4DelayRightBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer4DelayRightOnBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer8DelayRightBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer8DelayRightOnBlockType.id ||
+                  blocks(lyr)(ay3)(ax3) >= ZythiumDelayer1DelayRightBlockType.id && blocks(lyr)(ay3)(ax3) <= ZythiumDelayer8DelayUpOnBlockType.id && uy > ay3 && blocks(lyr)(ay3)(ax3) != ZythiumDelayer1DelayDownBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer1DelayDownOnBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer2DelayDownBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer2DelayDownOnBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer4DelayDownBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer4DelayDownOnBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer8DelayDownBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer8DelayDownOnBlockType.id ||
+                  blocks(lyr)(ay3)(ax3) >= ZythiumDelayer1DelayRightBlockType.id && blocks(lyr)(ay3)(ax3) <= ZythiumDelayer8DelayUpOnBlockType.id && ux < ax3 && blocks(lyr)(ay3)(ax3) != ZythiumDelayer1DelayLeftBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer1DelayLeftOnBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer2DelayLeftBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer2DelayLeftOnBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer4DelayLeftBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer4DelayLeftOnBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer8DelayLeftBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer8DelayLeftOnBlockType.id ||
+                  blocks(lyr)(ay3)(ax3) >= ZythiumDelayer1DelayRightBlockType.id && blocks(lyr)(ay3)(ax3) <= ZythiumDelayer8DelayUpOnBlockType.id && uy < ay3 && blocks(lyr)(ay3)(ax3) != ZythiumDelayer1DelayUpBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer1DelayUpOnBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer2DelayUpBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer2DelayUpOnBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer4DelayUpBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer4DelayUpOnBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer8DelayUpBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer8DelayUpOnBlockType.id))) {
             println("Added tile " + ax3 + " " + ay3 + " to PQueue.")
             addTileToPQueue(ax3, ay3)
           }
@@ -5374,19 +5205,19 @@ class TerraFrame extends JApplet
         if (ay3 >= 0 && ay3 < HEIGHT && power(lyr)(ay3)(ax3) != 0) {
           println(power(lyr)(uy)(ux) + " " + power(lyr)(ay3)(ax3) + " " + conducts(blocks(lyr)(uy)(ux)))
           if (power(lyr)(ay3)(ax3) == power(lyr)(uy)(ux) - conducts(blocks(lyr)(uy)(ux))) {
-            if (!(blocks(lyr)(ay3)(ax3) >= 111 && blocks(lyr)(ay3)(ax3) <= 118 || blocks(lyr)(ay3)(ax3) >= 119 && blocks(lyr)(ay3)(ax3) <= 126) ||
-              !(blocks(lyr)(uy)(ux) >= 111 && blocks(lyr)(uy)(ux) <= 118 && ux < ax3 && blocks(lyr)(uy)(ux) != 111 && blocks(lyr)(uy)(ux) != 115 ||
-                blocks(lyr)(uy)(ux) >= 111 && blocks(lyr)(uy)(ux) <= 118 && uy < ay3 && blocks(lyr)(uy)(ux) != 112 && blocks(lyr)(uy)(ux) != 116 ||
-                blocks(lyr)(uy)(ux) >= 111 && blocks(lyr)(uy)(ux) <= 118 && ux > ax3 && blocks(lyr)(uy)(ux) != 113 && blocks(lyr)(uy)(ux) != 117 ||
-                blocks(lyr)(uy)(ux) >= 111 && blocks(lyr)(uy)(ux) <= 118 && uy > ay3 && blocks(lyr)(uy)(ux) != 114 && blocks(lyr)(uy)(ux) != 118) &&
-                !(blocks(lyr)(uy)(ux) >= 119 && blocks(lyr)(uy)(ux) <= 126 && ux < ax3 && blocks(lyr)(uy)(ux) != 119 && blocks(lyr)(uy)(ux) != 123 ||
-                  blocks(lyr)(uy)(ux) >= 119 && blocks(lyr)(uy)(ux) <= 126 && uy < ay3 && blocks(lyr)(uy)(ux) != 120 && blocks(lyr)(uy)(ux) != 124 ||
-                  blocks(lyr)(uy)(ux) >= 119 && blocks(lyr)(uy)(ux) <= 126 && ux > ax3 && blocks(lyr)(uy)(ux) != 121 && blocks(lyr)(uy)(ux) != 125 ||
-                  blocks(lyr)(uy)(ux) >= 119 && blocks(lyr)(uy)(ux) <= 126 && uy > ay3 && blocks(lyr)(uy)(ux) != 122 && blocks(lyr)(uy)(ux) != 126) &&
-                !(blocks(lyr)(uy)(ux) >= 137 && blocks(lyr)(uy)(ux) <= 168 && ux < ax3 && blocks(lyr)(uy)(ux) != 137 && blocks(lyr)(uy)(ux) != 141 && blocks(lyr)(uy)(ux) != 145 && blocks(lyr)(uy)(ux) != 149 && blocks(lyr)(uy)(ux) != 153 && blocks(lyr)(uy)(ux) != 157 && blocks(lyr)(uy)(ux) != 161 && blocks(lyr)(uy)(ux) != 165 ||
-                  blocks(lyr)(uy)(ux) >= 137 && blocks(lyr)(uy)(ux) <= 168 && uy < ay3 && blocks(lyr)(uy)(ux) != 138 && blocks(lyr)(uy)(ux) != 142 && blocks(lyr)(uy)(ux) != 146 && blocks(lyr)(uy)(ux) != 150 && blocks(lyr)(uy)(ux) != 154 && blocks(lyr)(uy)(ux) != 158 && blocks(lyr)(uy)(ux) != 162 && blocks(lyr)(uy)(ux) != 166 ||
-                  blocks(lyr)(uy)(ux) >= 137 && blocks(lyr)(uy)(ux) <= 168 && ux > ax3 && blocks(lyr)(uy)(ux) != 139 && blocks(lyr)(uy)(ux) != 143 && blocks(lyr)(uy)(ux) != 147 && blocks(lyr)(uy)(ux) != 151 && blocks(lyr)(uy)(ux) != 155 && blocks(lyr)(uy)(ux) != 159 && blocks(lyr)(uy)(ux) != 163 && blocks(lyr)(uy)(ux) != 167 ||
-                  blocks(lyr)(uy)(ux) >= 137 && blocks(lyr)(uy)(ux) <= 168 && uy > ay3 && blocks(lyr)(uy)(ux) != 140 && blocks(lyr)(uy)(ux) != 144 && blocks(lyr)(uy)(ux) != 148 && blocks(lyr)(uy)(ux) != 152 && blocks(lyr)(uy)(ux) != 156 && blocks(lyr)(uy)(ux) != 160 && blocks(lyr)(uy)(ux) != 164 && blocks(lyr)(uy)(ux) != 168)) {
+            if (!(blocks(lyr)(ay3)(ax3) >= ZythiumAmplifierRightBlockType.id && blocks(lyr)(ay3)(ax3) <= ZythiumAmplifierUpOnBlockType.id || blocks(lyr)(ay3)(ax3) >= ZythiumInverterRightBlockType.id && blocks(lyr)(ay3)(ax3) <= ZythiumInverterUpOnBlockType.id) ||
+              !(blocks(lyr)(uy)(ux) >= ZythiumAmplifierRightBlockType.id && blocks(lyr)(uy)(ux) <= ZythiumAmplifierUpOnBlockType.id && ux < ax3 && blocks(lyr)(uy)(ux) != ZythiumAmplifierRightBlockType.id && blocks(lyr)(uy)(ux) != ZythiumAmplifierRightOnBlockType.id ||
+                blocks(lyr)(uy)(ux) >= ZythiumAmplifierRightBlockType.id && blocks(lyr)(uy)(ux) <= ZythiumAmplifierUpOnBlockType.id && uy < ay3 && blocks(lyr)(uy)(ux) != ZythiumAmplifierDownBlockType.id && blocks(lyr)(uy)(ux) != ZythiumAmplifierDownOnBlockType.id ||
+                blocks(lyr)(uy)(ux) >= ZythiumAmplifierRightBlockType.id && blocks(lyr)(uy)(ux) <= ZythiumAmplifierUpOnBlockType.id && ux > ax3 && blocks(lyr)(uy)(ux) != ZythiumAmplifierLeftBlockType.id && blocks(lyr)(uy)(ux) != ZythiumAmplifierLeftOnBlockType.id ||
+                blocks(lyr)(uy)(ux) >= ZythiumAmplifierRightBlockType.id && blocks(lyr)(uy)(ux) <= ZythiumAmplifierUpOnBlockType.id && uy > ay3 && blocks(lyr)(uy)(ux) != ZythiumAmplifierUpBlockType.id && blocks(lyr)(uy)(ux) != ZythiumAmplifierUpOnBlockType.id) &&
+                !(blocks(lyr)(uy)(ux) >= ZythiumInverterRightBlockType.id && blocks(lyr)(uy)(ux) <= ZythiumInverterUpOnBlockType.id && ux < ax3 && blocks(lyr)(uy)(ux) != ZythiumInverterRightBlockType.id && blocks(lyr)(uy)(ux) != ZythiumInverterRightOnBlockType.id ||
+                  blocks(lyr)(uy)(ux) >= ZythiumInverterRightBlockType.id && blocks(lyr)(uy)(ux) <= ZythiumInverterUpOnBlockType.id && uy < ay3 && blocks(lyr)(uy)(ux) != ZythiumInverterDownBlockType.id && blocks(lyr)(uy)(ux) != ZythiumInverterDownOnBlockType.id ||
+                  blocks(lyr)(uy)(ux) >= ZythiumInverterRightBlockType.id && blocks(lyr)(uy)(ux) <= ZythiumInverterUpOnBlockType.id && ux > ax3 && blocks(lyr)(uy)(ux) != ZythiumInverterLeftBlockType.id && blocks(lyr)(uy)(ux) != ZythiumInverterLeftOnBlockType.id ||
+                  blocks(lyr)(uy)(ux) >= ZythiumInverterRightBlockType.id && blocks(lyr)(uy)(ux) <= ZythiumInverterUpOnBlockType.id && uy > ay3 && blocks(lyr)(uy)(ux) != ZythiumInverterUpBlockType.id && blocks(lyr)(uy)(ux) != ZythiumInverterUpOnBlockType.id) &&
+                !(blocks(lyr)(uy)(ux) >= ZythiumDelayer1DelayRightBlockType.id && blocks(lyr)(uy)(ux) <= ZythiumDelayer8DelayUpOnBlockType.id && ux < ax3 && blocks(lyr)(uy)(ux) != ZythiumDelayer1DelayRightBlockType.id && blocks(lyr)(uy)(ux) != ZythiumDelayer1DelayRightOnBlockType.id && blocks(lyr)(uy)(ux) != ZythiumDelayer2DelayRightBlockType.id && blocks(lyr)(uy)(ux) != ZythiumDelayer2DelayRightOnBlockType.id && blocks(lyr)(uy)(ux) != ZythiumDelayer4DelayRightBlockType.id && blocks(lyr)(uy)(ux) != ZythiumDelayer4DelayRightOnBlockType.id && blocks(lyr)(uy)(ux) != ZythiumDelayer8DelayRightBlockType.id && blocks(lyr)(uy)(ux) != ZythiumDelayer8DelayRightOnBlockType.id ||
+                  blocks(lyr)(uy)(ux) >= ZythiumDelayer1DelayRightBlockType.id && blocks(lyr)(uy)(ux) <= ZythiumDelayer8DelayUpOnBlockType.id && uy < ay3 && blocks(lyr)(uy)(ux) != ZythiumDelayer1DelayDownBlockType.id && blocks(lyr)(uy)(ux) != ZythiumDelayer1DelayDownOnBlockType.id && blocks(lyr)(uy)(ux) != ZythiumDelayer2DelayDownBlockType.id && blocks(lyr)(uy)(ux) != ZythiumDelayer2DelayDownOnBlockType.id && blocks(lyr)(uy)(ux) != ZythiumDelayer4DelayDownBlockType.id && blocks(lyr)(uy)(ux) != ZythiumDelayer4DelayDownOnBlockType.id && blocks(lyr)(uy)(ux) != ZythiumDelayer8DelayDownBlockType.id && blocks(lyr)(uy)(ux) != ZythiumDelayer8DelayDownOnBlockType.id ||
+                  blocks(lyr)(uy)(ux) >= ZythiumDelayer1DelayRightBlockType.id && blocks(lyr)(uy)(ux) <= ZythiumDelayer8DelayUpOnBlockType.id && ux > ax3 && blocks(lyr)(uy)(ux) != ZythiumDelayer1DelayLeftBlockType.id && blocks(lyr)(uy)(ux) != ZythiumDelayer1DelayLeftOnBlockType.id && blocks(lyr)(uy)(ux) != ZythiumDelayer2DelayLeftBlockType.id && blocks(lyr)(uy)(ux) != ZythiumDelayer2DelayLeftOnBlockType.id && blocks(lyr)(uy)(ux) != ZythiumDelayer4DelayLeftBlockType.id && blocks(lyr)(uy)(ux) != ZythiumDelayer4DelayLeftOnBlockType.id && blocks(lyr)(uy)(ux) != ZythiumDelayer8DelayLeftBlockType.id && blocks(lyr)(uy)(ux) != ZythiumDelayer8DelayLeftOnBlockType.id ||
+                  blocks(lyr)(uy)(ux) >= ZythiumDelayer1DelayRightBlockType.id && blocks(lyr)(uy)(ux) <= ZythiumDelayer8DelayUpOnBlockType.id && uy > ay3 && blocks(lyr)(uy)(ux) != ZythiumDelayer1DelayUpBlockType.id && blocks(lyr)(uy)(ux) != ZythiumDelayer1DelayUpOnBlockType.id && blocks(lyr)(uy)(ux) != ZythiumDelayer2DelayUpBlockType.id && blocks(lyr)(uy)(ux) != ZythiumDelayer2DelayUpOnBlockType.id && blocks(lyr)(uy)(ux) != ZythiumDelayer4DelayUpBlockType.id && blocks(lyr)(uy)(ux) != ZythiumDelayer4DelayUpOnBlockType.id && blocks(lyr)(uy)(ux) != ZythiumDelayer8DelayUpBlockType.id && blocks(lyr)(uy)(ux) != ZythiumDelayer8DelayUpOnBlockType.id)) {
               if (!arbprd(lyr)(ay3)(ax3)) {
                 rbpRecur(ax3, ay3, lyr)
                 if (conducts(blocks(lyr)(ay3)(ax3)) >= 0 && wcnct(ay3)(ax3)) {
@@ -5437,20 +5268,20 @@ class TerraFrame extends JApplet
             }
           }
         }
-        if (blocks(lyr)(ay3)(ax3) == 104 || (blocks(lyr)(ay3)(ax3) >= 111 && blocks(lyr)(ay3)(ax3) <= 118 || blocks(lyr)(ay3)(ax3) >= 119 && blocks(lyr)(ay3)(ax3) <= 126 || blocks(lyr)(ay3)(ax3) >= 137 && blocks(lyr)(ay3)(ax3) <= 168) &&
-          !(blocks(lyr)(ay3)(ax3) >= 111 && blocks(lyr)(ay3)(ax3) <= 118 && ux < ax3 && blocks(lyr)(ay3)(ax3) != 111 && blocks(lyr)(ay3)(ax3) != 115 ||
-            blocks(lyr)(ay3)(ax3) >= 111 && blocks(lyr)(ay3)(ax3) <= 118 && uy < ay3 && blocks(lyr)(ay3)(ax3) != 112 && blocks(lyr)(ay3)(ax3) != 116 ||
-            blocks(lyr)(ay3)(ax3) >= 111 && blocks(lyr)(ay3)(ax3) <= 118 && ux > ax3 && blocks(lyr)(ay3)(ax3) != 113 && blocks(lyr)(ay3)(ax3) != 117 ||
-            blocks(lyr)(ay3)(ax3) >= 111 && blocks(lyr)(ay3)(ax3) <= 118 && uy > ay3 && blocks(lyr)(ay3)(ax3) != 114 && blocks(lyr)(ay3)(ax3) != 118) &&
-          !(blocks(lyr)(ay3)(ax3) >= 119 && blocks(lyr)(ay3)(ax3) <= 126 && ux < ax3 && blocks(lyr)(ay3)(ax3) != 119 && blocks(lyr)(ay3)(ax3) != 123 ||
-            blocks(lyr)(ay3)(ax3) >= 119 && blocks(lyr)(ay3)(ax3) <= 126 && uy < ay3 && blocks(lyr)(ay3)(ax3) != 120 && blocks(lyr)(ay3)(ax3) != 124 ||
-            blocks(lyr)(ay3)(ax3) >= 119 && blocks(lyr)(ay3)(ax3) <= 126 && ux > ax3 && blocks(lyr)(ay3)(ax3) != 121 && blocks(lyr)(ay3)(ax3) != 125 ||
-            blocks(lyr)(ay3)(ax3) >= 119 && blocks(lyr)(ay3)(ax3) <= 126 && uy > ay3 && blocks(lyr)(ay3)(ax3) != 122 && blocks(lyr)(ay3)(ax3) != 126) &&
-          !(blocks(lyr)(ay3)(ax3) >= 137 && blocks(lyr)(ay3)(ax3) <= 168 && ux < ax3 && blocks(lyr)(ay3)(ax3) != 137 && blocks(lyr)(ay3)(ax3) != 141 && blocks(lyr)(ay3)(ax3) != 145 && blocks(lyr)(ay3)(ax3) != 149 && blocks(lyr)(ay3)(ax3) != 153 && blocks(lyr)(ay3)(ax3) != 157 && blocks(lyr)(ay3)(ax3) != 161 && blocks(lyr)(ay3)(ax3) != 165 ||
-            blocks(lyr)(ay3)(ax3) >= 137 && blocks(lyr)(ay3)(ax3) <= 168 && uy < ay3 && blocks(lyr)(ay3)(ax3) != 138 && blocks(lyr)(ay3)(ax3) != 142 && blocks(lyr)(ay3)(ax3) != 146 && blocks(lyr)(ay3)(ax3) != 150 && blocks(lyr)(ay3)(ax3) != 154 && blocks(lyr)(ay3)(ax3) != 158 && blocks(lyr)(ay3)(ax3) != 162 && blocks(lyr)(ay3)(ax3) != 166 ||
-            blocks(lyr)(ay3)(ax3) >= 137 && blocks(lyr)(ay3)(ax3) <= 168 && ux > ax3 && blocks(lyr)(ay3)(ax3) != 139 && blocks(lyr)(ay3)(ax3) != 143 && blocks(lyr)(ay3)(ax3) != 147 && blocks(lyr)(ay3)(ax3) != 151 && blocks(lyr)(ay3)(ax3) != 155 && blocks(lyr)(ay3)(ax3) != 159 && blocks(lyr)(ay3)(ax3) != 163 && blocks(lyr)(ay3)(ax3) != 167 ||
-            blocks(lyr)(ay3)(ax3) >= 137 && blocks(lyr)(ay3)(ax3) <= 168 && uy > ay3 && blocks(lyr)(ay3)(ax3) != 140 && blocks(lyr)(ay3)(ax3) != 144 && blocks(lyr)(ay3)(ax3) != 148 && blocks(lyr)(ay3)(ax3) != 152 && blocks(lyr)(ay3)(ax3) != 156 && blocks(lyr)(ay3)(ax3) != 160 && blocks(lyr)(ay3)(ax3) != 164 && blocks(lyr)(ay3)(ax3) != 168)) {
-          if (blocks(lyr)(ay3)(ax3) >= 123 && blocks(lyr)(ay3)(ax3) <= 126) {
+        if (blocks(lyr)(ay3)(ax3) == ZythiumLampOnBlockType.id || (blocks(lyr)(ay3)(ax3) >= ZythiumAmplifierRightBlockType.id && blocks(lyr)(ay3)(ax3) <= ZythiumAmplifierUpOnBlockType.id || blocks(lyr)(ay3)(ax3) >= ZythiumInverterRightBlockType.id && blocks(lyr)(ay3)(ax3) <= ZythiumInverterUpOnBlockType.id || blocks(lyr)(ay3)(ax3) >= ZythiumDelayer1DelayRightBlockType.id && blocks(lyr)(ay3)(ax3) <= ZythiumDelayer8DelayUpOnBlockType.id) &&
+          !(blocks(lyr)(ay3)(ax3) >= ZythiumAmplifierRightBlockType.id && blocks(lyr)(ay3)(ax3) <= ZythiumAmplifierUpOnBlockType.id && ux < ax3 && blocks(lyr)(ay3)(ax3) != ZythiumAmplifierRightBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumAmplifierRightOnBlockType.id ||
+            blocks(lyr)(ay3)(ax3) >= ZythiumAmplifierRightBlockType.id && blocks(lyr)(ay3)(ax3) <= ZythiumAmplifierUpOnBlockType.id && uy < ay3 && blocks(lyr)(ay3)(ax3) != ZythiumAmplifierDownBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumAmplifierDownOnBlockType.id ||
+            blocks(lyr)(ay3)(ax3) >= ZythiumAmplifierRightBlockType.id && blocks(lyr)(ay3)(ax3) <= ZythiumAmplifierUpOnBlockType.id && ux > ax3 && blocks(lyr)(ay3)(ax3) != ZythiumAmplifierLeftBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumAmplifierLeftOnBlockType.id ||
+            blocks(lyr)(ay3)(ax3) >= ZythiumAmplifierRightBlockType.id && blocks(lyr)(ay3)(ax3) <= ZythiumAmplifierUpOnBlockType.id && uy > ay3 && blocks(lyr)(ay3)(ax3) != ZythiumAmplifierUpBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumAmplifierUpOnBlockType.id) &&
+          !(blocks(lyr)(ay3)(ax3) >= ZythiumInverterRightBlockType.id && blocks(lyr)(ay3)(ax3) <= ZythiumInverterUpOnBlockType.id && ux < ax3 && blocks(lyr)(ay3)(ax3) != ZythiumInverterRightBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumInverterRightOnBlockType.id ||
+            blocks(lyr)(ay3)(ax3) >= ZythiumInverterRightBlockType.id && blocks(lyr)(ay3)(ax3) <= ZythiumInverterUpOnBlockType.id && uy < ay3 && blocks(lyr)(ay3)(ax3) != ZythiumInverterDownBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumInverterDownOnBlockType.id ||
+            blocks(lyr)(ay3)(ax3) >= ZythiumInverterRightBlockType.id && blocks(lyr)(ay3)(ax3) <= ZythiumInverterUpOnBlockType.id && ux > ax3 && blocks(lyr)(ay3)(ax3) != ZythiumInverterLeftBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumInverterLeftOnBlockType.id ||
+            blocks(lyr)(ay3)(ax3) >= ZythiumInverterRightBlockType.id && blocks(lyr)(ay3)(ax3) <= ZythiumInverterUpOnBlockType.id && uy > ay3 && blocks(lyr)(ay3)(ax3) != ZythiumInverterUpBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumInverterUpOnBlockType.id) &&
+          !(blocks(lyr)(ay3)(ax3) >= ZythiumDelayer1DelayRightBlockType.id && blocks(lyr)(ay3)(ax3) <= ZythiumDelayer8DelayUpOnBlockType.id && ux < ax3 && blocks(lyr)(ay3)(ax3) != ZythiumDelayer1DelayRightBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer1DelayRightOnBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer2DelayRightBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer2DelayRightOnBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer4DelayRightBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer4DelayRightOnBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer8DelayRightBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer8DelayRightOnBlockType.id ||
+            blocks(lyr)(ay3)(ax3) >= ZythiumDelayer1DelayRightBlockType.id && blocks(lyr)(ay3)(ax3) <= ZythiumDelayer8DelayUpOnBlockType.id && uy < ay3 && blocks(lyr)(ay3)(ax3) != ZythiumDelayer1DelayDownBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer1DelayDownOnBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer2DelayDownBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer2DelayDownOnBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer4DelayDownBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer4DelayDownOnBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer8DelayDownBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer8DelayDownOnBlockType.id ||
+            blocks(lyr)(ay3)(ax3) >= ZythiumDelayer1DelayRightBlockType.id && blocks(lyr)(ay3)(ax3) <= ZythiumDelayer8DelayUpOnBlockType.id && ux > ax3 && blocks(lyr)(ay3)(ax3) != ZythiumDelayer1DelayLeftBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer1DelayLeftOnBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer2DelayLeftBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer2DelayLeftOnBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer4DelayLeftBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer4DelayLeftOnBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer8DelayLeftBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer8DelayLeftOnBlockType.id ||
+            blocks(lyr)(ay3)(ax3) >= ZythiumDelayer1DelayRightBlockType.id && blocks(lyr)(ay3)(ax3) <= ZythiumDelayer8DelayUpOnBlockType.id && uy > ay3 && blocks(lyr)(ay3)(ax3) != ZythiumDelayer1DelayUpBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer1DelayUpOnBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer2DelayUpBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer2DelayUpOnBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer4DelayUpBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer4DelayUpOnBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer8DelayUpBlockType.id && blocks(lyr)(ay3)(ax3) != ZythiumDelayer8DelayUpOnBlockType.id)) {
+          if (blocks(lyr)(ay3)(ax3) >= ZythiumInverterRightOnBlockType.id && blocks(lyr)(ay3)(ax3) <= ZythiumInverterUpOnBlockType.id) {
             blocks(lyr)(ay3)(ax3) -= 4
             println("Adding power for inverter at (" + ax3 + ", " + ay3 + ").")
             addBlockPower(ax3, ay3)
@@ -5462,26 +5293,26 @@ class TerraFrame extends JApplet
         }
       }
     }
-    if (blocks(lyr)(uy)(ux) == 104) {
+    if (blocks(lyr)(uy)(ux) == ZythiumLampOnBlockType.id) {
       removeBlockLighting(ux, uy)
-      blocks(lyr)(uy)(ux) = 103
+      blocks(lyr)(uy)(ux) = ZythiumLampBlockType.id
       rdrawn(uy)(ux) = false
     }
-    if (blocks(lyr)(uy)(ux) >= 115 && blocks(lyr)(uy)(ux) <= 118) {
+    if (blocks(lyr)(uy)(ux) >= ZythiumAmplifierRightOnBlockType.id && blocks(lyr)(uy)(ux) <= ZythiumAmplifierUpOnBlockType.id) {
       blockTemp = blocks(lyr)(uy)(ux)
       blocks(lyr)(uy)(ux) -= 4
       removeBlockPower(ux, uy, lyr)
       removeBlockLighting(ux, uy)
       rdrawn(uy)(ux) = false
     }
-    if (turnOffDelayer && blocks(lyr)(uy)(ux) >= 137 && blocks(lyr)(uy)(ux) <= 168) {
+    if (turnOffDelayer && blocks(lyr)(uy)(ux) >= ZythiumDelayer1DelayRightBlockType.id && blocks(lyr)(uy)(ux) <= ZythiumDelayer8DelayUpOnBlockType.id) {
       println("???")
       updatex += ux
       updatey += uy
       DDELAY.get(blocks(lyr)(uy)(ux)).foreach(updatet.+=)
       updatel += lyr
     }
-    if (!((blocks(lyr)(uy)(ux) >= 141 && blocks(lyr)(uy)(ux) <= 144 || blocks(lyr)(uy)(ux) >= 149 && blocks(lyr)(uy)(ux) <= 152 || blocks(lyr)(uy)(ux) >= 157 && blocks(lyr)(uy)(ux) <= 160 || blocks(lyr)(uy)(ux) >= 165 && blocks(lyr)(uy)(ux) <= 168) && turnOffDelayer)) {
+    if (!((blocks(lyr)(uy)(ux) >= ZythiumDelayer1DelayRightOnBlockType.id && blocks(lyr)(uy)(ux) <= ZythiumDelayer1DelayUpOnBlockType.id || blocks(lyr)(uy)(ux) >= ZythiumDelayer2DelayRightOnBlockType.id && blocks(lyr)(uy)(ux) <= ZythiumDelayer2DelayUpOnBlockType.id || blocks(lyr)(uy)(ux) >= ZythiumDelayer4DelayRightOnBlockType.id && blocks(lyr)(uy)(ux) <= ZythiumDelayer4DelayUpOnBlockType.id || blocks(lyr)(uy)(ux) >= ZythiumDelayer8DelayRightOnBlockType.id && blocks(lyr)(uy)(ux) <= ZythiumDelayer8DelayUpOnBlockType.id) && turnOffDelayer)) {
       power(lyr)(uy)(ux) = 0.toFloat
     }
     arbprd(lyr)(uy)(ux) = false
@@ -5508,7 +5339,7 @@ class TerraFrame extends JApplet
   }
 
   def redoBlockPower(ux: Int, uy: Int, lyr: Int): Unit = {
-    if (powers(blocks(lyr)(uy)(ux)) || blocks(lyr)(uy)(ux) >= 94 && blocks(lyr)(uy)(ux) <= 99) {
+    if (powers(blocks(lyr)(uy)(ux)) || blocks(lyr)(uy)(ux) >= ZythiumWireBlockType.id && blocks(lyr)(uy)(ux) <= ZythiumWire5PowerBlockType.id) {
       addAdjacentTilesToPQueue(ux, uy)
     }
     else {
@@ -5584,9 +5415,9 @@ class TerraFrame extends JApplet
   }
 
   def isBlockLightSource(ux: Int, uy: Int): Boolean = {
-    blocks(0)(uy)(ux) != 0 && BLOCKLIGHTS.get(blocks(0)(uy)(ux)).exists(_ != 0) ||
-      blocks(1)(uy)(ux) != 0 && BLOCKLIGHTS.get(blocks(1)(uy)(ux)).exists(_ != 0) ||
-      blocks(2)(uy)(ux) != 0 && BLOCKLIGHTS.get(blocks(2)(uy)(ux)).exists(_ != 0)
+    blocks(0)(uy)(ux) != AirBlockType.id && BLOCKLIGHTS.get(blocks(0)(uy)(ux)).exists(_ != 0) ||
+      blocks(1)(uy)(ux) != AirBlockType.id && BLOCKLIGHTS.get(blocks(1)(uy)(ux)).exists(_ != 0) ||
+      blocks(2)(uy)(ux) != AirBlockType.id && BLOCKLIGHTS.get(blocks(2)(uy)(ux)).exists(_ != 0)
   }
 
   def isNonLayeredBlockLightSource(ux: Int, uy: Int): Boolean = {
@@ -5594,16 +5425,16 @@ class TerraFrame extends JApplet
   }
 
   def isNonLayeredBlockLightSource(ux: Int, uy: Int, layer: Int): Boolean = {
-    layer != 0 && blocks(0)(uy)(ux) != 0 && BLOCKLIGHTS.get(blocks(0)(uy)(ux)).exists(_ != 0) ||
-      layer != 1 && blocks(1)(uy)(ux) != 0 && BLOCKLIGHTS.get(blocks(1)(uy)(ux)).exists(_ != 0) ||
-      layer != 2 && blocks(2)(uy)(ux) != 0 && BLOCKLIGHTS.get(blocks(2)(uy)(ux)).exists(_ != 0)
+    layer != 0 && blocks(0)(uy)(ux) != AirBlockType.id && BLOCKLIGHTS.get(blocks(0)(uy)(ux)).exists(_ != 0) ||
+      layer != 1 && blocks(1)(uy)(ux) != AirBlockType.id && BLOCKLIGHTS.get(blocks(1)(uy)(ux)).exists(_ != 0) ||
+      layer != 2 && blocks(2)(uy)(ux) != AirBlockType.id && BLOCKLIGHTS.get(blocks(2)(uy)(ux)).exists(_ != 0)
   }
 
   def findBlockLightSource(ux: Int, uy: Int): Int = {
     n = 0
-    if (blocks(0)(uy)(ux) != 0) n = BLOCKLIGHTS.get(blocks(0)(uy)(ux)).map(Math.max(_, n)).getOrElse(0)
-    if (blocks(1)(uy)(ux) != 0) n = BLOCKLIGHTS.get(blocks(1)(uy)(ux)).map(Math.max(_, n)).getOrElse(0)
-    if (blocks(2)(uy)(ux) != 0) n = BLOCKLIGHTS.get(blocks(2)(uy)(ux)).map(Math.max(_, n)).getOrElse(0)
+    if (blocks(0)(uy)(ux) != AirBlockType.id) n = BLOCKLIGHTS.get(blocks(0)(uy)(ux)).map(Math.max(_, n)).getOrElse(0)
+    if (blocks(1)(uy)(ux) != AirBlockType.id) n = BLOCKLIGHTS.get(blocks(1)(uy)(ux)).map(Math.max(_, n)).getOrElse(0)
+    if (blocks(2)(uy)(ux) != AirBlockType.id) n = BLOCKLIGHTS.get(blocks(2)(uy)(ux)).map(Math.max(_, n)).getOrElse(0)
     n
   }
 
@@ -5613,9 +5444,9 @@ class TerraFrame extends JApplet
 
   def findNonLayeredBlockLightSource(ux: Int, uy: Int, layer: Int): Int = {
     n = 0
-    if (blocks(0)(uy)(ux) != 0) n = BLOCKLIGHTS.get(blocks(0)(uy)(ux)).map(Math.max(_, n)).getOrElse(0)
-    if (blocks(1)(uy)(ux) != 0) n = BLOCKLIGHTS.get(blocks(1)(uy)(ux)).map(Math.max(_, n)).getOrElse(0)
-    if (blocks(2)(uy)(ux) != 0) n = BLOCKLIGHTS.get(blocks(2)(uy)(ux)).map(Math.max(_, n)).getOrElse(0)
+    if (blocks(0)(uy)(ux) != AirBlockType.id) n = BLOCKLIGHTS.get(blocks(0)(uy)(ux)).map(Math.max(_, n)).getOrElse(0)
+    if (blocks(1)(uy)(ux) != AirBlockType.id) n = BLOCKLIGHTS.get(blocks(1)(uy)(ux)).map(Math.max(_, n)).getOrElse(0)
+    if (blocks(2)(uy)(ux) != AirBlockType.id) n = BLOCKLIGHTS.get(blocks(2)(uy)(ux)).map(Math.max(_, n)).getOrElse(0)
     n
   }
 
@@ -5735,7 +5566,7 @@ class TerraFrame extends JApplet
         y = pqy(0)
         (0 until 3).foreach { l =>
           if (powers(blocks(l)(y)(x))) {
-            if (!(blocks(l)(y)(x) >= 137 && blocks(l)(y)(x) <= 168)) {
+            if (!(blocks(l)(y)(x) >= ZythiumDelayer1DelayRightBlockType.id && blocks(l)(y)(x) <= ZythiumDelayer8DelayUpOnBlockType.id)) {
               addTileToPQueue(x, y)
               power(l)(y)(x) = 5.toFloat
             }
@@ -5747,36 +5578,36 @@ class TerraFrame extends JApplet
           if (y2 >= 0 && y2 < HEIGHT) {
             (0 until 3).foreach { l =>
               if (power(l)(y)(x) > 0) {
-                if (conducts(blocks(l)(y)(x)) >= 0 && receives(blocks(l)(y2)(x2)) && !(blocks(l)(y2)(x2) >= 111 && blocks(l)(y2)(x2) <= 118 && x < x2 && blocks(l)(y2)(x2) != 111 && blocks(l)(y2)(x2) != 115 ||
-                  blocks(l)(y2)(x2) >= 111 && blocks(l)(y2)(x2) <= 118 && y < y2 && blocks(l)(y2)(x2) != 112 && blocks(l)(y2)(x2) != 116 ||
-                  blocks(l)(y2)(x2) >= 111 && blocks(l)(y2)(x2) <= 118 && x > x2 && blocks(l)(y2)(x2) != 113 && blocks(l)(y2)(x2) != 117 ||
-                  blocks(l)(y2)(x2) >= 111 && blocks(l)(y2)(x2) <= 118 && y > y2 && blocks(l)(y2)(x2) != 114 && blocks(l)(y2)(x2) != 118) &&
-                  !(blocks(l)(y)(x) >= 111 && blocks(l)(y)(x) <= 118 && x < x2 && blocks(l)(y)(x) != 111 && blocks(l)(y)(x) != 115 ||
-                    blocks(l)(y)(x) >= 111 && blocks(l)(y)(x) <= 118 && y < y2 && blocks(l)(y)(x) != 112 && blocks(l)(y)(x) != 116 ||
-                    blocks(l)(y)(x) >= 111 && blocks(l)(y)(x) <= 118 && x > x2 && blocks(l)(y)(x) != 113 && blocks(l)(y)(x) != 117 ||
-                    blocks(l)(y)(x) >= 111 && blocks(l)(y)(x) <= 118 && y > y2 && blocks(l)(y)(x) != 114 && blocks(l)(y)(x) != 118) &&
-                  !(blocks(l)(y2)(x2) >= 119 && blocks(l)(y2)(x2) <= 126 && x < x2 && blocks(l)(y2)(x2) != 119 && blocks(l)(y2)(x2) != 123 ||
-                    blocks(l)(y2)(x2) >= 119 && blocks(l)(y2)(x2) <= 126 && y < y2 && blocks(l)(y2)(x2) != 120 && blocks(l)(y2)(x2) != 124 ||
-                    blocks(l)(y2)(x2) >= 119 && blocks(l)(y2)(x2) <= 126 && x > x2 && blocks(l)(y2)(x2) != 121 && blocks(l)(y2)(x2) != 125 ||
-                    blocks(l)(y2)(x2) >= 119 && blocks(l)(y2)(x2) <= 126 && y > y2 && blocks(l)(y2)(x2) != 122 && blocks(l)(y2)(x2) != 126) &&
-                  !(blocks(l)(y)(x) >= 119 && blocks(l)(y)(x) <= 126 && x < x2 && blocks(l)(y)(x) != 119 && blocks(l)(y)(x) != 123 ||
-                    blocks(l)(y)(x) >= 119 && blocks(l)(y)(x) <= 126 && y < y2 && blocks(l)(y)(x) != 120 && blocks(l)(y)(x) != 124 ||
-                    blocks(l)(y)(x) >= 119 && blocks(l)(y)(x) <= 126 && x > x2 && blocks(l)(y)(x) != 121 && blocks(l)(y)(x) != 125 ||
-                    blocks(l)(y)(x) >= 119 && blocks(l)(y)(x) <= 126 && y > y2 && blocks(l)(y)(x) != 122 && blocks(l)(y)(x) != 126) &&
-                  !(blocks(l)(y2)(x2) >= 137 && blocks(l)(y2)(x2) <= 168 && x < x2 && blocks(l)(y2)(x2) != 137 && blocks(l)(y2)(x2) != 141 && blocks(l)(y2)(x2) != 145 && blocks(l)(y2)(x2) != 149 && blocks(l)(y2)(x2) != 153 && blocks(l)(y2)(x2) != 157 && blocks(l)(y2)(x2) != 161 && blocks(l)(y2)(x2) != 165 ||
-                    blocks(l)(y2)(x2) >= 137 && blocks(l)(y2)(x2) <= 168 && y < y2 && blocks(l)(y2)(x2) != 138 && blocks(l)(y2)(x2) != 142 && blocks(l)(y2)(x2) != 146 && blocks(l)(y2)(x2) != 150 && blocks(l)(y2)(x2) != 154 && blocks(l)(y2)(x2) != 158 && blocks(l)(y2)(x2) != 162 && blocks(l)(y2)(x2) != 166 ||
-                    blocks(l)(y2)(x2) >= 137 && blocks(l)(y2)(x2) <= 168 && x > x2 && blocks(l)(y2)(x2) != 139 && blocks(l)(y2)(x2) != 143 && blocks(l)(y2)(x2) != 147 && blocks(l)(y2)(x2) != 151 && blocks(l)(y2)(x2) != 155 && blocks(l)(y2)(x2) != 159 && blocks(l)(y2)(x2) != 163 && blocks(l)(y2)(x2) != 167 ||
-                    blocks(l)(y2)(x2) >= 137 && blocks(l)(y2)(x2) <= 168 && y > y2 && blocks(l)(y2)(x2) != 140 && blocks(l)(y2)(x2) != 144 && blocks(l)(y2)(x2) != 148 && blocks(l)(y2)(x2) != 152 && blocks(l)(y2)(x2) != 156 && blocks(l)(y2)(x2) != 160 && blocks(l)(y2)(x2) != 164 && blocks(l)(y2)(x2) != 168) &&
-                  !(blocks(l)(y)(x) >= 137 && blocks(l)(y)(x) <= 168 && x < x2 && blocks(l)(y)(x) != 137 && blocks(l)(y)(x) != 141 && blocks(l)(y)(x) != 145 && blocks(l)(y)(x) != 149 && blocks(l)(y)(x) != 153 && blocks(l)(y)(x) != 157 && blocks(l)(y)(x) != 161 && blocks(l)(y)(x) != 165 ||
-                    blocks(l)(y)(x) >= 137 && blocks(l)(y)(x) <= 168 && y < y2 && blocks(l)(y)(x) != 138 && blocks(l)(y)(x) != 142 && blocks(l)(y)(x) != 146 && blocks(l)(y)(x) != 150 && blocks(l)(y)(x) != 154 && blocks(l)(y)(x) != 158 && blocks(l)(y)(x) != 162 && blocks(l)(y)(x) != 166 ||
-                    blocks(l)(y)(x) >= 137 && blocks(l)(y)(x) <= 168 && x > x2 && blocks(l)(y)(x) != 139 && blocks(l)(y)(x) != 143 && blocks(l)(y)(x) != 147 && blocks(l)(y)(x) != 151 && blocks(l)(y)(x) != 155 && blocks(l)(y)(x) != 159 && blocks(l)(y)(x) != 163 && blocks(l)(y)(x) != 167 ||
-                    blocks(l)(y)(x) >= 137 && blocks(l)(y)(x) <= 168 && y > y2 && blocks(l)(y)(x) != 140 && blocks(l)(y)(x) != 144 && blocks(l)(y)(x) != 148 && blocks(l)(y)(x) != 152 && blocks(l)(y)(x) != 156 && blocks(l)(y)(x) != 160 && blocks(l)(y)(x) != 164 && blocks(l)(y)(x) != 168)) {
+                if (conducts(blocks(l)(y)(x)) >= 0 && receives(blocks(l)(y2)(x2)) && !(blocks(l)(y2)(x2) >= ZythiumAmplifierRightBlockType.id && blocks(l)(y2)(x2) <= ZythiumAmplifierUpOnBlockType.id && x < x2 && blocks(l)(y2)(x2) != ZythiumAmplifierRightBlockType.id && blocks(l)(y2)(x2) != ZythiumAmplifierRightOnBlockType.id ||
+                  blocks(l)(y2)(x2) >= ZythiumAmplifierRightBlockType.id && blocks(l)(y2)(x2) <= ZythiumAmplifierUpOnBlockType.id && y < y2 && blocks(l)(y2)(x2) != ZythiumAmplifierDownBlockType.id && blocks(l)(y2)(x2) != ZythiumAmplifierDownOnBlockType.id ||
+                  blocks(l)(y2)(x2) >= ZythiumAmplifierRightBlockType.id && blocks(l)(y2)(x2) <= ZythiumAmplifierUpOnBlockType.id && x > x2 && blocks(l)(y2)(x2) != ZythiumAmplifierLeftBlockType.id && blocks(l)(y2)(x2) != ZythiumAmplifierLeftOnBlockType.id ||
+                  blocks(l)(y2)(x2) >= ZythiumAmplifierRightBlockType.id && blocks(l)(y2)(x2) <= ZythiumAmplifierUpOnBlockType.id && y > y2 && blocks(l)(y2)(x2) != ZythiumAmplifierUpBlockType.id && blocks(l)(y2)(x2) != ZythiumAmplifierUpOnBlockType.id) &&
+                  !(blocks(l)(y)(x) >= ZythiumAmplifierRightBlockType.id && blocks(l)(y)(x) <= ZythiumAmplifierUpOnBlockType.id && x < x2 && blocks(l)(y)(x) != ZythiumAmplifierRightBlockType.id && blocks(l)(y)(x) != ZythiumAmplifierRightOnBlockType.id ||
+                    blocks(l)(y)(x) >= ZythiumAmplifierRightBlockType.id && blocks(l)(y)(x) <= ZythiumAmplifierUpOnBlockType.id && y < y2 && blocks(l)(y)(x) != ZythiumAmplifierDownBlockType.id && blocks(l)(y)(x) != ZythiumAmplifierDownOnBlockType.id ||
+                    blocks(l)(y)(x) >= ZythiumAmplifierRightBlockType.id && blocks(l)(y)(x) <= ZythiumAmplifierUpOnBlockType.id && x > x2 && blocks(l)(y)(x) != ZythiumAmplifierLeftBlockType.id && blocks(l)(y)(x) != ZythiumAmplifierLeftOnBlockType.id ||
+                    blocks(l)(y)(x) >= ZythiumAmplifierRightBlockType.id && blocks(l)(y)(x) <= ZythiumAmplifierUpOnBlockType.id && y > y2 && blocks(l)(y)(x) != ZythiumAmplifierUpBlockType.id && blocks(l)(y)(x) != ZythiumAmplifierUpOnBlockType.id) &&
+                  !(blocks(l)(y2)(x2) >= ZythiumInverterRightBlockType.id && blocks(l)(y2)(x2) <= ZythiumInverterUpOnBlockType.id && x < x2 && blocks(l)(y2)(x2) != ZythiumInverterRightBlockType.id && blocks(l)(y2)(x2) != ZythiumInverterRightOnBlockType.id ||
+                    blocks(l)(y2)(x2) >= ZythiumInverterRightBlockType.id && blocks(l)(y2)(x2) <= ZythiumInverterUpOnBlockType.id && y < y2 && blocks(l)(y2)(x2) != ZythiumInverterDownBlockType.id && blocks(l)(y2)(x2) != ZythiumInverterDownOnBlockType.id ||
+                    blocks(l)(y2)(x2) >= ZythiumInverterRightBlockType.id && blocks(l)(y2)(x2) <= ZythiumInverterUpOnBlockType.id && x > x2 && blocks(l)(y2)(x2) != ZythiumInverterLeftBlockType.id && blocks(l)(y2)(x2) != ZythiumInverterLeftOnBlockType.id ||
+                    blocks(l)(y2)(x2) >= ZythiumInverterRightBlockType.id && blocks(l)(y2)(x2) <= ZythiumInverterUpOnBlockType.id && y > y2 && blocks(l)(y2)(x2) != ZythiumInverterUpBlockType.id && blocks(l)(y2)(x2) != ZythiumInverterUpOnBlockType.id) &&
+                  !(blocks(l)(y)(x) >= ZythiumInverterRightBlockType.id && blocks(l)(y)(x) <= ZythiumInverterUpOnBlockType.id && x < x2 && blocks(l)(y)(x) != ZythiumInverterRightBlockType.id && blocks(l)(y)(x) != ZythiumInverterRightOnBlockType.id ||
+                    blocks(l)(y)(x) >= ZythiumInverterRightBlockType.id && blocks(l)(y)(x) <= ZythiumInverterUpOnBlockType.id && y < y2 && blocks(l)(y)(x) != ZythiumInverterDownBlockType.id && blocks(l)(y)(x) != ZythiumInverterDownOnBlockType.id ||
+                    blocks(l)(y)(x) >= ZythiumInverterRightBlockType.id && blocks(l)(y)(x) <= ZythiumInverterUpOnBlockType.id && x > x2 && blocks(l)(y)(x) != ZythiumInverterLeftBlockType.id && blocks(l)(y)(x) != ZythiumInverterLeftOnBlockType.id ||
+                    blocks(l)(y)(x) >= ZythiumInverterRightBlockType.id && blocks(l)(y)(x) <= ZythiumInverterUpOnBlockType.id && y > y2 && blocks(l)(y)(x) != ZythiumInverterUpBlockType.id && blocks(l)(y)(x) != ZythiumInverterUpOnBlockType.id) &&
+                  !(blocks(l)(y2)(x2) >= ZythiumDelayer1DelayRightBlockType.id && blocks(l)(y2)(x2) <= ZythiumDelayer8DelayUpOnBlockType.id && x < x2 && blocks(l)(y2)(x2) != ZythiumDelayer1DelayRightBlockType.id && blocks(l)(y2)(x2) != ZythiumDelayer1DelayRightOnBlockType.id && blocks(l)(y2)(x2) != ZythiumDelayer2DelayRightBlockType.id && blocks(l)(y2)(x2) != ZythiumDelayer2DelayRightOnBlockType.id && blocks(l)(y2)(x2) != ZythiumDelayer4DelayRightBlockType.id && blocks(l)(y2)(x2) != ZythiumDelayer4DelayRightOnBlockType.id && blocks(l)(y2)(x2) != ZythiumDelayer8DelayRightBlockType.id && blocks(l)(y2)(x2) != ZythiumDelayer8DelayRightOnBlockType.id ||
+                    blocks(l)(y2)(x2) >= ZythiumDelayer1DelayRightBlockType.id && blocks(l)(y2)(x2) <= ZythiumDelayer8DelayUpOnBlockType.id && y < y2 && blocks(l)(y2)(x2) != ZythiumDelayer1DelayDownBlockType.id && blocks(l)(y2)(x2) != ZythiumDelayer1DelayDownOnBlockType.id && blocks(l)(y2)(x2) != ZythiumDelayer2DelayDownBlockType.id && blocks(l)(y2)(x2) != ZythiumDelayer2DelayDownOnBlockType.id && blocks(l)(y2)(x2) != ZythiumDelayer4DelayDownBlockType.id && blocks(l)(y2)(x2) != ZythiumDelayer4DelayDownOnBlockType.id && blocks(l)(y2)(x2) != ZythiumDelayer8DelayDownBlockType.id && blocks(l)(y2)(x2) != ZythiumDelayer8DelayDownOnBlockType.id ||
+                    blocks(l)(y2)(x2) >= ZythiumDelayer1DelayRightBlockType.id && blocks(l)(y2)(x2) <= ZythiumDelayer8DelayUpOnBlockType.id && x > x2 && blocks(l)(y2)(x2) != ZythiumDelayer1DelayLeftBlockType.id && blocks(l)(y2)(x2) != ZythiumDelayer1DelayLeftOnBlockType.id && blocks(l)(y2)(x2) != ZythiumDelayer2DelayLeftBlockType.id && blocks(l)(y2)(x2) != ZythiumDelayer2DelayLeftOnBlockType.id && blocks(l)(y2)(x2) != ZythiumDelayer4DelayLeftBlockType.id && blocks(l)(y2)(x2) != ZythiumDelayer4DelayLeftOnBlockType.id && blocks(l)(y2)(x2) != ZythiumDelayer8DelayLeftBlockType.id && blocks(l)(y2)(x2) != ZythiumDelayer8DelayLeftOnBlockType.id ||
+                    blocks(l)(y2)(x2) >= ZythiumDelayer1DelayRightBlockType.id && blocks(l)(y2)(x2) <= ZythiumDelayer8DelayUpOnBlockType.id && y > y2 && blocks(l)(y2)(x2) != ZythiumDelayer1DelayUpBlockType.id && blocks(l)(y2)(x2) != ZythiumDelayer1DelayUpOnBlockType.id && blocks(l)(y2)(x2) != ZythiumDelayer2DelayUpBlockType.id && blocks(l)(y2)(x2) != ZythiumDelayer2DelayUpOnBlockType.id && blocks(l)(y2)(x2) != ZythiumDelayer4DelayUpBlockType.id && blocks(l)(y2)(x2) != ZythiumDelayer4DelayUpOnBlockType.id && blocks(l)(y2)(x2) != ZythiumDelayer8DelayUpBlockType.id && blocks(l)(y2)(x2) != ZythiumDelayer8DelayUpOnBlockType.id) &&
+                  !(blocks(l)(y)(x) >= ZythiumDelayer1DelayRightBlockType.id && blocks(l)(y)(x) <= ZythiumDelayer8DelayUpOnBlockType.id && x < x2 && blocks(l)(y)(x) != ZythiumDelayer1DelayRightBlockType.id && blocks(l)(y)(x) != ZythiumDelayer1DelayRightOnBlockType.id && blocks(l)(y)(x) != ZythiumDelayer2DelayRightBlockType.id && blocks(l)(y)(x) != ZythiumDelayer2DelayRightOnBlockType.id && blocks(l)(y)(x) != ZythiumDelayer4DelayRightBlockType.id && blocks(l)(y)(x) != ZythiumDelayer4DelayRightOnBlockType.id && blocks(l)(y)(x) != ZythiumDelayer8DelayRightBlockType.id && blocks(l)(y)(x) != ZythiumDelayer8DelayRightOnBlockType.id ||
+                    blocks(l)(y)(x) >= ZythiumDelayer1DelayRightBlockType.id && blocks(l)(y)(x) <= ZythiumDelayer8DelayUpOnBlockType.id && y < y2 && blocks(l)(y)(x) != ZythiumDelayer1DelayDownBlockType.id && blocks(l)(y)(x) != ZythiumDelayer1DelayDownOnBlockType.id && blocks(l)(y)(x) != ZythiumDelayer2DelayDownBlockType.id && blocks(l)(y)(x) != ZythiumDelayer2DelayDownOnBlockType.id && blocks(l)(y)(x) != ZythiumDelayer4DelayDownBlockType.id && blocks(l)(y)(x) != ZythiumDelayer4DelayDownOnBlockType.id && blocks(l)(y)(x) != ZythiumDelayer8DelayDownBlockType.id && blocks(l)(y)(x) != ZythiumDelayer8DelayDownOnBlockType.id ||
+                    blocks(l)(y)(x) >= ZythiumDelayer1DelayRightBlockType.id && blocks(l)(y)(x) <= ZythiumDelayer8DelayUpOnBlockType.id && x > x2 && blocks(l)(y)(x) != ZythiumDelayer1DelayLeftBlockType.id && blocks(l)(y)(x) != ZythiumDelayer1DelayLeftOnBlockType.id && blocks(l)(y)(x) != ZythiumDelayer2DelayLeftBlockType.id && blocks(l)(y)(x) != ZythiumDelayer2DelayLeftOnBlockType.id && blocks(l)(y)(x) != ZythiumDelayer4DelayLeftBlockType.id && blocks(l)(y)(x) != ZythiumDelayer4DelayLeftOnBlockType.id && blocks(l)(y)(x) != ZythiumDelayer8DelayLeftBlockType.id && blocks(l)(y)(x) != ZythiumDelayer8DelayLeftOnBlockType.id ||
+                    blocks(l)(y)(x) >= ZythiumDelayer1DelayRightBlockType.id && blocks(l)(y)(x) <= ZythiumDelayer8DelayUpOnBlockType.id && y > y2 && blocks(l)(y)(x) != ZythiumDelayer1DelayUpBlockType.id && blocks(l)(y)(x) != ZythiumDelayer1DelayUpOnBlockType.id && blocks(l)(y)(x) != ZythiumDelayer2DelayUpBlockType.id && blocks(l)(y)(x) != ZythiumDelayer2DelayUpOnBlockType.id && blocks(l)(y)(x) != ZythiumDelayer4DelayUpBlockType.id && blocks(l)(y)(x) != ZythiumDelayer4DelayUpOnBlockType.id && blocks(l)(y)(x) != ZythiumDelayer8DelayUpBlockType.id && blocks(l)(y)(x) != ZythiumDelayer8DelayUpOnBlockType.id)) {
                   if (power(l)(y2)(x2) <= power(l)(y)(x) - conducts(blocks(l)(y)(x))) {
                     addTileToPZQueue(x2, y2)
-                    if (blocks(l)(y2)(x2) >= 137 && blocks(l)(y2)(x2) <= 140 ||
-                      blocks(l)(y2)(x2) >= 145 && blocks(l)(y2)(x2) <= 148 ||
-                      blocks(l)(y2)(x2) >= 153 && blocks(l)(y2)(x2) <= 156 ||
-                      blocks(l)(y2)(x2) >= 161 && blocks(l)(y2)(x2) <= 164) {
+                    if (blocks(l)(y2)(x2) >= ZythiumDelayer1DelayRightBlockType.id && blocks(l)(y2)(x2) <= ZythiumDelayer1DelayUpBlockType.id ||
+                      blocks(l)(y2)(x2) >= ZythiumDelayer2DelayRightBlockType.id && blocks(l)(y2)(x2) <= ZythiumDelayer2DelayUpBlockType.id ||
+                      blocks(l)(y2)(x2) >= ZythiumDelayer4DelayRightBlockType.id && blocks(l)(y2)(x2) <= ZythiumDelayer4DelayUpBlockType.id ||
+                      blocks(l)(y2)(x2) >= ZythiumDelayer8DelayRightBlockType.id && blocks(l)(y2)(x2) <= ZythiumDelayer8DelayUpBlockType.id) {
                       println("(DEBUG1)")
                       updatex += x2
                       updatey += y2
@@ -5812,11 +5643,11 @@ class TerraFrame extends JApplet
                         }
                       }
                     }
-                    if (!(blocks(l)(y2)(x2) >= 119 && blocks(l)(y2)(x2) <= 122)) {
+                    if (!(blocks(l)(y2)(x2) >= ZythiumInverterRightBlockType.id && blocks(l)(y2)(x2) <= ZythiumInverterUpBlockType.id)) {
                       addTileToPQueue(x2, y2)
                     }
                   }
-                  if (power(l)(y)(x) - conducts(blocks(l)(y)(x)) > 0 && blocks(l)(y2)(x2) >= 119 && blocks(l)(y2)(x2) <= 122) {
+                  if (power(l)(y)(x) - conducts(blocks(l)(y)(x)) > 0 && blocks(l)(y2)(x2) >= ZythiumInverterRightBlockType.id && blocks(l)(y2)(x2) <= ZythiumInverterUpBlockType.id) {
                     removeBlockPower(x2, y2, l)
                     blocks(l)(y2)(x2) += 4
                     removeBlockLighting(x2, y2)
@@ -5833,12 +5664,12 @@ class TerraFrame extends JApplet
         (0 until 3).foreach { l =>
           println("(resolvePowerMatrix) " + x + " " + y + " " + l + " " + blocks(l)(y)(x) + " " + power(l)(y)(x))
           if (power(l)(y)(x) > 0) {
-            if (blocks(l)(y)(x) == 103) {
+            if (blocks(l)(y)(x) == ZythiumLampBlockType.id) {
               blocks(l)(y)(x) = 104
               addBlockLighting(x, y)
               rdrawn(y)(x) = false
             }
-            if (blocks(l)(y)(x) >= 111 && blocks(l)(y)(x) <= 114) {
+            if (blocks(l)(y)(x) >= ZythiumAmplifierRightBlockType.id && blocks(l)(y)(x) <= ZythiumAmplifierUpBlockType.id) {
               println("Processed amplifier at " + x + " " + y)
               blocks(l)(y)(x) += 4
               addTileToPQueue(x, y)
@@ -5856,7 +5687,7 @@ class TerraFrame extends JApplet
       x = pzqx(i)
       y = pzqy(i)
       (0 until 3).foreach { l =>
-        if (blocks(l)(y)(x) >= 94 && blocks(l)(y)(x) <= 99 && power(l)(y)(x).toInt != pzqn(l)(y)(x)) {
+        if (blocks(l)(y)(x) >= ZythiumWireBlockType.id && blocks(l)(y)(x) <= ZythiumWire5PowerBlockType.id && power(l)(y)(x).toInt != pzqn(l)(y)(x)) {
           removeBlockLighting(x, y, 0)
           WIREP.get(power(l)(y)(x).toInt).foreach { w =>
             blocks(l)(y)(x) = w
@@ -6480,21 +6311,21 @@ class TerraFrame extends JApplet
         }
       }
       //val dn: Int = GRASSDIRT.get(`type`)
-      val left: Boolean = blocks(lyr)(y)(x - 1) == 0 || !blockcds(blocks(lyr)(y)(x - 1))
+      val left: Boolean = blocks(lyr)(y)(x - 1) == AirBlockType.id || !blockcds(blocks(lyr)(y)(x - 1))
       // && (blocks(lyr)(y-1)(x) != dn && blocks(lyr)(y+1)(x) != dn) && (blocks(lyr)(y-1)(x-1) != dn && blocks(lyr)(y+1)(x-1) != dn)
-      val right: Boolean = blocks(lyr)(y)(x + 1) == 0 || !blockcds(blocks(lyr)(y)(x + 1))
+      val right: Boolean = blocks(lyr)(y)(x + 1) == AirBlockType.id || !blockcds(blocks(lyr)(y)(x + 1))
       // && (blocks(lyr)(y-1)(x) != dn && blocks(lyr)(y+1)(x) != dn) && (blocks(lyr)(y-1)(x+1) != dn && blocks(lyr)(y+1)(x+1) != dn)
-      val up: Boolean = blocks(lyr)(y - 1)(x) == 0 || !blockcds(blocks(lyr)(y - 1)(x))
+      val up: Boolean = blocks(lyr)(y - 1)(x) == AirBlockType.id || !blockcds(blocks(lyr)(y - 1)(x))
       // && (blocks(lyr)(y)(x-1) != dn && blocks(lyr)(y)(x+1) != dn) && (blocks(lyr)(y-1)(x-1) != dn && blocks(lyr)(y-1)(x+1) != dn)
-      val down: Boolean = blocks(lyr)(y + 1)(x) == 0 || !blockcds(blocks(lyr)(y + 1)(x))
+      val down: Boolean = blocks(lyr)(y + 1)(x) == AirBlockType.id || !blockcds(blocks(lyr)(y + 1)(x))
       // && (blocks(lyr)(y)(x-1) != dn && blocks(lyr)(y)(x+1) != dn) && (blocks(lyr)(y+1)(x-1) != dn && blocks(lyr)(y+1)(x+1) != dn)
-      val upleft: Boolean = blocks(lyr)(y - 1)(x - 1) == 0 || !blockcds(blocks(lyr)(y - 1)(x - 1))
+      val upleft: Boolean = blocks(lyr)(y - 1)(x - 1) == AirBlockType.id || !blockcds(blocks(lyr)(y - 1)(x - 1))
       // && (blocks(lyr)(y-1)(x) != dn && blocks(lyr)(y)(x-1) != dn && blocks(lyr)(y-1)(x-1) != dn && blocks(lyr)(y-2)(x) != dn && blocks(lyr)(y)(x-2) != dn)
-      val upright: Boolean = blocks(lyr)(y - 1)(x + 1) == 0 || !blockcds(blocks(lyr)(y - 1)(x + 1))
+      val upright: Boolean = blocks(lyr)(y - 1)(x + 1) == AirBlockType.id || !blockcds(blocks(lyr)(y - 1)(x + 1))
       // && (blocks(lyr)(y-1)(x) != dn && blocks(lyr)(y)(x+1) != dn && blocks(lyr)(y-1)(x+1) != dn && blocks(lyr)(y-2)(x) != dn && blocks(lyr)(y)(x+2) != dn)
-      val downleft: Boolean = blocks(lyr)(y + 1)(x - 1) == 0 || !blockcds(blocks(lyr)(y + 1)(x - 1))
+      val downleft: Boolean = blocks(lyr)(y + 1)(x - 1) == AirBlockType.id || !blockcds(blocks(lyr)(y + 1)(x - 1))
       // && (blocks(lyr)(y+1)(x) != dn && blocks(lyr)(y)(x-1) != dn && blocks(lyr)(y+1)(x-1) != dn && blocks(lyr)(y+2)(x) != dn && blocks(lyr)(y)(x-2) != dn)
-      val downright: Boolean = blocks(lyr)(y + 1)(x + 1) == 0 || !blockcds(blocks(lyr)(y + 1)(x + 1))
+      val downright: Boolean = blocks(lyr)(y + 1)(x + 1) == AirBlockType.id || !blockcds(blocks(lyr)(y + 1)(x + 1))
       // && (blocks(lyr)(y+1)(x) != dn && blocks(lyr)(y)(x+1) != dn && blocks(lyr)(y+1)(x+1) != dn && blocks(lyr)(y+2)(x) != dn && blocks(lyr)(y)(x+2) != dn)
       val pixm: Array2D[Int] = Array.ofDim(IMAGESIZE, IMAGESIZE)
       (0 until 8).foreach { dy =>
