@@ -14,14 +14,40 @@ object RandConverter {
   val BLOCKSIZE: Int = 16
   val IMAGESIZE: Int = 8
 
-  val dirs: Array[String] = Array("center", "tdown_both", "tdown_cw", "tdown_ccw",
-    "tdown", "tup_both", "tup_cw", "tup_ccw",
-    "tup", "leftright", "tright_both", "tright_cw",
-    "tright_ccw", "tright", "upleftdiag", "upleft",
-    "downleftdiag", "downleft", "left", "tleft_both",
-    "tleft_cw", "tleft_ccw", "tleft", "uprightdiag",
-    "upright", "downrightdiag", "downright", "right",
-    "updown", "up", "down", "single")
+  val dirs: Array[String] = Array(
+    "center",
+    "tdown_both",
+    "tdown_cw",
+    "tdown_ccw",
+    "tdown",
+    "tup_both",
+    "tup_cw",
+    "tup_ccw",
+    "tup",
+    "leftright",
+    "tright_both",
+    "tright_cw",
+    "tright_ccw",
+    "tright",
+    "upleftdiag",
+    "upleft",
+    "downleftdiag",
+    "downleft",
+    "left",
+    "tleft_both",
+    "tleft_cw",
+    "tleft_ccw",
+    "tleft",
+    "uprightdiag",
+    "upright",
+    "downrightdiag",
+    "downright",
+    "right",
+    "updown",
+    "up",
+    "down",
+    "single"
+  )
 
   def main(args: Array[String]): Unit = {
     System.out.print("[D]uplicate, [R]andomize, or [O]utline? ")
@@ -38,7 +64,7 @@ object RandConverter {
           dirs.indices.foreach { k =>
             (2 until 6).foreach { j =>
               val texture: BufferedImage = loadImage("outlines/" + name + "/" + dirs(k) + "1.png")
-              val coords: Array2D[Int] = Array.ofDim(IMAGESIZE * IMAGESIZE, 2)
+              val coords: Array2D[Int]   = Array.ofDim(IMAGESIZE * IMAGESIZE, 2)
               (0 until 7).foreach { i =>
                 (0 until IMAGESIZE).foreach { x =>
                   (0 until IMAGESIZE).foreach { y =>
@@ -55,17 +81,15 @@ object RandConverter {
                 }
                 try {
                   ImageIO.write(result, "png", new File("outlines/" + name + "/" + dirs(k) + j + ".png"))
-                }
-                catch {
+                } catch {
                   case _: IOException => println("Error in writing file.")
                 }
               }
             }
           }
-        }
-        else {
+        } else {
           val texture: BufferedImage = loadImage("blocks/" + name + "/texture1.png")
-          var coords: Array2D[Int] = Array.ofDim(IMAGESIZE * IMAGESIZE, 2)
+          var coords: Array2D[Int]   = Array.ofDim(IMAGESIZE * IMAGESIZE, 2)
           (0 until 7).foreach { i =>
             (0 until IMAGESIZE).foreach { x =>
               (0 until IMAGESIZE).foreach { y =>
@@ -85,8 +109,7 @@ object RandConverter {
             }
             try {
               ImageIO.write(result, "png", new File("blocks/" + name + "/texture" + (i + 2) + ".png"))
-            }
-            catch {
+            } catch {
               case _: IOException => println("Error in writing file.")
             }
           }

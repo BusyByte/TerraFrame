@@ -25,10 +25,10 @@ class Inventory extends Serializable {
   import MathHelper._
 
   var n, px, py, selection, width, height: Int = _
-  var fpx, fpy: Double = _
+  var fpx, fpy: Double                         = _
 
   @transient var image, box, box_selected: BufferedImage = _
-  val font = new Font("Chalkboard", Font.PLAIN, 12)
+  val font                                               = new Font("Chalkboard", Font.PLAIN, 12)
 
   @transient var g2: Graphics2D = _
 
@@ -43,7 +43,7 @@ class Inventory extends Serializable {
 
   var valid: Boolean = false
 
-  val RECIPES: Map[String, Array2D[Short]]  = createRecipies
+  val RECIPES: Map[String, Array2D[Short]] = createRecipies
 
   //Begin Constructor
 
@@ -55,21 +55,14 @@ class Inventory extends Serializable {
   (0 until 10).foreach { x =>
     (0 until 4).foreach { y =>
       if (x == 0 && y == 0) {
-        g2.drawImage(box_selected,
-          x * 46 + 6, y * 46 + 6, x * 46 + 46, y * 46 + 46,
-          0, 0, 40, 40,
-          null)
+        g2.drawImage(box_selected, x * 46 + 6, y * 46 + 6, x * 46 + 46, y * 46 + 46, 0, 0, 40, 40, null)
         if (y == 0) {
           g2.setFont(font)
           g2.setColor(Color.BLACK)
           g2.drawString(f(x) + " ", x * 46 + trolx, y * 46 + troly)
         }
-      }
-      else {
-        g2.drawImage(box,
-          x * 46 + 6, y * 46 + 6, x * 46 + 46, y * 46 + 46,
-          0, 0, 40, 40,
-          null)
+      } else {
+        g2.drawImage(box, x * 46 + 6, y * 46 + 6, x * 46 + 46, y * 46 + 46, 0, 0, 40, 40, null)
         if (y == 0) {
           g2.setFont(font)
           g2.setColor(Color.BLACK)
@@ -79,762 +72,279 @@ class Inventory extends Serializable {
     }
   }
 
-
   def createRecipies: Map[String, Array2D[Short]] = {
-    import java.{util => jul}
+    import java.{ util => jul }
     import scala.collection.JavaConverters._
     val recipesTemp = new jul.HashMap[String, Array2D[Short]](1000)
 
-
     val workbenchRecipies: Array2D[Short] = Array(
-      Array[Short](15, 15, 15,
-        0, 15, 0,
-        0, 15, 0, 154, 1), // Wooden Pick
-      Array[Short](2, 2, 2,
-        0, 15, 0,
-        0, 15, 0, 157, 1), // Stone Pick
-      Array[Short](29, 29, 29,
-        0, 15, 0,
-        0, 15, 0, 7, 1), // Copper Pick
-      Array[Short](30, 30, 30,
-        0, 15, 0,
-        0, 15, 0, 8, 1), // Iron Pick
-      Array[Short](31, 31, 31,
-        0, 15, 0,
-        0, 15, 0, 9, 1), // Silver Pick
-      Array[Short](32, 32, 32,
-        0, 15, 0,
-        0, 15, 0, 10, 1), // Gold Pick
-      Array[Short](60, 60, 60,
-        0, 15, 0,
-        0, 15, 0, 51, 1), // Zinc Pick
-      Array[Short](61, 61, 61,
-        0, 15, 0,
-        0, 15, 0, 54, 1), // Rhymestone Pick
-      Array[Short](62, 62, 62,
-        0, 15, 0,
-        0, 15, 0, 57, 1), // Obdurite Pick
-      Array[Short](73, 73, 73,
-        0, 15, 0,
-        0, 15, 0, 169, 1), // Magnetite Pick
-      Array[Short](69, 69, 69,
-        0, 15, 0,
-        0, 15, 0, 172, 1), // Irradium Pick
-      Array[Short](15, 15, 0,
-        15, 15, 0,
-        0, 15, 0, 155, 1), // Wooden Axe
-      Array[Short](0, 15, 15,
-        0, 15, 15,
-        0, 15, 0, 155, 1),
-      Array[Short](15, 15, 0,
-        15, 15, 0,
-        15, 0, 0, 155, 1),
-      Array[Short](0, 15, 15,
-        0, 15, 15,
-        0, 0, 15, 155, 1),
-      Array[Short](2, 2, 0,
-        2, 15, 0,
-        0, 15, 0, 158, 1), // Stone Axe
-      Array[Short](0, 2, 2,
-        0, 15, 2,
-        0, 15, 0, 158, 1),
-      Array[Short](2, 2, 0,
-        15, 2, 0,
-        15, 0, 0, 158, 1),
-      Array[Short](0, 2, 2,
-        0, 2, 15,
-        0, 0, 15, 158, 1),
-      Array[Short](29, 29, 0,
-        29, 15, 0,
-        0, 15, 0, 11, 1), // Copper Axe
-      Array[Short](0, 29, 29,
-        0, 15, 29,
-        0, 15, 0, 11, 1),
-      Array[Short](29, 29, 0,
-        15, 29, 0,
-        15, 0, 0, 11, 1),
-      Array[Short](0, 29, 29,
-        0, 29, 15,
-        0, 0, 15, 11, 1),
-      Array[Short](30, 30, 0,
-        30, 15, 0,
-        0, 15, 0, 11, 1), // Iron Axe
-      Array[Short](0, 30, 30,
-        0, 15, 30,
-        0, 15, 0, 11, 1),
-      Array[Short](30, 30, 0,
-        15, 30, 0,
-        15, 0, 0, 11, 1),
-      Array[Short](0, 30, 30,
-        0, 30, 15,
-        0, 0, 15, 11, 1),
-      Array[Short](31, 31, 0,
-        31, 15, 0,
-        0, 15, 0, 11, 1), // Silver Axe
-      Array[Short](0, 31, 31,
-        0, 15, 31,
-        0, 15, 0, 11, 1),
-      Array[Short](31, 31, 0,
-        15, 31, 0,
-        15, 0, 0, 11, 1),
-      Array[Short](0, 31, 31,
-        0, 31, 15,
-        0, 0, 15, 11, 1),
-      Array[Short](32, 32, 0,
-        32, 15, 0,
-        0, 15, 0, 11, 1), // Gold Axe
-      Array[Short](0, 32, 32,
-        0, 15, 32,
-        0, 15, 0, 11, 1),
-      Array[Short](32, 32, 0,
-        15, 32, 0,
-        15, 0, 0, 11, 1),
-      Array[Short](0, 32, 32,
-        0, 32, 15,
-        0, 0, 15, 11, 1),
-      Array[Short](60, 60, 0,
-        60, 15, 0,
-        0, 15, 0, 52, 1), // Zinc Axe
-      Array[Short](0, 60, 60,
-        0, 15, 60,
-        0, 15, 0, 52, 1),
-      Array[Short](60, 60, 0,
-        15, 60, 0,
-        15, 0, 0, 52, 1),
-      Array[Short](0, 60, 60,
-        0, 60, 15,
-        0, 0, 15, 52, 1),
-      Array[Short](61, 61, 0,
-        61, 15, 0,
-        0, 15, 0, 55, 1), // Rhymestone Axe
-      Array[Short](0, 61, 61,
-        0, 15, 61,
-        0, 15, 0, 55, 1),
-      Array[Short](61, 61, 0,
-        15, 61, 0,
-        15, 0, 0, 55, 1),
-      Array[Short](0, 61, 61,
-        0, 61, 15,
-        0, 0, 15, 55, 1),
-      Array[Short](62, 62, 0,
-        62, 15, 0,
-        0, 15, 0, 58, 1), // Obdurite Axe
-      Array[Short](0, 62, 62,
-        0, 15, 62,
-        0, 15, 0, 58, 1),
-      Array[Short](62, 62, 0,
-        15, 62, 0,
-        15, 0, 0, 58, 1),
-      Array[Short](0, 62, 62,
-        0, 62, 15,
-        0, 0, 15, 58, 1),
-      Array[Short](73, 73, 0,
-        73, 15, 0,
-        0, 15, 0, 170, 1), // Magnetite Axe
-      Array[Short](0, 73, 73,
-        0, 15, 73,
-        0, 15, 0, 170, 1),
-      Array[Short](73, 73, 0,
-        15, 73, 0,
-        15, 0, 0, 170, 1),
-      Array[Short](0, 73, 73,
-        0, 73, 15,
-        0, 0, 15, 170, 1),
-      Array[Short](69, 69, 0,
-        69, 15, 0,
-        0, 15, 0, 169, 1), // Irradium Axe
-      Array[Short](0, 69, 69,
-        0, 15, 69,
-        0, 15, 0, 169, 1),
-      Array[Short](69, 69, 0,
-        15, 69, 0,
-        15, 0, 0, 169, 1),
-      Array[Short](0, 69, 69,
-        0, 69, 15,
-        0, 0, 15, 169, 1),
-      Array[Short](15, 0, 0,
-        15, 0, 0,
-        15, 0, 0, 156, 1), // Wooden Sword
-      Array[Short](0, 15, 0,
-        0, 15, 0,
-        0, 15, 0, 156, 1),
-      Array[Short](0, 0, 15,
-        0, 0, 15,
-        0, 0, 15, 156, 1),
-      Array[Short](2, 0, 0,
-        2, 0, 0,
-        15, 0, 0, 159, 1), // Stone Sword
-      Array[Short](0, 2, 0,
-        0, 2, 0,
-        0, 15, 0, 159, 1),
-      Array[Short](0, 0, 2,
-        0, 0, 2,
-        0, 0, 15, 159, 1),
-      Array[Short](29, 0, 0,
-        29, 0, 0,
-        15, 0, 0, 16, 1), // Copper Sword
-      Array[Short](0, 29, 0,
-        0, 29, 0,
-        0, 15, 0, 16, 1),
-      Array[Short](0, 0, 29,
-        0, 0, 29,
-        0, 0, 15, 16, 1),
-      Array[Short](30, 0, 0,
-        30, 0, 0,
-        15, 0, 0, 17, 1), // Iron Sword
-      Array[Short](0, 30, 0,
-        0, 30, 0,
-        0, 15, 0, 17, 1),
-      Array[Short](0, 0, 30,
-        0, 0, 30,
-        0, 0, 15, 17, 1),
-      Array[Short](31, 0, 0,
-        31, 0, 0,
-        15, 0, 0, 18, 1), // Silver Sword
-      Array[Short](0, 31, 0,
-        0, 31, 0,
-        0, 15, 0, 18, 1),
-      Array[Short](0, 0, 31,
-        0, 0, 31,
-        0, 0, 15, 18, 1),
-      Array[Short](32, 0, 0,
-        32, 0, 0,
-        15, 0, 0, 19, 1), // Gold Sword
-      Array[Short](0, 32, 0,
-        0, 32, 0,
-        0, 15, 0, 19, 1),
-      Array[Short](0, 0, 32,
-        0, 0, 32,
-        0, 0, 15, 19, 1),
-      Array[Short](38, 0, 0,
-        38, 0, 0,
-        15, 0, 0, 19, 1), // Zinc Sword
-      Array[Short](0, 38, 0,
-        0, 38, 0,
-        0, 15, 0, 19, 1),
-      Array[Short](0, 0, 38,
-        0, 0, 38,
-        0, 0, 15, 19, 1),
-      Array[Short](39, 0, 0,
-        39, 0, 0,
-        15, 0, 0, 19, 1), // Rhymestone Sword
-      Array[Short](0, 39, 0,
-        0, 39, 0,
-        0, 15, 0, 19, 1),
-      Array[Short](0, 0, 39,
-        0, 0, 39,
-        0, 0, 15, 19, 1),
-      Array[Short](40, 0, 0,
-        40, 0, 0,
-        15, 0, 0, 19, 1), // Obdurite Sword
-      Array[Short](0, 40, 0,
-        0, 40, 0,
-        0, 15, 0, 19, 1),
-      Array[Short](0, 0, 40,
-        0, 0, 40,
-        0, 0, 15, 19, 1),
-      Array[Short](73, 0, 0,
-        73, 0, 0,
-        15, 0, 0, 171, 1), // Magnetite Sword
-      Array[Short](0, 73, 0,
-        0, 73, 0,
-        0, 15, 0, 171, 1),
-      Array[Short](0, 0, 73,
-        0, 0, 73,
-        0, 0, 15, 171, 1),
-      Array[Short](69, 0, 0,
-        69, 0, 0,
-        15, 0, 0, 174, 1), // Irradium Sword
-      Array[Short](0, 69, 0,
-        0, 69, 0,
-        0, 15, 0, 174, 1),
-      Array[Short](0, 0, 69,
-        0, 0, 69,
-        0, 0, 15, 174, 1),
-      Array[Short](63, 0, 63,
-        0, 63, 0,
-        0, 63, 0, 190, 1), // Wrench
-      Array[Short](15, 0, 0,
-        2, 0, 0,
-        175, 0, 0, 178, 1), // Lever
-      Array[Short](0, 15, 0,
-        0, 2, 0,
-        0, 175, 0, 178, 1),
-      Array[Short](0, 0, 15,
-        0, 0, 2,
-        0, 0, 175, 178, 1),
-      Array[Short](29, 29, 29,
-        29, 0, 29,
-        0, 0, 0, 105, 1), // Copper Helmet
-      Array[Short](0, 0, 0,
-        29, 29, 29,
-        29, 0, 29, 105, 1),
-      Array[Short](29, 0, 29,
-        29, 29, 29,
-        29, 29, 29, 106, 1), // Copper Chestplate
-      Array[Short](29, 29, 29,
-        29, 0, 29,
-        29, 0, 29, 107, 1), // Copper Leggings
-      Array[Short](29, 0, 29,
-        29, 0, 29,
-        0, 0, 0, 108, 1), // Copper Greaves
-      Array[Short](0, 0, 0,
-        29, 0, 29,
-        29, 0, 29, 108, 1),
-      Array[Short](30, 30, 30,
-        30, 0, 30,
-        0, 0, 0, 109, 1), // Iron Helmet
-      Array[Short](0, 0, 0,
-        30, 30, 30,
-        30, 0, 30, 109, 1),
-      Array[Short](30, 0, 30,
-        30, 30, 30,
-        30, 30, 30, 110, 1), // Iron Chestplate
-      Array[Short](30, 30, 30,
-        30, 0, 30,
-        30, 0, 30, 111, 1), // Iron Leggings
-      Array[Short](30, 0, 30,
-        30, 0, 30,
-        0, 0, 0, 112, 1), // Iron Greaves
-      Array[Short](0, 0, 0,
-        30, 0, 30,
-        30, 0, 30, 112, 1),
-      Array[Short](31, 31, 31,
-        31, 0, 31,
-        0, 0, 0, 113, 1), // Silver Helmet
-      Array[Short](0, 0, 0,
-        31, 31, 31,
-        31, 0, 31, 113, 1),
-      Array[Short](31, 0, 31,
-        31, 31, 31,
-        31, 31, 31, 114, 1), // Silver Chestplate
-      Array[Short](31, 31, 31,
-        31, 0, 31,
-        31, 0, 31, 115, 1), // Silver Leggings
-      Array[Short](31, 0, 31,
-        31, 0, 31,
-        0, 0, 0, 116, 1), // Silver Greaves
-      Array[Short](0, 0, 0,
-        31, 0, 31,
-        31, 0, 31, 116, 1),
-      Array[Short](32, 32, 32,
-        32, 0, 32,
-        0, 0, 0, 117, 1), // Gold Helmet
-      Array[Short](0, 0, 0,
-        32, 32, 32,
-        32, 0, 32, 117, 1),
-      Array[Short](32, 0, 32,
-        32, 32, 32,
-        32, 32, 32, 118, 1), // Gold Chestplate
-      Array[Short](32, 32, 32,
-        32, 0, 32,
-        32, 0, 32, 119, 1), // Gold Leggings
-      Array[Short](32, 0, 32,
-        32, 0, 32,
-        0, 0, 0, 120, 1), // Gold Greaves
-      Array[Short](0, 0, 0,
-        32, 0, 32,
-        32, 0, 32, 120, 1),
-      Array[Short](60, 60, 60,
-        60, 0, 60,
-        0, 0, 0, 121, 1), // Zinc Helmet
-      Array[Short](0, 0, 0,
-        60, 60, 60,
-        60, 0, 60, 121, 1),
-      Array[Short](60, 0, 60,
-        60, 60, 60,
-        60, 60, 60, 122, 1), // Zinc Chestplate
-      Array[Short](60, 60, 60,
-        60, 0, 60,
-        60, 0, 60, 123, 1), // Zinc Leggings
-      Array[Short](60, 0, 60,
-        60, 0, 60,
-        0, 0, 0, 124, 1), // Zinc Greaves
-      Array[Short](0, 0, 0,
-        60, 0, 60,
-        60, 0, 60, 124, 1),
-      Array[Short](61, 61, 61,
-        61, 0, 61,
-        0, 0, 0, 125, 1), // Rhymestone Helmet
-      Array[Short](0, 0, 0,
-        61, 61, 61,
-        61, 0, 61, 125, 1),
-      Array[Short](61, 0, 61,
-        61, 61, 61,
-        61, 61, 61, 126, 1), // Rhymestone Chestplate
-      Array[Short](61, 61, 61,
-        61, 0, 61,
-        61, 0, 61, 127, 1), // Rhymestone Leggings
-      Array[Short](61, 0, 61,
-        61, 0, 61,
-        0, 0, 0, 128, 1), // Rhymestone Greaves
-      Array[Short](0, 0, 0,
-        61, 0, 61,
-        61, 0, 61, 128, 1),
-      Array[Short](62, 62, 62,
-        62, 0, 62,
-        0, 0, 0, 129, 1), // Obdurite Helmet
-      Array[Short](0, 0, 0,
-        62, 62, 62,
-        62, 0, 62, 129, 1),
-      Array[Short](62, 0, 62,
-        62, 62, 62,
-        62, 62, 62, 130, 1), // Obdurite Chestplate
-      Array[Short](62, 62, 62,
-        62, 0, 62,
-        62, 0, 62, 131, 1), // Obdurite Leggings
-      Array[Short](62, 0, 62,
-        62, 0, 62,
-        0, 0, 0, 132, 1), // Obdurite Greaves
-      Array[Short](0, 0, 0,
-        62, 0, 62,
-        62, 0, 62, 132, 1),
-      Array[Short](63, 63, 63,
-        63, 0, 63,
-        0, 0, 0, 133, 1), // Aluminum Helmet
-      Array[Short](0, 0, 0,
-        63, 63, 63,
-        63, 0, 63, 133, 1),
-      Array[Short](63, 0, 63,
-        63, 63, 63,
-        63, 63, 63, 134, 1), // Aluminum Chestplate
-      Array[Short](63, 63, 63,
-        63, 0, 63,
-        63, 0, 63, 135, 1), // Aluminum Leggings
-      Array[Short](63, 0, 63,
-        63, 0, 63,
-        0, 0, 0, 136, 1), // Aluminum Greaves
-      Array[Short](0, 0, 0,
-        63, 0, 63,
-        63, 0, 63, 136, 1),
-      Array[Short](64, 64, 64,
-        64, 0, 64,
-        0, 0, 0, 137, 1), // Lead Helmet
-      Array[Short](0, 0, 0,
-        64, 64, 64,
-        64, 0, 64, 137, 1),
-      Array[Short](64, 0, 64,
-        64, 64, 64,
-        64, 64, 64, 138, 1), // Lead Chestplate
-      Array[Short](64, 64, 64,
-        64, 0, 64,
-        64, 0, 64, 139, 1), // Lead Leggings
-      Array[Short](64, 0, 64,
-        64, 0, 64,
-        0, 0, 0, 140, 1), // Lead Greaves
-      Array[Short](0, 0, 0,
-        64, 0, 64,
-        64, 0, 64, 140, 1),
-      Array[Short](15, 15, 15,
-        15, 0, 15,
-        15, 15, 15, 21, 1), // Wooden Chest
-      Array[Short](2, 2, 2,
-        2, 21, 2,
-        2, 2, 2, 22, 1), // Stone Chest
-      Array[Short](29, 29, 29,
-        29, 22, 29,
-        29, 29, 29, 23, 1), // Copper Chest
-      Array[Short](30, 30, 30,
-        30, 22, 30,
-        30, 30, 30, 24, 1), // Iron Chest
-      Array[Short](31, 31, 31,
-        31, 22, 31,
-        31, 31, 31, 25, 1), // Silver Chest
-      Array[Short](32, 32, 32,
-        32, 22, 32,
-        32, 32, 32, 26, 1), // Gold Chest
-      Array[Short](60, 60, 60,
-        60, 22, 60,
-        60, 60, 60, 151, 1), // Zinc Chest
-      Array[Short](61, 61, 61,
-        61, 22, 61,
-        61, 61, 61, 152, 1), // Rhymestone Chest
-      Array[Short](62, 62, 62,
-        62, 22, 62,
-        62, 62, 62, 153, 1), // Obdurite Chest
-      Array[Short](76, 76, 76,
-        76, 34, 76,
-        76, 175, 76, 177, 1), // Zythium Lamp
-      Array[Short](76, 76, 76,
-        175, 44, 175,
-        76, 76, 76, 180, 1), // Zythium Amplifier
-      Array[Short](76, 76, 76,
-        44, 175, 44,
-        76, 76, 76, 181, 1), // Zythium Inverter
-      Array[Short](76, 175, 76,
-        175, 175, 175,
-        76, 175, 76, 186, 1), // Zythium Delayer
-      Array[Short](15, 15, 0,
-        15, 15, 0,
-        0, 0, 0, 20, 1), // Workbench
-      Array[Short](0, 15, 15,
-        0, 15, 15,
-        0, 0, 0, 20, 1),
-      Array[Short](0, 0, 0,
-        15, 15, 0,
-        15, 15, 0, 20, 1),
-      Array[Short](0, 0, 0,
-        0, 15, 15,
-        0, 15, 15, 20, 1),
-      Array[Short](160, 160, 0,
-        160, 160, 0,
-        0, 0, 0, 15, 1), // Bark -> Wood
-      Array[Short](0, 160, 160,
-        0, 160, 160,
-        0, 0, 0, 15, 1),
-      Array[Short](0, 0, 0,
-        160, 160, 0,
-        160, 160, 0, 15, 1),
-      Array[Short](0, 0, 0,
-        0, 160, 160,
-        0, 160, 160, 15, 1),
-      Array[Short](2, 2, 0,
-        2, 2, 0,
-        0, 0, 0, 161, 4), // Cobblestone
-      Array[Short](0, 2, 2,
-        0, 2, 2,
-        0, 0, 0, 161, 4),
-      Array[Short](0, 0, 0,
-        2, 2, 0,
-        2, 2, 0, 161, 4),
-      Array[Short](0, 0, 0,
-        0, 2, 2,
-        0, 2, 2, 161, 4),
-      Array[Short](162, 162, 0,
-        162, 162, 0,
-        0, 0, 0, 163, 4), // Chiseled Cobblestone
-      Array[Short](0, 162, 162,
-        0, 162, 162,
-        0, 0, 0, 163, 4),
-      Array[Short](0, 0, 0,
-        162, 162, 0,
-        162, 162, 0, 163, 4),
-      Array[Short](0, 0, 0,
-        0, 162, 162,
-        0, 162, 162, 163, 4),
-      Array[Short](163, 163, 0,
-        163, 163, 0,
-        0, 0, 0, 164, 4), // Stone Bricks
-      Array[Short](0, 163, 163,
-        0, 163, 163,
-        0, 0, 0, 164, 4),
-      Array[Short](0, 0, 0,
-        163, 163, 0,
-        163, 163, 0, 164, 4),
-      Array[Short](0, 0, 0,
-        0, 163, 163,
-        0, 163, 163, 164, 4),
-      Array[Short](2, 2, 2,
-        2, 0, 2,
-        2, 2, 2, 27, 1), // Furnace
-      Array[Short](67, 67, 67,
-        0, 0, 0,
-        0, 0, 0, 175, 10), // Zythium Wire
-      Array[Short](0, 0, 0,
-        67, 67, 67,
-        0, 0, 0, 175, 20),
-      Array[Short](0, 0, 0,
-        0, 0, 0,
-        67, 67, 67, 175, 20),
-      Array[Short](2, 0, 0,
-        0, 2, 0,
-        0, 0, 0, 33, 1), // Stone Lighter
-      Array[Short](0, 2, 0,
-        0, 0, 2,
-        0, 0, 0, 33, 1),
-      Array[Short](0, 0, 0,
-        2, 0, 0,
-        0, 2, 0, 33, 1),
-      Array[Short](0, 0, 0,
-        0, 2, 0,
-        0, 0, 2, 33, 1),
-      Array[Short](0, 2, 0,
-        2, 0, 0,
-        0, 0, 0, 33, 1),
-      Array[Short](0, 0, 2,
-        0, 2, 0,
-        0, 0, 0, 33, 1),
-      Array[Short](0, 0, 0,
-        0, 2, 0,
-        2, 0, 0, 33, 1),
-      Array[Short](0, 0, 0,
-        0, 0, 2,
-        0, 2, 0, 33, 1),
-      Array[Short](15, 0, 0,
-        15, 0, 0,
-        0, 0, 0, 35, 4), // Wooden Torch
-      Array[Short](0, 15, 0,
-        0, 15, 0,
-        0, 0, 0, 35, 4),
-      Array[Short](0, 0, 15,
-        0, 0, 15,
-        0, 0, 0, 35, 4),
-      Array[Short](0, 0, 0,
-        15, 0, 0,
-        15, 0, 0, 35, 4),
-      Array[Short](0, 0, 0,
-        0, 15, 0,
-        0, 15, 0, 35, 4),
-      Array[Short](0, 0, 0,
-        0, 0, 15,
-        0, 0, 15, 35, 4),
-      Array[Short](28, 0, 0,
-        15, 0, 0,
-        0, 0, 0, 36, 4), // Coal Torch
-      Array[Short](0, 28, 0,
-        0, 15, 0,
-        0, 0, 0, 36, 4),
-      Array[Short](0, 0, 28,
-        0, 0, 15,
-        0, 0, 0, 36, 4),
-      Array[Short](0, 0, 0,
-        28, 0, 0,
-        15, 0, 0, 36, 4),
-      Array[Short](0, 0, 0,
-        0, 28, 0,
-        0, 15, 0, 36, 4),
-      Array[Short](0, 0, 0,
-        0, 0, 28,
-        0, 0, 15, 36, 4),
-      Array[Short](34, 0, 0,
-        15, 0, 0,
-        0, 0, 0, 37, 4), // Lumenstone Torch
-      Array[Short](0, 34, 0,
-        0, 15, 0,
-        0, 0, 0, 37, 4),
-      Array[Short](0, 0, 34,
-        0, 0, 15,
-        0, 0, 0, 37, 4),
-      Array[Short](0, 0, 0,
-        34, 0, 0,
-        15, 0, 0, 37, 4),
-      Array[Short](0, 0, 0,
-        0, 34, 0,
-        0, 15, 0, 37, 4),
-      Array[Short](0, 0, 0,
-        0, 0, 34,
-        0, 0, 15, 37, 4),
-      Array[Short](44, 0, 0,
-        15, 0, 0,
-        0, 0, 0, 176, 4), // Zythium Torch
-      Array[Short](0, 44, 0,
-        0, 15, 0,
-        0, 0, 0, 176, 4),
-      Array[Short](0, 0, 44,
-        0, 0, 15,
-        0, 0, 0, 176, 4),
-      Array[Short](0, 0, 0,
-        44, 0, 0,
-        15, 0, 0, 176, 4),
-      Array[Short](0, 0, 0,
-        0, 44, 0,
-        0, 15, 0, 176, 4),
-      Array[Short](0, 0, 0,
-        0, 0, 44,
-        0, 0, 15, 176, 4),
-      Array[Short](15, 15, 0,
-        0, 0, 0,
-        0, 0, 0, 183, 1), // Wooden Pressure Plate
-      Array[Short](0, 15, 15,
-        0, 0, 0,
-        0, 0, 0, 183, 1),
-      Array[Short](0, 0, 0,
-        15, 15, 0,
-        0, 0, 0, 183, 1),
-      Array[Short](0, 0, 0,
-        0, 15, 15,
-        0, 0, 0, 183, 1),
-      Array[Short](0, 0, 0,
-        0, 0, 0,
-        15, 15, 0, 183, 1),
-      Array[Short](0, 0, 0,
-        0, 0, 0,
-        0, 15, 15, 183, 1),
-      Array[Short](2, 2, 0,
-        0, 0, 0,
-        0, 0, 0, 184, 1), // Stone Pressure Plate
-      Array[Short](0, 2, 2,
-        0, 0, 0,
-        0, 0, 0, 184, 1),
-      Array[Short](0, 0, 0,
-        2, 2, 0,
-        0, 0, 0, 184, 1),
-      Array[Short](0, 0, 0,
-        0, 2, 2,
-        0, 0, 0, 184, 1),
-      Array[Short](0, 0, 0,
-        0, 0, 0,
-        2, 2, 0, 184, 1),
-      Array[Short](0, 0, 0,
-        0, 0, 0,
-        0, 2, 2, 184, 1),
-      Array[Short](162, 44, 162,
-        0, 175, 0,
-        0, 0, 0, 185, 1), // Zythium Pressure Plate
-      Array[Short](0, 0, 0,
-        162, 44, 162,
-        0, 175, 0, 185, 1)
+      Array[Short](15, 15, 15, 0, 15, 0, 0, 15, 0, 154, 1), // Wooden Pick
+      Array[Short](2, 2, 2, 0, 15, 0, 0, 15, 0, 157, 1), // Stone Pick
+      Array[Short](29, 29, 29, 0, 15, 0, 0, 15, 0, 7, 1), // Copper Pick
+      Array[Short](30, 30, 30, 0, 15, 0, 0, 15, 0, 8, 1), // Iron Pick
+      Array[Short](31, 31, 31, 0, 15, 0, 0, 15, 0, 9, 1), // Silver Pick
+      Array[Short](32, 32, 32, 0, 15, 0, 0, 15, 0, 10, 1), // Gold Pick
+      Array[Short](60, 60, 60, 0, 15, 0, 0, 15, 0, 51, 1), // Zinc Pick
+      Array[Short](61, 61, 61, 0, 15, 0, 0, 15, 0, 54, 1), // Rhymestone Pick
+      Array[Short](62, 62, 62, 0, 15, 0, 0, 15, 0, 57, 1), // Obdurite Pick
+      Array[Short](73, 73, 73, 0, 15, 0, 0, 15, 0, 169, 1), // Magnetite Pick
+      Array[Short](69, 69, 69, 0, 15, 0, 0, 15, 0, 172, 1), // Irradium Pick
+      Array[Short](15, 15, 0, 15, 15, 0, 0, 15, 0, 155, 1), // Wooden Axe
+      Array[Short](0, 15, 15, 0, 15, 15, 0, 15, 0, 155, 1),
+      Array[Short](15, 15, 0, 15, 15, 0, 15, 0, 0, 155, 1),
+      Array[Short](0, 15, 15, 0, 15, 15, 0, 0, 15, 155, 1),
+      Array[Short](2, 2, 0, 2, 15, 0, 0, 15, 0, 158, 1), // Stone Axe
+      Array[Short](0, 2, 2, 0, 15, 2, 0, 15, 0, 158, 1),
+      Array[Short](2, 2, 0, 15, 2, 0, 15, 0, 0, 158, 1),
+      Array[Short](0, 2, 2, 0, 2, 15, 0, 0, 15, 158, 1),
+      Array[Short](29, 29, 0, 29, 15, 0, 0, 15, 0, 11, 1), // Copper Axe
+      Array[Short](0, 29, 29, 0, 15, 29, 0, 15, 0, 11, 1),
+      Array[Short](29, 29, 0, 15, 29, 0, 15, 0, 0, 11, 1),
+      Array[Short](0, 29, 29, 0, 29, 15, 0, 0, 15, 11, 1),
+      Array[Short](30, 30, 0, 30, 15, 0, 0, 15, 0, 11, 1), // Iron Axe
+      Array[Short](0, 30, 30, 0, 15, 30, 0, 15, 0, 11, 1),
+      Array[Short](30, 30, 0, 15, 30, 0, 15, 0, 0, 11, 1),
+      Array[Short](0, 30, 30, 0, 30, 15, 0, 0, 15, 11, 1),
+      Array[Short](31, 31, 0, 31, 15, 0, 0, 15, 0, 11, 1), // Silver Axe
+      Array[Short](0, 31, 31, 0, 15, 31, 0, 15, 0, 11, 1),
+      Array[Short](31, 31, 0, 15, 31, 0, 15, 0, 0, 11, 1),
+      Array[Short](0, 31, 31, 0, 31, 15, 0, 0, 15, 11, 1),
+      Array[Short](32, 32, 0, 32, 15, 0, 0, 15, 0, 11, 1), // Gold Axe
+      Array[Short](0, 32, 32, 0, 15, 32, 0, 15, 0, 11, 1),
+      Array[Short](32, 32, 0, 15, 32, 0, 15, 0, 0, 11, 1),
+      Array[Short](0, 32, 32, 0, 32, 15, 0, 0, 15, 11, 1),
+      Array[Short](60, 60, 0, 60, 15, 0, 0, 15, 0, 52, 1), // Zinc Axe
+      Array[Short](0, 60, 60, 0, 15, 60, 0, 15, 0, 52, 1),
+      Array[Short](60, 60, 0, 15, 60, 0, 15, 0, 0, 52, 1),
+      Array[Short](0, 60, 60, 0, 60, 15, 0, 0, 15, 52, 1),
+      Array[Short](61, 61, 0, 61, 15, 0, 0, 15, 0, 55, 1), // Rhymestone Axe
+      Array[Short](0, 61, 61, 0, 15, 61, 0, 15, 0, 55, 1),
+      Array[Short](61, 61, 0, 15, 61, 0, 15, 0, 0, 55, 1),
+      Array[Short](0, 61, 61, 0, 61, 15, 0, 0, 15, 55, 1),
+      Array[Short](62, 62, 0, 62, 15, 0, 0, 15, 0, 58, 1), // Obdurite Axe
+      Array[Short](0, 62, 62, 0, 15, 62, 0, 15, 0, 58, 1),
+      Array[Short](62, 62, 0, 15, 62, 0, 15, 0, 0, 58, 1),
+      Array[Short](0, 62, 62, 0, 62, 15, 0, 0, 15, 58, 1),
+      Array[Short](73, 73, 0, 73, 15, 0, 0, 15, 0, 170, 1), // Magnetite Axe
+      Array[Short](0, 73, 73, 0, 15, 73, 0, 15, 0, 170, 1),
+      Array[Short](73, 73, 0, 15, 73, 0, 15, 0, 0, 170, 1),
+      Array[Short](0, 73, 73, 0, 73, 15, 0, 0, 15, 170, 1),
+      Array[Short](69, 69, 0, 69, 15, 0, 0, 15, 0, 169, 1), // Irradium Axe
+      Array[Short](0, 69, 69, 0, 15, 69, 0, 15, 0, 169, 1),
+      Array[Short](69, 69, 0, 15, 69, 0, 15, 0, 0, 169, 1),
+      Array[Short](0, 69, 69, 0, 69, 15, 0, 0, 15, 169, 1),
+      Array[Short](15, 0, 0, 15, 0, 0, 15, 0, 0, 156, 1), // Wooden Sword
+      Array[Short](0, 15, 0, 0, 15, 0, 0, 15, 0, 156, 1),
+      Array[Short](0, 0, 15, 0, 0, 15, 0, 0, 15, 156, 1),
+      Array[Short](2, 0, 0, 2, 0, 0, 15, 0, 0, 159, 1), // Stone Sword
+      Array[Short](0, 2, 0, 0, 2, 0, 0, 15, 0, 159, 1),
+      Array[Short](0, 0, 2, 0, 0, 2, 0, 0, 15, 159, 1),
+      Array[Short](29, 0, 0, 29, 0, 0, 15, 0, 0, 16, 1), // Copper Sword
+      Array[Short](0, 29, 0, 0, 29, 0, 0, 15, 0, 16, 1),
+      Array[Short](0, 0, 29, 0, 0, 29, 0, 0, 15, 16, 1),
+      Array[Short](30, 0, 0, 30, 0, 0, 15, 0, 0, 17, 1), // Iron Sword
+      Array[Short](0, 30, 0, 0, 30, 0, 0, 15, 0, 17, 1),
+      Array[Short](0, 0, 30, 0, 0, 30, 0, 0, 15, 17, 1),
+      Array[Short](31, 0, 0, 31, 0, 0, 15, 0, 0, 18, 1), // Silver Sword
+      Array[Short](0, 31, 0, 0, 31, 0, 0, 15, 0, 18, 1),
+      Array[Short](0, 0, 31, 0, 0, 31, 0, 0, 15, 18, 1),
+      Array[Short](32, 0, 0, 32, 0, 0, 15, 0, 0, 19, 1), // Gold Sword
+      Array[Short](0, 32, 0, 0, 32, 0, 0, 15, 0, 19, 1),
+      Array[Short](0, 0, 32, 0, 0, 32, 0, 0, 15, 19, 1),
+      Array[Short](38, 0, 0, 38, 0, 0, 15, 0, 0, 19, 1), // Zinc Sword
+      Array[Short](0, 38, 0, 0, 38, 0, 0, 15, 0, 19, 1),
+      Array[Short](0, 0, 38, 0, 0, 38, 0, 0, 15, 19, 1),
+      Array[Short](39, 0, 0, 39, 0, 0, 15, 0, 0, 19, 1), // Rhymestone Sword
+      Array[Short](0, 39, 0, 0, 39, 0, 0, 15, 0, 19, 1),
+      Array[Short](0, 0, 39, 0, 0, 39, 0, 0, 15, 19, 1),
+      Array[Short](40, 0, 0, 40, 0, 0, 15, 0, 0, 19, 1), // Obdurite Sword
+      Array[Short](0, 40, 0, 0, 40, 0, 0, 15, 0, 19, 1),
+      Array[Short](0, 0, 40, 0, 0, 40, 0, 0, 15, 19, 1),
+      Array[Short](73, 0, 0, 73, 0, 0, 15, 0, 0, 171, 1), // Magnetite Sword
+      Array[Short](0, 73, 0, 0, 73, 0, 0, 15, 0, 171, 1),
+      Array[Short](0, 0, 73, 0, 0, 73, 0, 0, 15, 171, 1),
+      Array[Short](69, 0, 0, 69, 0, 0, 15, 0, 0, 174, 1), // Irradium Sword
+      Array[Short](0, 69, 0, 0, 69, 0, 0, 15, 0, 174, 1),
+      Array[Short](0, 0, 69, 0, 0, 69, 0, 0, 15, 174, 1),
+      Array[Short](63, 0, 63, 0, 63, 0, 0, 63, 0, 190, 1), // Wrench
+      Array[Short](15, 0, 0, 2, 0, 0, 175, 0, 0, 178, 1), // Lever
+      Array[Short](0, 15, 0, 0, 2, 0, 0, 175, 0, 178, 1),
+      Array[Short](0, 0, 15, 0, 0, 2, 0, 0, 175, 178, 1),
+      Array[Short](29, 29, 29, 29, 0, 29, 0, 0, 0, 105, 1), // Copper Helmet
+      Array[Short](0, 0, 0, 29, 29, 29, 29, 0, 29, 105, 1),
+      Array[Short](29, 0, 29, 29, 29, 29, 29, 29, 29, 106, 1), // Copper Chestplate
+      Array[Short](29, 29, 29, 29, 0, 29, 29, 0, 29, 107, 1), // Copper Leggings
+      Array[Short](29, 0, 29, 29, 0, 29, 0, 0, 0, 108, 1), // Copper Greaves
+      Array[Short](0, 0, 0, 29, 0, 29, 29, 0, 29, 108, 1),
+      Array[Short](30, 30, 30, 30, 0, 30, 0, 0, 0, 109, 1), // Iron Helmet
+      Array[Short](0, 0, 0, 30, 30, 30, 30, 0, 30, 109, 1),
+      Array[Short](30, 0, 30, 30, 30, 30, 30, 30, 30, 110, 1), // Iron Chestplate
+      Array[Short](30, 30, 30, 30, 0, 30, 30, 0, 30, 111, 1), // Iron Leggings
+      Array[Short](30, 0, 30, 30, 0, 30, 0, 0, 0, 112, 1), // Iron Greaves
+      Array[Short](0, 0, 0, 30, 0, 30, 30, 0, 30, 112, 1),
+      Array[Short](31, 31, 31, 31, 0, 31, 0, 0, 0, 113, 1), // Silver Helmet
+      Array[Short](0, 0, 0, 31, 31, 31, 31, 0, 31, 113, 1),
+      Array[Short](31, 0, 31, 31, 31, 31, 31, 31, 31, 114, 1), // Silver Chestplate
+      Array[Short](31, 31, 31, 31, 0, 31, 31, 0, 31, 115, 1), // Silver Leggings
+      Array[Short](31, 0, 31, 31, 0, 31, 0, 0, 0, 116, 1), // Silver Greaves
+      Array[Short](0, 0, 0, 31, 0, 31, 31, 0, 31, 116, 1),
+      Array[Short](32, 32, 32, 32, 0, 32, 0, 0, 0, 117, 1), // Gold Helmet
+      Array[Short](0, 0, 0, 32, 32, 32, 32, 0, 32, 117, 1),
+      Array[Short](32, 0, 32, 32, 32, 32, 32, 32, 32, 118, 1), // Gold Chestplate
+      Array[Short](32, 32, 32, 32, 0, 32, 32, 0, 32, 119, 1), // Gold Leggings
+      Array[Short](32, 0, 32, 32, 0, 32, 0, 0, 0, 120, 1), // Gold Greaves
+      Array[Short](0, 0, 0, 32, 0, 32, 32, 0, 32, 120, 1),
+      Array[Short](60, 60, 60, 60, 0, 60, 0, 0, 0, 121, 1), // Zinc Helmet
+      Array[Short](0, 0, 0, 60, 60, 60, 60, 0, 60, 121, 1),
+      Array[Short](60, 0, 60, 60, 60, 60, 60, 60, 60, 122, 1), // Zinc Chestplate
+      Array[Short](60, 60, 60, 60, 0, 60, 60, 0, 60, 123, 1), // Zinc Leggings
+      Array[Short](60, 0, 60, 60, 0, 60, 0, 0, 0, 124, 1), // Zinc Greaves
+      Array[Short](0, 0, 0, 60, 0, 60, 60, 0, 60, 124, 1),
+      Array[Short](61, 61, 61, 61, 0, 61, 0, 0, 0, 125, 1), // Rhymestone Helmet
+      Array[Short](0, 0, 0, 61, 61, 61, 61, 0, 61, 125, 1),
+      Array[Short](61, 0, 61, 61, 61, 61, 61, 61, 61, 126, 1), // Rhymestone Chestplate
+      Array[Short](61, 61, 61, 61, 0, 61, 61, 0, 61, 127, 1), // Rhymestone Leggings
+      Array[Short](61, 0, 61, 61, 0, 61, 0, 0, 0, 128, 1), // Rhymestone Greaves
+      Array[Short](0, 0, 0, 61, 0, 61, 61, 0, 61, 128, 1),
+      Array[Short](62, 62, 62, 62, 0, 62, 0, 0, 0, 129, 1), // Obdurite Helmet
+      Array[Short](0, 0, 0, 62, 62, 62, 62, 0, 62, 129, 1),
+      Array[Short](62, 0, 62, 62, 62, 62, 62, 62, 62, 130, 1), // Obdurite Chestplate
+      Array[Short](62, 62, 62, 62, 0, 62, 62, 0, 62, 131, 1), // Obdurite Leggings
+      Array[Short](62, 0, 62, 62, 0, 62, 0, 0, 0, 132, 1), // Obdurite Greaves
+      Array[Short](0, 0, 0, 62, 0, 62, 62, 0, 62, 132, 1),
+      Array[Short](63, 63, 63, 63, 0, 63, 0, 0, 0, 133, 1), // Aluminum Helmet
+      Array[Short](0, 0, 0, 63, 63, 63, 63, 0, 63, 133, 1),
+      Array[Short](63, 0, 63, 63, 63, 63, 63, 63, 63, 134, 1), // Aluminum Chestplate
+      Array[Short](63, 63, 63, 63, 0, 63, 63, 0, 63, 135, 1), // Aluminum Leggings
+      Array[Short](63, 0, 63, 63, 0, 63, 0, 0, 0, 136, 1), // Aluminum Greaves
+      Array[Short](0, 0, 0, 63, 0, 63, 63, 0, 63, 136, 1),
+      Array[Short](64, 64, 64, 64, 0, 64, 0, 0, 0, 137, 1), // Lead Helmet
+      Array[Short](0, 0, 0, 64, 64, 64, 64, 0, 64, 137, 1),
+      Array[Short](64, 0, 64, 64, 64, 64, 64, 64, 64, 138, 1), // Lead Chestplate
+      Array[Short](64, 64, 64, 64, 0, 64, 64, 0, 64, 139, 1), // Lead Leggings
+      Array[Short](64, 0, 64, 64, 0, 64, 0, 0, 0, 140, 1), // Lead Greaves
+      Array[Short](0, 0, 0, 64, 0, 64, 64, 0, 64, 140, 1),
+      Array[Short](15, 15, 15, 15, 0, 15, 15, 15, 15, 21, 1), // Wooden Chest
+      Array[Short](2, 2, 2, 2, 21, 2, 2, 2, 2, 22, 1), // Stone Chest
+      Array[Short](29, 29, 29, 29, 22, 29, 29, 29, 29, 23, 1), // Copper Chest
+      Array[Short](30, 30, 30, 30, 22, 30, 30, 30, 30, 24, 1), // Iron Chest
+      Array[Short](31, 31, 31, 31, 22, 31, 31, 31, 31, 25, 1), // Silver Chest
+      Array[Short](32, 32, 32, 32, 22, 32, 32, 32, 32, 26, 1), // Gold Chest
+      Array[Short](60, 60, 60, 60, 22, 60, 60, 60, 60, 151, 1), // Zinc Chest
+      Array[Short](61, 61, 61, 61, 22, 61, 61, 61, 61, 152, 1), // Rhymestone Chest
+      Array[Short](62, 62, 62, 62, 22, 62, 62, 62, 62, 153, 1), // Obdurite Chest
+      Array[Short](76, 76, 76, 76, 34, 76, 76, 175, 76, 177, 1), // Zythium Lamp
+      Array[Short](76, 76, 76, 175, 44, 175, 76, 76, 76, 180, 1), // Zythium Amplifier
+      Array[Short](76, 76, 76, 44, 175, 44, 76, 76, 76, 181, 1), // Zythium Inverter
+      Array[Short](76, 175, 76, 175, 175, 175, 76, 175, 76, 186, 1), // Zythium Delayer
+      Array[Short](15, 15, 0, 15, 15, 0, 0, 0, 0, 20, 1), // Workbench
+      Array[Short](0, 15, 15, 0, 15, 15, 0, 0, 0, 20, 1),
+      Array[Short](0, 0, 0, 15, 15, 0, 15, 15, 0, 20, 1),
+      Array[Short](0, 0, 0, 0, 15, 15, 0, 15, 15, 20, 1),
+      Array[Short](160, 160, 0, 160, 160, 0, 0, 0, 0, 15, 1), // Bark -> Wood
+      Array[Short](0, 160, 160, 0, 160, 160, 0, 0, 0, 15, 1),
+      Array[Short](0, 0, 0, 160, 160, 0, 160, 160, 0, 15, 1),
+      Array[Short](0, 0, 0, 0, 160, 160, 0, 160, 160, 15, 1),
+      Array[Short](2, 2, 0, 2, 2, 0, 0, 0, 0, 161, 4), // Cobblestone
+      Array[Short](0, 2, 2, 0, 2, 2, 0, 0, 0, 161, 4),
+      Array[Short](0, 0, 0, 2, 2, 0, 2, 2, 0, 161, 4),
+      Array[Short](0, 0, 0, 0, 2, 2, 0, 2, 2, 161, 4),
+      Array[Short](162, 162, 0, 162, 162, 0, 0, 0, 0, 163, 4), // Chiseled Cobblestone
+      Array[Short](0, 162, 162, 0, 162, 162, 0, 0, 0, 163, 4),
+      Array[Short](0, 0, 0, 162, 162, 0, 162, 162, 0, 163, 4),
+      Array[Short](0, 0, 0, 0, 162, 162, 0, 162, 162, 163, 4),
+      Array[Short](163, 163, 0, 163, 163, 0, 0, 0, 0, 164, 4), // Stone Bricks
+      Array[Short](0, 163, 163, 0, 163, 163, 0, 0, 0, 164, 4),
+      Array[Short](0, 0, 0, 163, 163, 0, 163, 163, 0, 164, 4),
+      Array[Short](0, 0, 0, 0, 163, 163, 0, 163, 163, 164, 4),
+      Array[Short](2, 2, 2, 2, 0, 2, 2, 2, 2, 27, 1), // Furnace
+      Array[Short](67, 67, 67, 0, 0, 0, 0, 0, 0, 175, 10), // Zythium Wire
+      Array[Short](0, 0, 0, 67, 67, 67, 0, 0, 0, 175, 20),
+      Array[Short](0, 0, 0, 0, 0, 0, 67, 67, 67, 175, 20),
+      Array[Short](2, 0, 0, 0, 2, 0, 0, 0, 0, 33, 1), // Stone Lighter
+      Array[Short](0, 2, 0, 0, 0, 2, 0, 0, 0, 33, 1),
+      Array[Short](0, 0, 0, 2, 0, 0, 0, 2, 0, 33, 1),
+      Array[Short](0, 0, 0, 0, 2, 0, 0, 0, 2, 33, 1),
+      Array[Short](0, 2, 0, 2, 0, 0, 0, 0, 0, 33, 1),
+      Array[Short](0, 0, 2, 0, 2, 0, 0, 0, 0, 33, 1),
+      Array[Short](0, 0, 0, 0, 2, 0, 2, 0, 0, 33, 1),
+      Array[Short](0, 0, 0, 0, 0, 2, 0, 2, 0, 33, 1),
+      Array[Short](15, 0, 0, 15, 0, 0, 0, 0, 0, 35, 4), // Wooden Torch
+      Array[Short](0, 15, 0, 0, 15, 0, 0, 0, 0, 35, 4),
+      Array[Short](0, 0, 15, 0, 0, 15, 0, 0, 0, 35, 4),
+      Array[Short](0, 0, 0, 15, 0, 0, 15, 0, 0, 35, 4),
+      Array[Short](0, 0, 0, 0, 15, 0, 0, 15, 0, 35, 4),
+      Array[Short](0, 0, 0, 0, 0, 15, 0, 0, 15, 35, 4),
+      Array[Short](28, 0, 0, 15, 0, 0, 0, 0, 0, 36, 4), // Coal Torch
+      Array[Short](0, 28, 0, 0, 15, 0, 0, 0, 0, 36, 4),
+      Array[Short](0, 0, 28, 0, 0, 15, 0, 0, 0, 36, 4),
+      Array[Short](0, 0, 0, 28, 0, 0, 15, 0, 0, 36, 4),
+      Array[Short](0, 0, 0, 0, 28, 0, 0, 15, 0, 36, 4),
+      Array[Short](0, 0, 0, 0, 0, 28, 0, 0, 15, 36, 4),
+      Array[Short](34, 0, 0, 15, 0, 0, 0, 0, 0, 37, 4), // Lumenstone Torch
+      Array[Short](0, 34, 0, 0, 15, 0, 0, 0, 0, 37, 4),
+      Array[Short](0, 0, 34, 0, 0, 15, 0, 0, 0, 37, 4),
+      Array[Short](0, 0, 0, 34, 0, 0, 15, 0, 0, 37, 4),
+      Array[Short](0, 0, 0, 0, 34, 0, 0, 15, 0, 37, 4),
+      Array[Short](0, 0, 0, 0, 0, 34, 0, 0, 15, 37, 4),
+      Array[Short](44, 0, 0, 15, 0, 0, 0, 0, 0, 176, 4), // Zythium Torch
+      Array[Short](0, 44, 0, 0, 15, 0, 0, 0, 0, 176, 4),
+      Array[Short](0, 0, 44, 0, 0, 15, 0, 0, 0, 176, 4),
+      Array[Short](0, 0, 0, 44, 0, 0, 15, 0, 0, 176, 4),
+      Array[Short](0, 0, 0, 0, 44, 0, 0, 15, 0, 176, 4),
+      Array[Short](0, 0, 0, 0, 0, 44, 0, 0, 15, 176, 4),
+      Array[Short](15, 15, 0, 0, 0, 0, 0, 0, 0, 183, 1), // Wooden Pressure Plate
+      Array[Short](0, 15, 15, 0, 0, 0, 0, 0, 0, 183, 1),
+      Array[Short](0, 0, 0, 15, 15, 0, 0, 0, 0, 183, 1),
+      Array[Short](0, 0, 0, 0, 15, 15, 0, 0, 0, 183, 1),
+      Array[Short](0, 0, 0, 0, 0, 0, 15, 15, 0, 183, 1),
+      Array[Short](0, 0, 0, 0, 0, 0, 0, 15, 15, 183, 1),
+      Array[Short](2, 2, 0, 0, 0, 0, 0, 0, 0, 184, 1), // Stone Pressure Plate
+      Array[Short](0, 2, 2, 0, 0, 0, 0, 0, 0, 184, 1),
+      Array[Short](0, 0, 0, 2, 2, 0, 0, 0, 0, 184, 1),
+      Array[Short](0, 0, 0, 0, 2, 2, 0, 0, 0, 184, 1),
+      Array[Short](0, 0, 0, 0, 0, 0, 2, 2, 0, 184, 1),
+      Array[Short](0, 0, 0, 0, 0, 0, 0, 2, 2, 184, 1),
+      Array[Short](162, 44, 162, 0, 175, 0, 0, 0, 0, 185, 1), // Zythium Pressure Plate
+      Array[Short](0, 0, 0, 162, 44, 162, 0, 175, 0, 185, 1)
     )
 
     recipesTemp.put("workbench", workbenchRecipies)
 
     val cicRecipies: Array2D[Short] = Array(
-      Array[Short](15, 15,
-        15, 15, 20, 1), // Workbench
-      Array[Short](160, 160,
-        160, 160, 15, 1), // Bark -> Wood
-      Array[Short](2, 2,
-        2, 2, 161, 4), // Cobblestone
-      Array[Short](162, 162,
-        162, 162, 163, 4), // Chiseled Cobblestone
-      Array[Short](163, 163,
-        163, 163, 164, 4), // Stone Bricks
-      Array[Short](2, 0,
-        0, 2, 33, 1), // Stone Lighter
-      Array[Short](0, 2,
-        2, 0, 33, 1),
-      Array[Short](15, 0,
-        15, 0, 35, 4), // Wooden Torch
-      Array[Short](0, 15,
-        0, 15, 35, 4),
-      Array[Short](28, 0,
-        15, 0, 36, 4), // Coal Torch
-      Array[Short](0, 28,
-        0, 15, 36, 4),
-      Array[Short](34, 0,
-        15, 0, 37, 4), // Lumenstone Torch
-      Array[Short](0, 34,
-        0, 15, 37, 4),
-      Array[Short](44, 0,
-        15, 0, 176, 4), // Zythium Torch
-      Array[Short](0, 44,
-        0, 15, 176, 4),
-      Array[Short](15, 15,
-        0, 0, 183, 1), // Wooden Pressure Plate
-      Array[Short](0, 0,
-        15, 15, 183, 1),
-      Array[Short](2, 2,
-        0, 0, 184, 1), // Stone Pressure Plate
-      Array[Short](0, 0,
-        2, 2, 184, 1)
+      Array[Short](15, 15, 15, 15, 20, 1), // Workbench
+      Array[Short](160, 160, 160, 160, 15, 1), // Bark -> Wood
+      Array[Short](2, 2, 2, 2, 161, 4), // Cobblestone
+      Array[Short](162, 162, 162, 162, 163, 4), // Chiseled Cobblestone
+      Array[Short](163, 163, 163, 163, 164, 4), // Stone Bricks
+      Array[Short](2, 0, 0, 2, 33, 1), // Stone Lighter
+      Array[Short](0, 2, 2, 0, 33, 1),
+      Array[Short](15, 0, 15, 0, 35, 4), // Wooden Torch
+      Array[Short](0, 15, 0, 15, 35, 4),
+      Array[Short](28, 0, 15, 0, 36, 4), // Coal Torch
+      Array[Short](0, 28, 0, 15, 36, 4),
+      Array[Short](34, 0, 15, 0, 37, 4), // Lumenstone Torch
+      Array[Short](0, 34, 0, 15, 37, 4),
+      Array[Short](44, 0, 15, 0, 176, 4), // Zythium Torch
+      Array[Short](0, 44, 0, 15, 176, 4),
+      Array[Short](15, 15, 0, 0, 183, 1), // Wooden Pressure Plate
+      Array[Short](0, 0, 15, 15, 183, 1),
+      Array[Short](2, 2, 0, 0, 184, 1), // Stone Pressure Plate
+      Array[Short](0, 0, 2, 2, 184, 1)
     )
 
     recipesTemp.put("cic", cicRecipies)
 
     val shapelessRecipies: Array2D[Short] = Array(
-      Array[Short](15, 167, 0, 0, 0, 0, 0, 0, 0,
-        168, 1),
-      Array[Short](162, 0, 0, 0, 0, 0, 0, 0, 0,
-        182, 1)
+      Array[Short](15, 167, 0, 0, 0, 0, 0, 0, 0, 168, 1),
+      Array[Short](162, 0, 0, 0, 0, 0, 0, 0, 0, 182, 1)
     )
 
     recipesTemp.put("shapeless", shapelessRecipies)
 
     def shapelessCicRecipies: Array2D[Short] = Array(
-      Array[Short](15, 167, 0, 0,
-        168, 1),
-      Array[Short](162, 0, 0, 0,
-        182, 1)
+      Array[Short](15, 167, 0, 0, 168, 1),
+      Array[Short](162, 0, 0, 0, 182, 1)
     )
 
     recipesTemp.put("shapeless_cic", shapelessCicRecipies)
@@ -845,11 +355,13 @@ class Inventory extends Serializable {
 
   def addItem(item: Short, quantity: Short): Int = {
 
-    TerraFrame.TOOLDURS.get(item).fold {
-      addItem(item, quantity, 0.toShort)
-    } { t =>
-      addItem(item, quantity, t)
-    }
+    TerraFrame.TOOLDURS
+      .get(item)
+      .fold {
+        addItem(item, quantity, 0.toShort)
+      } { t =>
+        addItem(item, quantity, t)
+      }
   }
 
   def addItem(item: Short, quantity: Short, durability: Short): Int = {
@@ -860,8 +372,7 @@ class Inventory extends Serializable {
           nums(i) = (nums(i) + updatedQuantity).toShort
           update(i)
           return 0
-        }
-        else {
+        } else {
           TerraFrame.MAXSTACKS.get(ids(i)).foreach { maxstacks =>
             updatedQuantity = (updatedQuantity - maxstacks - nums(i)).toShort
             nums(i) = maxstacks
@@ -879,8 +390,7 @@ class Inventory extends Serializable {
           durs(i) = durability
           update(i)
           return 0
-        }
-        else {
+        } else {
           TerraFrame.MAXSTACKS.get(ids(i)).foreach { maxstacks =>
             nums(i) = maxstacks
             updatedQuantity = (updatedQuantity - maxstacks).toShort
@@ -903,8 +413,7 @@ class Inventory extends Serializable {
           }
           update(i)
           return 0
-        }
-        else {
+        } else {
           updatedQuantity = (updatedQuantity - nums(i)).toShort
           nums(i) = 0
           ids(i) = 0
@@ -922,8 +431,7 @@ class Inventory extends Serializable {
         nums(i) = (nums(i) + updatedQuantity).toShort
         update(i)
         return 0
-      }
-      else {
+      } else {
         TerraFrame.MAXSTACKS.get(ids(i)).foreach { maxstacks =>
           updatedQuantity = (updatedQuantity - maxstacks - nums(i)).toShort
           nums(i) = maxstacks
@@ -931,16 +439,14 @@ class Inventory extends Serializable {
 
         update(i)
       }
-    }
-    else {
+    } else {
       if (TerraFrame.MAXSTACKS.get(ids(i)).exists(maxstacks => updatedQuantity <= maxstacks)) {
         ids(i) = item
         nums(i) = updatedQuantity
         durs(i) = durability
         update(i)
         return 0
-      }
-      else {
+      } else {
         TerraFrame.MAXSTACKS.get(ids(i)).foreach { maxstacks =>
           updatedQuantity = (updatedQuantity - maxstacks).toShort
         }
@@ -958,8 +464,7 @@ class Inventory extends Serializable {
       }
       update(i)
       return 0
-    }
-    else {
+    } else {
       updatedQuantity = (updatedQuantity - nums(i)).toShort
       nums(i) = 0
       ids(i) = 0
@@ -976,21 +481,14 @@ class Inventory extends Serializable {
     (0 until 10).foreach { x =>
       (0 until 4).foreach { y =>
         if (x == 0 && y == 0) {
-          g2.drawImage(box_selected,
-            x * 46 + 6, y * 46 + 6, x * 46 + 46, y * 46 + 46,
-            0, 0, 40, 40,
-            null)
+          g2.drawImage(box_selected, x * 46 + 6, y * 46 + 6, x * 46 + 46, y * 46 + 46, 0, 0, 40, 40, null)
           if (y == 0) {
             g2.setFont(font)
             g2.setColor(Color.BLACK)
             g2.drawString(f(x) + " ", x * 46 + trolx, y * 46 + troly)
           }
-        }
-        else {
-          g2.drawImage(box,
-            x * 46 + 6, y * 46 + 6, x * 46 + 46, y * 46 + 46,
-            0, 0, 40, 40,
-            null)
+        } else {
+          g2.drawImage(box, x * 46 + 6, y * 46 + 6, x * 46 + 46, y * 46 + 46, 0, 0, 40, 40, null)
           if (y == 0) {
             g2.setFont(font)
             g2.setColor(Color.BLACK)
@@ -1014,21 +512,14 @@ class Inventory extends Serializable {
     }
     g2 = image.createGraphics()
     if (i == selection) {
-      g2.drawImage(box_selected,
-        px * 46 + 6, py * 46 + 6, px * 46 + 46, py * 46 + 46,
-        0, 0, 40, 40,
-        null)
+      g2.drawImage(box_selected, px * 46 + 6, py * 46 + 6, px * 46 + 46, py * 46 + 46, 0, 0, 40, 40, null)
       if (py == 0) {
         g2.setFont(font)
         g2.setColor(Color.BLACK)
         g2.drawString(f(px) + " ", px * 46 + trolx, py * 46 + troly)
       }
-    }
-    else {
-      g2.drawImage(box,
-        px * 46 + 6, py * 46 + 6, px * 46 + 46, py * 46 + 46,
-        0, 0, 40, 40,
-        null)
+    } else {
+      g2.drawImage(box, px * 46 + 6, py * 46 + 6, px * 46 + 46, py * 46 + 46, 0, 0, 40, 40, null)
       if (py == 0) {
         g2.setFont(font)
         g2.setColor(Color.BLACK)
@@ -1039,12 +530,19 @@ class Inventory extends Serializable {
       TerraFrame.itemImgs.get(ids(i)).foreach { itemImg =>
         width = itemImg.getWidth()
         height = itemImg.getHeight()
-        g2.drawImage(itemImg,
-          px * 46 + 14 + ((24 - 12.toDouble / max(width, height, 12) * width * 2) / 2).toInt, py * 46 + 14 + ((24 - 12.toDouble / max(width, height, 12) * height * 2) / 2).toInt, px * 46 + 38 - ((24 - 12.toDouble / max(width, height, 12) * width * 2) / 2).toInt, py * 46 + 38 - ((24 - 12.toDouble / max(width, height, 12) * height * 2) / 2).toInt,
-          0, 0, width, height,
-          null)
+        g2.drawImage(
+          itemImg,
+          px * 46 + 14 + ((24 - 12.toDouble / max(width, height, 12) * width * 2) / 2).toInt,
+          py * 46 + 14 + ((24 - 12.toDouble / max(width, height, 12) * height * 2) / 2).toInt,
+          px * 46 + 38 - ((24 - 12.toDouble / max(width, height, 12) * width * 2) / 2).toInt,
+          py * 46 + 38 - ((24 - 12.toDouble / max(width, height, 12) * height * 2) / 2).toInt,
+          0,
+          0,
+          width,
+          height,
+          null
+        )
       }
-
 
       if (nums(i) > 1) {
         g2.setFont(font)
@@ -1060,8 +558,7 @@ class Inventory extends Serializable {
       selection = 9
       update(n)
       update(9)
-    }
-    else {
+    } else {
       n = selection
       selection = i - 1
       update(n)
@@ -1083,7 +580,7 @@ class Inventory extends Serializable {
   def renderCollection(ic: ItemCollection): Unit = {
     if (ic.icType == CIC) {
       if (ic.image == null) {
-        ic.image = loadImage("interface/cic.png")//TODO: should we be loading images here?
+        ic.image = loadImage("interface/cic.png") //TODO: should we be loading images here?
         (0 until 4).foreach { i =>
           updateIC(ic, i)
         }
@@ -1099,7 +596,7 @@ class Inventory extends Serializable {
         }
       }
     }
-    if (ic.icType == Workbench) {//TODO: use pattern matching
+    if (ic.icType == Workbench) { //TODO: use pattern matching
       if (ic.image == null) {
         ic.image = loadImage("interface/workbench.png")
         (0 until 9).foreach { i =>
@@ -1220,8 +717,7 @@ class Inventory extends Serializable {
           updateIC(ic, i)
         }
         return 0
-      }
-      else {
+      } else {
         TerraFrame.MAXSTACKS.get(ic.ids(i)).foreach { maxstacks =>
           updatedQuantity = (updatedQuantity - maxstacks - ic.nums(i)).toShort
           ic.nums(i) = maxstacks
@@ -1231,8 +727,7 @@ class Inventory extends Serializable {
           updateIC(ic, i)
         }
       }
-    }
-    else {
+    } else {
       if (TerraFrame.MAXSTACKS.get(ic.ids(i)).exists(maxstacks => updatedQuantity <= maxstacks)) {
         ic.ids(i) = item
         ic.nums(i) = updatedQuantity
@@ -1241,8 +736,7 @@ class Inventory extends Serializable {
           updateIC(ic, i)
         }
         return 0
-      }
-      else {
+      } else {
         TerraFrame.MAXSTACKS.get(ic.ids(i)).foreach { maxstacks =>
           updatedQuantity = (updatedQuantity - maxstacks).toShort
         }
@@ -1262,8 +756,7 @@ class Inventory extends Serializable {
         updateIC(ic, i)
       }
       return 0
-    }
-    else {
+    } else {
       updatedQuantity = (updatedQuantity - ic.nums(i)).toShort
       ic.nums(i) = 0
       ic.ids(i) = 0
@@ -1284,18 +777,23 @@ class Inventory extends Serializable {
         }
       }
       g2 = ic.image.createGraphics()
-      g2.drawImage(box,
-        px * 40, py * 40, px * 40 + 40, py * 40 + 40,
-        0, 0, 40, 40,
-        null)
+      g2.drawImage(box, px * 40, py * 40, px * 40 + 40, py * 40 + 40, 0, 0, 40, 40, null)
       if (ic.ids(i) != 0) {
         TerraFrame.itemImgs.get(ic.ids(i)).foreach { itemImg =>
           width = itemImg.getWidth()
           height = itemImg.getHeight()
-          g2.drawImage(itemImg,
-            px * 40 + 8 + ((24 - 12.toDouble / max(width, height, 12) * width * 2) / 2).toInt, py * 40 + 8 + ((24 - 12.toDouble / max(width, height, 12) * height * 2) / 2).toInt, px * 40 + 32 - ((24 - 12.toDouble / max(width, height, 12) * width * 2) / 2).toInt, py * 40 + 32 - ((24 - 12.toDouble / max(width, height, 12) * height * 2) / 2).toInt,
-            0, 0, width, height,
-            null)
+          g2.drawImage(
+            itemImg,
+            px * 40 + 8 + ((24 - 12.toDouble / max(width, height, 12) * width * 2) / 2).toInt,
+            py * 40 + 8 + ((24 - 12.toDouble / max(width, height, 12) * height * 2) / 2).toInt,
+            px * 40 + 32 - ((24 - 12.toDouble / max(width, height, 12) * width * 2) / 2).toInt,
+            py * 40 + 32 - ((24 - 12.toDouble / max(width, height, 12) * height * 2) / 2).toInt,
+            0,
+            0,
+            width,
+            height,
+            null
+          )
         }
 
         if (ic.nums(i) > 1) {
@@ -1342,8 +840,7 @@ class Inventory extends Serializable {
               if (n == -1) {
                 valid = false
                 break
-              }
-              else {
+              } else {
                 r3.remove(n)
               }
             }
@@ -1365,18 +862,23 @@ class Inventory extends Serializable {
         }
       }
       g2 = ic.image.createGraphics()
-      g2.drawImage(box,
-        3 * 40, 20, 3 * 40 + 40, 20 + 40,
-        0, 0, 40, 40,
-        null)
+      g2.drawImage(box, 3 * 40, 20, 3 * 40 + 40, 20 + 40, 0, 0, 40, 40, null)
       if (ic.ids(4) != 0) {
         TerraFrame.itemImgs.get(ic.ids(4)).foreach { itemImg =>
           width = itemImg.getWidth()
           height = itemImg.getHeight()
-          g2.drawImage(itemImg,
-            3 * 40 + 8 + ((24 - 12.toDouble / max(width, height, 12) * width * 2) / 2).toInt, 20 + 8 + ((24 - 12.toDouble / max(width, height, 12) * height * 2) / 2).toInt, 3 * 40 + 32 - ((24 - 12.toDouble / max(width, height, 12) * width * 2) / 2).toInt, 20 + 32 - ((24 - 12.toDouble / max(width, height, 12) * height * 2) / 2).toInt,
-            0, 0, width, height,
-            null)
+          g2.drawImage(
+            itemImg,
+            3 * 40 + 8 + ((24 - 12.toDouble / max(width, height, 12) * width * 2) / 2).toInt,
+            20 + 8 + ((24 - 12.toDouble / max(width, height, 12) * height * 2) / 2).toInt,
+            3 * 40 + 32 - ((24 - 12.toDouble / max(width, height, 12) * width * 2) / 2).toInt,
+            20 + 32 - ((24 - 12.toDouble / max(width, height, 12) * height * 2) / 2).toInt,
+            0,
+            0,
+            width,
+            height,
+            null
+          )
 
         }
 
@@ -1396,20 +898,24 @@ class Inventory extends Serializable {
         }
       }
       g2 = ic.image.createGraphics()
-      g2.drawImage(box,
-        px * 46, py * 46, px * 46 + 40, py * 46 + 40,
-        0, 0, 40, 40,
-        null)
+      g2.drawImage(box, px * 46, py * 46, px * 46 + 40, py * 46 + 40, 0, 0, 40, 40, null)
       if (ic.ids(i) != 0) {
         TerraFrame.itemImgs.get(ic.ids(i)).foreach { itemImg =>
           width = itemImg.getWidth()
           height = itemImg.getHeight()
-          g2.drawImage(itemImg,
-            px * 46 + 8 + ((24 - 12.toDouble / max(width, height, 12) * width * 2) / 2).toInt, py * 46 + 8 + ((24 - 12.toDouble / max(width, height, 12) * height * 2) / 2).toInt, px * 46 + 32 - ((24 - 12.toDouble / max(width, height, 12) * width * 2) / 2).toInt, py * 46 + 32 - ((24 - 12.toDouble / max(width, height, 12) * height * 2) / 2).toInt,
-            0, 0, width, height,
-            null)
+          g2.drawImage(
+            itemImg,
+            px * 46 + 8 + ((24 - 12.toDouble / max(width, height, 12) * width * 2) / 2).toInt,
+            py * 46 + 8 + ((24 - 12.toDouble / max(width, height, 12) * height * 2) / 2).toInt,
+            px * 46 + 32 - ((24 - 12.toDouble / max(width, height, 12) * width * 2) / 2).toInt,
+            py * 46 + 32 - ((24 - 12.toDouble / max(width, height, 12) * height * 2) / 2).toInt,
+            0,
+            0,
+            width,
+            height,
+            null
+          )
         }
-
 
         if (ic.nums(i) > 1) {
           g2.setFont(font)
@@ -1427,18 +933,23 @@ class Inventory extends Serializable {
         }
       }
       g2 = ic.image.createGraphics()
-      g2.drawImage(box,
-        px * 40, py * 40, px * 40 + 40, py * 40 + 40,
-        0, 0, 40, 40,
-        null)
+      g2.drawImage(box, px * 40, py * 40, px * 40 + 40, py * 40 + 40, 0, 0, 40, 40, null)
       if (ic.ids(i) != 0) {
         TerraFrame.itemImgs.get(ic.ids(i)).foreach { itemImg =>
           width = itemImg.getWidth()
           height = itemImg.getHeight()
-          g2.drawImage(itemImg,
-            px * 40 + 8 + ((24 - 12.toDouble / max(width, height, 12) * width * 2) / 2).toInt, py * 40 + 8 + ((24 - 12.toDouble / max(width, height, 12) * height * 2) / 2).toInt, px * 40 + 32 - ((24 - 12.toDouble / max(width, height, 12) * width * 2) / 2).toInt, py * 40 + 32 - ((24 - 12.toDouble / max(width, height, 12) * height * 2) / 2).toInt,
-            0, 0, width, height,
-            null)
+          g2.drawImage(
+            itemImg,
+            px * 40 + 8 + ((24 - 12.toDouble / max(width, height, 12) * width * 2) / 2).toInt,
+            py * 40 + 8 + ((24 - 12.toDouble / max(width, height, 12) * height * 2) / 2).toInt,
+            px * 40 + 32 - ((24 - 12.toDouble / max(width, height, 12) * width * 2) / 2).toInt,
+            py * 40 + 32 - ((24 - 12.toDouble / max(width, height, 12) * height * 2) / 2).toInt,
+            0,
+            0,
+            width,
+            height,
+            null
+          )
         }
 
         if (ic.nums(i) > 1) {
@@ -1484,8 +995,7 @@ class Inventory extends Serializable {
               if (n == -1) {
                 valid = false
                 break
-              }
-              else {
+              } else {
                 r3.remove(n)
               }
             }
@@ -1506,20 +1016,24 @@ class Inventory extends Serializable {
         }
       }
       g2 = ic.image.createGraphics()
-      g2.drawImage(box,
-        4 * 40, 1 * 40, 4 * 40 + 40, 1 * 40 + 40,
-        0, 0, 40, 40,
-        null)
+      g2.drawImage(box, 4 * 40, 1 * 40, 4 * 40 + 40, 1 * 40 + 40, 0, 0, 40, 40, null)
       if (ic.ids(9) != 0) {
         TerraFrame.itemImgs.get(ic.ids(9)).foreach { itemImg =>
           width = itemImg.getWidth()
           height = itemImg.getHeight()
-          g2.drawImage(itemImg,
-            4 * 40 + 8 + ((24 - 12.toDouble / max(width, height, 12) * width * 2) / 2).toInt, 1 * 40 + 8 + ((24 - 12.toDouble / max(width, height, 12) * height * 2) / 2).toInt, 4 * 40 + 32 - ((24 - 12.toDouble / max(width, height, 12) * width * 2) / 2).toInt, 1 * 40 + 32 - ((24 - 12.toDouble / max(width, height, 12) * height * 2) / 2).toInt,
-            0, 0, width, height,
-            null)
+          g2.drawImage(
+            itemImg,
+            4 * 40 + 8 + ((24 - 12.toDouble / max(width, height, 12) * width * 2) / 2).toInt,
+            1 * 40 + 8 + ((24 - 12.toDouble / max(width, height, 12) * height * 2) / 2).toInt,
+            4 * 40 + 32 - ((24 - 12.toDouble / max(width, height, 12) * width * 2) / 2).toInt,
+            1 * 40 + 32 - ((24 - 12.toDouble / max(width, height, 12) * height * 2) / 2).toInt,
+            0,
+            0,
+            width,
+            height,
+            null
+          )
         }
-
 
         if (ic.nums(9) > 1) {
           g2.setFont(font)
@@ -1529,10 +1043,10 @@ class Inventory extends Serializable {
       }
     }
     if (ic.icType == WoodenChest || ic.icType == StoneChest ||
-      ic.icType == CopperChest || ic.icType == IronChest ||
-      ic.icType == SilverChest || ic.icType == GoldChest ||
-      ic.icType == ZincChest || ic.icType == RhymestoneChest ||
-      ic.icType == ObduriteChest) { //TODO: chest trait?
+        ic.icType == CopperChest || ic.icType == IronChest ||
+        ic.icType == SilverChest || ic.icType == GoldChest ||
+        ic.icType == ZincChest || ic.icType == RhymestoneChest ||
+        ic.icType == ObduriteChest) { //TODO: chest trait?
       py = i / CX
       px = i - (py * CX)
       (px * 46 until px * 46 + 40).foreach { x =>
@@ -1541,20 +1055,24 @@ class Inventory extends Serializable {
         }
       }
       g2 = ic.image.createGraphics()
-      g2.drawImage(box,
-        px * 46, py * 46, px * 46 + 40, py * 46 + 40,
-        0, 0, 40, 40,
-        null)
+      g2.drawImage(box, px * 46, py * 46, px * 46 + 40, py * 46 + 40, 0, 0, 40, 40, null)
       if (ic.ids(i) != 0) {
         TerraFrame.itemImgs.get(ic.ids(i)).foreach { itemImg =>
           width = itemImg.getWidth()
           height = itemImg.getHeight()
-          g2.drawImage(itemImg,
-            px * 46 + 8 + ((24 - 12.toDouble / max(width, height, 12) * width * 2) / 2).toInt, py * 46 + 8 + ((24 - 12.toDouble / max(width, height, 12) * height * 2) / 2).toInt, px * 46 + 32 - ((24 - 12.toDouble / max(width, height, 12) * width * 2) / 2).toInt, py * 46 + 32 - ((24 - 12.toDouble / max(width, height, 12) * height * 2) / 2).toInt,
-            0, 0, width, height,
-            null)
+          g2.drawImage(
+            itemImg,
+            px * 46 + 8 + ((24 - 12.toDouble / max(width, height, 12) * width * 2) / 2).toInt,
+            py * 46 + 8 + ((24 - 12.toDouble / max(width, height, 12) * height * 2) / 2).toInt,
+            px * 46 + 32 - ((24 - 12.toDouble / max(width, height, 12) * width * 2) / 2).toInt,
+            py * 46 + 32 - ((24 - 12.toDouble / max(width, height, 12) * height * 2) / 2).toInt,
+            0,
+            0,
+            width,
+            height,
+            null
+          )
         }
-
 
         if (ic.nums(i) > 1) {
           g2.setFont(font)
@@ -1581,8 +1099,7 @@ class Inventory extends Serializable {
             ic.image.setRGB(x + 40, y + 1, new Color(145, 145, 145).getRGB)
           }
         }
-      }
-      else {
+      } else {
         if (i == 0) {
           fpx = 0
           fpy = 0
@@ -1606,19 +1123,32 @@ class Inventory extends Serializable {
         }
         g2 = ic.image.createGraphics()
         g2.drawImage(box,
-          (fpx * 40).toInt, (fpy * 40).toInt, (fpx * 40 + 40).toInt, (fpy * 40 + 40).toInt,
-          0, 0, 40, 40,
-          null)
+                     (fpx * 40).toInt,
+                     (fpy * 40).toInt,
+                     (fpx * 40 + 40).toInt,
+                     (fpy * 40 + 40).toInt,
+                     0,
+                     0,
+                     40,
+                     40,
+                     null)
         if (ic.ids(i) != 0) {
           TerraFrame.itemImgs.get(ic.ids(i)).foreach { itemImg =>
             width = itemImg.getWidth()
             height = itemImg.getHeight()
-            g2.drawImage(itemImg,
-              (fpx * 40 + 8 + ((24 - 12.toDouble / max(width, height, 12) * width * 2) / 2).toInt).toInt, (fpy * 40 + 8 + ((24 - 12.toDouble / max(width, height, 12) * height * 2) / 2).toInt).toInt, (fpx * 40 + 32 - ((24 - 12.toDouble / max(width, height, 12) * width * 2) / 2).toInt).toInt, (fpy * 40 + 32 - ((24 - 12.toDouble / max(width, height, 12) * height * 2) / 2).toInt).toInt,
-              0, 0, width, height,
-              null)
+            g2.drawImage(
+              itemImg,
+              (fpx * 40 + 8 + ((24 - 12.toDouble / max(width, height, 12) * width * 2) / 2).toInt).toInt,
+              (fpy * 40 + 8 + ((24 - 12.toDouble / max(width, height, 12) * height * 2) / 2).toInt).toInt,
+              (fpx * 40 + 32 - ((24 - 12.toDouble / max(width, height, 12) * width * 2) / 2).toInt).toInt,
+              (fpy * 40 + 32 - ((24 - 12.toDouble / max(width, height, 12) * height * 2) / 2).toInt).toInt,
+              0,
+              0,
+              width,
+              height,
+              null
+            )
           }
-
 
           if (ic.nums(i) > 1) {
             g2.setFont(font)
@@ -1664,8 +1194,7 @@ class Inventory extends Serializable {
             if (n == -1) {
               valid = false
               break
-            }
-            else {
+            } else {
               r3.remove(n)
             }
           }
@@ -1721,8 +1250,7 @@ class Inventory extends Serializable {
             if (n == -1) {
               valid = false
               break
-            }
-            else {
+            } else {
               r3.remove(n)
             }
           }
@@ -1743,6 +1271,5 @@ class Inventory extends Serializable {
       }
     }
   }
-
 
 }

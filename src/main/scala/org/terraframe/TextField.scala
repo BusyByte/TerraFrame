@@ -5,8 +5,8 @@ import java.awt.image._
 
 case class TextField(width: Int, var text: String) {
   val height: Int = 30
-  var font = new Font("Chalkboard", Font.BOLD, 16)
-  val image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB)
+  var font        = new Font("Chalkboard", Font.BOLD, 16)
+  val image       = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB)
 
   // begin constructor
 

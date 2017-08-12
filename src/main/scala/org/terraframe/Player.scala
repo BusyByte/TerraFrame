@@ -7,7 +7,7 @@ import Images.loadImage
 import TerraFrame.BLOCKSIZE
 
 object Player {
-  val width = TerraFrame.PLAYERSIZEX
+  val width  = TerraFrame.PLAYERSIZEX
   val height = TerraFrame.PLAYERSIZEY
 }
 
@@ -16,19 +16,18 @@ case class Player(var x: Double, var y: Double) extends Serializable {
   import Player._
 
   var ix, iy, ivx, ivy, bx1, by1, bx2, by2, thp, hp: Int = _
-  var onGround, onGroundDelay, grounded: Boolean = _
-  var rect: Rectangle = _
+  var onGround, onGroundDelay, grounded: Boolean         = _
+  var rect: Rectangle                                    = _
 
-  var imgDelay: Int = _
-  var imgState: String = _  //TODO: sumtype here
-
+  var imgDelay: Int    = _
+  var imgState: String = _ //TODO: sumtype here
 
   //begin constructor
   var oldx: Double = x
   var oldy: Double = y
 
-  var vx: Double = 0
-  var vy: Double = 0
+  var vx: Double  = 0
+  var vy: Double  = 0
   var pvy: Double = 0
 
   onGround = false
@@ -57,7 +56,7 @@ case class Player(var x: Double, var y: Double) extends Serializable {
         vx = vx - 0.5
       }
       if (imgState.equals("still left") || imgState.equals("still right") ||
-        imgState.equals("walk right 1") || imgState.equals("walk right 2")) {
+          imgState.equals("walk right 1") || imgState.equals("walk right 2")) {
         imgDelay = 5
         imgState = "walk left 2"
         image = loadImage("sprites/player/left_walk.png")
@@ -67,16 +66,14 @@ case class Player(var x: Double, var y: Double) extends Serializable {
           imgDelay = 5
           imgState = "walk left 2"
           image = loadImage("sprites/player/left_walk.png")
-        }
-        else {
+        } else {
           if (imgState.equals("walk left 2")) {
             imgDelay = 5
             imgState = "walk left 1"
             image = loadImage("sprites/player/left_still.png")
           }
         }
-      }
-      else {
+      } else {
         imgDelay = imgDelay - 1
       }
     }
@@ -85,7 +82,7 @@ case class Player(var x: Double, var y: Double) extends Serializable {
         vx = vx + 0.5
       }
       if (imgState.equals("still left") || imgState.equals("still right") ||
-        imgState.equals("walk left 1") || imgState.equals("walk left 2")) {
+          imgState.equals("walk left 1") || imgState.equals("walk left 2")) {
         imgDelay = 5
         imgState = "walk right 2"
         image = loadImage("sprites/player/right_walk.png")
@@ -95,16 +92,14 @@ case class Player(var x: Double, var y: Double) extends Serializable {
           imgDelay = 5
           imgState = "walk right 2"
           image = loadImage("sprites/player/right_walk.png")
-        }
-        else {
+        } else {
           if (imgState.equals("walk right 2")) {
             imgDelay = 5
             imgState = "walk right 1"
             image = loadImage("sprites/player/right_still.png")
           }
         }
-      }
-      else {
+      } else {
         imgDelay = imgDelay - 1
       }
     }
@@ -112,8 +107,7 @@ case class Player(var x: Double, var y: Double) extends Serializable {
       if (TerraFrame.DEBUG_FLIGHT) {
         vy -= 1
         pvy -= 1
-      }
-      else {
+      } else {
         if (onGround) {
           vy = -7
           pvy = -7
@@ -145,12 +139,12 @@ case class Player(var x: Double, var y: Double) extends Serializable {
       }
       if (grounded) {
         if (imgState.equals("still left") || imgState.equals("walk left 1") ||
-          imgState.equals("walk left 2")) {
+            imgState.equals("walk left 2")) {
           imgState = "still left"
           image = loadImage("sprites/player/left_still.png")
         }
         if (imgState.equals("still right") || imgState.equals("walk right 1") ||
-          imgState.equals("walk right 2")) {
+            imgState.equals("walk right 2")) {
           imgState = "still right"
           image = loadImage("sprites/player/right_still.png")
         }
@@ -159,11 +153,11 @@ case class Player(var x: Double, var y: Double) extends Serializable {
 
     if (!grounded) {
       if (imgState.equals("still left") || imgState.equals("walk left 1") ||
-        imgState.equals("walk left 2")) {
+          imgState.equals("walk left 2")) {
         image = loadImage("sprites/player/left_jump.png")
       }
       if (imgState.equals("still right") || imgState.equals("walk right 1") ||
-        imgState.equals("walk right 2")) {
+          imgState.equals("walk right 2")) {
         image = loadImage("sprites/player/right_jump.png")
       }
     }
@@ -273,14 +267,13 @@ case class Player(var x: Double, var y: Double) extends Serializable {
       if (imgState.equals("walk right 2")) {
         image = loadImage("sprites/player/right_walk.png")
       }
-    }
-    else {
+    } else {
       if (imgState.equals("still left") || imgState.equals("walk left 1") ||
-        imgState.equals("walk left 2")) {
+          imgState.equals("walk left 2")) {
         image = loadImage("sprites/player/left_jump.png")
       }
       if (imgState.equals("still right") || imgState.equals("walk right 1") ||
-        imgState.equals("walk right 2")) {
+          imgState.equals("walk right 2")) {
         image = loadImage("sprites/player/right_jump.png")
       }
     }

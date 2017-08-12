@@ -9,8 +9,16 @@ import Images.loadImage
 import scala.collection.mutable.ArrayBuffer
 import scala.util.Random
 
-
-case class Entity(var x: Double, var y: Double, var vx: Double, var vy: Double, id: Short, num: Short, dur: Short, var mdelay: Int, name: String) extends Serializable {
+case class Entity(var x: Double,
+                  var y: Double,
+                  var vx: Double,
+                  var vy: Double,
+                  id: Short,
+                  num: Short,
+                  dur: Short,
+                  var mdelay: Int,
+                  name: String)
+    extends Serializable {
 
   import TerraFrame.BLOCKSIZE
 
@@ -20,16 +28,14 @@ case class Entity(var x: Double, var y: Double, var vx: Double, var vy: Double, 
 
   var nohit: Boolean = false
 
-  var thp, ap, atk: Int = _
-  var AI, imgState: String = _
+  var thp, ap, atk: Int                                  = _
+  var AI, imgState: String                               = _
   var onGround, immune, grounded, onGroundDelay: Boolean = _
 
-  var n: Double = _
+  var n: Double               = _
   var bx1, bx2, by1, by2: Int = _
 
-  var newMob: Entity = _
-
-
+  var newMob: Entity                  = _
   @transient var image: BufferedImage = _
 
   if (name != null) { // TODO: this should probably be an entity base type and a named entity with AI vs some other type without AI
@@ -138,8 +144,7 @@ case class Entity(var x: Double, var y: Double, var vx: Double, var vy: Double, 
     if (AI == "bat") {
       imgState = "normal right"
       vx = 3
-    }
-    else {
+    } else {
       imgState = "still right"
     }
   } else {
@@ -148,20 +153,19 @@ case class Entity(var x: Double, var y: Double, var vx: Double, var vy: Double, 
     }
   }
 
-  val width: Int = image.getWidth() * 2
+  val width: Int  = image.getWidth() * 2
   val height: Int = image.getHeight() * 2
 
-  var ix = x.toInt
-  var iy = y.toInt
-  var ivx = vx.toInt
-  var ivy = vy.toInt
+  var ix              = x.toInt
+  var iy              = y.toInt
+  var ivx             = vx.toInt
+  var ivy             = vy.toInt
   var rect: Rectangle = new Rectangle(ix - 1, iy, width + 2, height)
 
   var imgDelay: Int = 0
-  var bcount: Int = 0
+  var bcount: Int   = 0
 
   var hp: Int = thp
-
 
   def this(x: Double, y: Double, vx: Double, vy: Double, name: String) {
     this(x, y, vx, vy, 0, 0, 0, 0, name)
@@ -194,11 +198,9 @@ case class Entity(var x: Double, var y: Double, var vx: Double, var vy: Double, 
       }
       if (vx < -0.15) {
         vx = vx + 0.15
-      }
-      else if (vx > 0.15) {
+      } else if (vx > 0.15) {
         vx = vx - 0.15
-      }
-      else {
+      } else {
         vx = 0
       }
       collide(blocks, player, u, v)
@@ -219,7 +221,7 @@ case class Entity(var x: Double, var y: Double, var vx: Double, var vy: Double, 
       if (x > player.x) {
         vx = Math.max(vx - 0.1, -1.2)
         if (imgState == "still left" || imgState == "still right" ||
-          imgState == "walk right 1" || imgState == "walk right 2") {
+            imgState == "walk right 1" || imgState == "walk right 2") {
           imgDelay = 10
           imgState = "walk left 2"
           image = loadImage("sprites/monsters/" + name + "/left_walk.png")
@@ -229,23 +231,20 @@ case class Entity(var x: Double, var y: Double, var vx: Double, var vy: Double, 
             imgDelay = 10
             imgState = "walk left 2"
             image = loadImage("sprites/monsters/" + name + "/left_walk.png")
-          }
-          else {
+          } else {
             if (imgState == "walk left 2") {
               imgDelay = 10
               imgState = "walk left 1"
               image = loadImage("sprites/monsters/" + name + "/left_still.png")
             }
           }
-        }
-        else {
+        } else {
           imgDelay = imgDelay - 1
         }
-      }
-      else {
+      } else {
         vx = Math.min(vx + 0.1, 1.2)
         if (imgState == "still left" || imgState == "still right" ||
-          imgState == "walk left 1" || imgState == "walk left 2") {
+            imgState == "walk left 1" || imgState == "walk left 2") {
           imgDelay = 10
           imgState = "walk right 2"
           image = loadImage("sprites/monsters/" + name + "/right_walk.png")
@@ -255,26 +254,24 @@ case class Entity(var x: Double, var y: Double, var vx: Double, var vy: Double, 
             imgDelay = 10
             imgState = "walk right 2"
             image = loadImage("sprites/monsters/" + name + "/right_walk.png")
-          }
-          else {
+          } else {
             if (imgState == "walk right 2") {
               imgDelay = 10
               imgState = "walk right 1"
               image = loadImage("sprites/monsters/" + name + "/right_still.png")
             }
           }
-        }
-        else {
+        } else {
           imgDelay = imgDelay - 1
         }
       }
       if (!grounded) {
         if (imgState == "still left" || imgState == "walk left 1" ||
-          imgState == "walk left 2") {
+            imgState == "walk left 2") {
           image = loadImage("sprites/monsters/" + name + "/left_jump.png")
         }
         if (imgState == "still right" || imgState == "walk right 1" ||
-          imgState == "walk right 2") {
+            imgState == "walk right 2") {
           image = loadImage("sprites/monsters/" + name + "/right_jump.png")
         }
       }
@@ -283,14 +280,12 @@ case class Entity(var x: Double, var y: Double, var vx: Double, var vy: Double, 
     if (AI == "bubble") {
       if (x > player.x) {
         vx = Math.max(vx - 0.1, -1.2)
-      }
-      else {
+      } else {
         vx = Math.min(vx + 0.1, 1.2)
       }
       if (y > player.y) {
         vy = Math.max(vy - 0.1, -1.2)
-      }
-      else {
+      } else {
         vy = Math.min(vy + 0.1, 1.2)
       }
       collide(blocks, player, u, v)
@@ -298,14 +293,12 @@ case class Entity(var x: Double, var y: Double, var vx: Double, var vy: Double, 
     if (AI == "fast_bubble") {
       if (x > player.x) {
         vx = Math.max(vx - 0.2, -2.4)
-      }
-      else {
+      } else {
         vx = Math.min(vx + 0.2, 2.4)
       }
       if (y > player.y) {
         vy = Math.max(vy - 0.2, -2.4)
-      }
-      else {
+      } else {
         vy = Math.min(vy + 0.2, 2.4)
       }
       collide(blocks, player, u, v)
@@ -324,28 +317,23 @@ case class Entity(var x: Double, var y: Double, var vx: Double, var vy: Double, 
       if (Math.sqrt(Math.pow(player.x - x, 2) + Math.pow(player.y - y, 2)) > 160) {
         if (x > player.x) {
           vx = Math.max(vx - 0.1, -1.2)
-        }
-        else {
+        } else {
           vx = Math.min(vx + 0.1, 1.2)
         }
         if (y > player.y) {
           vy = Math.max(vy - 0.1, -1.2)
-        }
-        else {
+        } else {
           vy = Math.min(vy + 0.1, 1.2)
         }
-      }
-      else {
+      } else {
         if (x < player.x) {
           vx = Math.max(vx - 0.1, -1.2)
-        }
-        else {
+        } else {
           vx = Math.min(vx + 0.1, 1.2)
         }
         if (y < player.y) {
           vy = Math.max(vy - 0.1, -1.2)
-        }
-        else {
+        } else {
           vy = Math.min(vy + 0.1, 1.2)
         }
       }
@@ -378,8 +366,7 @@ case class Entity(var x: Double, var y: Double, var vx: Double, var vy: Double, 
       }
       if (y > player.y) {
         vy = Math.max(vy - 0.05, -2.0)
-      }
-      else {
+      } else {
         vy = Math.min(vy + 0.05, 2.0)
       }
       imgDelay -= 1
@@ -462,17 +449,14 @@ case class Entity(var x: Double, var y: Double, var vx: Double, var vy: Double, 
                 x = (i * 16 - width).toDouble
                 if (AI == "bubble") {
                   vx = -vx
-                }
-                else if (AI == "zombie") {
+                } else if (AI == "zombie") {
                   vx = 0
                   if (onGround && player.x > x) {
                     vy = -7
                   }
-                }
-                else if (AI == "bat") {
+                } else if (AI == "bat") {
                   vx = -vx
-                }
-                else {
+                } else {
                   vx = 0 // right
                 }
                 rv = true
@@ -481,17 +465,14 @@ case class Entity(var x: Double, var y: Double, var vx: Double, var vy: Double, 
                 x = (i * 16 + BLOCKSIZE).toDouble
                 if (AI == "bubble") {
                   vx = -vx
-                }
-                else if (AI == "zombie") {
+                } else if (AI == "zombie") {
                   vx = 0
                   if (onGround && player.x < x) {
                     vy = -7
                   }
-                }
-                else if (AI == "bat") {
+                } else if (AI == "bat") {
                   vx = -vx
-                }
-                else {
+                } else {
                   vx = 0 // left
                 }
                 rv = true
@@ -532,8 +513,7 @@ case class Entity(var x: Double, var y: Double, var vx: Double, var vy: Double, 
                 onGround = true
                 if (AI == "bubble") {
                   vy = -vy
-                }
-                else {
+                } else {
                   vy = 0 // down
                 }
                 rv = true
@@ -542,8 +522,7 @@ case class Entity(var x: Double, var y: Double, var vx: Double, var vy: Double, 
                 y = (j * 16 + BLOCKSIZE).toDouble
                 if (AI == "bubble") {
                   vy = -vy
-                }
-                else {
+                } else {
                   vy = 0 // up
                 }
                 rv = true
@@ -571,16 +550,13 @@ case class Entity(var x: Double, var y: Double, var vx: Double, var vy: Double, 
       if (AI == "shooting_star") {
         if (player.x + Player.width / 2 < x + width / 2) {
           vx = 4
-        }
-        else {
+        } else {
           vx = -4
         }
-      }
-      else {
+      } else {
         if (player.x + Player.width / 2 < x + width / 2) {
           vx += 4
-        }
-        else {
+        } else {
           vx -= 4
         }
         vy -= 1.2
@@ -590,7 +566,7 @@ case class Entity(var x: Double, var y: Double, var vx: Double, var vy: Double, 
   }
 
   def drops(): ArrayBuffer[Short] = {
-    val dropList = ArrayBuffer.empty[Short]
+    val dropList       = ArrayBuffer.empty[Short]
     val random: Random = TerraFrame.random
     if (name == "blue_bubble") {
       (0 until random.nextInt(3)).foreach { i =>
