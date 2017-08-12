@@ -580,127 +580,88 @@ class Inventory extends Serializable {
 
   def renderCollection(ic: ItemCollection): Unit = {
     if (ic.icType == Crafting) {
-      if (ic.image == null) {
-        ic.image = loadImage("interface/cic.png") //TODO: should we be loading images here?
-        (0 until 4).foreach { i =>
-          updateIC(ic, i)
-        }
+      (0 until 4).foreach { i =>
+        updateIC(ic, i)
       }
     }
     if (ic.icType == Armor) {
-      if (ic.image == null) {
-        ic.image = loadImage("interface/armor.png")
-        CX = 1
-        CY = 4
-        (0 until 4).foreach { i =>
-          updateIC(ic, i)
-        }
+      CX = 1
+      CY = 4
+      (0 until 4).foreach { i =>
+        updateIC(ic, i)
       }
     }
-    if (ic.icType == Workbench) { //TODO: use pattern matching
-      if (ic.image == null) {
-        ic.image = loadImage("interface/workbench.png")
-        (0 until 9).foreach { i =>
-          updateIC(ic, i)
-        }
+    if (ic.icType == Workbench) { //TODO: type classes
+      (0 until 9).foreach { i =>
+        updateIC(ic, i)
       }
     }
     if (ic.icType == WoodenChest) {
-      if (ic.image == null) {
-        ic.image = loadImage("interface/wooden_chest.png")
-        CX = 3
-        CY = 3
-        (0 until 9).foreach { i =>
-          updateIC(ic, i)
-        }
+      CX = 3
+      CY = 3
+      (0 until 9).foreach { i =>
+        updateIC(ic, i)
       }
     }
     if (ic.icType == StoneChest) {
-      if (ic.image == null) {
-        ic.image = loadImage("interface/stone_chest.png")
-        CX = 5
-        CY = 3
-        (0 until 15).foreach { i =>
-          updateIC(ic, i)
-        }
+      CX = 5
+      CY = 3
+      (0 until 15).foreach { i =>
+        updateIC(ic, i)
       }
     }
     if (ic.icType == CopperChest) {
-      if (ic.image == null) {
-        ic.image = loadImage("interface/copper_chest.png")
-        CX = 5
-        CY = 4
-        (0 until 20).foreach { i =>
-          updateIC(ic, i)
-        }
+      CX = 5
+      CY = 4
+      (0 until 20).foreach { i =>
+        updateIC(ic, i)
       }
     }
     if (ic.icType == IronChest) {
-      if (ic.image == null) {
-        ic.image = loadImage("interface/iron_chest.png")
-        CX = 7
-        CY = 4
-        (0 until 28).foreach { i =>
-          updateIC(ic, i)
-        }
+      CX = 7
+      CY = 4
+      (0 until 28).foreach { i =>
+        updateIC(ic, i)
       }
     }
     if (ic.icType == SilverChest) {
-      if (ic.image == null) {
-        ic.image = loadImage("interface/silver_chest.png")
-        CX = 7
-        CY = 5
-        (0 until 35).foreach { i =>
-          updateIC(ic, i)
-        }
+      CX = 7
+      CY = 5
+      (0 until 35).foreach { i =>
+        updateIC(ic, i)
       }
     }
     if (ic.icType == GoldChest) {
-      if (ic.image == null) {
-        ic.image = loadImage("interface/gold_chest.png")
-        CX = 7
-        CY = 6
-        (0 until 42).foreach { i =>
-          updateIC(ic, i)
-        }
+      CX = 7
+      CY = 6
+      (0 until 42).foreach { i =>
+        updateIC(ic, i)
       }
     }
     if (ic.icType == ZincChest) {
-      if (ic.image == null) {
-        ic.image = loadImage("interface/zinc_chest.png")
-        CX = 7
-        CY = 8
-        (0 until 56).foreach { i =>
-          updateIC(ic, i)
-        }
+      CX = 7
+      CY = 8
+      (0 until 56).foreach { i =>
+        updateIC(ic, i)
       }
     }
     if (ic.icType == RhymestoneChest) {
-      if (ic.image == null) {
-        ic.image = loadImage("interface/rhymestone_chest.png")
-        CX = 8
-        CY = 9
-        (0 until 72).foreach { i =>
-          updateIC(ic, i)
-        }
+      CX = 8
+      CY = 9
+      (0 until 72).foreach { i =>
+        updateIC(ic, i)
       }
     }
     if (ic.icType == ObduriteChest) {
-      if (ic.image == null) {
-        ic.image = loadImage("interface/obdurite_chest.png")
-        CX = 10
-        CY = 10
-        (0 until 100).foreach { i =>
-          updateIC(ic, i)
-        }
+      CX = 10
+      CY = 10
+      (0 until 100).foreach { i =>
+        updateIC(ic, i)
       }
     }
     if (ic.icType == Furnace) {
-      if (ic.image == null) {
-        ic.image = loadImage("interface/furnace.png")
-        (-1 until 4).foreach { i =>
-          updateIC(ic, i)
-        }
+      (-1 until 4).foreach { i =>
+        updateIC(ic, i)
       }
     }
   }
@@ -714,7 +675,7 @@ class Inventory extends Serializable {
     if (ic.ids(i) == item) {
       if (TerraFrame.MAXSTACKS.get(ic.ids(i)).exists(maxstacks => maxstacks - ic.nums(i) >= updatedQuantity)) {
         ic.nums(i) = (ic.nums(i) + updatedQuantity).toShort
-        if (ic.image != null) {
+        if (ic.icType.image != null) {
           updateIC(ic, i)
         }
         return 0
@@ -724,18 +685,14 @@ class Inventory extends Serializable {
           ic.nums(i) = maxstacks
         }
 
-        if (ic.image != null) {
-          updateIC(ic, i)
-        }
+        updateIC(ic, i)
       }
     } else {
       if (TerraFrame.MAXSTACKS.get(ic.ids(i)).exists(maxstacks => updatedQuantity <= maxstacks)) {
         ic.ids(i) = item
         ic.nums(i) = updatedQuantity
         ic.durs(i) = durability
-        if (ic.image != null) {
-          updateIC(ic, i)
-        }
+        updateIC(ic, i)
         return 0
       } else {
         TerraFrame.MAXSTACKS.get(ic.ids(i)).foreach { maxstacks =>
@@ -753,17 +710,13 @@ class Inventory extends Serializable {
       if (ic.nums(i) == 0) {
         ic.ids(i) = 0
       }
-      if (ic.image != null) {
-        updateIC(ic, i)
-      }
+      updateIC(ic, i)
       return 0
     } else {
       updatedQuantity = (updatedQuantity - ic.nums(i)).toShort
       ic.nums(i) = 0
       ic.ids(i) = 0
-      if (ic.image != null) {
-        updateIC(ic, i)
-      }
+      updateIC(ic, i)
     }
     updatedQuantity
   }
@@ -774,10 +727,10 @@ class Inventory extends Serializable {
       px = i - (py * 2)
       (px * 40 until px * 40 + 40).foreach { x =>
         (py * 40 until py * 40 + 40).foreach { y =>
-          ic.image.setRGB(x, y, 9539985)
+          ic.icType.image.setRGB(x, y, 9539985)
         }
       }
-      g2 = ic.image.createGraphics()
+      g2 = ic.icType.image.createGraphics()
       g2.drawImage(box, px * 40, py * 40, px * 40 + 40, py * 40 + 40, 0, 0, 40, 40, null)
       if (ic.ids(i) != 0) {
         TerraFrame.itemImgs.get(ic.ids(i)).foreach { itemImg =>
@@ -859,10 +812,10 @@ class Inventory extends Serializable {
       }
       (3 * 40 until 3 * 40 + 40).foreach { x =>
         (20 until 20 + 40).foreach { y =>
-          ic.image.setRGB(x, y, 9539985)
+          ic.icType.image.setRGB(x, y, 9539985)
         }
       }
-      g2 = ic.image.createGraphics()
+      g2 = ic.icType.image.createGraphics()
       g2.drawImage(box, 3 * 40, 20, 3 * 40 + 40, 20 + 40, 0, 0, 40, 40, null)
       if (ic.ids(4) != 0) {
         TerraFrame.itemImgs.get(ic.ids(4)).foreach { itemImg =>
@@ -895,10 +848,10 @@ class Inventory extends Serializable {
       px = i - (py * CX)
       (px * 46 until px * 46 + 40).foreach { x =>
         (py * 46 until py * 46 + 40).foreach { y =>
-          ic.image.setRGB(x, y, 9539985)
+          ic.icType.image.setRGB(x, y, 9539985)
         }
       }
-      g2 = ic.image.createGraphics()
+      g2 = ic.icType.image.createGraphics()
       g2.drawImage(box, px * 46, py * 46, px * 46 + 40, py * 46 + 40, 0, 0, 40, 40, null)
       if (ic.ids(i) != 0) {
         TerraFrame.itemImgs.get(ic.ids(i)).foreach { itemImg =>
@@ -930,10 +883,10 @@ class Inventory extends Serializable {
       px = i - (py * 3)
       (px * 40 until px * 40 + 40).foreach { x =>
         (py * 40 until py * 40 + 40).foreach { y =>
-          ic.image.setRGB(x, y, 9539985)
+          ic.icType.image.setRGB(x, y, 9539985)
         }
       }
-      g2 = ic.image.createGraphics()
+      g2 = ic.icType.image.createGraphics()
       g2.drawImage(box, px * 40, py * 40, px * 40 + 40, py * 40 + 40, 0, 0, 40, 40, null)
       if (ic.ids(i) != 0) {
         TerraFrame.itemImgs.get(ic.ids(i)).foreach { itemImg =>
@@ -1013,10 +966,10 @@ class Inventory extends Serializable {
       }
       (4 * 40 until 4 * 40 + 40).foreach { x =>
         (1 * 40 until 1 * 40 + 40).foreach { y =>
-          ic.image.setRGB(x, y, 9539985)
+          ic.icType.image.setRGB(x, y, 9539985)
         }
       }
-      g2 = ic.image.createGraphics()
+      g2 = ic.icType.image.createGraphics()
       g2.drawImage(box, 4 * 40, 1 * 40, 4 * 40 + 40, 1 * 40 + 40, 0, 0, 40, 40, null)
       if (ic.ids(9) != 0) {
         TerraFrame.itemImgs.get(ic.ids(9)).foreach { itemImg =>
@@ -1052,10 +1005,10 @@ class Inventory extends Serializable {
       px = i - (py * CX)
       (px * 46 until px * 46 + 40).foreach { x =>
         (py * 46 until py * 46 + 40).foreach { y =>
-          ic.image.setRGB(x, y, 9539985)
+          ic.icType.image.setRGB(x, y, 9539985)
         }
       }
-      g2 = ic.image.createGraphics()
+      g2 = ic.icType.image.createGraphics()
       g2.drawImage(box, px * 46, py * 46, px * 46 + 40, py * 46 + 40, 0, 0, 40, 40, null)
       if (ic.ids(i) != 0) {
         TerraFrame.itemImgs.get(ic.ids(i)).foreach { itemImg =>
@@ -1086,18 +1039,18 @@ class Inventory extends Serializable {
       if (i == -1) {
         (0 until 5).foreach { y =>
           (0 until (ic.FUELP * 38).toInt).foreach { x =>
-            ic.image.setRGB(x + 1, y + 51, new Color(255, 0, 0).getRGB)
+            ic.icType.image.setRGB(x + 1, y + 51, new Color(255, 0, 0).getRGB)
           }
           ((ic.FUELP * 38).toInt until 38).foreach { x =>
-            ic.image.setRGB(x + 1, y + 51, new Color(145, 145, 145).getRGB)
+            ic.icType.image.setRGB(x + 1, y + 51, new Color(145, 145, 145).getRGB)
           }
         }
         (0 until 5).foreach { x =>
           (0 until (ic.SMELTP * 38).toInt).foreach { y =>
-            ic.image.setRGB(x + 40, y + 1, new Color(255, 0, 0).getRGB)
+            ic.icType.image.setRGB(x + 40, y + 1, new Color(255, 0, 0).getRGB)
           }
           ((ic.SMELTP * 38).toInt until 38).foreach { y =>
-            ic.image.setRGB(x + 40, y + 1, new Color(145, 145, 145).getRGB)
+            ic.icType.image.setRGB(x + 40, y + 1, new Color(145, 145, 145).getRGB)
           }
         }
       } else {
@@ -1119,10 +1072,10 @@ class Inventory extends Serializable {
         }
         ((fpx * 40).toInt until (fpx * 40 + 40).toInt).foreach { x =>
           ((fpy * 40).toInt until (fpy * 40 + 40).toInt).foreach { y =>
-            ic.image.setRGB(x, y, 9539985)
+            ic.icType.image.setRGB(x, y, 9539985)
           }
         }
-        g2 = ic.image.createGraphics()
+        g2 = ic.icType.image.createGraphics()
         g2.drawImage(box,
                      (fpx * 40).toInt,
                      (fpy * 40).toInt,
