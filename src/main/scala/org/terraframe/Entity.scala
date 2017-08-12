@@ -7,6 +7,7 @@ import java.io.Serializable
 import Images.loadImage
 
 import scala.collection.mutable.ArrayBuffer
+import scala.math._
 import scala.util.Random
 
 case class Entity(var x: Double,
@@ -219,7 +220,7 @@ case class Entity(var x: Double,
         }
       }
       if (x > player.x) {
-        vx = Math.max(vx - 0.1, -1.2)
+        vx = max(vx - 0.1, -1.2)
         if (imgState == "still left" || imgState == "still right" ||
             imgState == "walk right 1" || imgState == "walk right 2") {
           imgDelay = 10
@@ -242,7 +243,7 @@ case class Entity(var x: Double,
           imgDelay = imgDelay - 1
         }
       } else {
-        vx = Math.min(vx + 0.1, 1.2)
+        vx = min(vx + 0.1, 1.2)
         if (imgState == "still left" || imgState == "still right" ||
             imgState == "walk left 1" || imgState == "walk left 2") {
           imgDelay = 10
@@ -279,34 +280,34 @@ case class Entity(var x: Double,
     }
     if (AI == "bubble") {
       if (x > player.x) {
-        vx = Math.max(vx - 0.1, -1.2)
+        vx = max(vx - 0.1, -1.2)
       } else {
-        vx = Math.min(vx + 0.1, 1.2)
+        vx = min(vx + 0.1, 1.2)
       }
       if (y > player.y) {
-        vy = Math.max(vy - 0.1, -1.2)
+        vy = max(vy - 0.1, -1.2)
       } else {
-        vy = Math.min(vy + 0.1, 1.2)
+        vy = min(vy + 0.1, 1.2)
       }
       collide(blocks, player, u, v)
     }
     if (AI == "fast_bubble") {
       if (x > player.x) {
-        vx = Math.max(vx - 0.2, -2.4)
+        vx = max(vx - 0.2, -2.4)
       } else {
-        vx = Math.min(vx + 0.2, 2.4)
+        vx = min(vx + 0.2, 2.4)
       }
       if (y > player.y) {
-        vy = Math.max(vy - 0.2, -2.4)
+        vy = max(vy - 0.2, -2.4)
       } else {
-        vy = Math.min(vy + 0.2, 2.4)
+        vy = min(vy + 0.2, 2.4)
       }
       collide(blocks, player, u, v)
     }
     if (AI == "shooting_star") {
-      n = Math.atan2(player.y - y, player.x - x)
-      vx += Math.cos(n) / 10
-      vy += Math.sin(n) / 10
+      n = atan2(player.y - y, player.x - x)
+      vx += cos(n) / 10
+      vy += sin(n) / 10
       if (vx < -5) vx = -5
       if (vx > 5) vx = 5
       if (vy < -5) vy = -5
@@ -314,27 +315,27 @@ case class Entity(var x: Double,
       collide(blocks, player, u, v)
     }
     if (AI == "sandbot") {
-      if (Math.sqrt(Math.pow(player.x - x, 2) + Math.pow(player.y - y, 2)) > 160) {
+      if (sqrt(pow(player.x - x, 2) + pow(player.y - y, 2)) > 160) {
         if (x > player.x) {
-          vx = Math.max(vx - 0.1, -1.2)
+          vx = max(vx - 0.1, -1.2)
         } else {
-          vx = Math.min(vx + 0.1, 1.2)
+          vx = min(vx + 0.1, 1.2)
         }
         if (y > player.y) {
-          vy = Math.max(vy - 0.1, -1.2)
+          vy = max(vy - 0.1, -1.2)
         } else {
-          vy = Math.min(vy + 0.1, 1.2)
+          vy = min(vy + 0.1, 1.2)
         }
       } else {
         if (x < player.x) {
-          vx = Math.max(vx - 0.1, -1.2)
+          vx = max(vx - 0.1, -1.2)
         } else {
-          vx = Math.min(vx + 0.1, 1.2)
+          vx = min(vx + 0.1, 1.2)
         }
         if (y < player.y) {
-          vy = Math.max(vy - 0.1, -1.2)
+          vy = max(vy - 0.1, -1.2)
         } else {
-          vy = Math.min(vy + 0.1, 1.2)
+          vy = min(vy + 0.1, 1.2)
         }
       }
       bcount += 1
@@ -345,8 +346,8 @@ case class Entity(var x: Double,
         image = loadImage("sprites/monsters/" + name + "/ready2.png")
       }
       if (bcount == 150) {
-        val theta: Double = Math.atan2(player.y - y, player.x - x)
-        newMob = new Entity(x, y, Math.cos(theta) * 3.5, Math.sin(theta) * 3.5, name + "_bullet")
+        val theta: Double = atan2(player.y - y, player.x - x)
+        newMob = new Entity(x, y, cos(theta) * 3.5, sin(theta) * 3.5, name + "_bullet")
       }
       if (bcount == 170) {
         image = loadImage("sprites/monsters/" + name + "/ready1.png")
@@ -365,9 +366,9 @@ case class Entity(var x: Double,
         vx = -3
       }
       if (y > player.y) {
-        vy = Math.max(vy - 0.05, -2.0)
+        vy = max(vy - 0.05, -2.0)
       } else {
-        vy = Math.min(vy + 0.05, 2.0)
+        vy = min(vy + 0.05, 2.0)
       }
       imgDelay -= 1
       if (vx > 0 && imgState != "normal right") {
@@ -403,9 +404,9 @@ case class Entity(var x: Double,
       collide(blocks, player, u, v)
     }
     if (AI == "bee") {
-      val theta: Double = Math.atan2(player.y - y, player.x - x)
-      vx = Math.cos(theta) * 2.5
-      vy = Math.sin(theta) * 2.5
+      val theta: Double = atan2(player.y - y, player.x - x)
+      vx = cos(theta) * 2.5
+      vy = sin(theta) * 2.5
       collide(blocks, player, u, v)
     }
     return false
@@ -436,10 +437,10 @@ case class Entity(var x: Double,
       bx2 = ((x + width) / BLOCKSIZE).toInt
       by2 = ((y + height) / BLOCKSIZE).toInt
 
-      bx1 = Math.max(0, bx1)
-      by1 = Math.max(0, by1)
-      bx2 = Math.min(blocks(0).length - 1, bx2)
-      by2 = Math.min(blocks.length - 1, by2)
+      bx1 = max(0, bx1)
+      by1 = max(0, by1)
+      bx2 = min(blocks(0).length - 1, bx2)
+      by2 = min(blocks.length - 1, by2)
 
       (bx1 to bx2).foreach { i =>
         (by1 to by2).foreach { j =>
@@ -499,10 +500,10 @@ case class Entity(var x: Double,
       bx2 = ((x + width) / BLOCKSIZE).toInt
       by2 = ((y + height) / BLOCKSIZE).toInt
 
-      bx1 = Math.max(0, bx1)
-      by1 = Math.max(0, by1)
-      bx2 = Math.min(blocks(0).length - 1, bx2)
-      by2 = Math.min(blocks.length - 1, by2)
+      bx1 = max(0, bx1)
+      by1 = max(0, by1)
+      bx2 = min(blocks(0).length - 1, bx2)
+      by2 = min(blocks.length - 1, by2)
 
       (bx1 to bx2).foreach { i =>
         (by1 to by2).foreach { j =>
@@ -545,7 +546,7 @@ case class Entity(var x: Double,
 
   def hit(damage: Int, player: Player): Boolean = {
     if (!immune && !nohit) {
-      hp -= Math.max(1, damage - ap)
+      hp -= max(1, damage - ap)
       immune = true
       if (AI == "shooting_star") {
         if (player.x + Player.width / 2 < x + width / 2) {

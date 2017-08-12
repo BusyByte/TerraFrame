@@ -1,12 +1,14 @@
 package org.terraframe
 
+import scala.math._
+
 object PerlinNoise {
   def perlinNoise(x: Double, p: Double, n: Int): Double = {
     var total: Double      = 0
     var freq, ampl: Double = 0
     (0 until n + 1).foreach { i =>
-      freq = math.pow(2.toDouble, i.toDouble)
-      ampl = math.pow(p, i.toDouble)
+      freq = pow(2.toDouble, i.toDouble)
+      ampl = pow(p, i.toDouble)
       total = total + interpolateNoise(x * freq) * ampl
     }
     total
@@ -30,8 +32,8 @@ object PerlinNoise {
   }
 
   def interpolate(a: Double, b: Double, x: Double): Double = {
-    val ft: Double = x * Math.PI
-    val f: Double  = (1 - Math.cos(ft)) / 2
+    val ft: Double = x * Pi
+    val f: Double  = (1 - cos(ft)) / 2
     a * (1 - f) + b * f
   }
 }

@@ -1,8 +1,12 @@
 package org.terraframe
 
+import scala.math._
+import org.terraframe.{ MathHelper => mh }
+
+
 object World {
 
-  import MathHelper._
+
   import TerraFrame.random
 
   var coordlist: Array2D[Boolean]  = _
@@ -686,7 +690,7 @@ object World {
     var left, right, up, down, upleft, upright, downleft, downright: Boolean = false
     (0 until height).foreach { y =>
       (0 until width).foreach { x2 =>
-        x = mod(x2, width)
+        x = mh.mod(x2, width)
         if (y > 0 && y < height - 1 && blocks(y)(x) != 0) {
           left = connect(x - 1, y, x, y, blocks)
           right = connect(x + 1, y, x, y, blocks)
@@ -834,7 +838,7 @@ object World {
     var left, right, up, down, upleft, upright, downleft, downright: Boolean = false
     (ypos - 1 until ypos + 2).foreach { y =>
       (xpos - 1 until xpos + 2).foreach { x2 =>
-        x = mod(x2, width)
+        x = mh.mod(x2, width)
         if (y > 0 && y < height - 1 && blocks(y)(x) != 0) {
           left = connect(x - 1, y, x, y, blocks)
           right = connect(x + 1, y, x, y, blocks)
@@ -993,8 +997,8 @@ object World {
   }
 
   def connect(x1: Int, y1: Int, x2: Int, y2: Int, blocks: Array2D[Int]): Boolean = {
-    y1 > 0 && y1 < blocks.length - 1 && connect(blocks(y1)(mod(x1, blocks(0).length)),
-                                                blocks(y2)(mod(x2, blocks(0).length)))
+    y1 > 0 && y1 < blocks.length - 1 && connect(blocks(y1)(mh.mod(x1, blocks(0).length)),
+                                                blocks(y2)(mh.mod(x2, blocks(0).length)))
     /*        WIDTH: Int = blocks(0).length
             HEIGHT: Int = blocks.length
             blockcds: Array[Boolean] = TerraFrame.getBLOCKCDS()
@@ -1204,7 +1208,7 @@ object World {
     coordlist = Array.ofDim(cwidth * 2 + 1, cheight * 2 + 1)
     (-cwidth to cwidth).foreach { x =>
       (-cheight to cheight).foreach { y =>
-        coordlist(x + cwidth)(y + cheight) = Math.pow(x * 1.0 / cwidth, 2) + Math.pow(y * 1.0 / cheight, 2) < 1 - random
+        coordlist(x + cwidth)(y + cheight) = pow(x * 1.0 / cwidth, 2) + pow(y * 1.0 / cheight, 2) < 1 - random
           .nextDouble() * erosion
       }
     }

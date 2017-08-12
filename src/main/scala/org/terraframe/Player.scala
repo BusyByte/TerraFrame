@@ -6,6 +6,8 @@ import java.io._
 import Images.loadImage
 import TerraFrame.BLOCKSIZE
 
+import scala.math._
+
 object Player {
   val width  = TerraFrame.PLAYERSIZEX
   val height = TerraFrame.PLAYERSIZEY
@@ -128,7 +130,7 @@ case class Player(var x: Double, var y: Double) extends Serializable {
       }
     }
     if (!userInput.isLeftKeyPressed && !userInput.isRightKeyPressed) {
-      if (Math.abs(vx) < 0.3) {
+      if (abs(vx) < 0.3) {
         vx = 0
       }
       if (vx >= 0.3) {
@@ -218,8 +220,8 @@ case class Player(var x: Double, var y: Double) extends Serializable {
         bx2 = ((x + width) / BLOCKSIZE).toInt
         by2 = ((y + height) / BLOCKSIZE).toInt
 
-        by1 = Math.max(0, by1)
-        by2 = Math.min(blocks.length - 1, by2)
+        by1 = max(0, by1)
+        by2 = min(blocks.length - 1, by2)
 
         (bx1 to bx2).foreach { i =>
           (by1 to by2).foreach { j =>

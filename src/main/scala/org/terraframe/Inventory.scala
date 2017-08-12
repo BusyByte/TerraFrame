@@ -7,6 +7,7 @@ import java.io.Serializable
 import Images.loadImage
 
 import scala.collection.mutable
+import org.terraframe.{ MathHelper => mh }
 
 object Inventory {
 
@@ -22,7 +23,7 @@ object Inventory {
 class Inventory extends Serializable {
 
   import Inventory._
-  import MathHelper._
+
 
   var n, px, py, selection, width, height: Int = _
   var fpx, fpy: Double                         = _
@@ -532,10 +533,10 @@ class Inventory extends Serializable {
         height = itemImg.getHeight()
         g2.drawImage(
           itemImg,
-          px * 46 + 14 + ((24 - 12.toDouble / max(width, height, 12) * width * 2) / 2).toInt,
-          py * 46 + 14 + ((24 - 12.toDouble / max(width, height, 12) * height * 2) / 2).toInt,
-          px * 46 + 38 - ((24 - 12.toDouble / max(width, height, 12) * width * 2) / 2).toInt,
-          py * 46 + 38 - ((24 - 12.toDouble / max(width, height, 12) * height * 2) / 2).toInt,
+          px * 46 + 14 + ((24 - 12.toDouble / mh.max(width, height, 12) * width * 2) / 2).toInt,
+          py * 46 + 14 + ((24 - 12.toDouble / mh.max(width, height, 12) * height * 2) / 2).toInt,
+          px * 46 + 38 - ((24 - 12.toDouble / mh.max(width, height, 12) * width * 2) / 2).toInt,
+          py * 46 + 38 - ((24 - 12.toDouble / mh.max(width, height, 12) * height * 2) / 2).toInt,
           0,
           0,
           width,
@@ -784,10 +785,10 @@ class Inventory extends Serializable {
           height = itemImg.getHeight()
           g2.drawImage(
             itemImg,
-            px * 40 + 8 + ((24 - 12.toDouble / max(width, height, 12) * width * 2) / 2).toInt,
-            py * 40 + 8 + ((24 - 12.toDouble / max(width, height, 12) * height * 2) / 2).toInt,
-            px * 40 + 32 - ((24 - 12.toDouble / max(width, height, 12) * width * 2) / 2).toInt,
-            py * 40 + 32 - ((24 - 12.toDouble / max(width, height, 12) * height * 2) / 2).toInt,
+            px * 40 + 8 + ((24 - 12.toDouble / mh.max(width, height, 12) * width * 2) / 2).toInt,
+            py * 40 + 8 + ((24 - 12.toDouble / mh.max(width, height, 12) * height * 2) / 2).toInt,
+            px * 40 + 32 - ((24 - 12.toDouble / mh.max(width, height, 12) * width * 2) / 2).toInt,
+            py * 40 + 32 - ((24 - 12.toDouble / mh.max(width, height, 12) * height * 2) / 2).toInt,
             0,
             0,
             width,
@@ -869,10 +870,10 @@ class Inventory extends Serializable {
           height = itemImg.getHeight()
           g2.drawImage(
             itemImg,
-            3 * 40 + 8 + ((24 - 12.toDouble / max(width, height, 12) * width * 2) / 2).toInt,
-            20 + 8 + ((24 - 12.toDouble / max(width, height, 12) * height * 2) / 2).toInt,
-            3 * 40 + 32 - ((24 - 12.toDouble / max(width, height, 12) * width * 2) / 2).toInt,
-            20 + 32 - ((24 - 12.toDouble / max(width, height, 12) * height * 2) / 2).toInt,
+            3 * 40 + 8 + ((24 - 12.toDouble / mh.max(width, height, 12) * width * 2) / 2).toInt,
+            20 + 8 + ((24 - 12.toDouble / mh.max(width, height, 12) * height * 2) / 2).toInt,
+            3 * 40 + 32 - ((24 - 12.toDouble / mh.max(width, height, 12) * width * 2) / 2).toInt,
+            20 + 32 - ((24 - 12.toDouble / mh.max(width, height, 12) * height * 2) / 2).toInt,
             0,
             0,
             width,
@@ -905,10 +906,10 @@ class Inventory extends Serializable {
           height = itemImg.getHeight()
           g2.drawImage(
             itemImg,
-            px * 46 + 8 + ((24 - 12.toDouble / max(width, height, 12) * width * 2) / 2).toInt,
-            py * 46 + 8 + ((24 - 12.toDouble / max(width, height, 12) * height * 2) / 2).toInt,
-            px * 46 + 32 - ((24 - 12.toDouble / max(width, height, 12) * width * 2) / 2).toInt,
-            py * 46 + 32 - ((24 - 12.toDouble / max(width, height, 12) * height * 2) / 2).toInt,
+            px * 46 + 8 + ((24 - 12.toDouble / mh.max(width, height, 12) * width * 2) / 2).toInt,
+            py * 46 + 8 + ((24 - 12.toDouble / mh.max(width, height, 12) * height * 2) / 2).toInt,
+            px * 46 + 32 - ((24 - 12.toDouble / mh.max(width, height, 12) * width * 2) / 2).toInt,
+            py * 46 + 32 - ((24 - 12.toDouble / mh.max(width, height, 12) * height * 2) / 2).toInt,
             0,
             0,
             width,
@@ -940,10 +941,10 @@ class Inventory extends Serializable {
           height = itemImg.getHeight()
           g2.drawImage(
             itemImg,
-            px * 40 + 8 + ((24 - 12.toDouble / max(width, height, 12) * width * 2) / 2).toInt,
-            py * 40 + 8 + ((24 - 12.toDouble / max(width, height, 12) * height * 2) / 2).toInt,
-            px * 40 + 32 - ((24 - 12.toDouble / max(width, height, 12) * width * 2) / 2).toInt,
-            py * 40 + 32 - ((24 - 12.toDouble / max(width, height, 12) * height * 2) / 2).toInt,
+            px * 40 + 8 + ((24 - 12.toDouble / mh.max(width, height, 12) * width * 2) / 2).toInt,
+            py * 40 + 8 + ((24 - 12.toDouble / mh.max(width, height, 12) * height * 2) / 2).toInt,
+            px * 40 + 32 - ((24 - 12.toDouble / mh.max(width, height, 12) * width * 2) / 2).toInt,
+            py * 40 + 32 - ((24 - 12.toDouble / mh.max(width, height, 12) * height * 2) / 2).toInt,
             0,
             0,
             width,
@@ -1023,10 +1024,10 @@ class Inventory extends Serializable {
           height = itemImg.getHeight()
           g2.drawImage(
             itemImg,
-            4 * 40 + 8 + ((24 - 12.toDouble / max(width, height, 12) * width * 2) / 2).toInt,
-            1 * 40 + 8 + ((24 - 12.toDouble / max(width, height, 12) * height * 2) / 2).toInt,
-            4 * 40 + 32 - ((24 - 12.toDouble / max(width, height, 12) * width * 2) / 2).toInt,
-            1 * 40 + 32 - ((24 - 12.toDouble / max(width, height, 12) * height * 2) / 2).toInt,
+            4 * 40 + 8 + ((24 - 12.toDouble / mh.max(width, height, 12) * width * 2) / 2).toInt,
+            1 * 40 + 8 + ((24 - 12.toDouble / mh.max(width, height, 12) * height * 2) / 2).toInt,
+            4 * 40 + 32 - ((24 - 12.toDouble / mh.max(width, height, 12) * width * 2) / 2).toInt,
+            1 * 40 + 32 - ((24 - 12.toDouble / mh.max(width, height, 12) * height * 2) / 2).toInt,
             0,
             0,
             width,
@@ -1062,10 +1063,10 @@ class Inventory extends Serializable {
           height = itemImg.getHeight()
           g2.drawImage(
             itemImg,
-            px * 46 + 8 + ((24 - 12.toDouble / max(width, height, 12) * width * 2) / 2).toInt,
-            py * 46 + 8 + ((24 - 12.toDouble / max(width, height, 12) * height * 2) / 2).toInt,
-            px * 46 + 32 - ((24 - 12.toDouble / max(width, height, 12) * width * 2) / 2).toInt,
-            py * 46 + 32 - ((24 - 12.toDouble / max(width, height, 12) * height * 2) / 2).toInt,
+            px * 46 + 8 + ((24 - 12.toDouble / mh.max(width, height, 12) * width * 2) / 2).toInt,
+            py * 46 + 8 + ((24 - 12.toDouble / mh.max(width, height, 12) * height * 2) / 2).toInt,
+            px * 46 + 32 - ((24 - 12.toDouble / mh.max(width, height, 12) * width * 2) / 2).toInt,
+            py * 46 + 32 - ((24 - 12.toDouble / mh.max(width, height, 12) * height * 2) / 2).toInt,
             0,
             0,
             width,
@@ -1138,10 +1139,10 @@ class Inventory extends Serializable {
             height = itemImg.getHeight()
             g2.drawImage(
               itemImg,
-              (fpx * 40 + 8 + ((24 - 12.toDouble / max(width, height, 12) * width * 2) / 2).toInt).toInt,
-              (fpy * 40 + 8 + ((24 - 12.toDouble / max(width, height, 12) * height * 2) / 2).toInt).toInt,
-              (fpx * 40 + 32 - ((24 - 12.toDouble / max(width, height, 12) * width * 2) / 2).toInt).toInt,
-              (fpy * 40 + 32 - ((24 - 12.toDouble / max(width, height, 12) * height * 2) / 2).toInt).toInt,
+              (fpx * 40 + 8 + ((24 - 12.toDouble / mh.max(width, height, 12) * width * 2) / 2).toInt).toInt,
+              (fpy * 40 + 8 + ((24 - 12.toDouble / mh.max(width, height, 12) * height * 2) / 2).toInt).toInt,
+              (fpx * 40 + 32 - ((24 - 12.toDouble / mh.max(width, height, 12) * width * 2) / 2).toInt).toInt,
+              (fpy * 40 + 32 - ((24 - 12.toDouble / mh.max(width, height, 12) * height * 2) / 2).toInt).toInt,
               0,
               0,
               width,

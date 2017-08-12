@@ -23,8 +23,10 @@ import org.terraframe.Images.loadImage
 
 import scala.collection.JavaConverters._
 import scala.collection.mutable
+import scala.math._
 import scala.util.Random
 import scala.util.control.NonFatal
+import org.terraframe.{MathHelper => mh}
 
 
 /*
@@ -1644,7 +1646,6 @@ class TerraFrame extends JApplet
   with MouseMotionListener
   with MouseWheelListener {
 
-  import MathHelper._
   import TerraFrame._
 
   var screen: BufferedImage = _
@@ -2078,8 +2079,8 @@ class TerraFrame extends JApplet
                             if (worlds(twy)(twx) != null) {
                               wg2 = worlds(twy)(twx).createGraphics()
                               fwg2 = fworlds(twy)(twx).createGraphics()
-                              (Math.max(twy * CHUNKSIZE, (player.iy - getHeight / 2 + Player.height / 2 + v * BLOCKSIZE) - 64) until(Math.min(twy * CHUNKSIZE + CHUNKSIZE, (player.iy + getHeight / 2 - Player.height / 2 + v * BLOCKSIZE) + 128), BLOCKSIZE)).foreach { tly =>
-                                (Math.max(twx * CHUNKSIZE, (player.ix - getWidth / 2 + Player.width / 2 + u * BLOCKSIZE) - 64) until(Math.min(twx * CHUNKSIZE + CHUNKSIZE, (player.ix + getWidth / 2 - Player.width / 2 + u * BLOCKSIZE) + 112), BLOCKSIZE)).foreach { tlx =>
+                              (max(twy * CHUNKSIZE, (player.iy - getHeight / 2 + Player.height / 2 + v * BLOCKSIZE) - 64) until(min(twy * CHUNKSIZE + CHUNKSIZE, (player.iy + getHeight / 2 - Player.height / 2 + v * BLOCKSIZE) + 128), BLOCKSIZE)).foreach { tly =>
+                                (max(twx * CHUNKSIZE, (player.ix - getWidth / 2 + Player.width / 2 + u * BLOCKSIZE) - 64) until(min(twx * CHUNKSIZE + CHUNKSIZE, (player.ix + getWidth / 2 - Player.width / 2 + u * BLOCKSIZE) + 112), BLOCKSIZE)).foreach { tlx =>
                                   tx = tlx / BLOCKSIZE
                                   ty = tly / BLOCKSIZE
                                   if (tx >= 0 && tx < theSize && ty >= 0 && ty < theSize) {
@@ -2771,8 +2772,7 @@ class TerraFrame extends JApplet
       }
       inventory.updateIC(ic, -1)
     }
-    // TODO: switch from Math. to scala math.
-    if (Math.sqrt(Math.pow(player.x + player.image.getWidth() - icx * BLOCKSIZE + BLOCKSIZE / 2, 2) + Math.pow(player.y + player.image.getHeight() - icy * BLOCKSIZE + BLOCKSIZE / 2, 2)) > 160) {
+    if (sqrt(pow(player.x + player.image.getWidth() - icx * BLOCKSIZE + BLOCKSIZE / 2, 2) + pow(player.y + player.image.getHeight() - icy * BLOCKSIZE + BLOCKSIZE / 2, 2)) > 160) {
       if (ic != null) {
         if (ic.icType != Workbench) {
           machinesx += icx
@@ -3442,8 +3442,8 @@ class TerraFrame extends JApplet
           uy = playerMouseYOffset / BLOCKSIZE
           ux2 = playerMouseXOffset / BLOCKSIZE
           uy2 = playerMouseYOffset / BLOCKSIZE
-          if (Math.sqrt(Math.pow(player.x + player.image.getWidth() - ux2 * BLOCKSIZE + BLOCKSIZE / 2, 2) + Math.pow(player.y + player.image.getHeight() - uy2 * BLOCKSIZE + BLOCKSIZE / 2, 2)) <= 160 ||
-            Math.sqrt(Math.pow(player.x + player.image.getWidth() - ux2 * BLOCKSIZE + BLOCKSIZE / 2 + WIDTH * BLOCKSIZE, 2) + Math.pow(player.y + player.image.getHeight() - uy2 * BLOCKSIZE + BLOCKSIZE / 2, 2)) <= 160 || DEBUG_REACH) {
+          if (sqrt(pow(player.x + player.image.getWidth() - ux2 * BLOCKSIZE + BLOCKSIZE / 2, 2) + pow(player.y + player.image.getHeight() - uy2 * BLOCKSIZE + BLOCKSIZE / 2, 2)) <= 160 ||
+            sqrt(pow(player.x + player.image.getWidth() - ux2 * BLOCKSIZE + BLOCKSIZE / 2 + WIDTH * BLOCKSIZE, 2) + pow(player.y + player.image.getHeight() - uy2 * BLOCKSIZE + BLOCKSIZE / 2, 2)) <= 160 || DEBUG_REACH) {
             ucx = ux - CHUNKBLOCKS * (ux / CHUNKBLOCKS)
             ucy = uy - CHUNKBLOCKS * (uy / CHUNKBLOCKS)
             if (toolList.contains(inventory.tool())) {
@@ -3872,7 +3872,7 @@ class TerraFrame extends JApplet
           playerMouseYOffset < 0 || playerMouseYOffset >= HEIGHT * BLOCKSIZE)) {
           ux = playerMouseXOffset / BLOCKSIZE
           uy = playerMouseYOffset / BLOCKSIZE
-          if (DEBUG_REACH || Math.sqrt(Math.pow(player.x + player.image.getWidth() - ux * BLOCKSIZE + BLOCKSIZE / 2, 2) + Math.pow(player.y + player.image.getHeight() - uy * BLOCKSIZE + BLOCKSIZE / 2, 2)) <= 160) {
+          if (DEBUG_REACH || sqrt(pow(player.x + player.image.getWidth() - ux * BLOCKSIZE + BLOCKSIZE / 2, 2) + pow(player.y + player.image.getHeight() - uy * BLOCKSIZE + BLOCKSIZE / 2, 2)) <= 160) {
             ucx = ux - CHUNKBLOCKS * (ux / CHUNKBLOCKS)
             ucy = uy - CHUNKBLOCKS * (uy / CHUNKBLOCKS)
             if (blocks(layer)(uy)(ux) >= WorkbenchBlockType.id && blocks(layer)(uy)(ux) <= GoldChestBlockType.id || blocks(layer)(uy)(ux) == FurnaceBlockType.id || blocks(layer)(uy)(ux) == FurnaceOnBlockType.id || blocks(layer)(uy)(ux) >= ZincChestBlockType.id && blocks(layer)(uy)(ux) <= ObduriteChestBlockType.id) {
@@ -4185,7 +4185,7 @@ class TerraFrame extends JApplet
     }
     if (!DEBUG_INVINCIBLE && player.y / 16 > HEIGHT + 10) {
       vc += 1
-      if (vc >= 1 / (Math.pow(1.001, player.y / 16 - HEIGHT - 10) - 1.0)) {
+      if (vc >= 1 / (pow(1.001, player.y / 16 - HEIGHT - 10) - 1.0)) {
         player.damage(1, false, inventory)
         vc = 0
       }
@@ -4310,25 +4310,25 @@ class TerraFrame extends JApplet
     if (showTool) {
       if (player.imgState.equals("still right") || player.imgState.equals("walk right 1") || player.imgState.equals("walk right 2")) {
         tp1 = new Point((player.x + Player.width / 2 + 6).toInt, (player.y + Player.height / 2).toInt)
-        tp2 = new Point((player.x + Player.width / 2 + 6 + tool.getWidth() * 2 * Math.cos(toolAngle) + tool.getHeight() * 2 * Math.sin(toolAngle)).toInt,
-          (player.y + Player.height / 2 + tool.getWidth() * 2 * Math.sin(toolAngle) - tool.getHeight() * 2 * Math.cos(toolAngle)).toInt)
-        tp3 = new Point((player.x + Player.width / 2 + 6 + tool.getWidth() * 1 * Math.cos(toolAngle) + tool.getHeight() * 1 * Math.sin(toolAngle)).toInt,
-          (player.y + Player.height / 2 + tool.getWidth() * 1 * Math.sin(toolAngle) - tool.getHeight() * 1 * Math.cos(toolAngle)).toInt)
-        tp4 = new Point((player.x + Player.width / 2 + 6 + tool.getWidth() * 0.5 * Math.cos(toolAngle) + tool.getHeight() * 0.5 * Math.sin(toolAngle)).toInt,
-          (player.y + Player.height / 2 + tool.getWidth() * 0.5 * Math.sin(toolAngle) - tool.getHeight() * 0.5 * Math.cos(toolAngle)).toInt)
-        tp5 = new Point((player.x + Player.width / 2 + 6 + tool.getWidth() * 1.5 * Math.cos(toolAngle) + tool.getHeight() * 1.5 * Math.sin(toolAngle)).toInt,
-          (player.y + Player.height / 2 + tool.getWidth() * 1.5 * Math.sin(toolAngle) - tool.getHeight() * 1.5 * Math.cos(toolAngle)).toInt)
+        tp2 = new Point((player.x + Player.width / 2 + 6 + tool.getWidth() * 2 * cos(toolAngle) + tool.getHeight() * 2 * sin(toolAngle)).toInt,
+          (player.y + Player.height / 2 + tool.getWidth() * 2 * sin(toolAngle) - tool.getHeight() * 2 * cos(toolAngle)).toInt)
+        tp3 = new Point((player.x + Player.width / 2 + 6 + tool.getWidth() * 1 * cos(toolAngle) + tool.getHeight() * 1 * sin(toolAngle)).toInt,
+          (player.y + Player.height / 2 + tool.getWidth() * 1 * sin(toolAngle) - tool.getHeight() * 1 * cos(toolAngle)).toInt)
+        tp4 = new Point((player.x + Player.width / 2 + 6 + tool.getWidth() * 0.5 * cos(toolAngle) + tool.getHeight() * 0.5 * sin(toolAngle)).toInt,
+          (player.y + Player.height / 2 + tool.getWidth() * 0.5 * sin(toolAngle) - tool.getHeight() * 0.5 * cos(toolAngle)).toInt)
+        tp5 = new Point((player.x + Player.width / 2 + 6 + tool.getWidth() * 1.5 * cos(toolAngle) + tool.getHeight() * 1.5 * sin(toolAngle)).toInt,
+          (player.y + Player.height / 2 + tool.getWidth() * 1.5 * sin(toolAngle) - tool.getHeight() * 1.5 * cos(toolAngle)).toInt)
       }
       if (player.imgState.equals("still left") || player.imgState.equals("walk left 1") || player.imgState.equals("walk left 2")) {
         tp1 = new Point((player.x + Player.width / 2 - 6).toInt, (player.y + Player.height / 2).toInt)
-        tp2 = new Point((player.x + Player.width / 2 - 6 + tool.getWidth() * 2 * Math.cos((Math.PI * 1.5) - toolAngle) + tool.getHeight() * 2 * Math.sin((Math.PI * 1.5) - toolAngle)).toInt,
-          (player.y + Player.height / 2 + tool.getWidth() * 2 * Math.sin((Math.PI * 1.5) - toolAngle) - tool.getHeight() * 2 * Math.cos((Math.PI * 1.5) - toolAngle)).toInt)
-        tp3 = new Point((player.x + Player.width / 2 - 6 + tool.getWidth() * 1 * Math.cos((Math.PI * 1.5) - toolAngle) + tool.getHeight() * 1 * Math.sin((Math.PI * 1.5) - toolAngle)).toInt,
-          (player.y + Player.height / 2 + tool.getWidth() * 1 * Math.sin((Math.PI * 1.5) - toolAngle) - tool.getHeight() * 1 * Math.cos((Math.PI * 1.5) - toolAngle)).toInt)
-        tp4 = new Point((player.x + Player.width / 2 - 6 + tool.getWidth() * 0.5 * Math.cos((Math.PI * 1.5) - toolAngle) + tool.getHeight() * 0.5 * Math.sin((Math.PI * 1.5) - toolAngle)).toInt,
-          (player.y + Player.height / 2 + tool.getWidth() * 0.5 * Math.sin((Math.PI * 1.5) - toolAngle) - tool.getHeight() * 0.5 * Math.cos((Math.PI * 1.5) - toolAngle)).toInt)
-        tp5 = new Point((player.x + Player.width / 2 - 6 + tool.getWidth() * 1.5 * Math.cos((Math.PI * 1.5) - toolAngle) + tool.getHeight() * 1.5 * Math.sin((Math.PI * 1.5) - toolAngle)).toInt,
-          (player.y + Player.height / 2 + tool.getWidth() * 1.5 * Math.sin((Math.PI * 1.5) - toolAngle) - tool.getHeight() * 1.5 * Math.cos((Math.PI * 1.5) - toolAngle)).toInt)
+        tp2 = new Point((player.x + Player.width / 2 - 6 + tool.getWidth() * 2 * cos((Pi * 1.5) - toolAngle) + tool.getHeight() * 2 * sin((Pi * 1.5) - toolAngle)).toInt,
+          (player.y + Player.height / 2 + tool.getWidth() * 2 * sin((Pi * 1.5) - toolAngle) - tool.getHeight() * 2 * cos((Pi * 1.5) - toolAngle)).toInt)
+        tp3 = new Point((player.x + Player.width / 2 - 6 + tool.getWidth() * 1 * cos((Pi * 1.5) - toolAngle) + tool.getHeight() * 1 * sin((Pi * 1.5) - toolAngle)).toInt,
+          (player.y + Player.height / 2 + tool.getWidth() * 1 * sin((Pi * 1.5) - toolAngle) - tool.getHeight() * 1 * cos((Pi * 1.5) - toolAngle)).toInt)
+        tp4 = new Point((player.x + Player.width / 2 - 6 + tool.getWidth() * 0.5 * cos((Pi * 1.5) - toolAngle) + tool.getHeight() * 0.5 * sin((Pi * 1.5) - toolAngle)).toInt,
+          (player.y + Player.height / 2 + tool.getWidth() * 0.5 * sin((Pi * 1.5) - toolAngle) - tool.getHeight() * 0.5 * cos((Pi * 1.5) - toolAngle)).toInt)
+        tp5 = new Point((player.x + Player.width / 2 - 6 + tool.getWidth() * 1.5 * cos((Pi * 1.5) - toolAngle) + tool.getHeight() * 1.5 * sin((Pi * 1.5) - toolAngle)).toInt,
+          (player.y + Player.height / 2 + tool.getWidth() * 1.5 * sin((Pi * 1.5) - toolAngle) - tool.getHeight() * 1.5 * cos((Pi * 1.5) - toolAngle)).toInt)
       }
       (entities.length - 1 to(0, -1)).foreach { i =>
         if (entities(i).name != null && !entities(i).nohit && showTool && (entities(i).rect.contains(tp1) || entities(i).rect.contains(tp2) || entities(i).rect.contains(tp3) || entities(i).rect.contains(tp4) || entities(i).rect.contains(tp5)) && (!entities(i).name.equals("bee") || random.nextInt(4) == 0)) {
@@ -4370,10 +4370,10 @@ class TerraFrame extends JApplet
       var bx2 = ((p + width) / BLOCKSIZE).toInt
       var by2 = ((q + height) / BLOCKSIZE).toInt
 
-      bx1 = Math.max(0, bx1)
-      by1 = Math.max(0, by1)
-      bx2 = Math.min(blocks(0).length - 1, bx2)
-      by2 = Math.min(blocks.length - 1, by2)
+      bx1 = max(0, bx1)
+      by1 = max(0, by1)
+      bx2 = min(blocks(0).length - 1, bx2)
+      by2 = min(blocks.length - 1, by2)
 
       (bx1 to bx2).foreach { x =>
         (by1 to by2).foreach { y =>
@@ -4628,7 +4628,7 @@ class TerraFrame extends JApplet
         case _ =>
       }
       if (t != 0) {
-        (0 until Math.max(1, n)).foreach { i =>
+        (0 until max(1, n)).foreach { i =>
           entities += new Entity((ux * BLOCKSIZE).toDouble, (uy * BLOCKSIZE).toDouble, random.nextDouble() * 4 - 2, -2, t.toShort, 1.toShort)
         }
       }
@@ -4837,7 +4837,7 @@ class TerraFrame extends JApplet
             case _ =>
           }
           if (t != 0) {
-            (0 until Math.max(1, n)).foreach { i =>
+            (0 until max(1, n)).foreach { i =>
               entities += new Entity((ux * BLOCKSIZE).toDouble, (uy * BLOCKSIZE).toDouble, random.nextDouble() * 4 - 2, -2, t.toShort, 1.toShort)
             }
           }
@@ -4934,7 +4934,7 @@ class TerraFrame extends JApplet
     n = findNonLayeredBlockLightSource(ux, uy)
     if (n != 0) {
       addTileToZQueue(ux, uy)
-      lights(uy)(ux) = math.max(lights(uy)(ux), n.toFloat)
+      lights(uy)(ux) = max(lights(uy)(ux), n.toFloat)
       lsources(uy)(ux) = true
       addTileToQueue(ux, uy)
     }
@@ -5020,7 +5020,7 @@ class TerraFrame extends JApplet
       lsources(uy)(ux) = isNonLayeredBlockLightSource(ux, uy, layer)
       (-n until n + 1).foreach { axl =>
         (-n until n + 1).foreach { ayl =>
-          if (Math.abs(axl) + Math.abs(ayl) <= n && uy + ayl >= 0 && uy + ayl < HEIGHT && lights(uy + ayl)(ux + axl) != 0) {
+          if (abs(axl) + abs(ayl) <= n && uy + ayl >= 0 && uy + ayl < HEIGHT && lights(uy + ayl)(ux + axl) != 0) {
             addTileToZQueue(ux + axl, uy + ayl)
             lights(uy + ayl)(ux + axl) = 0.toFloat
           }
@@ -5028,7 +5028,7 @@ class TerraFrame extends JApplet
       }
       (-n - BRIGHTEST until n + 1 + BRIGHTEST).foreach { axl =>
         (-n - BRIGHTEST until n + 1 + BRIGHTEST).foreach { ayl =>
-          if (Math.abs(axl) + Math.abs(ayl) <= n + BRIGHTEST && uy + ayl >= 0 && uy + ayl < HEIGHT) {
+          if (abs(axl) + abs(ayl) <= n + BRIGHTEST && uy + ayl >= 0 && uy + ayl < HEIGHT) {
             if (lsources(uy + ayl)(ux + axl)) {
               addTileToQueue(ux + axl, uy + ayl)
             }
@@ -5325,7 +5325,7 @@ class TerraFrame extends JApplet
   def redoBlockLighting(ux: Int, uy: Int): Unit = {
     (-BRIGHTEST until BRIGHTEST + 1).foreach { ax =>
       (-BRIGHTEST until BRIGHTEST + 1).foreach { ay =>
-        if (Math.abs(ax) + Math.abs(ay) <= BRIGHTEST && uy + ay >= 0 && uy + ay < HEIGHT) {
+        if (abs(ax) + abs(ay) <= BRIGHTEST && uy + ay >= 0 && uy + ay < HEIGHT) {
           addTileToZQueue(ux + ax, uy + ay)
           lights(uy + ay)(ux + ax) = 0.toFloat
         }
@@ -5333,7 +5333,7 @@ class TerraFrame extends JApplet
     }
     (-BRIGHTEST * 2 until BRIGHTEST * 2 + 1).foreach { ax =>
       (-BRIGHTEST * 2 until BRIGHTEST * 2 + 1).foreach { ay =>
-        if (Math.abs(ax) + Math.abs(ay) <= BRIGHTEST * 2 && uy + ay >= 0 && uy + ay < HEIGHT) {
+        if (abs(ax) + abs(ay) <= BRIGHTEST * 2 && uy + ay >= 0 && uy + ay < HEIGHT) {
           if (lsources(uy + ay)(ux + ax)) {
             addTileToQueue(ux + ax, uy + ay)
           }
@@ -5436,17 +5436,17 @@ class TerraFrame extends JApplet
 
   def findBlockLightSource(ux: Int, uy: Int): Int = {
     n = 0
-    if (blocks(0)(uy)(ux) != AirBlockType.id) n = BLOCKLIGHTS.get(blocks(0)(uy)(ux)).map(Math.max(_, n)).getOrElse(0)
-    if (blocks(1)(uy)(ux) != AirBlockType.id) n = BLOCKLIGHTS.get(blocks(1)(uy)(ux)).map(Math.max(_, n)).getOrElse(0)
-    if (blocks(2)(uy)(ux) != AirBlockType.id) n = BLOCKLIGHTS.get(blocks(2)(uy)(ux)).map(Math.max(_, n)).getOrElse(0)
+    if (blocks(0)(uy)(ux) != AirBlockType.id) n = BLOCKLIGHTS.get(blocks(0)(uy)(ux)).map(max(_, n)).getOrElse(0)
+    if (blocks(1)(uy)(ux) != AirBlockType.id) n = BLOCKLIGHTS.get(blocks(1)(uy)(ux)).map(max(_, n)).getOrElse(0)
+    if (blocks(2)(uy)(ux) != AirBlockType.id) n = BLOCKLIGHTS.get(blocks(2)(uy)(ux)).map(max(_, n)).getOrElse(0)
     n
   }
 
   def findNonLayeredBlockLightSource(ux: Int, uy: Int): Int = {
     n = 0
-    if (blocks(0)(uy)(ux) != AirBlockType.id) n = BLOCKLIGHTS.get(blocks(0)(uy)(ux)).map(Math.max(_, n)).getOrElse(0)
-    if (blocks(1)(uy)(ux) != AirBlockType.id) n = BLOCKLIGHTS.get(blocks(1)(uy)(ux)).map(Math.max(_, n)).getOrElse(0)
-    if (blocks(2)(uy)(ux) != AirBlockType.id) n = BLOCKLIGHTS.get(blocks(2)(uy)(ux)).map(Math.max(_, n)).getOrElse(0)
+    if (blocks(0)(uy)(ux) != AirBlockType.id) n = BLOCKLIGHTS.get(blocks(0)(uy)(ux)).map(max(_, n)).getOrElse(0)
+    if (blocks(1)(uy)(ux) != AirBlockType.id) n = BLOCKLIGHTS.get(blocks(1)(uy)(ux)).map(max(_, n)).getOrElse(0)
+    if (blocks(2)(uy)(ux) != AirBlockType.id) n = BLOCKLIGHTS.get(blocks(2)(uy)(ux)).map(max(_, n)).getOrElse(0)
     n
   }
 
@@ -5512,10 +5512,10 @@ class TerraFrame extends JApplet
         if (lsources(y)(x)) {
           n = findBlockLightSource(x, y)
           if (isReachedBySunlight(x, y)) {
-            lights(y)(x) = max(lights(y)(x), n.toFloat, sunlightlevel.toFloat)
+            lights(y)(x) = mh.max(lights(y)(x), n.toFloat, sunlightlevel.toFloat)
           }
           else {
-            lights(y)(x) = math.max(lights(y)(x), n.toFloat)
+            lights(y)(x) = max(lights(y)(x), n.toFloat)
           }
           addTileToZQueue(x, y)
         }
@@ -5716,7 +5716,7 @@ class TerraFrame extends JApplet
                 resunlight = 0
             }
             if (resunlight < WIDTH) {
-                (resunlight until Math.min(resunlight+SUNLIGHTSPEED,WIDTH)).foreach { ux =>
+                (resunlight until min(resunlight+SUNLIGHTSPEED,WIDTH)).foreach { ux =>
                     removeSunLighting(ux, 0)
                     addSunLighting(ux, 0)
                 }
@@ -5725,21 +5725,21 @@ class TerraFrame extends JApplet
 */
       if (player.y / 16 < HEIGHT * 0.5) {
         pg2.translate((getWidth / 2).toDouble, getHeight * 0.85)
-        pg2.rotate((timeOfDay - 70200) / 86400 * Math.PI * 2)
+        pg2.rotate((timeOfDay - 70200) / 86400 * Pi * 2)
 
         pg2.drawImage(sun,
           (-getWidth * 0.65).toInt, 0, (-getWidth * 0.65 + sun.getWidth() * 2).toInt, sun.getHeight() * 2,
           0, 0, sun.getWidth(), sun.getHeight(),
           null)
 
-        pg2.rotate(Math.PI)
+        pg2.rotate(Pi)
 
         pg2.drawImage(moon,
           (-getWidth * 0.65).toInt, 0, (-getWidth * 0.65 + moon.getWidth() * 2).toInt, moon.getHeight() * 2,
           0, 0, moon.getWidth(), moon.getHeight(),
           null)
 
-        pg2.rotate(-(timeOfDay - 70200) / 86400 * Math.PI * 2 - Math.PI)
+        pg2.rotate(-(timeOfDay - 70200) / 86400 * Pi * 2 - Pi)
         pg2.translate((-getWidth / 2).toDouble, -getHeight * 0.85)
 
         cloudsx.indices.foreach { i =>
@@ -5809,14 +5809,14 @@ class TerraFrame extends JApplet
         }
         if (player.imgState.equals("still left") || player.imgState.equals("walk left 1") || player.imgState.equals("walk left 2")) {
           pg2.translate(getWidth / 2 - 6, getHeight / 2)
-          pg2.rotate((Math.PI * 1.5) - toolAngle)
+          pg2.rotate((Pi * 1.5) - toolAngle)
 
           pg2.drawImage(tool,
             0, -tool.getHeight() * 2, tool.getWidth() * 2, 0,
             0, 0, tool.getWidth(), tool.getHeight(),
             null)
 
-          pg2.rotate(-((Math.PI * 1.5) - toolAngle))
+          pg2.rotate(-((Pi * 1.5) - toolAngle))
           pg2.translate(-getWidth / 2 + 6, -getHeight / 2)
         }
       }
@@ -5897,7 +5897,7 @@ class TerraFrame extends JApplet
         itemImgs.get(moveItem).foreach { i =>
           width = i.getWidth
           height = i.getHeight
-          pg2.drawImage(i, mouseX + 12 + ((24 - 12.toDouble / max(width, height, 12) * width * 2) / 2).toInt, mouseY + 12 + ((24 - 12.toDouble / max(width, height, 12) * height * 2) / 2).toInt, mouseX + 36 - ((24 - 12.toDouble / max(width, height, 12) * width * 2) / 2).toInt, mouseY + 36 - ((24 - 12.toDouble / max(width, height, 12) * height * 2) / 2).toInt,
+          pg2.drawImage(i, mouseX + 12 + ((24 - 12.toDouble / mh.max(width, height, 12) * width * 2) / 2).toInt, mouseY + 12 + ((24 - 12.toDouble / mh.max(width, height, 12) * height * 2) / 2).toInt, mouseX + 36 - ((24 - 12.toDouble / mh.max(width, height, 12) * width * 2) / 2).toInt, mouseY + 36 - ((24 - 12.toDouble / mh.max(width, height, 12) * height * 2) / 2).toInt,
             0, 0, width, height,
             null)
         }
@@ -6399,7 +6399,7 @@ class TerraFrame extends JApplet
           if (pixm(dy)(dx) == 255) {
             (0 until 8).foreach { dy2 =>
               (0 until 8).foreach { dx2 =>
-                n = (255 - 32 * math.sqrt(math.pow((dx - dx2).toDouble, 2) + math.pow((dy - dy2).toDouble, 2))).toInt
+                n = (255 - 32 * sqrt(pow((dx - dx2).toDouble, 2) + pow((dy - dy2).toDouble, 2))).toInt
                 if (pixm(dy2)(dx2) < n) {
                   pixm(dy2)(dx2) = n
                 }
