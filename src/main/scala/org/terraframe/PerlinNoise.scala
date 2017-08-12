@@ -5,8 +5,8 @@ object PerlinNoise {
     var total: Double = 0
     var freq, ampl: Double = 0
     (0 until n + 1).foreach { i =>
-      freq = Math.pow(2, i)
-      ampl = Math.pow(p, i)
+      freq = math.pow(2.toDouble, i.toDouble)
+      ampl = math.pow(p, i.toDouble)
       total = total + interpolateNoise(x * freq) * ampl
     }
     total

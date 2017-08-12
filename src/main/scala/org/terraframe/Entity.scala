@@ -32,7 +32,7 @@ case class Entity(var x: Double, var y: Double, var vx: Double, var vy: Double, 
 
   @transient var image: BufferedImage = _
 
-  if (name != null) {
+  if (name != null) { // TODO: this should probably be an entity base type and a named entity with AI vs some other type without AI
     if (name.equals("blue_bubble")) {
       thp = 18
       ap = 0
@@ -459,7 +459,7 @@ case class Entity(var x: Double, var y: Double, var vx: Double, var vy: Double, 
           if (blocks(j)(i) != 0 && TerraFrame.BLOCKCD.get(blocks(j + v)(i + u)).exists(identity)) {
             if (rect.intersects(new Rectangle(i * BLOCKSIZE, j * BLOCKSIZE, BLOCKSIZE, BLOCKSIZE))) {
               if (oldx <= i * 16 - width && (vx > 0 || AI == "shooting_star")) {
-                x = i * 16 - width
+                x = (i * 16 - width).toDouble
                 if (AI == "bubble") {
                   vx = -vx
                 }
@@ -478,7 +478,7 @@ case class Entity(var x: Double, var y: Double, var vx: Double, var vy: Double, 
                 rv = true
               }
               if (oldx >= i * 16 + BLOCKSIZE && (vx < 0 || AI == "shooting_star")) {
-                x = i * 16 + BLOCKSIZE
+                x = (i * 16 + BLOCKSIZE).toDouble
                 if (AI == "bubble") {
                   vx = -vx
                 }
@@ -528,7 +528,7 @@ case class Entity(var x: Double, var y: Double, var vx: Double, var vy: Double, 
           if (blocks(j)(i) != 0 && TerraFrame.BLOCKCD.get(blocks(j + v)(i + u)).exists(identity)) {
             if (rect.intersects(new Rectangle(i * BLOCKSIZE, j * BLOCKSIZE, BLOCKSIZE, BLOCKSIZE))) {
               if (oldy <= j * 16 - height && (vy > 0 || AI == "shooting_star")) {
-                y = j * 16 - height
+                y = (j * 16 - height).toDouble
                 onGround = true
                 if (AI == "bubble") {
                   vy = -vy
@@ -539,7 +539,7 @@ case class Entity(var x: Double, var y: Double, var vx: Double, var vy: Double, 
                 rv = true
               }
               if (oldy >= j * 16 + BLOCKSIZE && (vy < 0 || AI == "shooting_star")) {
-                y = j * 16 + BLOCKSIZE
+                y = (j * 16 + BLOCKSIZE).toDouble
                 if (AI == "bubble") {
                   vy = -vy
                 }

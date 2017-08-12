@@ -2771,6 +2771,7 @@ class TerraFrame extends JApplet
       }
       inventory.updateIC(ic, -1)
     }
+    // TODO: switch from Math. to scala math.
     if (Math.sqrt(Math.pow(player.x + player.image.getWidth() - icx * BLOCKSIZE + BLOCKSIZE / 2, 2) + Math.pow(player.y + player.image.getHeight() - icy * BLOCKSIZE + BLOCKSIZE / 2, 2)) > 160) {
       if (ic != null) {
         if (ic.icType != Workbench) {
@@ -2782,14 +2783,14 @@ class TerraFrame extends JApplet
           if (player.imgState.equals("still right") || player.imgState.equals("walk right 1") || player.imgState.equals("walk right 2")) {
             (0 until 9).foreach { i =>
               if (ic.ids(i) != 0) {
-                entities += new Entity(icx * BLOCKSIZE, icy * BLOCKSIZE, 2, -2, ic.ids(i), ic.nums(i), ic.durs(i), 75)
+                entities += new Entity((icx * BLOCKSIZE).toDouble, (icy * BLOCKSIZE).toDouble, 2, -2, ic.ids(i), ic.nums(i), ic.durs(i), 75)
               }
             }
           }
           if (player.imgState.equals("still left") || player.imgState.equals("walk left 1") || player.imgState.equals("walk left 2")) {
             (0 until 9).foreach { i =>
               if (ic.ids(i) != 0) {
-                entities += new Entity(icx * BLOCKSIZE, icy * BLOCKSIZE, -2, -2, ic.ids(i), ic.nums(i), ic.durs(i), 75)
+                entities += new Entity((icx * BLOCKSIZE).toDouble, (icy * BLOCKSIZE).toDouble, -2, -2, ic.ids(i), ic.nums(i), ic.durs(i), 75)
               }
             }
           }
@@ -3070,7 +3071,8 @@ class TerraFrame extends JApplet
                     }
                   }
                   if (doMobSpawn) {
-                    entities += new Entity(xpos * BLOCKSIZE, ypos * BLOCKSIZE, 0, 0, mobSpawn)
+                    entities += new Entity((xpos * BLOCKSIZE).toDouble, (ypos * BLOCKSIZE).toDouble, 0, 0, mobSpawn)
+                    ()
                   }
                 }
               }
@@ -3884,14 +3886,14 @@ class TerraFrame extends JApplet
                   if (player.imgState.equals("still right") || player.imgState.equals("walk right 1") || player.imgState.equals("walk right 2")) {
                     (0 until 9).foreach { i =>
                       if (ic.ids(i) != 0) {
-                        entities += new Entity(icx * BLOCKSIZE, icy * BLOCKSIZE, 2, -2, ic.ids(i), ic.nums(i), ic.durs(i), 75)
+                        entities += new Entity((icx * BLOCKSIZE).toDouble, (icy * BLOCKSIZE).toDouble, 2, -2, ic.ids(i), ic.nums(i), ic.durs(i), 75)
                       }
                     }
                   }
                   if (player.imgState.equals("still left") || player.imgState.equals("walk left 1") || player.imgState.equals("walk left 2")) {
                     (0 until 9).foreach { i =>
                       if (ic.ids(i) != 0) {
-                        entities += new Entity(icx * BLOCKSIZE, icy * BLOCKSIZE, -2, -2, ic.ids(i), ic.nums(i), ic.durs(i), 75)
+                        entities += new Entity((icx * BLOCKSIZE).toDouble, (icy * BLOCKSIZE).toDouble, -2, -2, ic.ids(i), ic.nums(i), ic.durs(i), 75)
                       }
                     }
                   }
@@ -4086,7 +4088,7 @@ class TerraFrame extends JApplet
             }
             if (blocks(layer)(uy)(ux) == TreeBlockType.id) {
               if (random.nextInt(2) == 0) {
-                entities += new Entity(ux * BLOCKSIZE, uy * BLOCKSIZE, random.nextDouble() * 8 - 4, -3, 160.toShort, 1.toShort)
+                entities += new Entity((ux * BLOCKSIZE).toDouble, (uy * BLOCKSIZE).toDouble, random.nextDouble() * 8 - 4, -3, 160.toShort, 1.toShort)
               }
               blocks(layer)(uy)(ux) = TreeNoBarkBlockType.id
             }
@@ -4241,14 +4243,14 @@ class TerraFrame extends JApplet
           if (player.imgState.equals("still right") || player.imgState.equals("walk right 1") || player.imgState.equals("walk right 2")) {
             (0 until 9).foreach { i =>
               if (ic.ids(i) != 0) {
-                entities += new Entity(icx * BLOCKSIZE, icy * BLOCKSIZE, 2, -2, ic.ids(i), ic.nums(i), ic.durs(i), 75)
+                entities += new Entity((icx * BLOCKSIZE).toDouble, (icy * BLOCKSIZE).toDouble, 2, -2, ic.ids(i), ic.nums(i), ic.durs(i), 75)
               }
             }
           }
           if (player.imgState.equals("still left") || player.imgState.equals("walk left 1") || player.imgState.equals("walk left 2")) {
             (0 until 9).foreach { i =>
               if (ic.ids(i) != 0) {
-                entities += new Entity(icx * BLOCKSIZE, icy * BLOCKSIZE, -2, -2, ic.ids(i), ic.nums(i), ic.durs(i), 75)
+                entities += new Entity((icx * BLOCKSIZE).toDouble, (icy * BLOCKSIZE).toDouble, -2, -2, ic.ids(i), ic.nums(i), ic.durs(i), 75)
               }
             }
           }
@@ -4333,7 +4335,7 @@ class TerraFrame extends JApplet
           if (TOOLDAMAGE.get(inventory.tool()).exists(t => entities(i).hit(t, player))) {
             val dropList = entities(i).drops()
             dropList.foreach { dropId =>
-              entities += new Entity(entities(i).x, entities(i).y, random.nextInt(4) - 2, -1, dropId, 1.toShort)
+              entities += new Entity(entities(i).x, entities(i).y, (random.nextInt(4) - 2).toDouble, -1, dropId, 1.toShort)
             }
             entities.remove(i)
           }
@@ -4510,14 +4512,14 @@ class TerraFrame extends JApplet
         if (ic != null) {
           ic.ids.indices.foreach { i =>
             if (ic.ids(i) != 0 && !(ic.icType == Furnace && i == 1)) {
-              entities += new Entity(ux * BLOCKSIZE, uy * BLOCKSIZE, random.nextDouble() * 4 - 2, -2, ic.ids(i), ic.nums(i), ic.durs(i))
+              entities += new Entity((ux * BLOCKSIZE).toDouble, (uy * BLOCKSIZE).toDouble, random.nextDouble() * 4 - 2, -2, ic.ids(i), ic.nums(i), ic.durs(i))
             }
           }
         }
         if (icmatrix(layer)(uy)(ux) != null) {
           icmatrix(layer)(uy)(ux).ids.indices.foreach { i =>
             if (icmatrix(layer)(uy)(ux).ids(i) != 0 && !(icmatrix(layer)(uy)(ux).icType == Furnace && i == 1)) {
-              entities += new Entity(ux * BLOCKSIZE, uy * BLOCKSIZE, random.nextDouble() * 4 - 2, -2, icmatrix(layer)(uy)(ux).ids(i), icmatrix(layer)(uy)(ux).nums(i), icmatrix(layer)(uy)(ux).durs(i))
+              entities += new Entity((ux * BLOCKSIZE).toDouble, (uy * BLOCKSIZE).toDouble, random.nextDouble() * 4 - 2, -2, icmatrix(layer)(uy)(ux).ids(i), icmatrix(layer)(uy)(ux).nums(i), icmatrix(layer)(uy)(ux).durs(i))
             }
           }
           icmatrix(layer)(uy)(ux) = null
@@ -4536,7 +4538,7 @@ class TerraFrame extends JApplet
       }
       BLOCKDROPS.get(blocks(layer)(uy)(ux)).foreach { blockdrops =>
         if (blocks(layer)(uy)(ux) != AirBlockType.id && blockdrops != 0) {
-          entities += new Entity(ux * BLOCKSIZE, uy * BLOCKSIZE, random.nextDouble() * 4 - 2, -2, blockdrops, 1.toShort)
+          entities += new Entity((ux * BLOCKSIZE).toDouble, (uy * BLOCKSIZE).toDouble, random.nextDouble() * 4 - 2, -2, blockdrops, 1.toShort)
         }
       }
 
@@ -4627,7 +4629,7 @@ class TerraFrame extends JApplet
       }
       if (t != 0) {
         (0 until Math.max(1, n)).foreach { i =>
-          entities += new Entity(ux * BLOCKSIZE, uy * BLOCKSIZE, random.nextDouble() * 4 - 2, -2, t.toShort, 1.toShort)
+          entities += new Entity((ux * BLOCKSIZE).toDouble, (uy * BLOCKSIZE).toDouble, random.nextDouble() * 4 - 2, -2, t.toShort, 1.toShort)
         }
       }
       removeBlockLighting(ux, uy)
@@ -4696,7 +4698,7 @@ class TerraFrame extends JApplet
               torch <- TORCHESR.get(itemblock)
             } yield torch == blocks(layer)(uy)(ux - 1)
             if (isTorch.exists(identity) || blockdrop == 178 || blockdrop == 182) {
-              entities += new Entity((ux - 1) * BLOCKSIZE, uy * BLOCKSIZE, random.nextDouble() * 4 - 2, -2, blockdrop, 1.toShort)
+              entities += new Entity(((ux - 1) * BLOCKSIZE).toDouble, (uy * BLOCKSIZE).toDouble, random.nextDouble() * 4 - 2, -2, blockdrop, 1.toShort)
               removeBlockLighting(ux - 1, uy)
               if (layer == 1) {
                 addSunLighting(ux - 1, uy)
@@ -4720,7 +4722,7 @@ class TerraFrame extends JApplet
             } yield torch == blocks(layer)(uy)(ux + 1)
 
             if (isTorch.exists(identity) || blockdrop == 178 || blockdrop == 182) {
-              entities += new Entity((ux + 1) * BLOCKSIZE, uy * BLOCKSIZE, random.nextDouble() * 4 - 2, -2, blockdrop, 1.toShort)
+              entities += new Entity(((ux + 1) * BLOCKSIZE).toDouble, (uy * BLOCKSIZE).toDouble, random.nextDouble() * 4 - 2, -2, blockdrop, 1.toShort)
               removeBlockLighting(ux + 1, uy)
               if (layer == 1) {
                 addSunLighting(ux + 1, uy)
@@ -4745,7 +4747,7 @@ class TerraFrame extends JApplet
           }
           BLOCKDROPS.get(blocks(layer)(uy)(ux)).foreach { blockdrop =>
             if (blockdrop != 0) {
-              entities += new Entity(ux * BLOCKSIZE, uy * BLOCKSIZE, random.nextDouble() * 4 - 2, -2, blockdrop, 1.toShort)
+              entities += new Entity((ux * BLOCKSIZE).toDouble, (uy * BLOCKSIZE).toDouble, random.nextDouble() * 4 - 2, -2, blockdrop, 1.toShort)
             }
           }
 
@@ -4836,7 +4838,7 @@ class TerraFrame extends JApplet
           }
           if (t != 0) {
             (0 until Math.max(1, n)).foreach { i =>
-              entities += new Entity(ux * BLOCKSIZE, uy * BLOCKSIZE, random.nextDouble() * 4 - 2, -2, t.toShort, 1.toShort)
+              entities += new Entity((ux * BLOCKSIZE).toDouble, (uy * BLOCKSIZE).toDouble, random.nextDouble() * 4 - 2, -2, t.toShort, 1.toShort)
             }
           }
           removeBlockLighting(ux, uy)
@@ -4924,6 +4926,7 @@ class TerraFrame extends JApplet
         cloudsv += -0.1 * DEBUG_ACCEL
       }
       cloudsy += (random.nextDouble() * (getHeight - cloud.getHeight()) + cloud.getHeight())
+      ()
     }
   }
 
@@ -4931,7 +4934,7 @@ class TerraFrame extends JApplet
     n = findNonLayeredBlockLightSource(ux, uy)
     if (n != 0) {
       addTileToZQueue(ux, uy)
-      lights(uy)(ux) = Math.max(lights(uy)(ux), n)
+      lights(uy)(ux) = math.max(lights(uy)(ux), n.toFloat)
       lsources(uy)(ux) = true
       addTileToQueue(ux, uy)
     }
@@ -4989,6 +4992,7 @@ class TerraFrame extends JApplet
         updatey += uy
         DDELAY.get(blocks(2)(uy)(ux)).foreach(updatet.+=)
         updatel += 2
+        ()
       }
       else {
         addTileToPZQueue(ux, uy)
@@ -5439,10 +5443,6 @@ class TerraFrame extends JApplet
   }
 
   def findNonLayeredBlockLightSource(ux: Int, uy: Int): Int = {
-    findNonLayeredBlockLightSource(ux, uy, layer)
-  }
-
-  def findNonLayeredBlockLightSource(ux: Int, uy: Int, layer: Int): Int = {
     n = 0
     if (blocks(0)(uy)(ux) != AirBlockType.id) n = BLOCKLIGHTS.get(blocks(0)(uy)(ux)).map(Math.max(_, n)).getOrElse(0)
     if (blocks(1)(uy)(ux) != AirBlockType.id) n = BLOCKLIGHTS.get(blocks(1)(uy)(ux)).map(Math.max(_, n)).getOrElse(0)
@@ -5512,10 +5512,10 @@ class TerraFrame extends JApplet
         if (lsources(y)(x)) {
           n = findBlockLightSource(x, y)
           if (isReachedBySunlight(x, y)) {
-            lights(y)(x) = max(lights(y)(x), n, sunlightlevel)
+            lights(y)(x) = max(lights(y)(x), n.toFloat, sunlightlevel.toFloat)
           }
           else {
-            lights(y)(x) = Math.max(lights(y)(x), n)
+            lights(y)(x) = math.max(lights(y)(x), n.toFloat)
           }
           addTileToZQueue(x, y)
         }
@@ -5724,7 +5724,7 @@ class TerraFrame extends JApplet
             }
 */
       if (player.y / 16 < HEIGHT * 0.5) {
-        pg2.translate(getWidth / 2, getHeight * 0.85)
+        pg2.translate((getWidth / 2).toDouble, getHeight * 0.85)
         pg2.rotate((timeOfDay - 70200) / 86400 * Math.PI * 2)
 
         pg2.drawImage(sun,
@@ -5740,7 +5740,7 @@ class TerraFrame extends JApplet
           null)
 
         pg2.rotate(-(timeOfDay - 70200) / 86400 * Math.PI * 2 - Math.PI)
-        pg2.translate(-getWidth / 2, -getHeight * 0.85)
+        pg2.translate((-getWidth / 2).toDouble, -getHeight * 0.85)
 
         cloudsx.indices.foreach { i =>
           cloud = clouds(cloudsn(i))
@@ -5933,9 +5933,9 @@ class TerraFrame extends JApplet
             pg2.setColor(Color.WHITE)
 
             TOOLDURS.get(inventory.ids(uy * 10 + ux)).fold {
-              UIBLOCKS.get(items(inventory.ids(uy * 10 + ux))).foreach(pg2.drawString(_, mouseX, mouseY))
+              UIBLOCKS.get(items(inventory.ids(uy * 10 + ux).toInt)).foreach(pg2.drawString(_, mouseX, mouseY))
             } { t =>
-              UIBLOCKS.get(items(inventory.ids(uy * 10 + ux))).foreach(u => pg2.drawString(u + " (" + (inventory.durs(uy * 10 + ux).toDouble / t * 100).toInt + "%)", mouseX, mouseY))
+              UIBLOCKS.get(items(inventory.ids(uy * 10 + ux).toInt)).foreach(u => pg2.drawString(u + " (" + (inventory.durs(uy * 10 + ux).toDouble / t * 100).toInt + "%)", mouseX, mouseY))
             }
           }
         }
@@ -5959,9 +5959,9 @@ class TerraFrame extends JApplet
               pg2.setFont(mobFont)
               pg2.setColor(Color.WHITE)
               TOOLDURS.get(cic.ids(uy * 2 + ux)).fold {
-                UIBLOCKS.get(items(cic.ids(uy * 2 + ux))).foreach(pg2.drawString(_, mouseX, mouseY))
+                UIBLOCKS.get(items(cic.ids(uy * 2 + ux).toInt)).foreach(pg2.drawString(_, mouseX, mouseY))
               } { t =>
-                UIBLOCKS.get(items(cic.ids(uy * 2 + ux))).foreach(u => pg2.drawString(u + " (" + (cic.durs(uy * 2 + ux).toDouble / t * 100).toInt + "%)", mouseX, mouseY))
+                UIBLOCKS.get(items(cic.ids(uy * 2 + ux).toInt)).foreach(u => pg2.drawString(u + " (" + (cic.durs(uy * 2 + ux).toDouble / t * 100).toInt + "%)", mouseX, mouseY))
               }
             }
           }
@@ -5972,9 +5972,9 @@ class TerraFrame extends JApplet
           pg2.setFont(mobFont)
           pg2.setColor(Color.WHITE)
           TOOLDURS.get(cic.ids(4)).fold {
-            UIBLOCKS.get(items(cic.ids(4))).foreach(pg2.drawString(_, mouseX, mouseY))
+            UIBLOCKS.get(items(cic.ids(4).toInt)).foreach(pg2.drawString(_, mouseX, mouseY))
           } { t =>
-            UIBLOCKS.get(items(cic.ids(4))).foreach(u => pg2.drawString(u + " (" + (cic.durs(4).toDouble / t * 100).toInt + "%)", mouseX, mouseY))
+            UIBLOCKS.get(items(cic.ids(4).toInt)).foreach(u => pg2.drawString(u + " (" + (cic.durs(4).toDouble / t * 100).toInt + "%)", mouseX, mouseY))
           }
 
         }
@@ -5985,9 +5985,9 @@ class TerraFrame extends JApplet
             pg2.setColor(Color.WHITE)
 
             TOOLDURS.get(armor.ids(uy)).fold {
-              UIBLOCKS.get(items(armor.ids(uy))).foreach(pg2.drawString(_, mouseX, mouseY))
+              UIBLOCKS.get(items(armor.ids(uy).toInt)).foreach(pg2.drawString(_, mouseX, mouseY))
             } { t =>
-              UIBLOCKS.get(items(armor.ids(uy))).foreach(u => pg2.drawString(u + " (" + (armor.durs(uy).toDouble / t * 100).toInt + "%)", mouseX, mouseY))
+              UIBLOCKS.get(items(armor.ids(uy).toInt)).foreach(u => pg2.drawString(u + " (" + (armor.durs(uy).toDouble / t * 100).toInt + "%)", mouseX, mouseY))
             }
 
           }
@@ -6005,9 +6005,9 @@ class TerraFrame extends JApplet
                 pg2.setColor(Color.WHITE)
 
                 TOOLDURS.get(ic.ids(uy * 3 + ux)).fold {
-                  UIBLOCKS.get(items(ic.ids(uy * 3 + ux))).foreach(pg2.drawString(_, mouseX, mouseY))
+                  UIBLOCKS.get(items(ic.ids(uy * 3 + ux).toInt)).foreach(pg2.drawString(_, mouseX, mouseY))
                 } { t =>
-                  UIBLOCKS.get(items(ic.ids(uy * 3 + ux))).foreach(u => pg2.drawString(u + " (" + (ic.durs(uy * 3 + ux).toDouble / t * 100).toInt + "%)", mouseX, mouseY))
+                  UIBLOCKS.get(items(ic.ids(uy * 3 + ux).toInt)).foreach(u => pg2.drawString(u + " (" + (ic.durs(uy * 3 + ux).toDouble / t * 100).toInt + "%)", mouseX, mouseY))
                 }
               }
             }
@@ -6020,9 +6020,9 @@ class TerraFrame extends JApplet
             pg2.setColor(Color.WHITE)
 
             TOOLDURS.get(ic.ids(9)).fold {
-              UIBLOCKS.get(items(ic.ids(9))).foreach(pg2.drawString(_, mouseX, mouseY))
+              UIBLOCKS.get(items(ic.ids(9).toInt)).foreach(pg2.drawString(_, mouseX, mouseY))
             } { t =>
-              UIBLOCKS.get(items(ic.ids(9))).foreach(u => pg2.drawString(u + " (" + (ic.durs(9).toDouble / t * 100).toInt + "%)", mouseX, mouseY))
+              UIBLOCKS.get(items(ic.ids(9).toInt)).foreach(u => pg2.drawString(u + " (" + (ic.durs(9).toDouble / t * 100).toInt + "%)", mouseX, mouseY))
             }
           }
         }
@@ -6041,9 +6041,9 @@ class TerraFrame extends JApplet
                 pg2.setColor(Color.WHITE)
 
                 TOOLDURS.get(ic.ids(uy * inventory.CX + ux)).fold {
-                  UIBLOCKS.get(items(ic.ids(uy * inventory.CX + ux))).foreach(pg2.drawString(_, mouseX, mouseY))
+                  UIBLOCKS.get(items(ic.ids(uy * inventory.CX + ux).toInt)).foreach(pg2.drawString(_, mouseX, mouseY))
                 } { t =>
-                  UIBLOCKS.get(items(ic.ids(uy * inventory.CX + ux))).foreach(u => pg2.drawString(u + " (" + (ic.durs(uy * inventory.CX + ux).toDouble / t * 100).toInt + "%)", mouseX, mouseY))
+                  UIBLOCKS.get(items(ic.ids(uy * inventory.CX + ux).toInt)).foreach(u => pg2.drawString(u + " (" + (ic.durs(uy * inventory.CX + ux).toDouble / t * 100).toInt + "%)", mouseX, mouseY))
                 }
               }
             }
@@ -6057,9 +6057,9 @@ class TerraFrame extends JApplet
             pg2.setColor(Color.WHITE)
 
             TOOLDURS.get(ic.ids(0)).fold {
-              UIBLOCKS.get(items(ic.ids(0))).foreach(pg2.drawString(_, mouseX, mouseY))
+              UIBLOCKS.get(items(ic.ids(0).toInt)).foreach(pg2.drawString(_, mouseX, mouseY))
             } { t =>
-              UIBLOCKS.get(items(ic.ids(0))).foreach(u => pg2.drawString(u + " (" + (ic.durs(0).toDouble / t * 100).toInt + "%)", mouseX, mouseY))
+              UIBLOCKS.get(items(ic.ids(0).toInt)).foreach(u => pg2.drawString(u + " (" + (ic.durs(0).toDouble / t * 100).toInt + "%)", mouseX, mouseY))
             }
           }
           if (mouseX >= 6 && mouseX < 46 &&
@@ -6069,9 +6069,9 @@ class TerraFrame extends JApplet
             pg2.setColor(Color.WHITE)
 
             TOOLDURS.get(ic.ids(1)).fold {
-              UIBLOCKS.get(items(ic.ids(1))).foreach(pg2.drawString(_, mouseX, mouseY))
+              UIBLOCKS.get(items(ic.ids(1).toInt)).foreach(pg2.drawString(_, mouseX, mouseY))
             } { t =>
-              UIBLOCKS.get(items(ic.ids(1))).foreach(u => pg2.drawString(u + " (" + (ic.durs(1).toDouble / t * 100).toInt + "%)", mouseY, mouseY))
+              UIBLOCKS.get(items(ic.ids(1).toInt)).foreach(u => pg2.drawString(u + " (" + (ic.durs(1).toDouble / t * 100).toInt + "%)", mouseY, mouseY))
             }
           }
           if (mouseX >= 6 && mouseX < 46 &&
@@ -6081,9 +6081,9 @@ class TerraFrame extends JApplet
             pg2.setColor(Color.WHITE)
 
             TOOLDURS.get(ic.ids(2)).fold {
-              UIBLOCKS.get(items(ic.ids(2))).foreach(pg2.drawString(_, mouseX, mouseY))
+              UIBLOCKS.get(items(ic.ids(2).toInt)).foreach(pg2.drawString(_, mouseX, mouseY))
             } { t =>
-              UIBLOCKS.get(items(ic.ids(2))).foreach(u => pg2.drawString(u + " (" + (ic.durs(2).toDouble / t * 100).toInt + "%)", mouseX, mouseY))
+              UIBLOCKS.get(items(ic.ids(2).toInt)).foreach(u => pg2.drawString(u + " (" + (ic.durs(2).toDouble / t * 100).toInt + "%)", mouseX, mouseY))
             }
           }
           if (mouseX >= 62 && mouseX < 102 &&
@@ -6093,9 +6093,9 @@ class TerraFrame extends JApplet
             pg2.setColor(Color.WHITE)
 
             TOOLDURS.get(ic.ids(3)).fold {
-              UIBLOCKS.get(items(ic.ids(3))).foreach(pg2.drawString(_, mouseX, mouseY))
+              UIBLOCKS.get(items(ic.ids(3).toInt)).foreach(pg2.drawString(_, mouseX, mouseY))
             } { t =>
-              UIBLOCKS.get(items(ic.ids(3))).foreach(u => pg2.drawString(u + " (" + (ic.durs(3).toDouble / t * 100).toInt + "%)", mouseX, mouseY))
+              UIBLOCKS.get(items(ic.ids(3).toInt)).foreach(u => pg2.drawString(u + " (" + (ic.durs(3).toDouble / t * 100).toInt + "%)", mouseX, mouseY))
             }
           }
         }
@@ -6143,6 +6143,7 @@ class TerraFrame extends JApplet
       0, 0, getWidth(), getHeight(),
       0, 0, getWidth(), getHeight(),
       null)
+    ()
   }
 
   def loadWorld(worldFile: String): Boolean = {
@@ -6398,7 +6399,7 @@ class TerraFrame extends JApplet
           if (pixm(dy)(dx) == 255) {
             (0 until 8).foreach { dy2 =>
               (0 until 8).foreach { dx2 =>
-                n = (255 - 32 * Math.sqrt(Math.pow(dx - dx2, 2) + Math.pow(dy - dy2, 2))).toInt
+                n = (255 - 32 * math.sqrt(math.pow((dx - dx2).toDouble, 2) + math.pow((dy - dy2).toDouble, 2))).toInt
                 if (pixm(dy2)(dx2) < n) {
                   pixm(dy2)(dx2) = n
                 }
@@ -6466,14 +6467,14 @@ class TerraFrame extends JApplet
             if (player.imgState.equals("still right") || player.imgState.equals("walk right 1") || player.imgState.equals("walk right 2")) {
               (0 until 9).foreach { i =>
                 if (ic.ids(i) != 0) {
-                  entities += new Entity(icx * BLOCKSIZE, icy * BLOCKSIZE, 2, -2, ic.ids(i), ic.nums(i), ic.durs(i), 75)
+                  entities += new Entity((icx * BLOCKSIZE).toDouble, (icy * BLOCKSIZE).toDouble, 2, -2, ic.ids(i), ic.nums(i), ic.durs(i), 75)
                 }
               }
             }
             if (player.imgState.equals("still left") || player.imgState.equals("walk left 1") || player.imgState.equals("walk left 2")) {
               (0 until 9).foreach { i =>
                 if (ic.ids(i) != 0) {
-                  entities += new Entity(icx * BLOCKSIZE, icy * BLOCKSIZE, -2, -2, ic.ids(i), ic.nums(i), ic.durs(i), 75)
+                  entities += new Entity((icx * BLOCKSIZE).toDouble, (icy * BLOCKSIZE).toDouble, -2, -2, ic.ids(i), ic.nums(i), ic.durs(i), 75)
                 }
               }
             }

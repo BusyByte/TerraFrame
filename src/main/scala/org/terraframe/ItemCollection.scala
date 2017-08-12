@@ -18,7 +18,7 @@ case object RhymestoneChest extends ItemCollectionType
 case object ObduriteChest extends ItemCollectionType
 case object Furnace extends ItemCollectionType
 
-//TODO: make type a sum type
+//TODO: should is be an Array[Int] to avoid converting Short to Int every time if only used for indexing?
 case class ItemCollection(icType: ItemCollectionType, ids: Array[Short], nums: Array[Short], durs: Array[Short]) extends Serializable {
   @transient var image: BufferedImage = _
   var FUELP: Double = 0

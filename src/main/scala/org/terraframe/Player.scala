@@ -194,11 +194,11 @@ case class Player(var x: Double, var y: Double) extends Serializable {
             if (blocks(j + v)(i + u) != 0 && TerraFrame.BLOCKCD.get(blocks(j + v)(i + u)).exists(identity)) {
               if (rect.intersects(new Rectangle(i * BLOCKSIZE, j * BLOCKSIZE, BLOCKSIZE, BLOCKSIZE))) {
                 if (oldx <= i * 16 - width && vx > 0) {
-                  x = i * 16 - width
+                  x = (i * 16 - width).toDouble
                   vx = 0 // right
                 }
                 if (oldx >= i * 16 + BLOCKSIZE && vx < 0) {
-                  x = i * 16 + BLOCKSIZE
+                  x = (i * 16 + BLOCKSIZE).toDouble
                   vx = 0 // left
                 }
               }
@@ -232,16 +232,16 @@ case class Player(var x: Double, var y: Double) extends Serializable {
             if (blocks(j + v)(i + u) != 0 && TerraFrame.BLOCKCD.get(blocks(j + v)(i + u)).exists(identity)) {
               if (rect.intersects(new Rectangle(i * BLOCKSIZE, j * BLOCKSIZE, BLOCKSIZE, BLOCKSIZE))) {
                 if (oldy <= j * 16 - height && vy > 0) {
-                  y = j * 16 - height
+                  y = (j * 16 - height).toDouble
                   if (pvy >= 10 && !TerraFrame.DEBUG_INVINCIBLE) {
-                    hp -= (((pvy - 12.5)) * 2).toInt
+                    hp -= ((pvy - 12.5) * 2).toInt
                   }
                   onGround = true
                   vy = 0 // down
                   pvy = 0
                 }
                 if (oldy >= j * 16 + BLOCKSIZE && vy < 0) {
-                  y = j * 16 + BLOCKSIZE
+                  y = (j * 16 + BLOCKSIZE).toDouble
                   vy = 0 // up
                 }
               }

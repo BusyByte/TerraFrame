@@ -889,7 +889,7 @@ class Inventory extends Serializable {
         }
       }
     }
-    updatedQuantity
+    updatedQuantity.toInt
   }
 
   def removeItem(item: Short, quantity: Short): Int = {
@@ -912,7 +912,7 @@ class Inventory extends Serializable {
         }
       }
     }
-    updatedQuantity
+    updatedQuantity.toInt
   }
 
   def addLocation(i: Int, item: Short, quantity: Short, durability: Short): Int = {
@@ -946,7 +946,7 @@ class Inventory extends Serializable {
         }
       }
     }
-    updatedQuantity
+    updatedQuantity.toInt // TODO: are the signatures on these methods which return updatedQuantity just wrong and should be short?
   }
 
   def removeLocation(i: Int, quantity: Short): Int = {
@@ -965,7 +965,7 @@ class Inventory extends Serializable {
       ids(i) = 0
       update(i)
     }
-    updatedQuantity
+    updatedQuantity.toInt
   }
 
   def reloadImage(): Unit = {
@@ -1248,7 +1248,7 @@ class Inventory extends Serializable {
         }
       }
     }
-    updatedQuantity
+    updatedQuantity.toInt
   }
 
   def removeLocationIC(ic: ItemCollection, i: Int, quantity: Short): Int = {
@@ -1271,7 +1271,7 @@ class Inventory extends Serializable {
         updateIC(ic, i)
       }
     }
-    updatedQuantity
+    updatedQuantity.toInt
   }
 
   def updateIC(ic: ItemCollection, i: Int): Unit = {

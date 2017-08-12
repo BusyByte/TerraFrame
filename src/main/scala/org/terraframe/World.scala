@@ -1,19 +1,16 @@
 package org.terraframe
 
-
 object World {
 
   import MathHelper._
   import TerraFrame.random
 
-  var coordlist: Array2D[Boolean] = _
+  var coordlist: Array2D[Boolean]  = _
   var coordlist2: Array2D[Boolean] = _
-
 
   def generateOutlines(blocks: Array2D[Int]): Array2D[Byte] = {
     generate2(blocks, false)
   }
-
 
   /*    public static generate: Array[AnyRef](width: Int, height: Int, sealevel: Int, stonelevel: Int, TerraFrame inst) {
         pmsg("Generating new world...")
@@ -675,11 +672,11 @@ object World {
         rv: Array[AnyRef] = {blocks_rv, new DoubleContainer(terrain), new DoubleContainer(stonelayer)}
         return rv
     }
-*/
+   */
 
   def generate2(blocks: Array2D[Int], msg: Boolean): Array2D[Byte] = {
-    var x: Int = 0
-    val width: Int = blocks(0).length
+    var x: Int      = 0
+    val width: Int  = blocks(0).length
     val height: Int = blocks.length
     if (msg) {
       println("-> Creating outlines...")
@@ -704,152 +701,121 @@ object World {
               if (up) {
                 if (down) {
                   blockds(y)(x) = 0
-                }
-                else {
+                } else {
                   if (upleft) {
                     if (upright) {
                       blockds(y)(x) = 1
-                    }
-                    else {
+                    } else {
                       blockds(y)(x) = 2
                     }
-                  }
-                  else {
+                  } else {
                     if (upright) {
                       blockds(y)(x) = 3
-                    }
-                    else {
+                    } else {
                       blockds(y)(x) = 4
                     }
                   }
                 }
-              }
-              else {
+              } else {
                 if (down) {
                   if (downright) {
                     if (downleft) {
                       blockds(y)(x) = 5
-                    }
-                    else {
+                    } else {
                       blockds(y)(x) = 6
                     }
-                  }
-                  else {
+                  } else {
                     if (downleft) {
                       blockds(y)(x) = 7
-                    }
-                    else {
+                    } else {
                       blockds(y)(x) = 8
                     }
                   }
-                }
-                else {
+                } else {
                   blockds(y)(x) = 9
                 }
               }
-            }
-            else {
+            } else {
               if (up) {
                 if (down) {
                   if (downleft) {
                     if (upleft) {
                       blockds(y)(x) = 10
-                    }
-                    else {
+                    } else {
                       blockds(y)(x) = 11
                     }
-                  }
-                  else {
+                  } else {
                     if (upleft) {
                       blockds(y)(x) = 12
-                    }
-                    else {
+                    } else {
                       blockds(y)(x) = 13
                     }
                   }
-                }
-                else {
+                } else {
                   if (upleft) {
                     blockds(y)(x) = 14
-                  }
-                  else {
+                  } else {
                     blockds(y)(x) = 15
                   }
                 }
-              }
-              else {
+              } else {
                 if (down) {
                   if (downleft) {
                     blockds(y)(x) = 16
-                  }
-                  else {
+                  } else {
                     blockds(y)(x) = 17
                   }
-                }
-                else {
+                } else {
                   blockds(y)(x) = 18
                 }
               }
             }
-          }
-          else {
+          } else {
             if (right) {
               if (up) {
                 if (down) {
                   if (upright) {
                     if (downright) {
                       blockds(y)(x) = 19
-                    }
-                    else {
+                    } else {
                       blockds(y)(x) = 20
                     }
-                  }
-                  else {
+                  } else {
                     if (downright) {
                       blockds(y)(x) = 21
-                    }
-                    else {
+                    } else {
                       blockds(y)(x) = 22
                     }
                   }
-                }
-                else {
+                } else {
                   if (upright) {
                     blockds(y)(x) = 23
-                  }
-                  else {
+                  } else {
                     blockds(y)(x) = 24
                   }
                 }
-              }
-              else {
+              } else {
                 if (down) {
                   if (downright) {
                     blockds(y)(x) = 25
-                  }
-                  else {
+                  } else {
                     blockds(y)(x) = 26
                   }
-                }
-                else {
+                } else {
                   blockds(y)(x) = 27
                 }
               }
-            }
-            else {
+            } else {
               if (up) {
                 if (down) {
                   blockds(y)(x) = 28
-                }
-                else {
+                } else {
                   blockds(y)(x) = 29
                 }
-              }
-              else {
+              } else {
                 if (down) {
                   blockds(y)(x) = 30
-                }
-                else {
+                } else {
                   blockds(y)(x) = 31
                 }
               }
@@ -862,9 +828,9 @@ object World {
   }
 
   def generate2b(blocks: Array2D[Int], blockds: Array2D[Byte], xpos: Int, ypos: Int): Array2D[Byte] = {
-    var x: Int = 0
-    val width: Int = blocks(0).length
-    val height: Int = blocks.length
+    var x: Int                                                               = 0
+    val width: Int                                                           = blocks(0).length
+    val height: Int                                                          = blocks.length
     var left, right, up, down, upleft, upright, downleft, downright: Boolean = false
     (ypos - 1 until ypos + 2).foreach { y =>
       (xpos - 1 until xpos + 2).foreach { x2 =>
@@ -883,152 +849,121 @@ object World {
               if (up) {
                 if (down) {
                   blockds(y)(x) = 0
-                }
-                else {
+                } else {
                   if (upleft) {
                     if (upright) {
                       blockds(y)(x) = 1
-                    }
-                    else {
+                    } else {
                       blockds(y)(x) = 2
                     }
-                  }
-                  else {
+                  } else {
                     if (upright) {
                       blockds(y)(x) = 3
-                    }
-                    else {
+                    } else {
                       blockds(y)(x) = 4
                     }
                   }
                 }
-              }
-              else {
+              } else {
                 if (down) {
                   if (downright) {
                     if (downleft) {
                       blockds(y)(x) = 5
-                    }
-                    else {
+                    } else {
                       blockds(y)(x) = 6
                     }
-                  }
-                  else {
+                  } else {
                     if (downleft) {
                       blockds(y)(x) = 7
-                    }
-                    else {
+                    } else {
                       blockds(y)(x) = 8
                     }
                   }
-                }
-                else {
+                } else {
                   blockds(y)(x) = 9
                 }
               }
-            }
-            else {
+            } else {
               if (up) {
                 if (down) {
                   if (downleft) {
                     if (upleft) {
                       blockds(y)(x) = 10
-                    }
-                    else {
+                    } else {
                       blockds(y)(x) = 11
                     }
-                  }
-                  else {
+                  } else {
                     if (upleft) {
                       blockds(y)(x) = 12
-                    }
-                    else {
+                    } else {
                       blockds(y)(x) = 13
                     }
                   }
-                }
-                else {
+                } else {
                   if (upleft) {
                     blockds(y)(x) = 14
-                  }
-                  else {
+                  } else {
                     blockds(y)(x) = 15
                   }
                 }
-              }
-              else {
+              } else {
                 if (down) {
                   if (downleft) {
                     blockds(y)(x) = 16
-                  }
-                  else {
+                  } else {
                     blockds(y)(x) = 17
                   }
-                }
-                else {
+                } else {
                   blockds(y)(x) = 18
                 }
               }
             }
-          }
-          else {
+          } else {
             if (right) {
               if (up) {
                 if (down) {
                   if (upright) {
                     if (downright) {
                       blockds(y)(x) = 19
-                    }
-                    else {
+                    } else {
                       blockds(y)(x) = 20
                     }
-                  }
-                  else {
+                  } else {
                     if (downright) {
                       blockds(y)(x) = 21
-                    }
-                    else {
+                    } else {
                       blockds(y)(x) = 22
                     }
                   }
-                }
-                else {
+                } else {
                   if (upright) {
                     blockds(y)(x) = 23
-                  }
-                  else {
+                  } else {
                     blockds(y)(x) = 24
                   }
                 }
-              }
-              else {
+              } else {
                 if (down) {
                   if (downright) {
                     blockds(y)(x) = 25
-                  }
-                  else {
+                  } else {
                     blockds(y)(x) = 26
                   }
-                }
-                else {
+                } else {
                   blockds(y)(x) = 27
                 }
               }
-            }
-            else {
+            } else {
               if (up) {
                 if (down) {
                   blockds(y)(x) = 28
-                }
-                else {
+                } else {
                   blockds(y)(x) = 29
                 }
-              }
-              else {
+              } else {
                 if (down) {
                   blockds(y)(x) = 30
-                }
-                else {
+                } else {
                   blockds(y)(x) = 31
                 }
               }
@@ -1042,23 +977,24 @@ object World {
 
   def connect(b1: Int, b2: Int): Boolean = {
     b1 != 0 && b1 == b2 ||
-      b1 == 1 && b2 == 72 ||
-      b2 == 1 && b1 == 72 ||
-      b1 == 1 && b2 == 73 ||
-      b2 == 1 && b1 == 73 ||
-      b1 == 75 && b2 == 74 ||
-      b2 == 75 && b1 == 74 ||
-      b1 == 91 && b2 == 93 ||
-      b2 == 91 && b1 == 93 ||
-      b2 >= 94 && b2 <= 99 && TerraFrame.wirec(b1) ||
-      b1 == 103 && b2 == 104 ||
-      b2 == 103 && b1 == 104 ||
-      b1 == 15 && b2 == 83 ||
-      b2 == 83 && b1 == 15
+    b1 == 1 && b2 == 72 ||
+    b2 == 1 && b1 == 72 ||
+    b1 == 1 && b2 == 73 ||
+    b2 == 1 && b1 == 73 ||
+    b1 == 75 && b2 == 74 ||
+    b2 == 75 && b1 == 74 ||
+    b1 == 91 && b2 == 93 ||
+    b2 == 91 && b1 == 93 ||
+    b2 >= 94 && b2 <= 99 && TerraFrame.wirec(b1) ||
+    b1 == 103 && b2 == 104 ||
+    b2 == 103 && b1 == 104 ||
+    b1 == 15 && b2 == 83 ||
+    b2 == 83 && b1 == 15
   }
 
   def connect(x1: Int, y1: Int, x2: Int, y2: Int, blocks: Array2D[Int]): Boolean = {
-    y1 > 0 && y1 < blocks.length - 1 && connect(blocks(y1)(mod(x1, blocks(0).length)), blocks(y2)(mod(x2, blocks(0).length)))
+    y1 > 0 && y1 < blocks.length - 1 && connect(blocks(y1)(mod(x1, blocks(0).length)),
+                                                blocks(y2)(mod(x2, blocks(0).length)))
     /*        WIDTH: Int = blocks(0).length
             HEIGHT: Int = blocks.length
             blockcds: Array[Boolean] = TerraFrame.getBLOCKCDS()
@@ -1076,13 +1012,13 @@ object World {
                 b2 == 1 && b1 == 73 && (blocks(2*y1-y2)(2*x1-x2) == 0 || !blockcds(blocks(2*y1-y2)(2*x1-x2)) || blocks(2*y1-y2)(2*x1-x2) == 73) ||
                 b1 == 75 && b2 == 74 && (blocks(2*y2-y1)(2*x2-x1) == 0 || !blockcds(blocks(2*y2-y1)(2*x2-x1)) || blocks(2*y2-y1)(2*x2-x1) == 74) ||
                 b2 == 75 && b1 == 74 && (blocks(2*y1-y2)(2*x1-x2) == 0 || !blockcds(blocks(2*y1-y2)(2*x1-x2)) || blocks(2*y1-y2)(2*x1-x2) == 74))
-    */
+   */
   }
 
-  def generate3(blocks: Array2D[Int], terrain: Array[Double], stonelayer: Array[Double], inst: TerraFrame): Array2D[Byte] = {
+  def generate3(blocks: Array2D[Int], terrain: Array[Double], stonelayer: Array[Double]): Array2D[Byte] = {
     println("-> Creating background...")
-    val width: Int = blocks(0).length
-    val height: Int = blocks.length
+    val width: Int               = blocks(0).length
+    val height: Int              = blocks.length
     val blockbgsi: Array2D[Byte] = Array.ofDim(height, width)
     (0 until height).foreach { y =>
       (0 until width).foreach { x =>
@@ -1111,135 +1047,135 @@ object World {
         if (!(x == 0 || x == width - 1 || y == 0 || y == height - 1)) {
           if (blockbgsi(y)(x) == 8) {
             if (blockbgsi(y - 1)(x - 1) == 0 && blockbgsi(y + 1)(x - 1) != 0 &&
-              blockbgsi(y - 1)(x + 1) == 0 && blockbgsi(y + 1)(x + 1) == 0 &&
-              blockbgsi(y - 1)(x) == 0 && blockbgsi(y + 1)(x) != 0 &&
-              blockbgsi(y)(x - 1) != 0 && blockbgsi(y)(x + 1) == 0) {
+                blockbgsi(y - 1)(x + 1) == 0 && blockbgsi(y + 1)(x + 1) == 0 &&
+                blockbgsi(y - 1)(x) == 0 && blockbgsi(y + 1)(x) != 0 &&
+                blockbgsi(y)(x - 1) != 0 && blockbgsi(y)(x + 1) == 0) {
               blockbgs(y)(x) = 1
             }
             if (blockbgsi(y - 1)(x - 1) != 0 && blockbgsi(y + 1)(x - 1) != 0 &&
-              blockbgsi(y - 1)(x + 1) == 0 && blockbgsi(y + 1)(x + 1) == 0 &&
-              blockbgsi(y - 1)(x) == 0 && blockbgsi(y + 1)(x) != 0 &&
-              blockbgsi(y)(x - 1) != 0 && blockbgsi(y)(x + 1) == 0) {
+                blockbgsi(y - 1)(x + 1) == 0 && blockbgsi(y + 1)(x + 1) == 0 &&
+                blockbgsi(y - 1)(x) == 0 && blockbgsi(y + 1)(x) != 0 &&
+                blockbgsi(y)(x - 1) != 0 && blockbgsi(y)(x + 1) == 0) {
               blockbgs(y)(x) = 1
             }
             if (blockbgsi(y - 1)(x - 1) == 0 && blockbgsi(y + 1)(x - 1) != 0 &&
-              blockbgsi(y - 1)(x + 1) == 0 && blockbgsi(y + 1)(x + 1) != 0 &&
-              blockbgsi(y - 1)(x) == 0 && blockbgsi(y + 1)(x) != 0 &&
-              blockbgsi(y)(x - 1) != 0 && blockbgsi(y)(x + 1) == 0) {
+                blockbgsi(y - 1)(x + 1) == 0 && blockbgsi(y + 1)(x + 1) != 0 &&
+                blockbgsi(y - 1)(x) == 0 && blockbgsi(y + 1)(x) != 0 &&
+                blockbgsi(y)(x - 1) != 0 && blockbgsi(y)(x + 1) == 0) {
               blockbgs(y)(x) = 1
             }
             if (blockbgsi(y - 1)(x - 1) != 0 && blockbgsi(y + 1)(x - 1) != 0 &&
-              blockbgsi(y - 1)(x + 1) == 0 && blockbgsi(y + 1)(x + 1) != 0 &&
-              blockbgsi(y - 1)(x) == 0 && blockbgsi(y + 1)(x) != 0 &&
-              blockbgsi(y)(x - 1) != 0 && blockbgsi(y)(x + 1) == 0) {
+                blockbgsi(y - 1)(x + 1) == 0 && blockbgsi(y + 1)(x + 1) != 0 &&
+                blockbgsi(y - 1)(x) == 0 && blockbgsi(y + 1)(x) != 0 &&
+                blockbgsi(y)(x - 1) != 0 && blockbgsi(y)(x + 1) == 0) {
               blockbgs(y)(x) = 1
             }
             if (blockbgsi(y - 1)(x - 1) == 0 && blockbgsi(y + 1)(x - 1) == 0 &&
-              blockbgsi(y - 1)(x + 1) == 0 && blockbgsi(y + 1)(x + 1) != 0 &&
-              blockbgsi(y - 1)(x) == 0 && blockbgsi(y + 1)(x) != 0 &&
-              blockbgsi(y)(x - 1) == 0 && blockbgsi(y)(x + 1) != 0) {
+                blockbgsi(y - 1)(x + 1) == 0 && blockbgsi(y + 1)(x + 1) != 0 &&
+                blockbgsi(y - 1)(x) == 0 && blockbgsi(y + 1)(x) != 0 &&
+                blockbgsi(y)(x - 1) == 0 && blockbgsi(y)(x + 1) != 0) {
               blockbgs(y)(x) = 2
             }
             if (blockbgsi(y - 1)(x - 1) == 0 && blockbgsi(y + 1)(x - 1) == 0 &&
-              blockbgsi(y - 1)(x + 1) != 0 && blockbgsi(y + 1)(x + 1) != 0 &&
-              blockbgsi(y - 1)(x) == 0 && blockbgsi(y + 1)(x) != 0 &&
-              blockbgsi(y)(x - 1) == 0 && blockbgsi(y)(x + 1) != 0) {
+                blockbgsi(y - 1)(x + 1) != 0 && blockbgsi(y + 1)(x + 1) != 0 &&
+                blockbgsi(y - 1)(x) == 0 && blockbgsi(y + 1)(x) != 0 &&
+                blockbgsi(y)(x - 1) == 0 && blockbgsi(y)(x + 1) != 0) {
               blockbgs(y)(x) = 2
             }
             if (blockbgsi(y - 1)(x - 1) == 0 && blockbgsi(y + 1)(x - 1) != 0 &&
-              blockbgsi(y - 1)(x + 1) == 0 && blockbgsi(y + 1)(x + 1) != 0 &&
-              blockbgsi(y - 1)(x) == 0 && blockbgsi(y + 1)(x) != 0 &&
-              blockbgsi(y)(x - 1) == 0 && blockbgsi(y)(x + 1) != 0) {
+                blockbgsi(y - 1)(x + 1) == 0 && blockbgsi(y + 1)(x + 1) != 0 &&
+                blockbgsi(y - 1)(x) == 0 && blockbgsi(y + 1)(x) != 0 &&
+                blockbgsi(y)(x - 1) == 0 && blockbgsi(y)(x + 1) != 0) {
               blockbgs(y)(x) = 2
             }
             if (blockbgsi(y - 1)(x - 1) == 0 && blockbgsi(y + 1)(x - 1) != 0 &&
-              blockbgsi(y - 1)(x + 1) != 0 && blockbgsi(y + 1)(x + 1) != 0 &&
-              blockbgsi(y - 1)(x) == 0 && blockbgsi(y + 1)(x) != 0 &&
-              blockbgsi(y)(x - 1) == 0 && blockbgsi(y)(x + 1) != 0) {
+                blockbgsi(y - 1)(x + 1) != 0 && blockbgsi(y + 1)(x + 1) != 0 &&
+                blockbgsi(y - 1)(x) == 0 && blockbgsi(y + 1)(x) != 0 &&
+                blockbgsi(y)(x - 1) == 0 && blockbgsi(y)(x + 1) != 0) {
               blockbgs(y)(x) = 2
             }
             if (blockbgsi(y - 1)(x - 1) == 0 && blockbgsi(y + 1)(x - 1) == 0 &&
-              blockbgsi(y - 1)(x + 1) != 0 && blockbgsi(y + 1)(x + 1) != 0 &&
-              blockbgsi(y - 1)(x) != 0 && blockbgsi(y + 1)(x) != 0 &&
-              blockbgsi(y)(x - 1) == 0 && blockbgsi(y)(x + 1) != 0) {
+                blockbgsi(y - 1)(x + 1) != 0 && blockbgsi(y + 1)(x + 1) != 0 &&
+                blockbgsi(y - 1)(x) != 0 && blockbgsi(y + 1)(x) != 0 &&
+                blockbgsi(y)(x - 1) == 0 && blockbgsi(y)(x + 1) != 0) {
               blockbgs(y)(x) = 3
             }
             if (blockbgsi(y - 1)(x - 1) != 0 && blockbgsi(y + 1)(x - 1) == 0 &&
-              blockbgsi(y - 1)(x + 1) != 0 && blockbgsi(y + 1)(x + 1) != 0 &&
-              blockbgsi(y - 1)(x) != 0 && blockbgsi(y + 1)(x) != 0 &&
-              blockbgsi(y)(x - 1) == 0 && blockbgsi(y)(x + 1) != 0) {
+                blockbgsi(y - 1)(x + 1) != 0 && blockbgsi(y + 1)(x + 1) != 0 &&
+                blockbgsi(y - 1)(x) != 0 && blockbgsi(y + 1)(x) != 0 &&
+                blockbgsi(y)(x - 1) == 0 && blockbgsi(y)(x + 1) != 0) {
               blockbgs(y)(x) = 3
             }
             if (blockbgsi(y - 1)(x - 1) == 0 && blockbgsi(y + 1)(x - 1) != 0 &&
-              blockbgsi(y - 1)(x + 1) != 0 && blockbgsi(y + 1)(x + 1) != 0 &&
-              blockbgsi(y - 1)(x) != 0 && blockbgsi(y + 1)(x) != 0 &&
-              blockbgsi(y)(x - 1) == 0 && blockbgsi(y)(x + 1) != 0) {
+                blockbgsi(y - 1)(x + 1) != 0 && blockbgsi(y + 1)(x + 1) != 0 &&
+                blockbgsi(y - 1)(x) != 0 && blockbgsi(y + 1)(x) != 0 &&
+                blockbgsi(y)(x - 1) == 0 && blockbgsi(y)(x + 1) != 0) {
               blockbgs(y)(x) = 3
             }
             if (blockbgsi(y - 1)(x - 1) != 0 && blockbgsi(y + 1)(x - 1) != 0 &&
-              blockbgsi(y - 1)(x + 1) != 0 && blockbgsi(y + 1)(x + 1) != 0 &&
-              blockbgsi(y - 1)(x) != 0 && blockbgsi(y + 1)(x) != 0 &&
-              blockbgsi(y)(x - 1) == 0 && blockbgsi(y)(x + 1) != 0) {
+                blockbgsi(y - 1)(x + 1) != 0 && blockbgsi(y + 1)(x + 1) != 0 &&
+                blockbgsi(y - 1)(x) != 0 && blockbgsi(y + 1)(x) != 0 &&
+                blockbgsi(y)(x - 1) == 0 && blockbgsi(y)(x + 1) != 0) {
               blockbgs(y)(x) = 3
             }
             if (blockbgsi(y - 1)(x - 1) != 0 && blockbgsi(y + 1)(x - 1) != 0 &&
-              blockbgsi(y - 1)(x + 1) == 0 && blockbgsi(y + 1)(x + 1) == 0 &&
-              blockbgsi(y - 1)(x) != 0 && blockbgsi(y + 1)(x) != 0 &&
-              blockbgsi(y)(x - 1) != 0 && blockbgsi(y)(x + 1) == 0) {
+                blockbgsi(y - 1)(x + 1) == 0 && blockbgsi(y + 1)(x + 1) == 0 &&
+                blockbgsi(y - 1)(x) != 0 && blockbgsi(y + 1)(x) != 0 &&
+                blockbgsi(y)(x - 1) != 0 && blockbgsi(y)(x + 1) == 0) {
               blockbgs(y)(x) = 4
             }
             if (blockbgsi(y - 1)(x - 1) != 0 && blockbgsi(y + 1)(x - 1) != 0 &&
-              blockbgsi(y - 1)(x + 1) != 0 && blockbgsi(y + 1)(x + 1) == 0 &&
-              blockbgsi(y - 1)(x) != 0 && blockbgsi(y + 1)(x) != 0 &&
-              blockbgsi(y)(x - 1) != 0 && blockbgsi(y)(x + 1) == 0) {
+                blockbgsi(y - 1)(x + 1) != 0 && blockbgsi(y + 1)(x + 1) == 0 &&
+                blockbgsi(y - 1)(x) != 0 && blockbgsi(y + 1)(x) != 0 &&
+                blockbgsi(y)(x - 1) != 0 && blockbgsi(y)(x + 1) == 0) {
               blockbgs(y)(x) = 4
             }
             if (blockbgsi(y - 1)(x - 1) != 0 && blockbgsi(y + 1)(x - 1) != 0 &&
-              blockbgsi(y - 1)(x + 1) == 0 && blockbgsi(y + 1)(x + 1) != 0 &&
-              blockbgsi(y - 1)(x) != 0 && blockbgsi(y + 1)(x) != 0 &&
-              blockbgsi(y)(x - 1) != 0 && blockbgsi(y)(x + 1) == 0) {
+                blockbgsi(y - 1)(x + 1) == 0 && blockbgsi(y + 1)(x + 1) != 0 &&
+                blockbgsi(y - 1)(x) != 0 && blockbgsi(y + 1)(x) != 0 &&
+                blockbgsi(y)(x - 1) != 0 && blockbgsi(y)(x + 1) == 0) {
               blockbgs(y)(x) = 4
             }
             if (blockbgsi(y - 1)(x - 1) != 0 && blockbgsi(y + 1)(x - 1) != 0 &&
-              blockbgsi(y - 1)(x + 1) != 0 && blockbgsi(y + 1)(x + 1) != 0 &&
-              blockbgsi(y - 1)(x) != 0 && blockbgsi(y + 1)(x) != 0 &&
-              blockbgsi(y)(x - 1) != 0 && blockbgsi(y)(x + 1) == 0) {
+                blockbgsi(y - 1)(x + 1) != 0 && blockbgsi(y + 1)(x + 1) != 0 &&
+                blockbgsi(y - 1)(x) != 0 && blockbgsi(y + 1)(x) != 0 &&
+                blockbgsi(y)(x - 1) != 0 && blockbgsi(y)(x + 1) == 0) {
               blockbgs(y)(x) = 4
             }
             if (blockbgsi(y - 1)(x - 1) == 0 && blockbgsi(y + 1)(x - 1) != 0 &&
-              blockbgsi(y - 1)(x + 1) == 0 && blockbgsi(y + 1)(x + 1) != 0 &&
-              blockbgsi(y - 1)(x) == 0 && blockbgsi(y + 1)(x) != 0 &&
-              blockbgsi(y)(x - 1) != 0 && blockbgsi(y)(x + 1) != 0) {
+                blockbgsi(y - 1)(x + 1) == 0 && blockbgsi(y + 1)(x + 1) != 0 &&
+                blockbgsi(y - 1)(x) == 0 && blockbgsi(y + 1)(x) != 0 &&
+                blockbgsi(y)(x - 1) != 0 && blockbgsi(y)(x + 1) != 0) {
               blockbgs(y)(x) = 5
             }
             if (blockbgsi(y - 1)(x - 1) != 0 && blockbgsi(y + 1)(x - 1) != 0 &&
-              blockbgsi(y - 1)(x + 1) == 0 && blockbgsi(y + 1)(x + 1) != 0 &&
-              blockbgsi(y - 1)(x) == 0 && blockbgsi(y + 1)(x) != 0 &&
-              blockbgsi(y)(x - 1) != 0 && blockbgsi(y)(x + 1) != 0) {
+                blockbgsi(y - 1)(x + 1) == 0 && blockbgsi(y + 1)(x + 1) != 0 &&
+                blockbgsi(y - 1)(x) == 0 && blockbgsi(y + 1)(x) != 0 &&
+                blockbgsi(y)(x - 1) != 0 && blockbgsi(y)(x + 1) != 0) {
               blockbgs(y)(x) = 5
             }
             if (blockbgsi(y - 1)(x - 1) == 0 && blockbgsi(y + 1)(x - 1) != 0 &&
-              blockbgsi(y - 1)(x + 1) != 0 && blockbgsi(y + 1)(x + 1) != 0 &&
-              blockbgsi(y - 1)(x) == 0 && blockbgsi(y + 1)(x) != 0 &&
-              blockbgsi(y)(x - 1) != 0 && blockbgsi(y)(x + 1) != 0) {
+                blockbgsi(y - 1)(x + 1) != 0 && blockbgsi(y + 1)(x + 1) != 0 &&
+                blockbgsi(y - 1)(x) == 0 && blockbgsi(y + 1)(x) != 0 &&
+                blockbgsi(y)(x - 1) != 0 && blockbgsi(y)(x + 1) != 0) {
               blockbgs(y)(x) = 5
             }
             if (blockbgsi(y - 1)(x - 1) != 0 && blockbgsi(y + 1)(x - 1) != 0 &&
-              blockbgsi(y - 1)(x + 1) != 0 && blockbgsi(y + 1)(x + 1) != 0 &&
-              blockbgsi(y - 1)(x) == 0 && blockbgsi(y + 1)(x) != 0 &&
-              blockbgsi(y)(x - 1) != 0 && blockbgsi(y)(x + 1) != 0) {
+                blockbgsi(y - 1)(x + 1) != 0 && blockbgsi(y + 1)(x + 1) != 0 &&
+                blockbgsi(y - 1)(x) == 0 && blockbgsi(y + 1)(x) != 0 &&
+                blockbgsi(y)(x - 1) != 0 && blockbgsi(y)(x + 1) != 0) {
               blockbgs(y)(x) = 5
             }
             if (blockbgsi(y - 1)(x - 1) == 0 && blockbgsi(y + 1)(x - 1) != 0 &&
-              blockbgsi(y - 1)(x + 1) != 0 && blockbgsi(y + 1)(x + 1) != 0 &&
-              blockbgsi(y - 1)(x) != 0 && blockbgsi(y + 1)(x) != 0 &&
-              blockbgsi(y)(x - 1) != 0 && blockbgsi(y)(x + 1) != 0) {
+                blockbgsi(y - 1)(x + 1) != 0 && blockbgsi(y + 1)(x + 1) != 0 &&
+                blockbgsi(y - 1)(x) != 0 && blockbgsi(y + 1)(x) != 0 &&
+                blockbgsi(y)(x - 1) != 0 && blockbgsi(y)(x + 1) != 0) {
               blockbgs(y)(x) = 6
             }
             if (blockbgsi(y - 1)(x - 1) != 0 && blockbgsi(y + 1)(x - 1) != 0 &&
-              blockbgsi(y - 1)(x + 1) == 0 && blockbgsi(y + 1)(x + 1) != 0 &&
-              blockbgsi(y - 1)(x) != 0 && blockbgsi(y + 1)(x) != 0 &&
-              blockbgsi(y)(x - 1) != 0 && blockbgsi(y)(x + 1) != 0) {
+                blockbgsi(y - 1)(x + 1) == 0 && blockbgsi(y + 1)(x + 1) != 0 &&
+                blockbgsi(y - 1)(x) != 0 && blockbgsi(y + 1)(x) != 0 &&
+                blockbgsi(y)(x - 1) != 0 && blockbgsi(y)(x + 1) != 0) {
               blockbgs(y)(x) = 7
             }
           }
@@ -1250,8 +1186,7 @@ object World {
       (0 until width).foreach { x =>
         if (y == (height * 0.975).toInt) {
           blockbgs(y)(x) = 17
-        }
-        else if (y > (height * 0.975).toInt) {
+        } else if (y > (height * 0.975).toInt) {
           blockbgs(y)(x) = 0
         }
       }
@@ -1269,15 +1204,16 @@ object World {
     coordlist = Array.ofDim(cwidth * 2 + 1, cheight * 2 + 1)
     (-cwidth to cwidth).foreach { x =>
       (-cheight to cheight).foreach { y =>
-        coordlist(x + cwidth)(y + cheight) = Math.pow(x * 1.0 / cwidth, 2) + Math.pow(y * 1.0 / cheight, 2) < 1 - random.nextDouble() * erosion
+        coordlist(x + cwidth)(y + cheight) = Math.pow(x * 1.0 / cwidth, 2) + Math.pow(y * 1.0 / cheight, 2) < 1 - random
+          .nextDouble() * erosion
       }
     }
     (-cwidth to cwidth).foreach { x =>
       (-cheight to cheight).foreach { y =>
         if ((x + cwidth <= 0 || !coordlist(x + cwidth - 1)(y + cheight)) &&
-          (x + cwidth + 1 >= coordlist.length || !coordlist(x + cwidth + 1)(y + cheight)) &&
-          (y + cheight <= 0 || !coordlist(x + cwidth)(y + cheight - 1)) &&
-          (y + cheight + 1 >= coordlist(0).length || !coordlist(x + cwidth)(y + cheight + 1))) {
+            (x + cwidth + 1 >= coordlist.length || !coordlist(x + cwidth + 1)(y + cheight)) &&
+            (y + cheight <= 0 || !coordlist(x + cwidth)(y + cheight - 1)) &&
+            (y + cheight + 1 >= coordlist(0).length || !coordlist(x + cwidth)(y + cheight + 1))) {
           coordlist(x + cwidth)(y + cheight) = false
         }
       }
@@ -1285,9 +1221,9 @@ object World {
     (-cwidth to cwidth).foreach { x =>
       (-cheight to cheight).foreach { y =>
         if ((x + cwidth <= 0 || coordlist(x + cwidth - 1)(y + cheight)) &&
-          (x + cwidth + 1 >= coordlist.length || coordlist(x + cwidth + 1)(y + cheight)) &&
-          (y + cheight <= 0 || coordlist(x + cwidth)(y + cheight - 1)) &&
-          (y + cheight + 1 >= coordlist(0).length || coordlist(x + cwidth)(y + cheight + 1))) {
+            (x + cwidth + 1 >= coordlist.length || coordlist(x + cwidth + 1)(y + cheight)) &&
+            (y + cheight <= 0 || coordlist(x + cwidth)(y + cheight - 1)) &&
+            (y + cheight + 1 >= coordlist(0).length || coordlist(x + cwidth)(y + cheight + 1))) {
           coordlist(x + cwidth)(y + cheight) = true
         }
       }
