@@ -354,7 +354,7 @@ class Inventory extends Serializable {
   }
   // END CONSTRUCTOR
 
-  def addItem(item: Short, quantity: Short): Int = {
+  def addItem(item: Short, quantity: Short): Short = {
 
     TerraFrame.TOOLDURS
       .get(item)
@@ -365,7 +365,7 @@ class Inventory extends Serializable {
       }
   }
 
-  def addItem(item: Short, quantity: Short, durability: Short): Int = {
+  def addItem(item: Short, quantity: Short, durability: Short): Short = {
     var updatedQuantity: Short = quantity
     (0 until 40).foreach { i =>
       if (ids(i) == item && TerraFrame.MAXSTACKS.get(ids(i)).exists(maxstacks => nums(i) < maxstacks)) {
@@ -400,10 +400,10 @@ class Inventory extends Serializable {
         }
       }
     }
-    updatedQuantity.toInt
+    updatedQuantity
   }
 
-  def removeItem(item: Short, quantity: Short): Int = {
+  def removeItem(item: Short, quantity: Short): Short = {
     var updatedQuantity: Short = quantity
     (0 until 40).foreach { i =>
       if (ids(i) == item) {
@@ -422,10 +422,10 @@ class Inventory extends Serializable {
         }
       }
     }
-    updatedQuantity.toInt
+    updatedQuantity
   }
 
-  def addLocation(i: Int, item: Short, quantity: Short, durability: Short): Int = {
+  def addLocation(i: Int, item: Short, quantity: Short, durability: Short): Short = {
     var updatedQuantity: Short = quantity
     if (ids(i) == item) {
       if (TerraFrame.MAXSTACKS.get(ids(i)).exists(maxstacks => maxstacks - nums(i) >= updatedQuantity)) {
@@ -453,10 +453,10 @@ class Inventory extends Serializable {
         }
       }
     }
-    updatedQuantity.toInt // TODO: are the signatures on these methods which return updatedQuantity just wrong and should be short?
+    updatedQuantity
   }
 
-  def removeLocation(i: Int, quantity: Short): Int = {
+  def removeLocation(i: Int, quantity: Short): Short = {
     var updatedQuantity: Short = quantity
     if (nums(i) >= updatedQuantity) {
       nums(i) = (nums(i) - updatedQuantity).toShort
@@ -471,7 +471,7 @@ class Inventory extends Serializable {
       ids(i) = 0
       update(i)
     }
-    updatedQuantity.toInt
+    updatedQuantity
   }
 
   def reloadImage(): Unit = {
@@ -705,11 +705,11 @@ class Inventory extends Serializable {
     }
   }
 
-  def addLocationIC(ic: ItemCollection, i: Int, item: Short, quantity: Short): Int = {
+  def addLocationIC(ic: ItemCollection, i: Int, item: Short, quantity: Short): Short = {
     addLocationIC(ic, i, item, quantity, 0.toShort)
   }
 
-  def addLocationIC(ic: ItemCollection, i: Int, item: Short, quantity: Short, durability: Short): Int = {
+  def addLocationIC(ic: ItemCollection, i: Int, item: Short, quantity: Short, durability: Short): Short = {
     var updatedQuantity: Short = quantity
     if (ic.ids(i) == item) {
       if (TerraFrame.MAXSTACKS.get(ic.ids(i)).exists(maxstacks => maxstacks - ic.nums(i) >= updatedQuantity)) {
@@ -743,10 +743,10 @@ class Inventory extends Serializable {
         }
       }
     }
-    updatedQuantity.toInt
+    updatedQuantity
   }
 
-  def removeLocationIC(ic: ItemCollection, i: Int, quantity: Short): Int = {
+  def removeLocationIC(ic: ItemCollection, i: Int, quantity: Short): Short = {
     var updatedQuantity: Short = quantity
     if (ic.nums(i) >= updatedQuantity) {
       ic.nums(i) = (ic.nums(i) - updatedQuantity).toShort
@@ -765,7 +765,7 @@ class Inventory extends Serializable {
         updateIC(ic, i)
       }
     }
-    updatedQuantity.toInt
+    updatedQuantity
   }
 
   def updateIC(ic: ItemCollection, i: Int): Unit = {

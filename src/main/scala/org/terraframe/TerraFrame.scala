@@ -3126,7 +3126,7 @@ class TerraFrame extends JApplet
                   moveNumTemp = inventory.nums(uy * 10 + ux)
                   moveDurTemp = inventory.durs(uy * 10 + ux)
                   if (moveItem == inventory.ids(uy * 10 + ux)) {
-                    moveNum = inventory.addLocation(uy * 10 + ux, moveItem, moveNum, moveDur).toShort
+                    moveNum = inventory.addLocation(uy * 10 + ux, moveItem, moveNum, moveDur)
                     if (moveNum == 0) {
                       moveItem = 0
                       moveDur = 0
@@ -3158,7 +3158,7 @@ class TerraFrame extends JApplet
                 moveNumTemp = cic.nums(uy * 2 + ux)
                 moveDurTemp = cic.durs(uy * 2 + ux)
                 if (moveItem == cic.ids(uy * 2 + ux)) {
-                  moveNum = inventory.addLocationIC(cic, uy * 2 + ux, moveItem, moveNum, moveDur).toShort
+                  moveNum = inventory.addLocationIC(cic, uy * 2 + ux, moveItem, moveNum, moveDur)
                   if (moveNum == 0) {
                     moveItem = 0
                     moveDur = 0
@@ -3213,7 +3213,7 @@ class TerraFrame extends JApplet
                     moveItemTemp = ic.ids(uy * 3 + ux)
                     moveNumTemp = ic.nums(uy * 3 + ux)
                     if (moveItem == ic.ids(uy * 3 + ux)) {
-                      moveNum = inventory.addLocationIC(ic, uy * 3 + ux, moveItem, moveNum, moveDur).toShort
+                      moveNum = inventory.addLocationIC(ic, uy * 3 + ux, moveItem, moveNum, moveDur)
                       if (moveNum == 0) {
                         moveItem = 0
                       }
@@ -3269,7 +3269,7 @@ class TerraFrame extends JApplet
                     moveItemTemp = ic.ids(uy * inventory.CX + ux)
                     moveNumTemp = ic.nums(uy * inventory.CX + ux)
                     if (moveItem == ic.ids(uy * inventory.CX + ux)) {
-                      moveNum = inventory.addLocationIC(ic, uy * inventory.CX + ux, moveItem, moveNum, moveDur).toShort
+                      moveNum = inventory.addLocationIC(ic, uy * inventory.CX + ux, moveItem, moveNum, moveDur)
                       if (moveNum == 0) {
                         moveItem = 0
                       }
@@ -3322,7 +3322,7 @@ class TerraFrame extends JApplet
                 moveItemTemp = ic.ids(2)
                 moveNumTemp = ic.nums(2)
                 if (moveItem == ic.ids(2)) {
-                  moveNum = inventory.addLocationIC(ic, 2, moveItem, moveNum, moveDur).toShort
+                  moveNum = inventory.addLocationIC(ic, 2, moveItem, moveNum, moveDur)
                   if (moveNum == 0) {
                     moveItem = 0
                   }
@@ -4218,7 +4218,7 @@ class TerraFrame extends JApplet
           }
         }
         else if (entities(i).mdelay <= 0) {
-          n = inventory.addItem(entities(i).id, entities(i).num, entities(i).dur)
+          n = inventory.addItem(entities(i).id, entities(i).num, entities(i).dur).toInt
           if (n != 0) {
             entities += new Entity(entities(i).x, entities(i).y, entities(i).vx, entities(i).vy, entities(i).id, (entities(i).num - n).toShort, entities(i).dur)
           }
