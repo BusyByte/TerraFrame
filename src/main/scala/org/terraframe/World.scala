@@ -3,9 +3,7 @@ package org.terraframe
 import scala.math._
 import org.terraframe.{ MathHelper => mh }
 
-
 object World {
-
 
   import TerraFrame.random
 
@@ -997,8 +995,9 @@ object World {
   }
 
   def connect(x1: Int, y1: Int, x2: Int, y2: Int, blocks: Array2D[Int]): Boolean = {
-    y1 > 0 && y1 < blocks.length - 1 && connect(blocks(y1)(mh.mod(x1, blocks(0).length)),
-                                                blocks(y2)(mh.mod(x2, blocks(0).length)))
+    y1 > 0 && y1 < blocks.length - 1 && connect(
+      blocks(y1)(mh.mod(x1, blocks(0).length)),
+      blocks(y2)(mh.mod(x2, blocks(0).length)))
     /*        WIDTH: Int = blocks(0).length
             HEIGHT: Int = blocks.length
             blockcds: Array[Boolean] = TerraFrame.getBLOCKCDS()
