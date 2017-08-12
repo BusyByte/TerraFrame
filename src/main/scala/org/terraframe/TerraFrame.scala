@@ -2565,7 +2565,7 @@ class TerraFrame extends JApplet
     val tlist1 = Array[Short](0, 0, 0, 0, 0)
     val tlist2 = Array[Short](0, 0, 0, 0, 0)
     val tlist3 = Array[Short](0, 0, 0, 0, 0)
-    cic = ItemCollection(CIC, tlist1, tlist2, tlist3)
+    cic = ItemCollection(Crafting, tlist1, tlist2, tlist3)
     inventory.renderCollection(cic)
 
     val tlist4 = Array[Short](0, 0, 0, 0)
@@ -6243,7 +6243,7 @@ class TerraFrame extends JApplet
       val tlist1 = Array[Short](0, 0, 0, 0, 0)
       val tlist2 = Array[Short](0, 0, 0, 0, 0)
       val tlist3 = Array[Short](0, 0, 0, 0, 0)
-      cic = ItemCollection(CIC, tlist1, tlist2, tlist3)
+      cic = ItemCollection(Crafting, tlist1, tlist2, tlist3)
       inventory.renderCollection(cic)
     }
     if (ic != null) {

@@ -4,7 +4,7 @@ import java.awt.image._
 import java.io.Serializable
 
 sealed trait ItemCollectionType
-case object CIC             extends ItemCollectionType
+case object Crafting        extends ItemCollectionType //old name CIC
 case object Armor           extends ItemCollectionType
 case object Workbench       extends ItemCollectionType
 case object WoodenChest     extends ItemCollectionType

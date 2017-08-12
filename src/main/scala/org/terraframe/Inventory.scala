@@ -579,7 +579,7 @@ class Inventory extends Serializable {
   }
 
   def renderCollection(ic: ItemCollection): Unit = {
-    if (ic.icType == CIC) {
+    if (ic.icType == Crafting) {
       if (ic.image == null) {
         ic.image = loadImage("interface/cic.png") //TODO: should we be loading images here?
         (0 until 4).foreach { i =>
@@ -769,7 +769,7 @@ class Inventory extends Serializable {
   }
 
   def updateIC(ic: ItemCollection, i: Int): Unit = {
-    if (ic.icType == CIC) {
+    if (ic.icType == Crafting) {
       py = i / 2
       px = i - (py * 2)
       (px * 40 until px * 40 + 40).foreach { x =>
