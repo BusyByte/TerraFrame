@@ -33,14 +33,6 @@ case class Player(var x: Double, var y: Double) extends Serializable {
 
   import Player._
 
-  var ix, iy, ivx, ivy, bx1, by1, bx2, by2, thp, hp: Int = _
-  var onGround, onGroundDelay, grounded: Boolean         = _
-  var rect: Rectangle                                    = _
-
-  var imgDelay: Int    = _
-  var imgState: PlayerImageState = StillRight
-
-  //begin constructor
   var oldx: Double = x
   var oldy: Double = y
 
@@ -48,25 +40,28 @@ case class Player(var x: Double, var y: Double) extends Serializable {
   var vy: Double  = 0
   var pvy: Double = 0
 
-  onGround = false
+  var ix: Int = x.toInt
+  var iy: Int = y.toInt
+  var ivx: Int = vx.toInt
+  var ivy: Int = vy.toInt
 
+  var onGround: Boolean = false
+
+  var imgState: PlayerImageState = StillRight
   @transient var image: BufferedImage = rightStillImage
 
-  ix = x.toInt
-  iy = y.toInt
-  ivx = vx.toInt
-  ivy = vy.toInt
+  var imgDelay: Int = 0
 
-  rect = new Rectangle(ix, iy, width, height)
+  var thp: Int = 50
 
-  imgDelay = 0
+  var hp: Int = thp
+
+  val rect = new Rectangle(ix, iy, width, height)
+
+  var bx1, by1, bx2, by2: Int = _
+  var onGroundDelay, grounded: Boolean         = _
 
 
-  thp = 50
-
-  hp = thp
-
-  //end constructor
   def update(blocks: Array2D[Int], userInput: UserInput, u: Int, v: Int): Unit = {
     grounded = onGround || onGroundDelay
     if (userInput.isLeftKeyPressed) {
