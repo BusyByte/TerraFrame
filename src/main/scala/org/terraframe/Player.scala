@@ -189,7 +189,7 @@ case class Player(var x: Double, var y: Double) extends Serializable {
         ivx = vx.toInt
         ivy = vy.toInt
 
-        rect = new Rectangle(ix - 1, iy, width + 2, height)
+        rect.setBounds(ix - 1, iy, width + 2, height)
 
         bx1 = (x / BLOCKSIZE).toInt
         by1 = (y / BLOCKSIZE).toInt
@@ -224,7 +224,7 @@ case class Player(var x: Double, var y: Double) extends Serializable {
         ivx = vx.toInt
         ivy = vy.toInt
 
-        rect = new Rectangle(ix, iy - 1, width, height + 2)
+        rect.setBounds(ix, iy - 1, width, height + 2)
 
         bx1 = (x / BLOCKSIZE).toInt
         by1 = (y / BLOCKSIZE).toInt
@@ -263,31 +263,31 @@ case class Player(var x: Double, var y: Double) extends Serializable {
     ivx = vx.toInt
     ivy = vy.toInt
 
-    rect = new Rectangle(ix - 1, iy - 1, width + 2, height + 2)
+    rect.setBounds(ix - 1, iy - 1, width + 2, height + 2)
   }
 
   def reloadImage(): Unit = {
     if (grounded) {
-      if (imgState.equals("still left") || imgState.equals("walk left 1")) {
-        image = loadImage("sprites/player/left_still.png")
+      if (imgState == StillLeft || imgState == WalkLeft1) {
+        image = leftStillImage
       }
-      if (imgState.equals("walk left 2")) {
-        image = loadImage("sprites/player/left_walk.png")
+      if (imgState == WalkLeft2) {
+        image = leftWalkImage
       }
-      if (imgState.equals("still right") || imgState.equals("walk right 1")) {
-        image = loadImage("sprites/player/right_still.png")
+      if (imgState  == StillRight || imgState == WalkRight1) {
+        image = rightStillImage
       }
-      if (imgState.equals("walk right 2")) {
-        image = loadImage("sprites/player/right_walk.png")
+      if (imgState == WalkRight2) {
+        image = rightWalkImage
       }
     } else {
-      if (imgState.equals("still left") || imgState.equals("walk left 1") ||
-          imgState.equals("walk left 2")) {
-        image = loadImage("sprites/player/left_jump.png")
+      if (imgState == StillLeft || imgState == WalkLeft1 ||
+          imgState == WalkLeft2) {
+        image = leftJumpImage
       }
-      if (imgState.equals("still right") || imgState.equals("walk right 1") ||
-          imgState.equals("walk right 2")) {
-        image = loadImage("sprites/player/right_jump.png")
+      if (imgState == StillRight || imgState == WalkRight1 ||
+          imgState == WalkRight2) {
+        image = rightJumpImage
       }
     }
   }
