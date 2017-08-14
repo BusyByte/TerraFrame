@@ -11,14 +11,14 @@ import scala.math._
 import scala.util.Random
 
 sealed trait AI
-case object BubbleAI extends AI
-case object FastBubbleAI extends AI
-case object ZombieAI extends AI
+case object BubbleAI       extends AI
+case object FastBubbleAI   extends AI
+case object ZombieAI       extends AI
 case object ShootingStarAI extends AI
-case object SandbotAI extends AI
-case object BulletAI extends AI
-case object BatAI extends AI
-case object BeeAI extends AI
+case object SandbotAI      extends AI
+case object BulletAI       extends AI
+case object BatAI          extends AI
+case object BeeAI          extends AI
 
 sealed abstract class EntityStrategy(
     val imageName: String,
@@ -28,55 +28,38 @@ sealed abstract class EntityStrategy(
     val ai: AI
 )
 
+object BlueBubble extends EntityStrategy("blue_bubble", 18, 0, 2, BubbleAI)
 
-object BlueBubble
-  extends EntityStrategy("blue_bubble", 18, 0, 2, BubbleAI)
+object GreenBubble extends EntityStrategy("green_bubble", 25, 0, 4, BubbleAI)
 
-object GreenBubble
-  extends EntityStrategy("green_bubble", 25, 0, 4, BubbleAI)
+object RedBubble extends EntityStrategy("red_bubble", 40, 0, 6, BubbleAI)
 
-object RedBubble
-  extends EntityStrategy("red_bubble", 40, 0, 6, BubbleAI)
+object YellowBubble extends EntityStrategy("yellow_bubble", 65, 1, 9, BubbleAI)
 
-object YellowBubble
-  extends EntityStrategy("yellow_bubble", 65, 1, 9, BubbleAI)
+object BlackBubble extends EntityStrategy("black_bubble", 100, 3, 14, BubbleAI)
 
-object BlackBubble
-  extends EntityStrategy("black_bubble", 100, 3, 14, BubbleAI)
+object WhiteBubble extends EntityStrategy("white_bubble", 70, 2, 11, FastBubbleAI)
 
-object WhiteBubble
-  extends EntityStrategy("white_bubble", 70, 2, 11, FastBubbleAI)
+object Zombie extends EntityStrategy("zombie", 35, 0, 5, ZombieAI)
 
-object Zombie
-  extends EntityStrategy("zombie", 35, 0, 5, ZombieAI)
+object ArmoredZombie extends EntityStrategy("armored_zombie", 45, 2, 7, ZombieAI)
 
-object ArmoredZombie
-  extends EntityStrategy("armored_zombie", 45, 2, 7, ZombieAI)
+object ShootingStar extends EntityStrategy("shooting_star", 25, 0, 5, ShootingStarAI)
 
-object ShootingStar
-  extends EntityStrategy("shooting_star", 25, 0, 5, ShootingStarAI)
+object Sandbot extends EntityStrategy("sandbot", 50, 2, 3, SandbotAI)
 
-object Sandbot
-  extends EntityStrategy("sandbot", 50, 2, 3, SandbotAI)
+object SandbotBullet extends EntityStrategy("sandbot_bullet", 1, 0, 7, BulletAI)
 
-object SandbotBullet
-  extends EntityStrategy("sandbot_bullet", 1, 0, 7, BulletAI)
+object Snowman extends EntityStrategy("snowman", 40, 0, 6, ZombieAI)
 
-object Snowman
-  extends EntityStrategy("snowman", 40, 0, 6, ZombieAI)
+object Bat extends EntityStrategy("bat", 15, 0, 5, BatAI)
 
-object Bat
-  extends EntityStrategy("bat", 15, 0, 5, BatAI)
+object Bee extends EntityStrategy("bee", 1, 0, 5, BeeAI)
 
-object Bee
-  extends EntityStrategy("bee", 1, 0, 5, BeeAI)
-
-object Skeleton
-  extends EntityStrategy("skeleton", 50, 1, 7, ZombieAI)
-
+object Skeleton extends EntityStrategy("skeleton", 50, 1, 7, ZombieAI)
 
 sealed trait Entity {
-  @volatile def image: BufferedImage
+  def image: BufferedImage
   def ix: Int
   def iy: Int
   def x: Double
@@ -88,12 +71,10 @@ sealed trait Entity {
 
   def update(blocks: Array2D[Int], player: Player, u: Int, v: Int): Boolean
 }
-case class AIEntity(var x: Double,
-                    var y: Double,
-                    var vx: Double,
-                    var vy: Double,
-                    strategy: EntityStrategy)
-  extends Entity with Serializable {
+
+case class AIEntity(var x: Double, var y: Double, var vx: Double, var vy: Double, strategy: EntityStrategy)
+    extends Entity
+    with Serializable {
 
   import TerraFrame.BLOCKSIZE
 
@@ -106,12 +87,9 @@ case class AIEntity(var x: Double,
   var imgState: String                                   = _
   var onGround, immune, grounded, onGroundDelay: Boolean = _
 
-  var n: Double               = _
-  var bx1, bx2, by1, by2: Int = _
-
-  var newMob: Option[Entity]          = None
+  var newMob: Option[Entity] = None
   @transient var image: BufferedImage = strategy.ai match {
-    case BubbleAI | FastBubbleAI| ShootingStarAI| SandbotAI | BulletAI | BeeAI =>
+    case BubbleAI | FastBubbleAI | ShootingStarAI | SandbotAI | BulletAI | BeeAI =>
       loadImage("sprites/monsters/" + strategy.imageName + "/normal.png")
 
     case ZombieAI =>
@@ -122,32 +100,30 @@ case class AIEntity(var x: Double,
 
   }
 
-
   val width: Int  = image.getWidth() * 2
   val height: Int = image.getHeight() * 2
 
   imgState = strategy.ai match {
     case BatAI => "normal right"
-    case _ => "still right"
+    case _     => "still right"
   }
 
   vx = strategy.ai match {
     case BatAI => 3.toDouble
-    case _ => vx
+    case _     => vx
   }
 
-  var ix              = x.toInt
-  var iy              = y.toInt
-  var ivx             = vx.toInt
-  var ivy             = vy.toInt
-  val rect = new Rectangle(ix - 1, iy, width + 2, height)
+  var ix            = x.toInt
+  var iy            = y.toInt
+  var ivx           = vx.toInt
+  var ivy           = vy.toInt
+  val rect          = new Rectangle(ix - 1, iy, width + 2, height)
   val intersectRect = new Rectangle(-1, -1, -1, -1)
 
   var imgDelay: Int = 0
   var bcount: Int   = 0
 
   var hp: Int = strategy.thp
-
 
   def update(blocks: Array2D[Int], player: Player, u: Int, v: Int): Boolean = {
     newMob = None
@@ -166,7 +142,7 @@ case class AIEntity(var x: Double,
         if (x > player.x) {
           vx = max(vx - 0.1, -1.2)
           if (imgState == "still left" || imgState == "still right" ||
-            imgState == "walk right 1" || imgState == "walk right 2") {// TODO: sum type image state
+              imgState == "walk right 1" || imgState == "walk right 2") { // TODO: sum type image state
             imgDelay = 10
             imgState = "walk left 2"
             image = loadImage("sprites/monsters/" + strategy.imageName + "/left_walk.png")
@@ -180,7 +156,7 @@ case class AIEntity(var x: Double,
               if (imgState == "walk left 2") {
                 imgDelay = 10
                 imgState = "walk left 1"
-                  image = loadImage("sprites/monsters/" + strategy.imageName + "/left_still.png")
+                image = loadImage("sprites/monsters/" + strategy.imageName + "/left_still.png")
               }
             }
           } else {
@@ -189,7 +165,7 @@ case class AIEntity(var x: Double,
         } else {
           vx = min(vx + 0.1, 1.2)
           if (imgState == "still left" || imgState == "still right" ||
-            imgState == "walk left 1" || imgState == "walk left 2") {
+              imgState == "walk left 1" || imgState == "walk left 2") {
             imgDelay = 10
             imgState = "walk right 2"
             image = loadImage("sprites/monsters/" + strategy.imageName + "/right_walk.png")
@@ -212,11 +188,11 @@ case class AIEntity(var x: Double,
         }
         if (!grounded) {
           if (imgState == "still left" || imgState == "walk left 1" ||
-            imgState == "walk left 2") {
+              imgState == "walk left 2") {
             image = loadImage("sprites/monsters/" + strategy.imageName + "/left_jump.png")
           }
           if (imgState == "still right" || imgState == "walk right 1" ||
-            imgState == "walk right 2") {
+              imgState == "walk right 2") {
             image = loadImage("sprites/monsters/" + strategy.imageName + "/right_jump.png")
           }
         }
@@ -249,7 +225,7 @@ case class AIEntity(var x: Double,
         collide(blocks, player, u, v)
 
       case ShootingStarAI =>
-        n = atan2(player.y - y, player.x - x)
+        val n = atan2(player.y - y, player.x - x)
         vx += cos(n) / 10
         vy += sin(n) / 10
         if (vx < -5) vx = -5
@@ -367,61 +343,54 @@ case class AIEntity(var x: Double,
 
     x = x + vx
 
-    (0 until 2).foreach { i =>
-      ix = x.toInt
-      iy = y.toInt
-      ivx = vx.toInt
-      ivy = vy.toInt
+    ix = x.toInt
+    iy = y.toInt
+    ivx = vx.toInt
+    ivy = vy.toInt
 
-      rect.setBounds(ix - 1, iy, width + 2, height)
+    rect.setBounds(ix - 1, iy, width + 2, height)
 
-      bx1 = (x / BLOCKSIZE).toInt
-      by1 = (y / BLOCKSIZE).toInt
-      bx2 = ((x + width) / BLOCKSIZE).toInt
-      by2 = ((y + height) / BLOCKSIZE).toInt
+    val bx1 = max(0, (x / BLOCKSIZE).toInt)
+    val by1 = max(0, (y / BLOCKSIZE).toInt)
+    val bx2 = min(blocks(0).length - 1, ((x + width) / BLOCKSIZE).toInt)
+    val by2 = min(blocks.length - 1, ((y + height) / BLOCKSIZE).toInt)
 
-      bx1 = max(0, bx1)
-      by1 = max(0, by1)
-      bx2 = min(blocks(0).length - 1, bx2)
-      by2 = min(blocks.length - 1, by2)
-
-      (bx1 to bx2).foreach { i =>
-        (by1 to by2).foreach { j =>
-          if (blocks(j)(i) != 0 && TerraFrame.BLOCKCD.get(blocks(j + v)(i + u)).exists(identity)) {
-            intersectRect.setBounds(i * BLOCKSIZE, j * BLOCKSIZE, BLOCKSIZE, BLOCKSIZE)
-            if (rect.intersects(intersectRect)) {
-              if (oldx <= i * 16 - width && (vx > 0 || strategy.ai == ShootingStarAI)) {
-                x = (i * 16 - width).toDouble
-                if (strategy.ai == BubbleAI) {
-                  vx = -vx
-                } else if (strategy.ai == ZombieAI) {
-                  vx = 0
-                  if (onGround && player.x > x) {
-                    vy = -7
-                  }
-                } else if (strategy.ai == BatAI) {
-                  vx = -vx
-                } else {
-                  vx = 0 // right
+    (bx1 to bx2).foreach { i =>
+      (by1 to by2).foreach { j =>
+        if (blocks(j)(i) != 0 && TerraFrame.BLOCKCD.get(blocks(j + v)(i + u)).exists(identity)) {
+          intersectRect.setBounds(i * BLOCKSIZE, j * BLOCKSIZE, BLOCKSIZE, BLOCKSIZE)
+          if (rect.intersects(intersectRect)) {
+            if (oldx <= i * 16 - width && (vx > 0 || strategy.ai == ShootingStarAI)) {
+              x = (i * 16 - width).toDouble
+              if (strategy.ai == BubbleAI) {
+                vx = -vx
+              } else if (strategy.ai == ZombieAI) {
+                vx = 0
+                if (onGround && player.x > x) {
+                  vy = -7
                 }
-                rv = true
+              } else if (strategy.ai == BatAI) {
+                vx = -vx
+              } else {
+                vx = 0 // right
               }
-              if (oldx >= i * 16 + BLOCKSIZE && (vx < 0 || strategy.ai == ShootingStarAI)) {
-                x = (i * 16 + BLOCKSIZE).toDouble
-                if (strategy.ai == BubbleAI) {
-                  vx = -vx
-                } else if (strategy.ai == ZombieAI) {
-                  vx = 0
-                  if (onGround && player.x < x) {
-                    vy = -7
-                  }
-                } else if (strategy.ai == BatAI) {
-                  vx = -vx
-                } else {
-                  vx = 0 // left
+              rv = true
+            }
+            if (oldx >= i * 16 + BLOCKSIZE && (vx < 0 || strategy.ai == ShootingStarAI)) {
+              x = (i * 16 + BLOCKSIZE).toDouble
+              if (strategy.ai == BubbleAI) {
+                vx = -vx
+              } else if (strategy.ai == ZombieAI) {
+                vx = 0
+                if (onGround && player.x < x) {
+                  vy = -7
                 }
-                rv = true
+              } else if (strategy.ai == BatAI) {
+                vx = -vx
+              } else {
+                vx = 0 // left
               }
+              rv = true
             }
           }
         }
@@ -431,48 +400,36 @@ case class AIEntity(var x: Double,
     y = y + vy
     onGround = false
 
-    (0 until 2).foreach { i =>
-      ix = x.toInt
-      iy = y.toInt
-      ivx = vx.toInt
-      ivy = vy.toInt
+    ix = x.toInt
+    iy = y.toInt
+    ivx = vx.toInt
+    ivy = vy.toInt
 
-      rect.setBounds(ix, iy - 1, width, height + 2)
+    rect.setBounds(ix, iy - 1, width, height + 2)
 
-      bx1 = (x / BLOCKSIZE).toInt
-      by1 = (y / BLOCKSIZE).toInt
-      bx2 = ((x + width) / BLOCKSIZE).toInt
-      by2 = ((y + height) / BLOCKSIZE).toInt
-
-      bx1 = max(0, bx1)
-      by1 = max(0, by1)
-      bx2 = min(blocks(0).length - 1, bx2)
-      by2 = min(blocks.length - 1, by2)
-
-      (bx1 to bx2).foreach { i =>
-        (by1 to by2).foreach { j =>
-          if (blocks(j)(i) != 0 && TerraFrame.BLOCKCD.get(blocks(j + v)(i + u)).exists(identity)) {
-            intersectRect.setBounds(i * BLOCKSIZE, j * BLOCKSIZE, BLOCKSIZE, BLOCKSIZE)
-            if (rect.intersects(intersectRect)) {
-              if (oldy <= j * 16 - height && (vy > 0 || strategy.ai == ShootingStarAI)) {
-                y = (j * 16 - height).toDouble
-                onGround = true
-                if (strategy.ai == BubbleAI) {
-                  vy = -vy
-                } else {
-                  vy = 0 // down
-                }
-                rv = true
+    (bx1 to bx2).foreach { i =>
+      (by1 to by2).foreach { j =>
+        if (blocks(j)(i) != 0 && TerraFrame.BLOCKCD.get(blocks(j + v)(i + u)).exists(identity)) {
+          intersectRect.setBounds(i * BLOCKSIZE, j * BLOCKSIZE, BLOCKSIZE, BLOCKSIZE)
+          if (rect.intersects(intersectRect)) {
+            if (oldy <= j * 16 - height && (vy > 0 || strategy.ai == ShootingStarAI)) {
+              y = (j * 16 - height).toDouble
+              onGround = true
+              if (strategy.ai == BubbleAI) {
+                vy = -vy
+              } else {
+                vy = 0 // down
               }
-              if (oldy >= j * 16 + BLOCKSIZE && (vy < 0 || strategy.ai == ShootingStarAI)) {
-                y = (j * 16 + BLOCKSIZE).toDouble
-                if (strategy.ai == BubbleAI) {
-                  vy = -vy
-                } else {
-                  vy = 0 // up
-                }
-                rv = true
+              rv = true
+            }
+            if (oldy >= j * 16 + BLOCKSIZE && (vy < 0 || strategy.ai == ShootingStarAI)) {
+              y = (j * 16 + BLOCKSIZE).toDouble
+              if (strategy.ai == BubbleAI) {
+                vy = -vy
+              } else {
+                vy = 0 // up
               }
+              rv = true
             }
           }
         }
@@ -579,9 +536,9 @@ case class AIEntity(var x: Double,
         (0 until random.nextInt(3)).foreach { _ =>
           dropList += 75.toShort
         }
-      case Bat => //TODO: figure out what this drops
-      case Bee => //TODO: figure out what this drops
-      case Skeleton => //TODO: figure out what this drops
+      case Bat           => //TODO: figure out what this drops
+      case Bee           => //TODO: figure out what this drops
+      case Skeleton      => //TODO: figure out what this drops
       case SandbotBullet => //TODO: figure out what this drops
     }
 
@@ -599,7 +556,6 @@ case class AIEntity(var x: Double,
 
 }
 
-
 case class IdEntity(var x: Double,
                     var y: Double,
                     var vx: Double,
@@ -608,45 +564,26 @@ case class IdEntity(var x: Double,
                     num: Short,
                     dur: Short,
                     var mdelay: Int)
-    extends Entity with Serializable {
+    extends Entity
+    with Serializable {
 
   import TerraFrame.BLOCKSIZE
 
-  //Begin constructor
   var oldx: Double = x
   var oldy: Double = y
 
-  var nohit: Boolean = false
-
-  var thp, ap, atk: Int                                  = _
-  var imgState: String                                   = _
   var onGround, immune, grounded, onGroundDelay: Boolean = _
-
-  var n: Double               = _
-  var bx1, bx2, by1, by2: Int = _
-
-  @transient var image: BufferedImage = _
-
-  TerraFrame.itemImgs.get(id).foreach { i =>
-    image = i
-  }
-
-  imgState = "still right"
+  @transient val image: BufferedImage                    = TerraFrame.itemImgs.get(id).get
 
   val width: Int  = image.getWidth() * 2
   val height: Int = image.getHeight() * 2
 
-  var ix              = x.toInt
-  var iy              = y.toInt
-  var ivx             = vx.toInt
-  var ivy             = vy.toInt
-  val rect = new Rectangle(ix - 1, iy, width + 2, height)
+  var ix            = x.toInt
+  var iy            = y.toInt
+  var ivx           = vx.toInt
+  var ivy           = vy.toInt
+  val rect          = new Rectangle(ix - 1, iy, width + 2, height)
   val intersectRect = new Rectangle(-1, -1, -1, -1)
-
-  var imgDelay: Int = 0
-  var bcount: Int   = 0
-
-  var hp: Int = thp
 
   def this(x: Double, y: Double, vx: Double, vy: Double) {
     this(x, y, vx, vy, 0, 0, 0, 0)
@@ -695,39 +632,32 @@ case class IdEntity(var x: Double,
 
     x = x + vx
 
-    (0 until 2).foreach { i =>
-      ix = x.toInt
-      iy = y.toInt
-      ivx = vx.toInt
-      ivy = vy.toInt
+    ix = x.toInt
+    iy = y.toInt
+    ivx = vx.toInt
+    ivy = vy.toInt
 
-      rect.setBounds(ix - 1, iy, width + 2, height)
+    rect.setBounds(ix - 1, iy, width + 2, height)
 
-      bx1 = (x / BLOCKSIZE).toInt
-      by1 = (y / BLOCKSIZE).toInt
-      bx2 = ((x + width) / BLOCKSIZE).toInt
-      by2 = ((y + height) / BLOCKSIZE).toInt
+    val bx1: Int = max(0, (x / BLOCKSIZE).toInt)
+    val by1: Int = max(0, (y / BLOCKSIZE).toInt)
+    val bx2: Int = min(blocks(0).length - 1, ((x + width) / BLOCKSIZE).toInt)
+    val by2: Int = min(blocks.length - 1, ((y + height) / BLOCKSIZE).toInt)
 
-      bx1 = max(0, bx1)
-      by1 = max(0, by1)
-      bx2 = min(blocks(0).length - 1, bx2)
-      by2 = min(blocks.length - 1, by2)
-
-      (bx1 to bx2).foreach { i =>
-        (by1 to by2).foreach { j =>
-          if (blocks(j)(i) != 0 && TerraFrame.BLOCKCD.get(blocks(j + v)(i + u)).exists(identity)) {
-            intersectRect.setBounds(i * BLOCKSIZE, j * BLOCKSIZE, BLOCKSIZE, BLOCKSIZE)
-            if (rect.intersects(intersectRect)) {
-              if (oldx <= i * 16 - width && (vx > 0)) {
-                x = (i * 16 - width).toDouble
-                vx = 0 // right
-                rv = true
-              }
-              if (oldx >= i * 16 + BLOCKSIZE && (vx < 0)) {
-                x = (i * 16 + BLOCKSIZE).toDouble
-                vx = 0 // left
-                rv = true
-              }
+    (bx1 to bx2).foreach { i =>
+      (by1 to by2).foreach { j =>
+        if (blocks(j)(i) != 0 && TerraFrame.BLOCKCD.get(blocks(j + v)(i + u)).exists(identity)) {
+          intersectRect.setBounds(i * BLOCKSIZE, j * BLOCKSIZE, BLOCKSIZE, BLOCKSIZE)
+          if (rect.intersects(intersectRect)) {
+            if (oldx <= i * 16 - width && (vx > 0)) {
+              x = (i * 16 - width).toDouble
+              vx = 0 // right
+              rv = true
+            }
+            if (oldx >= i * 16 + BLOCKSIZE && (vx < 0)) {
+              x = (i * 16 + BLOCKSIZE).toDouble
+              vx = 0 // left
+              rv = true
             }
           }
         }
@@ -737,40 +667,28 @@ case class IdEntity(var x: Double,
     y = y + vy
     onGround = false
 
-    (0 until 2).foreach { i =>
-      ix = x.toInt
-      iy = y.toInt
-      ivx = vx.toInt
-      ivy = vy.toInt
+    ix = x.toInt
+    iy = y.toInt
+    ivx = vx.toInt
+    ivy = vy.toInt
 
-      rect.setBounds(ix, iy - 1, width, height + 2)
+    rect.setBounds(ix, iy - 1, width, height + 2)
 
-      bx1 = (x / BLOCKSIZE).toInt
-      by1 = (y / BLOCKSIZE).toInt
-      bx2 = ((x + width) / BLOCKSIZE).toInt
-      by2 = ((y + height) / BLOCKSIZE).toInt
-
-      bx1 = max(0, bx1)
-      by1 = max(0, by1)
-      bx2 = min(blocks(0).length - 1, bx2)
-      by2 = min(blocks.length - 1, by2)
-
-      (bx1 to bx2).foreach { i =>
-        (by1 to by2).foreach { j =>
-          if (blocks(j)(i) != 0 && TerraFrame.BLOCKCD.get(blocks(j + v)(i + u)).exists(identity)) {
-            intersectRect.setBounds(i * BLOCKSIZE, j * BLOCKSIZE, BLOCKSIZE, BLOCKSIZE)
-            if (rect.intersects(intersectRect)) {
-              if (oldy <= j * 16 - height && (vy > 0)) {
-                y = (j * 16 - height).toDouble
-                onGround = true
-                vy = 0 // down
-                rv = true
-              }
-              if (oldy >= j * 16 + BLOCKSIZE && (vy < 0)) {
-                y = (j * 16 + BLOCKSIZE).toDouble
-                vy = 0 // up
-                rv = true
-              }
+    (bx1 to bx2).foreach { i =>
+      (by1 to by2).foreach { j =>
+        if (blocks(j)(i) != 0 && TerraFrame.BLOCKCD.get(blocks(j + v)(i + u)).exists(identity)) {
+          intersectRect.setBounds(i * BLOCKSIZE, j * BLOCKSIZE, BLOCKSIZE, BLOCKSIZE)
+          if (rect.intersects(intersectRect)) {
+            if (oldy <= j * 16 - height && (vy > 0)) {
+              y = (j * 16 - height).toDouble
+              onGround = true
+              vy = 0 // down
+              rv = true
+            }
+            if (oldy >= j * 16 + BLOCKSIZE && (vy < 0)) {
+              y = (j * 16 + BLOCKSIZE).toDouble
+              vy = 0 // up
+              rv = true
             }
           }
         }
@@ -785,24 +703,6 @@ case class IdEntity(var x: Double,
     rect.setBounds(ix - 1, iy - 1, width + 2, height + 2)
 
     rv
-  }
-
-  def hit(damage: Int, player: Player): Boolean = {
-    if (!immune && !nohit) {
-      hp -= max(1, damage - ap)
-      immune = true
-      if (player.x + Player.width / 2 < x + width / 2) {
-        vx += 4
-      } else {
-        vx -= 4
-      }
-      vy -= 1.2
-    }
-    hp <= 0
-  }
-
-  def drops(): ArrayBuffer[Short] = {
-    ArrayBuffer.empty[Short]
   }
 
   def reloadImage(): Unit = {
