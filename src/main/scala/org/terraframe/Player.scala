@@ -10,24 +10,25 @@ import TerraFrame.BLOCKSIZE
 import scala.math._
 
 object Player {
-  lazy val width  = TerraFrame.PLAYERSIZEX
-  lazy val height = TerraFrame.PLAYERSIZEY
+  lazy val width: Int  = TerraFrame.PLAYERSIZEX
+  lazy val height: Int = TerraFrame.PLAYERSIZEY
 
-  lazy val leftWalkImage = loadImage("sprites/player/left_walk.png")
-  lazy val leftStillImage = loadImage("sprites/player/left_still.png")
-  lazy val rightWalkImage = loadImage("sprites/player/right_walk.png")
-  lazy val rightStillImage = loadImage("sprites/player/right_still.png")
-  lazy val leftJumpImage = loadImage("sprites/player/left_jump.png")
-  lazy val rightJumpImage = loadImage("sprites/player/right_jump.png")
+  lazy val leftWalkImage: BufferedImage   = loadImage("sprites/player/left_walk.png")
+  lazy val leftStillImage: BufferedImage  = loadImage("sprites/player/left_still.png")
+  lazy val rightWalkImage: BufferedImage  = loadImage("sprites/player/right_walk.png")
+  lazy val rightStillImage: BufferedImage = loadImage("sprites/player/right_still.png")
+  lazy val leftJumpImage: BufferedImage   = loadImage("sprites/player/left_jump.png")
+  lazy val rightJumpImage: BufferedImage  = loadImage("sprites/player/right_jump.png")
+  lazy val totalHP: Int                   = 50
 }
 
 sealed trait PlayerImageState
-object StillLeft extends PlayerImageState
+object StillLeft  extends PlayerImageState
 object StillRight extends PlayerImageState
 object WalkRight1 extends PlayerImageState
 object WalkRight2 extends PlayerImageState
-object WalkLeft1 extends PlayerImageState
-object WalkLeft2 extends PlayerImageState
+object WalkLeft1  extends PlayerImageState
+object WalkLeft2  extends PlayerImageState
 
 case class Player(var x: Double, var y: Double) extends Serializable {
 
@@ -40,27 +41,22 @@ case class Player(var x: Double, var y: Double) extends Serializable {
   var vy: Double  = 0
   var pvy: Double = 0
 
-  var ix: Int = x.toInt
-  var iy: Int = y.toInt
+  var ix: Int  = x.toInt
+  var iy: Int  = y.toInt
   var ivx: Int = vx.toInt
   var ivy: Int = vy.toInt
 
-  var onGround: Boolean = false
+  var onGround, onGroundDelay, grounded: Boolean = false
 
-  var imgState: PlayerImageState = StillRight
+  var imgState: PlayerImageState      = StillRight
   @transient var image: BufferedImage = rightStillImage
 
   var imgDelay: Int = 0
 
-  var thp: Int = 50
+  var hp: Int = totalHP
 
-  var hp: Int = thp
-
-  val rect = new Rectangle(ix, iy, width, height)
-
-  var bx1, by1, bx2, by2: Int = _
-  var onGroundDelay, grounded: Boolean         = _
-
+  val playerRect    = new Rectangle(ix, iy, width, height)
+  val intersectRect = new Rectangle(-1, -1, -1, -1)
 
   def update(blocks: Array2D[Int], userInput: UserInput, u: Int, v: Int): Unit = {
     grounded = onGround || onGroundDelay
@@ -189,17 +185,18 @@ case class Player(var x: Double, var y: Double) extends Serializable {
         ivx = vx.toInt
         ivy = vy.toInt
 
-        rect.setBounds(ix - 1, iy, width + 2, height)
+        playerRect.setBounds(ix - 1, iy, width + 2, height)
 
-        bx1 = (x / BLOCKSIZE).toInt
-        by1 = (y / BLOCKSIZE).toInt
-        bx2 = ((x + width) / BLOCKSIZE).toInt
-        by2 = ((y + height) / BLOCKSIZE).toInt
+        val bx1: Int = (x / BLOCKSIZE).toInt
+        val by1: Int = (y / BLOCKSIZE).toInt
+        val bx2: Int = ((x + width) / BLOCKSIZE).toInt
+        val by2: Int = ((y + height) / BLOCKSIZE).toInt
 
         (bx1 to bx2).foreach { i =>
           (by1 to by2).foreach { j =>
             if (blocks(j + v)(i + u) != 0 && TerraFrame.BLOCKCD.get(blocks(j + v)(i + u)).exists(identity)) {
-              if (rect.intersects(new Rectangle(i * BLOCKSIZE, j * BLOCKSIZE, BLOCKSIZE, BLOCKSIZE))) {
+              intersectRect.setBounds(i * BLOCKSIZE, j * BLOCKSIZE, BLOCKSIZE, BLOCKSIZE)
+              if (playerRect.intersects(intersectRect)) {
                 if (oldx <= i * 16 - width && vx > 0) {
                   x = (i * 16 - width).toDouble
                   vx = 0 // right
@@ -224,20 +221,18 @@ case class Player(var x: Double, var y: Double) extends Serializable {
         ivx = vx.toInt
         ivy = vy.toInt
 
-        rect.setBounds(ix, iy - 1, width, height + 2)
+        playerRect.setBounds(ix, iy - 1, width, height + 2)
 
-        bx1 = (x / BLOCKSIZE).toInt
-        by1 = (y / BLOCKSIZE).toInt
-        bx2 = ((x + width) / BLOCKSIZE).toInt
-        by2 = ((y + height) / BLOCKSIZE).toInt
-
-        by1 = max(0, by1)
-        by2 = min(blocks.length - 1, by2)
+        val bx1: Int = (x / BLOCKSIZE).toInt
+        val by1: Int = max(0, (y / BLOCKSIZE).toInt)
+        val bx2: Int = ((x + width) / BLOCKSIZE).toInt
+        val by2: Int = min(blocks.length - 1, ((y + height) / BLOCKSIZE).toInt)
 
         (bx1 to bx2).foreach { i =>
           (by1 to by2).foreach { j =>
             if (blocks(j + v)(i + u) != 0 && TerraFrame.BLOCKCD.get(blocks(j + v)(i + u)).exists(identity)) {
-              if (rect.intersects(new Rectangle(i * BLOCKSIZE, j * BLOCKSIZE, BLOCKSIZE, BLOCKSIZE))) {
+              intersectRect.setBounds(i * BLOCKSIZE, j * BLOCKSIZE, BLOCKSIZE, BLOCKSIZE)
+              if (playerRect.intersects(intersectRect)) {
                 if (oldy <= j * 16 - height && vy > 0) {
                   y = (j * 16 - height).toDouble
                   if (pvy >= 10 && !TerraFrame.DEBUG_INVINCIBLE) {
@@ -263,7 +258,7 @@ case class Player(var x: Double, var y: Double) extends Serializable {
     ivx = vx.toInt
     ivy = vy.toInt
 
-    rect.setBounds(ix - 1, iy - 1, width + 2, height + 2)
+    playerRect.setBounds(ix - 1, iy - 1, width + 2, height + 2)
   }
 
   def reloadImage(): Unit = {
@@ -274,7 +269,7 @@ case class Player(var x: Double, var y: Double) extends Serializable {
       if (imgState == WalkLeft2) {
         image = leftWalkImage
       }
-      if (imgState  == StillRight || imgState == WalkRight1) {
+      if (imgState == StillRight || imgState == WalkRight1) {
         image = rightStillImage
       }
       if (imgState == WalkRight2) {

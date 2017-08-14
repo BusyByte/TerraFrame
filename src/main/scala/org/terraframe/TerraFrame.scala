@@ -2653,7 +2653,7 @@ class TerraFrame extends JApplet
 
     if (rgnc1 == 0) {
       if (rgnc2 == 0) {
-        if (player.hp < player.thp) {
+        if (player.hp < Player.totalHP) {
           player.hp += 1
           rgnc2 = 125
         }
@@ -2774,14 +2774,14 @@ class TerraFrame extends JApplet
           icmatrix(iclayer)(icy)(icx) = ItemCollection(ic.icType, ic.ids, ic.nums, ic.durs)
         }
         if (ic.icType == Workbench) {
-          if (player.imgState.equals("still right") || player.imgState.equals("walk right 1") || player.imgState.equals("walk right 2")) {
+          if (player.imgState == StillRight || player.imgState == WalkRight1 || player.imgState == WalkRight2) {
             (0 until 9).foreach { i =>
               if (ic.ids(i) != 0) {
                 entities += new Entity((icx * BLOCKSIZE).toDouble, (icy * BLOCKSIZE).toDouble, 2, -2, ic.ids(i), ic.nums(i), ic.durs(i), 75)
               }
             }
           }
-          if (player.imgState.equals("still left") || player.imgState.equals("walk left 1") || player.imgState.equals("walk left 2")) {
+          if (player.imgState == StillLeft || player.imgState == WalkLeft1 || player.imgState == WalkLeft2) {
             (0 until 9).foreach { i =>
               if (ic.ids(i) != 0) {
                 entities += new Entity((icx * BLOCKSIZE).toDouble, (icy * BLOCKSIZE).toDouble, -2, -2, ic.ids(i), ic.nums(i), ic.durs(i), 75)
@@ -3557,7 +3557,7 @@ class TerraFrame extends JApplet
                         blockTemp = AirBlockType.id
                       }
                     }
-                    if (player.rect.intersects(new Rectangle(ux * BLOCKSIZE, uy * BLOCKSIZE, BLOCKSIZE, BLOCKSIZE))) {
+                    if (player.playerRect.intersects(new Rectangle(ux * BLOCKSIZE, uy * BLOCKSIZE, BLOCKSIZE, BLOCKSIZE))) {
                       blockTemp = AirBlockType.id
                     }
                   }
@@ -3877,14 +3877,14 @@ class TerraFrame extends JApplet
                   icmatrix(iclayer)(icy)(icx) = ItemCollection(ic.icType, ic.ids, ic.nums, ic.durs)
                 }
                 if (ic.icType == Workbench) {
-                  if (player.imgState.equals("still right") || player.imgState.equals("walk right 1") || player.imgState.equals("walk right 2")) {
+                  if (player.imgState == StillRight || player.imgState == WalkRight1 || player.imgState == WalkRight2) {
                     (0 until 9).foreach { i =>
                       if (ic.ids(i) != 0) {
                         entities += new Entity((icx * BLOCKSIZE).toDouble, (icy * BLOCKSIZE).toDouble, 2, -2, ic.ids(i), ic.nums(i), ic.durs(i), 75)
                       }
                     }
                   }
-                  if (player.imgState.equals("still left") || player.imgState.equals("walk left 1") || player.imgState.equals("walk left 2")) {
+                  if (player.imgState == StillLeft || player.imgState == WalkLeft1 || player.imgState == WalkLeft2) {
                     (0 until 9).foreach { i =>
                       if (ic.ids(i) != 0) {
                         entities += new Entity((icx * BLOCKSIZE).toDouble, (icy * BLOCKSIZE).toDouble, -2, -2, ic.ids(i), ic.nums(i), ic.durs(i), 75)
@@ -4161,7 +4161,7 @@ class TerraFrame extends JApplet
       if (entities(i).update(blocks(1), player, u, v)) {
         entities.remove(i)
       }
-      else if (player.rect.intersects(entities(i).rect)) {
+      else if (player.playerRect.intersects(entities(i).rect)) {
         if (entities(i).name != null) {
           if (immune <= 0) {
             if (!DEBUG_INVINCIBLE) {
@@ -4201,14 +4201,14 @@ class TerraFrame extends JApplet
           icmatrix(iclayer)(icy)(icx) = ItemCollection(ic.icType, ic.ids, ic.nums, ic.durs)
         }
         if (ic.icType == Workbench) {
-          if (player.imgState.equals("still right") || player.imgState.equals("walk right 1") || player.imgState.equals("walk right 2")) {
+          if (player.imgState == StillRight || player.imgState == WalkRight1 || player.imgState == WalkRight2) {
             (0 until 9).foreach { i =>
               if (ic.ids(i) != 0) {
                 entities += new Entity((icx * BLOCKSIZE).toDouble, (icy * BLOCKSIZE).toDouble, 2, -2, ic.ids(i), ic.nums(i), ic.durs(i), 75)
               }
             }
           }
-          if (player.imgState.equals("still left") || player.imgState.equals("walk left 1") || player.imgState.equals("walk left 2")) {
+          if (player.imgState == StillLeft || player.imgState == WalkLeft1 || player.imgState == WalkLeft2) {
             (0 until 9).foreach { i =>
               if (ic.ids(i) != 0) {
                 entities += new Entity((icx * BLOCKSIZE).toDouble, (icy * BLOCKSIZE).toDouble, -2, -2, ic.ids(i), ic.nums(i), ic.durs(i), 75)
@@ -4227,10 +4227,10 @@ class TerraFrame extends JApplet
         if (showInv) {
           (0 until 4).foreach { i =>
             if (cic.ids(i) != 0) {
-              if (player.imgState.equals("still right") || player.imgState.equals("walk right 1") || player.imgState.equals("walk right 2")) {
+              if (player.imgState == StillRight || player.imgState == WalkRight1 || player.imgState == WalkRight2) {
                 entities += new Entity(player.x, player.y, 2, -2, cic.ids(i), cic.nums(i), cic.durs(i), 75)
               }
-              if (player.imgState.equals("still left") || player.imgState.equals("walk left 1") || player.imgState.equals("walk left 2")) {
+              if (player.imgState == StillLeft || player.imgState == WalkLeft1 || player.imgState == WalkLeft2) {
                 entities += new Entity(player.x, player.y, -2, -2, cic.ids(i), cic.nums(i), cic.durs(i), 75)
               }
               inventory.removeLocationIC(cic, i, cic.nums(i))
@@ -4240,10 +4240,10 @@ class TerraFrame extends JApplet
         showInv = !showInv
       }
       if (moveItem != 0) {
-        if (player.imgState.equals("still right") || player.imgState.equals("walk right 1") || player.imgState.equals("walk right 2")) {
+        if (player.imgState == StillRight || player.imgState == WalkRight1 || player.imgState == WalkRight2) {
           entities += new Entity(player.x, player.y, 2, -2, moveItem, moveNum, moveDur, 75)
         }
-        if (player.imgState.equals("still left") || player.imgState.equals("walk left 1") || player.imgState.equals("walk left 2")) {
+        if (player.imgState == StillLeft || player.imgState == WalkLeft1 || player.imgState == WalkLeft2) {
           entities += new Entity(player.x, player.y, -2, -2, moveItem, moveNum, moveDur, 75)
         }
         moveItem = 0
@@ -4251,10 +4251,10 @@ class TerraFrame extends JApplet
       }
       (0 until 4).foreach { i =>
         if (armor.ids(i) != 0) {
-          if (player.imgState.equals("still right") || player.imgState.equals("walk right 1") || player.imgState.equals("walk right 2")) {
+          if (player.imgState == StillRight || player.imgState == WalkRight1 || player.imgState == WalkRight2) {
             entities += new Entity(player.x, player.y, 2, -2, armor.ids(i), armor.nums(i), armor.durs(i), 75)
           }
-          if (player.imgState.equals("still left") || player.imgState.equals("walk left 1") || player.imgState.equals("walk left 2")) {
+          if (player.imgState == StillLeft || player.imgState == WalkLeft1 || player.imgState == WalkLeft2) {
             entities += new Entity(player.x, player.y, -2, -2, armor.ids(i), armor.nums(i), armor.durs(i), 75)
           }
           inventory.removeLocationIC(armor, i, armor.nums(i))
@@ -4264,12 +4264,12 @@ class TerraFrame extends JApplet
       player.y = 45
       player.vx = 0
       player.vy = 0
-      player.hp = player.thp
+      player.hp = Player.totalHP
       tool = null
       showTool = false
     }
     if (showTool) {
-      if (player.imgState.equals("still right") || player.imgState.equals("walk right 1") || player.imgState.equals("walk right 2")) {
+      if (player.imgState == StillRight || player.imgState == WalkRight1 || player.imgState == WalkRight2) {
         tp1 = new Point((player.x + Player.width / 2 + 6).toInt, (player.y + Player.height / 2).toInt)
         tp2 = new Point((player.x + Player.width / 2 + 6 + tool.getWidth() * 2 * cos(toolAngle) + tool.getHeight() * 2 * sin(toolAngle)).toInt,
           (player.y + Player.height / 2 + tool.getWidth() * 2 * sin(toolAngle) - tool.getHeight() * 2 * cos(toolAngle)).toInt)
@@ -4280,7 +4280,7 @@ class TerraFrame extends JApplet
         tp5 = new Point((player.x + Player.width / 2 + 6 + tool.getWidth() * 1.5 * cos(toolAngle) + tool.getHeight() * 1.5 * sin(toolAngle)).toInt,
           (player.y + Player.height / 2 + tool.getWidth() * 1.5 * sin(toolAngle) - tool.getHeight() * 1.5 * cos(toolAngle)).toInt)
       }
-      if (player.imgState.equals("still left") || player.imgState.equals("walk left 1") || player.imgState.equals("walk left 2")) {
+      if (player.imgState == StillLeft || player.imgState == WalkLeft1 || player.imgState == WalkLeft2) {
         tp1 = new Point((player.x + Player.width / 2 - 6).toInt, (player.y + Player.height / 2).toInt)
         tp2 = new Point((player.x + Player.width / 2 - 6 + tool.getWidth() * 2 * cos((Pi * 1.5) - toolAngle) + tool.getHeight() * 2 * sin((Pi * 1.5) - toolAngle)).toInt,
           (player.y + Player.height / 2 + tool.getWidth() * 2 * sin((Pi * 1.5) - toolAngle) - tool.getHeight() * 2 * cos((Pi * 1.5) - toolAngle)).toInt)
@@ -5755,8 +5755,8 @@ class TerraFrame extends JApplet
           null)
       }
 
-      if (showTool && tool != null) {
-        if (player.imgState.equals("still right") || player.imgState.equals("walk right 1") || player.imgState.equals("walk right 2")) {
+      if (showTool && tool != null) { // TODO: get rid of null
+        if (player.imgState == StillRight || player.imgState == WalkRight1 || player.imgState == WalkRight2) {
           pg2.translate(getWidth / 2 + 6, getHeight / 2)
           pg2.rotate(toolAngle)
 
@@ -5768,7 +5768,7 @@ class TerraFrame extends JApplet
           pg2.rotate(-toolAngle)
           pg2.translate(-getWidth / 2 - 6, -getHeight / 2)
         }
-        if (player.imgState.equals("still left") || player.imgState.equals("walk left 1") || player.imgState.equals("walk left 2")) {
+        if (player.imgState == StillLeft || player.imgState == WalkLeft1 || player.imgState == WalkLeft2) {
           pg2.translate(getWidth / 2 - 6, getHeight / 2)
           pg2.rotate((Pi * 1.5) - toolAngle)
 
@@ -5903,7 +5903,7 @@ class TerraFrame extends JApplet
       }
       pg2.setFont(mobFont)
       pg2.setColor(Color.WHITE)
-      pg2.drawString("Health: " + player.hp + "/" + player.thp, getWidth - 125, 20)
+      pg2.drawString("Health: " + player.hp + "/" + Player.totalHP, getWidth - 125, 20)
       pg2.drawString("Armor: " + player.sumArmor(), getWidth - 125, 40)
       if (DEBUG_STATS) {
         pg2.drawString("(" + (player.ix / 16) + ", " + (player.iy / 16) + ")", getWidth - 125, 60)
@@ -6421,15 +6421,15 @@ class TerraFrame extends JApplet
             machinesy += icy
             icmatrix(iclayer)(icy)(icx) = ItemCollection(ic.icType, ic.ids, ic.nums, ic.durs)
           }
-          if (ic.icType == Workbench) { // TODO: can these be if / else instead?
-            if (player.imgState.equals("still right") || player.imgState.equals("walk right 1") || player.imgState.equals("walk right 2")) {
+          if (ic.icType == Workbench) {
+            if (player.imgState == StillRight || player.imgState == WalkRight1 || player.imgState == WalkRight2) {
               (0 until 9).foreach { i =>
                 if (ic.ids(i) != 0) {
                   entities += new Entity((icx * BLOCKSIZE).toDouble, (icy * BLOCKSIZE).toDouble, 2, -2, ic.ids(i), ic.nums(i), ic.durs(i), 75)
                 }
               }
             }
-            if (player.imgState.equals("still left") || player.imgState.equals("walk left 1") || player.imgState.equals("walk left 2")) {
+            if (player.imgState == StillLeft || player.imgState == WalkLeft1 || player.imgState == WalkLeft2) {
               (0 until 9).foreach { i =>
                 if (ic.ids(i) != 0) {
                   entities += new Entity((icx * BLOCKSIZE).toDouble, (icy * BLOCKSIZE).toDouble, -2, -2, ic.ids(i), ic.nums(i), ic.durs(i), 75)
@@ -6448,10 +6448,10 @@ class TerraFrame extends JApplet
           if (showInv) {
             (0 until 4).foreach { i =>
               if (cic.ids(i) != 0) {
-                if (player.imgState.equals("still right") || player.imgState.equals("walk right 1") || player.imgState.equals("walk right 2")) {
+                if (player.imgState == StillRight || player.imgState == WalkRight1 || player.imgState == WalkRight2) {
                   entities += new Entity(player.x, player.y, 2, -2, cic.ids(i), cic.nums(i), cic.durs(i), 75)
                 }
-                if (player.imgState.equals("still left") || player.imgState.equals("walk left 1") || player.imgState.equals("walk left 2")) {
+                if (player.imgState == StillLeft || player.imgState == WalkLeft1 || player.imgState == WalkLeft2) {
                   entities += new Entity(player.x, player.y, -2, -2, cic.ids(i), cic.nums(i), cic.durs(i), 75)
                 }
                 inventory.removeLocationIC(cic, i, cic.nums(i))
@@ -6461,10 +6461,10 @@ class TerraFrame extends JApplet
           showInv = !showInv
         }
         if (moveItem != 0) {
-          if (player.imgState.equals("still right") || player.imgState.equals("walk right 1") || player.imgState.equals("walk right 2")) {
+          if (player.imgState == StillRight || player.imgState == WalkRight1 || player.imgState == WalkRight2) {
             entities += new Entity(player.x, player.y, 2, -2, moveItem, moveNum, moveDur, 75)
           }
-          if (player.imgState.equals("still left") || player.imgState.equals("walk left 1") || player.imgState.equals("walk left 2")) {
+          if (player.imgState == StillLeft || player.imgState == WalkLeft1 || player.imgState == WalkLeft2) {
             entities += new Entity(player.x, player.y, -2, -2, moveItem, moveNum, moveDur, 75)
           }
           moveItem = 0
