@@ -3095,7 +3095,7 @@ class TerraFrame extends JApplet
     mobCount = 0
 
     (entities.length - 1 until(-1, -1)).foreach { i =>
-      if (entities(i).name != null) {
+      entities(i).name.foreach { _ =>
         mobCount += 1
         if (entities(i).ix < player.ix - 2000 || entities(i).ix > player.ix + 2000 ||
           entities(i).iy < player.iy - 2000 || entities(i).iy > player.iy + 2000) {
@@ -3572,8 +3572,10 @@ class TerraFrame extends JApplet
                   }
                   if (layer == 1 && !DEBUG_GPLACE && blockcds(blockTemp)) {
                     entities.foreach { entity: Entity =>
-                      if (entity.name != null && entity.rect.intersects(new Rectangle(ux * BLOCKSIZE, uy * BLOCKSIZE, BLOCKSIZE, BLOCKSIZE))) {
-                        blockTemp = AirBlockType.id
+                      entity.name.foreach { _ =>
+                        if(entity.rect.intersects(new Rectangle(ux * BLOCKSIZE, uy * BLOCKSIZE, BLOCKSIZE, BLOCKSIZE))) {
+                          blockTemp = AirBlockType.id
+                        }
                       }
                     }
                     if (player.playerRect.intersects(new Rectangle(ux * BLOCKSIZE, uy * BLOCKSIZE, BLOCKSIZE, BLOCKSIZE))) {
@@ -4169,14 +4171,15 @@ class TerraFrame extends JApplet
       vc = 0
     }
     (entities.length - 1 to(0, -1)).foreach { i =>
-      if (entities(i).newMob != null) {
-        entities += entities(i).newMob
+
+      entities(i).newMob.foreach { mob =>
+        entities += mob
       }
       if (entities(i).update(blocks(1), player, u, v)) {
         entities.remove(i)
       }
       else if (player.playerRect.intersects(entities(i).rect)) {
-        if (entities(i).name != null) {
+        if (entities(i).name.isDefined) {
           if (immune <= 0) {
             if (!DEBUG_INVINCIBLE) {
               player.damage(entities(i).atk, true, inventory)
@@ -4312,7 +4315,7 @@ class TerraFrame extends JApplet
       }
 
       (entities.length - 1 to(0, -1)).foreach { i =>
-        if (entities(i).name != null && !entities(i).nohit && showTool && (entities(i).rect.contains(tp1) || entities(i).rect.contains(tp2) || entities(i).rect.contains(tp3) || entities(i).rect.contains(tp4) || entities(i).rect.contains(tp5)) && (!entities(i).name.equals("bee") || random.nextInt(4) == 0)) {
+        if (entities(i).name.isDefined && !entities(i).nohit && showTool && (entities(i).rect.contains(tp1) || entities(i).rect.contains(tp2) || entities(i).rect.contains(tp3) || entities(i).rect.contains(tp4) || entities(i).rect.contains(tp5)) && (!entities(i).name.equals("bee") || random.nextInt(4) == 0)) {
           if (TOOLDAMAGE.get(inventory.tool()).exists(t => entities(i).hit(t, player))) {
             val dropList = entities(i).drops()
             dropList.foreach { dropId =>
@@ -4358,7 +4361,7 @@ class TerraFrame extends JApplet
 
       (bx1 to bx2).foreach { x =>
         (by1 to by2).foreach { y =>
-          if (blocks(layer)(y)(x) >= WoodenPressurePlateBlockType.id && blocks(layer)(y)(x) <= ZythiumPressurePlateOnBlockType.id && (i == -1 || blocks(layer)(y)(x) <= StonePressurePlateOnBlockType.id && (x != -1 && entities(i).name != null || blocks(layer)(y)(x) <= WoodenPressurePlateOnBlockType.id))) {
+          if (blocks(layer)(y)(x) >= WoodenPressurePlateBlockType.id && blocks(layer)(y)(x) <= ZythiumPressurePlateOnBlockType.id && (i == -1 || blocks(layer)(y)(x) <= StonePressurePlateOnBlockType.id && (x != -1 && entities(i).name.isDefined || blocks(layer)(y)(x) <= WoodenPressurePlateOnBlockType.id))) {
             if (blocks(layer)(y)(x) == WoodenPressurePlateBlockType.id || blocks(layer)(y)(x) == StonePressurePlateBlockType.id || blocks(layer)(y)(x) == ZythiumPressurePlateBlockType.id) {
               blocks(layer)(y)(x) += 1
               rdrawn(y)(x) = false
@@ -5897,11 +5900,13 @@ class TerraFrame extends JApplet
       import scala.util.control.Breaks._
       breakable {
         entities.indices.foreach { i =>
-          if (UIENTITIES.get(entities(i).name) != null && entities(i).rect != null && entities(i).rect.contains(new Point(playerMouseXOffset, playerMouseYOffset))) {
-            pg2.setFont(mobFont)
-            pg2.setColor(Color.WHITE)
-            pg2.drawString(UIENTITIES.get(entities(i).name) + " (" + entities(i).hp + "/" + entities(i).thp + ")", mouseX, mouseY)
-            break
+          entities(i).name.flatMap(UIENTITIES.get).foreach { entityName =>
+            if (entities(i).rect.contains(new Point(playerMouseXOffset, playerMouseYOffset))) {
+              pg2.setFont(mobFont)
+              pg2.setColor(Color.WHITE)
+              pg2.drawString(entityName + " (" + entities(i).hp + "/" + entities(i).thp + ")", mouseX, mouseY)
+              break
+            }
           }
         }
       }
