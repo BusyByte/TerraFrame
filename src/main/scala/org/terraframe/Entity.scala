@@ -573,7 +573,7 @@ case class IdEntity(var x: Double,
   var oldy: Double = y
 
   var onGround, immune, grounded, onGroundDelay: Boolean = _
-  @transient val image: BufferedImage                    = TerraFrame.itemImgs.get(id).get
+  @transient val image: BufferedImage                    = TerraFrame.itemImgs(id)
 
   val width: Int  = image.getWidth() * 2
   val height: Int = image.getHeight() * 2
