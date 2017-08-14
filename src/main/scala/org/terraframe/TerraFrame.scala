@@ -1769,7 +1769,8 @@ class TerraFrame extends JApplet
 
   var icmatrix: Array3D[ItemCollection] = _
 
-  var image, tool, mobImage: BufferedImage = _
+  var image, mobImage: BufferedImage = _
+  var tool: Option[BufferedImage] = None
 
   lazy val FRI1: List[Short] = {
     val fri1Temp = new jul.ArrayList[Short](180)
@@ -3423,9 +3424,7 @@ class TerraFrame extends JApplet
       }
       if (checkBlocks) {
         if (inventory.tool() != 0 && !showTool) {
-          itemImgs.get(inventory.tool()).foreach { t =>
-            tool = t
-          }
+          tool = itemImgs.get(inventory.tool())
           entities.foreach { entity: Entity =>
             entity.immune = false
           }
@@ -4276,32 +4275,35 @@ class TerraFrame extends JApplet
       player.vx = 0
       player.vy = 0
       player.hp = Player.totalHP
-      tool = null
+      tool = None
       showTool = false
     }
     if (showTool) {
-      if (player.imgState == StillRight || player.imgState == WalkRight1 || player.imgState == WalkRight2) {
-        tp1 = new Point((player.x + Player.width / 2 + 6).toInt, (player.y + Player.height / 2).toInt)
-        tp2 = new Point((player.x + Player.width / 2 + 6 + tool.getWidth() * 2 * cos(toolAngle) + tool.getHeight() * 2 * sin(toolAngle)).toInt,
-          (player.y + Player.height / 2 + tool.getWidth() * 2 * sin(toolAngle) - tool.getHeight() * 2 * cos(toolAngle)).toInt)
-        tp3 = new Point((player.x + Player.width / 2 + 6 + tool.getWidth() * 1 * cos(toolAngle) + tool.getHeight() * 1 * sin(toolAngle)).toInt,
-          (player.y + Player.height / 2 + tool.getWidth() * 1 * sin(toolAngle) - tool.getHeight() * 1 * cos(toolAngle)).toInt)
-        tp4 = new Point((player.x + Player.width / 2 + 6 + tool.getWidth() * 0.5 * cos(toolAngle) + tool.getHeight() * 0.5 * sin(toolAngle)).toInt,
-          (player.y + Player.height / 2 + tool.getWidth() * 0.5 * sin(toolAngle) - tool.getHeight() * 0.5 * cos(toolAngle)).toInt)
-        tp5 = new Point((player.x + Player.width / 2 + 6 + tool.getWidth() * 1.5 * cos(toolAngle) + tool.getHeight() * 1.5 * sin(toolAngle)).toInt,
-          (player.y + Player.height / 2 + tool.getWidth() * 1.5 * sin(toolAngle) - tool.getHeight() * 1.5 * cos(toolAngle)).toInt)
+      tool.foreach { t =>
+        if (player.imgState == StillRight || player.imgState == WalkRight1 || player.imgState == WalkRight2) {
+          tp1 = new Point((player.x + Player.width / 2 + 6).toInt, (player.y + Player.height / 2).toInt)
+          tp2 = new Point((player.x + Player.width / 2 + 6 + t.getWidth() * 2 * cos(toolAngle) + t.getHeight() * 2 * sin(toolAngle)).toInt,
+            (player.y + Player.height / 2 + t.getWidth() * 2 * sin(toolAngle) - t.getHeight() * 2 * cos(toolAngle)).toInt)
+          tp3 = new Point((player.x + Player.width / 2 + 6 + t.getWidth() * 1 * cos(toolAngle) + t.getHeight() * 1 * sin(toolAngle)).toInt,
+            (player.y + Player.height / 2 + t.getWidth() * 1 * sin(toolAngle) - t.getHeight() * 1 * cos(toolAngle)).toInt)
+          tp4 = new Point((player.x + Player.width / 2 + 6 + t.getWidth() * 0.5 * cos(toolAngle) + t.getHeight() * 0.5 * sin(toolAngle)).toInt,
+            (player.y + Player.height / 2 + t.getWidth() * 0.5 * sin(toolAngle) - t.getHeight() * 0.5 * cos(toolAngle)).toInt)
+          tp5 = new Point((player.x + Player.width / 2 + 6 + t.getWidth() * 1.5 * cos(toolAngle) + t.getHeight() * 1.5 * sin(toolAngle)).toInt,
+            (player.y + Player.height / 2 + t.getWidth() * 1.5 * sin(toolAngle) - t.getHeight() * 1.5 * cos(toolAngle)).toInt)
+        }
+        if (player.imgState == StillLeft || player.imgState == WalkLeft1 || player.imgState == WalkLeft2) {
+          tp1 = new Point((player.x + Player.width / 2 - 6).toInt, (player.y + Player.height / 2).toInt)
+          tp2 = new Point((player.x + Player.width / 2 - 6 + t.getWidth() * 2 * cos((Pi * 1.5) - toolAngle) + t.getHeight() * 2 * sin((Pi * 1.5) - toolAngle)).toInt,
+            (player.y + Player.height / 2 + t.getWidth() * 2 * sin((Pi * 1.5) - toolAngle) - t.getHeight() * 2 * cos((Pi * 1.5) - toolAngle)).toInt)
+          tp3 = new Point((player.x + Player.width / 2 - 6 + t.getWidth() * 1 * cos((Pi * 1.5) - toolAngle) + t.getHeight() * 1 * sin((Pi * 1.5) - toolAngle)).toInt,
+            (player.y + Player.height / 2 + t.getWidth() * 1 * sin((Pi * 1.5) - toolAngle) - t.getHeight() * 1 * cos((Pi * 1.5) - toolAngle)).toInt)
+          tp4 = new Point((player.x + Player.width / 2 - 6 + t.getWidth() * 0.5 * cos((Pi * 1.5) - toolAngle) + t.getHeight() * 0.5 * sin((Pi * 1.5) - toolAngle)).toInt,
+            (player.y + Player.height / 2 + t.getWidth() * 0.5 * sin((Pi * 1.5) - toolAngle) - t.getHeight() * 0.5 * cos((Pi * 1.5) - toolAngle)).toInt)
+          tp5 = new Point((player.x + Player.width / 2 - 6 + t.getWidth() * 1.5 * cos((Pi * 1.5) - toolAngle) + t.getHeight() * 1.5 * sin((Pi * 1.5) - toolAngle)).toInt,
+            (player.y + Player.height / 2 + t.getWidth() * 1.5 * sin((Pi * 1.5) - toolAngle) - t.getHeight() * 1.5 * cos((Pi * 1.5) - toolAngle)).toInt)
+        }
       }
-      if (player.imgState == StillLeft || player.imgState == WalkLeft1 || player.imgState == WalkLeft2) {
-        tp1 = new Point((player.x + Player.width / 2 - 6).toInt, (player.y + Player.height / 2).toInt)
-        tp2 = new Point((player.x + Player.width / 2 - 6 + tool.getWidth() * 2 * cos((Pi * 1.5) - toolAngle) + tool.getHeight() * 2 * sin((Pi * 1.5) - toolAngle)).toInt,
-          (player.y + Player.height / 2 + tool.getWidth() * 2 * sin((Pi * 1.5) - toolAngle) - tool.getHeight() * 2 * cos((Pi * 1.5) - toolAngle)).toInt)
-        tp3 = new Point((player.x + Player.width / 2 - 6 + tool.getWidth() * 1 * cos((Pi * 1.5) - toolAngle) + tool.getHeight() * 1 * sin((Pi * 1.5) - toolAngle)).toInt,
-          (player.y + Player.height / 2 + tool.getWidth() * 1 * sin((Pi * 1.5) - toolAngle) - tool.getHeight() * 1 * cos((Pi * 1.5) - toolAngle)).toInt)
-        tp4 = new Point((player.x + Player.width / 2 - 6 + tool.getWidth() * 0.5 * cos((Pi * 1.5) - toolAngle) + tool.getHeight() * 0.5 * sin((Pi * 1.5) - toolAngle)).toInt,
-          (player.y + Player.height / 2 + tool.getWidth() * 0.5 * sin((Pi * 1.5) - toolAngle) - tool.getHeight() * 0.5 * cos((Pi * 1.5) - toolAngle)).toInt)
-        tp5 = new Point((player.x + Player.width / 2 - 6 + tool.getWidth() * 1.5 * cos((Pi * 1.5) - toolAngle) + tool.getHeight() * 1.5 * sin((Pi * 1.5) - toolAngle)).toInt,
-          (player.y + Player.height / 2 + tool.getWidth() * 1.5 * sin((Pi * 1.5) - toolAngle) - tool.getHeight() * 1.5 * cos((Pi * 1.5) - toolAngle)).toInt)
-      }
+
       (entities.length - 1 to(0, -1)).foreach { i =>
         if (entities(i).name != null && !entities(i).nohit && showTool && (entities(i).rect.contains(tp1) || entities(i).rect.contains(tp2) || entities(i).rect.contains(tp3) || entities(i).rect.contains(tp4) || entities(i).rect.contains(tp5)) && (!entities(i).name.equals("bee") || random.nextInt(4) == 0)) {
           if (TOOLDAMAGE.get(inventory.tool()).exists(t => entities(i).hit(t, player))) {
@@ -5766,38 +5768,41 @@ class TerraFrame extends JApplet
           null)
       }
 
-      if (showTool && tool != null) { // TODO: get rid of null
-        if (player.imgState == StillRight || player.imgState == WalkRight1 || player.imgState == WalkRight2) {
-          pg2.translate(getWidth / 2 + 6, getHeight / 2)
-          pg2.rotate(toolAngle)
+      if (showTool) {
+        tool.foreach { t =>
+          if (player.imgState == StillRight || player.imgState == WalkRight1 || player.imgState == WalkRight2) {
+            pg2.translate(getWidth / 2 + 6, getHeight / 2)
+            pg2.rotate(toolAngle)
 
-          pg2.drawImage(tool,
-            0, -tool.getHeight() * 2, tool.getWidth() * 2, 0,
-            0, 0, tool.getWidth(), tool.getHeight(),
-            null)
+            pg2.drawImage(t,
+              0, -t.getHeight() * 2, t.getWidth() * 2, 0,
+              0, 0, t.getWidth(), t.getHeight(),
+              null)
 
-          pg2.rotate(-toolAngle)
-          pg2.translate(-getWidth / 2 - 6, -getHeight / 2)
+            pg2.rotate(-toolAngle)
+            pg2.translate(-getWidth / 2 - 6, -getHeight / 2)
+          }
+          if (player.imgState == StillLeft || player.imgState == WalkLeft1 || player.imgState == WalkLeft2) {
+            pg2.translate(getWidth / 2 - 6, getHeight / 2)
+            pg2.rotate((Pi * 1.5) - toolAngle)
+
+            pg2.drawImage(t,
+              0, -t.getHeight() * 2, t.getWidth() * 2, 0,
+              0, 0, t.getWidth(), t.getHeight(),
+              null)
+
+            pg2.rotate(-((Pi * 1.5) - toolAngle))
+            pg2.translate(-getWidth / 2 + 6, -getHeight / 2)
+          }
         }
-        if (player.imgState == StillLeft || player.imgState == WalkLeft1 || player.imgState == WalkLeft2) {
-          pg2.translate(getWidth / 2 - 6, getHeight / 2)
-          pg2.rotate((Pi * 1.5) - toolAngle)
 
-          pg2.drawImage(tool,
-            0, -tool.getHeight() * 2, tool.getWidth() * 2, 0,
-            0, 0, tool.getWidth(), tool.getHeight(),
-            null)
-
-          pg2.rotate(-((Pi * 1.5) - toolAngle))
-          pg2.translate(-getWidth / 2 + 6, -getHeight / 2)
-        }
       }
 
       (0 until 2).foreach { pwy =>
         (0 until 2).foreach { pwx =>
           val pwxc: Int = pwx + ou
           val pwyc: Int = pwy + ov
-          if (fworlds(pwy)(pwx) != null) {
+          fworlds(pwy)(pwx).foreach { fw =>
             if (((player.ix + getWidth / 2 + Player.width >= pwxc * CHUNKSIZE &&
               player.ix + getWidth / 2 + Player.width <= pwxc * CHUNKSIZE + CHUNKSIZE) ||
               (player.ix - getWidth / 2 + Player.width + BLOCKSIZE >= pwxc * CHUNKSIZE &&
@@ -5806,10 +5811,10 @@ class TerraFrame extends JApplet
                 player.iy + getHeight / 2 + Player.height <= pwyc * CHUNKSIZE + CHUNKSIZE) ||
                 (player.iy - getHeight / 2 + Player.height >= pwyc * CHUNKSIZE &&
                   player.iy - getHeight / 2 + Player.height <= pwyc * CHUNKSIZE + CHUNKSIZE))) {
-              fworlds(pwy)(pwx).foreach(w => pg2.drawImage(w,
+              pg2.drawImage(fw,
                 pwxc * CHUNKSIZE - player.ix + getWidth / 2 - Player.width / 2, pwyc * CHUNKSIZE - player.iy + getHeight / 2 - Player.height / 2, pwxc * CHUNKSIZE - player.ix + getWidth / 2 - Player.width / 2 + CHUNKSIZE, pwyc * CHUNKSIZE - player.iy + getHeight / 2 - Player.height / 2 + CHUNKSIZE,
                 0, 0, CHUNKSIZE, CHUNKSIZE,
-                null))
+                null)
             }
           }
         }
@@ -6222,8 +6227,8 @@ class TerraFrame extends JApplet
     entities.foreach { entity: Entity =>
       entity.reloadImage()
     }
-    worlds = Array.ofDim(WORLDHEIGHT, WORLDWIDTH)
-    fworlds = Array.ofDim(WORLDHEIGHT, WORLDWIDTH)
+    worlds = Array.ofDim(2, 2)
+    fworlds = Array.ofDim(2, 2)
   }
 
   def resetDrawn(): Unit = {
