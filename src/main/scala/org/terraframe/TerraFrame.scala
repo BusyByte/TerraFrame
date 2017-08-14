@@ -311,7 +311,7 @@ object TerraFrame {
   val DEBUG_INVINCIBLE: Boolean = true
   val DEBUG_HERBGROW: Int = 1
   val DEBUG_GRASSGROW: Int = 1
-  val DEBUG_MOBTEST: String = null
+  val DEBUG_MOBTEST: Option[EntityStrategy] = None
   val DEBUG_STATS: Boolean = true
   val DEBUG_ITEMS: String = "testing"
   val DEBUG_GPLACE: Boolean = true
@@ -1697,7 +1697,7 @@ class TerraFrame extends JApplet
   var entity: Entity = _
   var state: GameState = LoadingGraphics
   var msg: String = "If you are reading this then\nplease report an error."
-  var mobSpawn: String = _
+  var mobSpawn: Option[EntityStrategy] = None
 
   private[this] var width, height = 0
   var u, v, ou, ov, uNew, vNew: Int = _
@@ -2785,14 +2785,14 @@ class TerraFrame extends JApplet
           if (player.imgState == StillRight || player.imgState == WalkRight1 || player.imgState == WalkRight2) {
             (0 until 9).foreach { i =>
               if (icTemp.ids(i) != 0) {
-                entities += new Entity((icx * BLOCKSIZE).toDouble, (icy * BLOCKSIZE).toDouble, 2, -2, icTemp.ids(i), icTemp.nums(i), icTemp.durs(i), 75)
+                entities += new IdEntity((icx * BLOCKSIZE).toDouble, (icy * BLOCKSIZE).toDouble, 2, -2, icTemp.ids(i), icTemp.nums(i), icTemp.durs(i), 75)
               }
             }
           }
           if (player.imgState == StillLeft || player.imgState == WalkLeft1 || player.imgState == WalkLeft2) {
             (0 until 9).foreach { i =>
               if (icTemp.ids(i) != 0) {
-                entities += new Entity((icx * BLOCKSIZE).toDouble, (icy * BLOCKSIZE).toDouble, -2, -2, icTemp.ids(i), icTemp.nums(i), icTemp.durs(i), 75)
+                entities += new IdEntity((icx * BLOCKSIZE).toDouble, (icy * BLOCKSIZE).toDouble, -2, -2, icTemp.ids(i), icTemp.nums(i), icTemp.durs(i), 75)
               }
             }
           }
@@ -2960,19 +2960,19 @@ class TerraFrame extends JApplet
                 ypos2 = ay + random.nextInt(20) - 10
                 if (xpos > 0 && xpos < WIDTH - 1 && ypos > 0 && ypos < HEIGHT - 1 && (blocks(1)(ypos)(xpos) == AirBlockType.id || !blockcds(blocks(1)(ypos)(xpos)) &&
                   xpos2 > 0 && xpos2 < WIDTH - 1 && ypos2 > 0 && ypos2 < HEIGHT - 1 && blocks(1)(ypos2)(xpos2) != AirBlockType.id && blockcds(blocks(1)(ypos2)(xpos2)))) {
-                  mobSpawn = null
+                  mobSpawn = None
                   if (!checkBiome(xpos, ypos).equals("underground")) {
                     if ((day != 0 || DEBUG_HOSTILE > 1) && (timeOfDay >= 75913 || timeOfDay < 28883)) {
                       if (random.nextInt(350) == 0) {
                         rnum = random.nextInt(100)
                         if (rnum >= 0 && rnum < 45) {
-                          mobSpawn = "blue_bubble" // 45%
+                          mobSpawn = Some(BlueBubble) // 45%
                         }
                         if (rnum >= 45 && rnum < 85) {
-                          mobSpawn = "green_bubble" // 40%
+                          mobSpawn = Some(GreenBubble) // 40%
                         }
                         if (rnum >= 85 && rnum < 100) {
-                          mobSpawn = "red_bubble" // 15%
+                          mobSpawn = Some(RedBubble) // 15%
                         }
                       }
                     }
@@ -2980,13 +2980,13 @@ class TerraFrame extends JApplet
                       if (random.nextInt(200) == 0) {
                         rnum = random.nextInt(100)
                         if (rnum >= 0 && rnum < 80) {
-                          mobSpawn = "zombie" // 80%
+                          mobSpawn = Some(Zombie) // 80%
                         }
                         if (rnum >= 80 && rnum < 90) {
-                          mobSpawn = "armored_zombie" // 10%
+                          mobSpawn = Some(ArmoredZombie) // 10%
                         }
                         if (rnum >= 90 && rnum < 100) {
-                          mobSpawn = "shooting_star" // 10%
+                          mobSpawn = Some(ShootingStar) // 10%
                         }
                       }
                     }
@@ -2995,76 +2995,85 @@ class TerraFrame extends JApplet
                     if (random.nextInt(100) == 0) {
                       rnum = random.nextInt(100)
                       if (rnum >= 0 && rnum < 25) {
-                        mobSpawn = "yellow_bubble" // 25%
+                        mobSpawn = Some(YellowBubble) // 25%
                       }
                       if (rnum >= 25 && rnum < 45) {
-                        mobSpawn = "zombie" // 20%
+                        mobSpawn = Some(Zombie) // 20%
                       }
                       if (rnum >= 45 && rnum < 60) {
-                        mobSpawn = "armored_zombie" // 15%
+                        mobSpawn = Some(ArmoredZombie) // 15%
                       }
                       if (rnum >= 60 && rnum < 70) {
-                        mobSpawn = "black_bubble" // 10%
+                        mobSpawn = Some(BlueBubble) // 10%
                       }
                       if (rnum >= 70 && rnum < 85) {
-                        mobSpawn = "bat" // 15%
+                        mobSpawn = Some(Bat) // 15%
                       }
                       if (rnum >= 85 && rnum < 100) {
-                        mobSpawn = "skeleton" // 15%
+                        mobSpawn = Some(Skeleton) // 15%
                       }
                     }
                   }
-                  if (mobSpawn != null && checkBiome(xpos, ypos).equals("desert")) {
+                  if (mobSpawn != null && checkBiome(xpos, ypos).equals("desert")) {//TODO: need sum type
                     if (random.nextInt(3) == 0) { // 33% of all spawns in desert
-                      mobSpawn = "sandbot"
+                      mobSpawn = Some(Sandbot)
                     }
                   }
                   if (mobSpawn != null && checkBiome(xpos, ypos).equals("frost")) {
-                    if (random.nextInt(3) == 0) { // 33% of all spawns in desert
-                      mobSpawn = "snowman"
+                    if (random.nextInt(3) == 0) { // 33% of all spawns in frost
+                      mobSpawn = Some(Snowman)
                     }
                   }
                   /*                                if (mobSpawn != null && player.y <= HEIGHT*0.08*BLOCKSIZE) {
                                     mobSpawn = "white_bubble" // 100% of all spawns in sky
                                      }
                                      */
-                  if (mobSpawn == null) {
+                  if (mobSpawn.isEmpty) {
                     break // was continue, is same
                   }
-                  else if (DEBUG_MOBTEST != null) mobSpawn = DEBUG_MOBTEST
-                  if (mobSpawn.equals("blue_bubble") || mobSpawn.equals("green_bubble") || mobSpawn.equals("red_bubble") || mobSpawn.equals("yellow_bubble") || mobSpawn.equals("black_bubble") || mobSpawn.equals("white_bubble")) {
+                  else if (DEBUG_MOBTEST.isDefined)
+                    mobSpawn = DEBUG_MOBTEST
+                  // TODO do pattern matching
+                  if (
+                    mobSpawn.contains(BlueBubble) ||
+                    mobSpawn.contains(GreenBubble) ||
+                    mobSpawn.contains(RedBubble) ||
+                    mobSpawn.contains(YellowBubble) ||
+                    mobSpawn.contains(BlackBubble) ||
+                    mobSpawn.contains(WhiteBubble)
+                  ) {
                     xmax = 2
                     ymax = 2
                   }
-                  if (mobSpawn.equals("zombie")) {
+                  else if (mobSpawn.contains(Zombie)) {
                     xmax = 2
                     ymax = 3
                   }
-                  if (mobSpawn.equals("armored_zombie")) {
+                  else if (mobSpawn.contains(ArmoredZombie)) {
                     xmax = 2
                     ymax = 3
                   }
-                  if (mobSpawn.equals("shooting_star")) {
+                  else if (mobSpawn.contains(ShootingStar)) {
                     xmax = 2
                     ymax = 2
                   }
-                  if (mobSpawn.equals("sandbot")) {
+                  else if (mobSpawn.contains(Sandbot)) {
                     xmax = 2
                     ymax = 2
                   }
-                  if (mobSpawn.equals("snowman")) {
+                  else if (mobSpawn.contains(Snowman)) {
                     xmax = 2
                     ymax = 3
                   }
-                  if (mobSpawn.equals("bat")) {
+                  else if (mobSpawn.contains(Bat)) {
                     xmax = 1
                     ymax = 1
                   }
-                  if (mobSpawn.equals("bee")) {
+                  else if (mobSpawn.contains(Bee)) {
                     xmax = 1
                     ymax = 1
                   }
-                  if (mobSpawn.equals("skeleton")) {
+                  else if (mobSpawn.contains(Skeleton)) {
                     xmax = 1
                     ymax = 3
                   }
@@ -3077,7 +3086,9 @@ class TerraFrame extends JApplet
                     }
                   }
                   if (doMobSpawn) {
-                    entities += new Entity((xpos * BLOCKSIZE).toDouble, (ypos * BLOCKSIZE).toDouble, 0, 0, mobSpawn)
+                    mobSpawn.foreach { mob =>
+                      entities += new AIEntity((xpos * BLOCKSIZE).toDouble, (ypos * BLOCKSIZE).toDouble, 0, 0, mob)
+                    }
                     ()
                   }
                 }
@@ -3094,17 +3105,23 @@ class TerraFrame extends JApplet
 
     mobCount = 0
 
-    (entities.length - 1 until(-1, -1)).foreach { i =>
-      entities(i).name.foreach { _ =>
+    entities.toList.zipWithIndex.reverse
+      .collect {
+        case (e: AIEntity, index) => (e, index)
+      }
+      .foreach { p =>
+        val entityTemp = p._1
+        val indexTemp = p._2
+
         mobCount += 1
-        if (entities(i).ix < player.ix - 2000 || entities(i).ix > player.ix + 2000 ||
-          entities(i).iy < player.iy - 2000 || entities(i).iy > player.iy + 2000) {
+        if (entityTemp.ix < player.ix - 2000 || entityTemp.ix > player.ix + 2000 ||
+          entityTemp.iy < player.iy - 2000 || entityTemp.iy > player.iy + 2000) {
           if (random.nextInt(500) == 0) {
-            entities.remove(i)
+            entities.remove(indexTemp)
           }
         }
       }
-    }
+
 
     if (userInput.isLeftMousePressed) {
       checkBlocks = true
@@ -3571,11 +3588,11 @@ class TerraFrame extends JApplet
                     }
                   }
                   if (layer == 1 && !DEBUG_GPLACE && blockcds(blockTemp)) {
-                    entities.foreach { entity: Entity =>
-                      entity.name.foreach { _ =>
-                        if(entity.rect.intersects(new Rectangle(ux * BLOCKSIZE, uy * BLOCKSIZE, BLOCKSIZE, BLOCKSIZE))) {
-                          blockTemp = AirBlockType.id
-                        }
+                    entities.collect{
+                      case e: AIEntity => e
+                    }.foreach { entity: AIEntity =>
+                      if(entity.rect.intersects(new Rectangle(ux * BLOCKSIZE, uy * BLOCKSIZE, BLOCKSIZE, BLOCKSIZE))) {
+                        blockTemp = AirBlockType.id
                       }
                     }
                     if (player.playerRect.intersects(new Rectangle(ux * BLOCKSIZE, uy * BLOCKSIZE, BLOCKSIZE, BLOCKSIZE))) {
@@ -3903,14 +3920,14 @@ class TerraFrame extends JApplet
                   if (player.imgState == StillRight || player.imgState == WalkRight1 || player.imgState == WalkRight2) {
                     (0 until 9).foreach { i =>
                       if (icTemp.ids(i) != 0) {
-                        entities += new Entity((icx * BLOCKSIZE).toDouble, (icy * BLOCKSIZE).toDouble, 2, -2, icTemp.ids(i), icTemp.nums(i), icTemp.durs(i), 75)
+                        entities += new IdEntity((icx * BLOCKSIZE).toDouble, (icy * BLOCKSIZE).toDouble, 2, -2, icTemp.ids(i), icTemp.nums(i), icTemp.durs(i), 75)
                       }
                     }
                   }
                   if (player.imgState == StillLeft || player.imgState == WalkLeft1 || player.imgState == WalkLeft2) {
                     (0 until 9).foreach { i =>
                       if (icTemp.ids(i) != 0) {
-                        entities += new Entity((icx * BLOCKSIZE).toDouble, (icy * BLOCKSIZE).toDouble, -2, -2, icTemp.ids(i), icTemp.nums(i), icTemp.durs(i), 75)
+                        entities += new IdEntity((icx * BLOCKSIZE).toDouble, (icy * BLOCKSIZE).toDouble, -2, -2, icTemp.ids(i), icTemp.nums(i), icTemp.durs(i), 75)
                       }
                     }
                   }
@@ -4065,7 +4082,7 @@ class TerraFrame extends JApplet
             }
             if (blocks(layer)(uy)(ux) == TreeBlockType.id) {
               if (random.nextInt(2) == 0) {
-                entities += new Entity((ux * BLOCKSIZE).toDouble, (uy * BLOCKSIZE).toDouble, random.nextDouble() * 8 - 4, -3, 160.toShort, 1.toShort)
+                entities += new IdEntity((ux * BLOCKSIZE).toDouble, (uy * BLOCKSIZE).toDouble, random.nextDouble() * 8 - 4, -3, 160.toShort, 1.toShort)
               }
               blocks(layer)(uy)(ux) = TreeNoBarkBlockType.id
             }
@@ -4170,23 +4187,24 @@ class TerraFrame extends JApplet
     else {
       vc = 0
     }
-    (entities.length - 1 to(0, -1)).foreach { i =>
 
-      entities(i).newMob.foreach { mob =>
-        entities += mob
-      }
-      if (entities(i).update(blocks(1), player, u, v)) {
-        entities.remove(i)
-      }
-      else if (player.playerRect.intersects(entities(i).rect)) {
-        if (entities(i).name.isDefined) {
+    entities.toList.zipWithIndex.reverse.foreach {
+      case (entityTemp : AIEntity, indexTemp) =>
+        entityTemp.newMob.foreach { mob =>
+          entities += mob
+        }
+
+        if (entityTemp.update(blocks(1), player, u, v)) {
+          entities.remove(indexTemp)
+        }
+        else if (player.playerRect.intersects(entityTemp.rect)) {
           if (immune <= 0) {
             if (!DEBUG_INVINCIBLE) {
-              player.damage(entities(i).atk, true, inventory)
+              player.damage(entityTemp.strategy.atk, true, inventory)
             }
             rgnc1 = 750
             immune = 40
-            if (player.x + Player.width / 2 < entities(i).x + entities(i).width / 2) {
+            if (player.x + Player.width / 2 < entities(i).x + entityTemp.width / 2) {
               player.vx -= 8
             }
             else {
@@ -4195,19 +4213,26 @@ class TerraFrame extends JApplet
             player.vy -= 3.5
           }
         }
-        else if (entities(i).mdelay <= 0) {
-          n = inventory.addItem(entities(i).id, entities(i).num, entities(i).dur).toInt
-          if (n != 0) {
-            entities += new Entity(entities(i).x, entities(i).y, entities(i).vx, entities(i).vy, entities(i).id, (entities(i).num - n).toShort, entities(i).dur)
-          }
-          entities.remove(i)
+
+      case (entityTemp: IdEntity, indexTemp) =>
+
+        if (entityTemp.update(blocks(1), player, u, v)) {
+          entities.remove(indexTemp)
         }
-      }
+        else if (player.playerRect.intersects(entityTemp.rect)) {
+          if (entityTemp.mdelay <= 0) {
+            n = inventory.addItem(entityTemp.id, entityTemp.num, entityTemp.dur).toInt
+            if (n != 0) {
+              entities += new IdEntity(entityTemp.x, entityTemp.y, entityTemp.vx, entityTemp.vy, entityTemp.id, (entityTemp.num - n).toShort, entityTemp.dur)
+            }
+            entities.remove(indexTemp)
+          }
+        }
     }
     if (player.hp <= 0) {
       (0 until 40).foreach { j =>
         if (inventory.ids(j) != 0) {
-          entities += new Entity(player.x, player.y, -1, random.nextDouble() * 6 - 3, inventory.ids(j), inventory.nums(j), inventory.durs(j))
+          entities += new IdEntity(player.x, player.y, -1, random.nextDouble() * 6 - 3, inventory.ids(j), inventory.nums(j), inventory.durs(j))
           inventory.removeLocation(j, inventory.nums(j))
         }
       }
@@ -4217,10 +4242,10 @@ class TerraFrame extends JApplet
             cic.foreach { c =>
               if (c.ids(i) != 0) {
                 if (player.imgState == StillRight || player.imgState == WalkRight1 || player.imgState == WalkRight2) {
-                  entities += new Entity(player.x, player.y, 2, -2, c.ids(i), c.nums(i), c.durs(i), 75)
+                  entities += new IdEntity(player.x, player.y, 2, -2, c.ids(i), c.nums(i), c.durs(i), 75)
                 }
                 if (player.imgState == StillLeft || player.imgState == WalkLeft1 || player.imgState == WalkLeft2) {
-                  entities += new Entity(player.x, player.y, -2, -2, c.ids(i), c.nums(i), c.durs(i), 75)
+                  entities += new IdEntity(player.x, player.y, -2, -2, c.ids(i), c.nums(i), c.durs(i), 75)
                 }
                 inventory.removeLocationIC(c, i, c.nums(i))
               }
@@ -4238,14 +4263,14 @@ class TerraFrame extends JApplet
           if (player.imgState == StillRight || player.imgState == WalkRight1 || player.imgState == WalkRight2) {
             (0 until 9).foreach { i =>
               if (icTemp.ids(i) != 0) {
-                entities += new Entity((icx * BLOCKSIZE).toDouble, (icy * BLOCKSIZE).toDouble, 2, -2, icTemp.ids(i), icTemp.nums(i), icTemp.durs(i), 75)
+                entities += new IdEntity((icx * BLOCKSIZE).toDouble, (icy * BLOCKSIZE).toDouble, 2, -2, icTemp.ids(i), icTemp.nums(i), icTemp.durs(i), 75)
               }
             }
           }
           if (player.imgState == StillLeft || player.imgState == WalkLeft1 || player.imgState == WalkLeft2) {
             (0 until 9).foreach { i =>
               if (icTemp.ids(i) != 0) {
-                entities += new Entity((icx * BLOCKSIZE).toDouble, (icy * BLOCKSIZE).toDouble, -2, -2, icTemp.ids(i), icTemp.nums(i), icTemp.durs(i), 75)
+                entities += new IdEntity((icx * BLOCKSIZE).toDouble, (icy * BLOCKSIZE).toDouble, -2, -2, icTemp.ids(i), icTemp.nums(i), icTemp.durs(i), 75)
               }
             }
           }
@@ -4261,10 +4286,10 @@ class TerraFrame extends JApplet
       }
       if (moveItem != 0) {
         if (player.imgState == StillRight || player.imgState == WalkRight1 || player.imgState == WalkRight2) {
-          entities += new Entity(player.x, player.y, 2, -2, moveItem, moveNum, moveDur, 75)
+          entities += new IdEntity(player.x, player.y, 2, -2, moveItem, moveNum, moveDur, 75)
         }
         if (player.imgState == StillLeft || player.imgState == WalkLeft1 || player.imgState == WalkLeft2) {
-          entities += new Entity(player.x, player.y, -2, -2, moveItem, moveNum, moveDur, 75)
+          entities += new IdEntity(player.x, player.y, -2, -2, moveItem, moveNum, moveDur, 75)
         }
         moveItem = 0
         moveNum = 0
@@ -4272,10 +4297,10 @@ class TerraFrame extends JApplet
       (0 until 4).foreach { i =>
         if (armor.ids(i) != 0) {
           if (player.imgState == StillRight || player.imgState == WalkRight1 || player.imgState == WalkRight2) {
-            entities += new Entity(player.x, player.y, 2, -2, armor.ids(i), armor.nums(i), armor.durs(i), 75)
+            entities += new IdEntity(player.x, player.y, 2, -2, armor.ids(i), armor.nums(i), armor.durs(i), 75)
           }
           if (player.imgState == StillLeft || player.imgState == WalkLeft1 || player.imgState == WalkLeft2) {
-            entities += new Entity(player.x, player.y, -2, -2, armor.ids(i), armor.nums(i), armor.durs(i), 75)
+            entities += new IdEntity(player.x, player.y, -2, -2, armor.ids(i), armor.nums(i), armor.durs(i), 75)
           }
           inventory.removeLocationIC(armor, i, armor.nums(i))
         }
@@ -4314,19 +4339,33 @@ class TerraFrame extends JApplet
         }
       }
 
-      (entities.length - 1 to(0, -1)).foreach { i =>
-        if (entities(i).name.isDefined && !entities(i).nohit && showTool && (entities(i).rect.contains(tp1) || entities(i).rect.contains(tp2) || entities(i).rect.contains(tp3) || entities(i).rect.contains(tp4) || entities(i).rect.contains(tp5)) && (!entities(i).name.equals("bee") || random.nextInt(4) == 0)) {
-          if (TOOLDAMAGE.get(inventory.tool()).exists(t => entities(i).hit(t, player))) {
-            val dropList = entities(i).drops()
+      entities.toList.zipWithIndex.reverse.collect {
+        case (e : AIEntity, index) => (e, index)
+      }.filter { p =>
+        val e = p._1
+        val anyPointInRect = e.rect.contains(tp1) ||
+          e.rect.contains(tp2) ||
+          e.rect.contains(tp3) ||
+          e.rect.contains(tp4) ||
+          e.rect.contains(tp5)
+
+        !e.nohit &&
+        showTool &&
+        anyPointInRect &&
+        (e.strategy != Bee || random.nextInt(4) == 0)
+      }.foreach { p =>
+        val entityTemp = p._1
+        val indexTemp = p._2
+          if (TOOLDAMAGE.get(inventory.tool()).exists(t => entityTemp.hit(t, player))) {
+            val dropList = entityTemp.drops()
             dropList.foreach { dropId =>
-              entities += new Entity(entities(i).x, entities(i).y, (random.nextInt(4) - 2).toDouble, -1, dropId, 1.toShort)
+              entities += new IdEntity(entityTemp.x, entityTemp.y, (random.nextInt(4) - 2).toDouble, -1, dropId, 1.toShort)
             }
-            entities.remove(i)
+            entities.remove(indexTemp)
           }
           if (!toolList.contains(inventory.ids(inventory.selection))) {
             inventory.durs(inventory.selection) = (inventory.durs(inventory.selection) - 1).toShort
-          }
-          else {
+          } else {
             inventory.durs(inventory.selection) = (inventory.durs(inventory.selection) - 2).toShort
           }
           if (inventory.durs(inventory.selection) <= 0) {
@@ -4334,7 +4373,7 @@ class TerraFrame extends JApplet
           }
         }
       }
-    }
+
 
     (-1 until entities.length).foreach { i =>
       if (i == -1) {
@@ -4359,9 +4398,14 @@ class TerraFrame extends JApplet
       bx2 = min(blocks(0).length - 1, bx2)
       by2 = min(blocks.length - 1, by2)
 
+      lazy val isNamedEntity = entities(i) match {
+        case _: AIEntity => true
+        case _ => false
+      }
+
       (bx1 to bx2).foreach { x =>
         (by1 to by2).foreach { y =>
-          if (blocks(layer)(y)(x) >= WoodenPressurePlateBlockType.id && blocks(layer)(y)(x) <= ZythiumPressurePlateOnBlockType.id && (i == -1 || blocks(layer)(y)(x) <= StonePressurePlateOnBlockType.id && (x != -1 && entities(i).name.isDefined || blocks(layer)(y)(x) <= WoodenPressurePlateOnBlockType.id))) {
+          if (blocks(layer)(y)(x) >= WoodenPressurePlateBlockType.id && blocks(layer)(y)(x) <= ZythiumPressurePlateOnBlockType.id && (i == -1 || blocks(layer)(y)(x) <= StonePressurePlateOnBlockType.id && (x != -1 && isNamedEntity || blocks(layer)(y)(x) <= WoodenPressurePlateOnBlockType.id))) {
             if (blocks(layer)(y)(x) == WoodenPressurePlateBlockType.id || blocks(layer)(y)(x) == StonePressurePlateBlockType.id || blocks(layer)(y)(x) == ZythiumPressurePlateBlockType.id) {
               blocks(layer)(y)(x) += 1
               rdrawn(y)(x) = false
@@ -4496,14 +4540,14 @@ class TerraFrame extends JApplet
         ic.foreach { icTemp =>
           icTemp.ids.indices.foreach { i =>
             if (icTemp.ids(i) != 0 && !(icTemp.icType == Furnace && i == 1)) {
-              entities += new Entity((ux * BLOCKSIZE).toDouble, (uy * BLOCKSIZE).toDouble, random.nextDouble() * 4 - 2, -2, icTemp.ids(i), icTemp.nums(i), icTemp.durs(i))
+              entities += new IdEntity((ux * BLOCKSIZE).toDouble, (uy * BLOCKSIZE).toDouble, random.nextDouble() * 4 - 2, -2, icTemp.ids(i), icTemp.nums(i), icTemp.durs(i))
             }
           }
         }
         icmatrix(layer)(uy)(ux).foreach { icMatrixTemp =>
           icMatrixTemp.ids.indices.foreach { i =>
             if (icMatrixTemp.ids(i) != 0 && !(icMatrixTemp.icType == Furnace && i == 1)) {
-              entities += new Entity((ux * BLOCKSIZE).toDouble, (uy * BLOCKSIZE).toDouble, random.nextDouble() * 4 - 2, -2, icMatrixTemp.ids(i), icMatrixTemp.nums(i), icMatrixTemp.durs(i))
+              entities += new IdEntity((ux * BLOCKSIZE).toDouble, (uy * BLOCKSIZE).toDouble, random.nextDouble() * 4 - 2, -2, icMatrixTemp.ids(i), icMatrixTemp.nums(i), icMatrixTemp.durs(i))
             }
           }
           icmatrix(layer)(uy)(ux) = None
@@ -4522,7 +4566,7 @@ class TerraFrame extends JApplet
       }
       BLOCKDROPS.get(blocks(layer)(uy)(ux)).foreach { blockdrops =>
         if (blocks(layer)(uy)(ux) != AirBlockType.id && blockdrops != 0) {
-          entities += new Entity((ux * BLOCKSIZE).toDouble, (uy * BLOCKSIZE).toDouble, random.nextDouble() * 4 - 2, -2, blockdrops, 1.toShort)
+          entities += new IdEntity((ux * BLOCKSIZE).toDouble, (uy * BLOCKSIZE).toDouble, random.nextDouble() * 4 - 2, -2, blockdrops, 1.toShort)
         }
       }
 
@@ -4613,7 +4657,7 @@ class TerraFrame extends JApplet
       }
       if (t != 0) {
         (0 until max(1, n)).foreach { i =>
-          entities += new Entity((ux * BLOCKSIZE).toDouble, (uy * BLOCKSIZE).toDouble, random.nextDouble() * 4 - 2, -2, t.toShort, 1.toShort)
+          entities += new IdEntity((ux * BLOCKSIZE).toDouble, (uy * BLOCKSIZE).toDouble, random.nextDouble() * 4 - 2, -2, t.toShort, 1.toShort)
         }
       }
       removeBlockLighting(ux, uy)
@@ -4682,7 +4726,7 @@ class TerraFrame extends JApplet
               torch <- TORCHESR.get(itemblock)
             } yield torch == blocks(layer)(uy)(ux - 1)
             if (isTorch.exists(identity) || blockdrop == 178 || blockdrop == 182) {
-              entities += new Entity(((ux - 1) * BLOCKSIZE).toDouble, (uy * BLOCKSIZE).toDouble, random.nextDouble() * 4 - 2, -2, blockdrop, 1.toShort)
+              entities += new IdEntity(((ux - 1) * BLOCKSIZE).toDouble, (uy * BLOCKSIZE).toDouble, random.nextDouble() * 4 - 2, -2, blockdrop, 1.toShort)
               removeBlockLighting(ux - 1, uy)
               if (layer == 1) {
                 addSunLighting(ux - 1, uy)
@@ -4706,7 +4750,7 @@ class TerraFrame extends JApplet
             } yield torch == blocks(layer)(uy)(ux + 1)
 
             if (isTorch.exists(identity) || blockdrop == 178 || blockdrop == 182) {
-              entities += new Entity(((ux + 1) * BLOCKSIZE).toDouble, (uy * BLOCKSIZE).toDouble, random.nextDouble() * 4 - 2, -2, blockdrop, 1.toShort)
+              entities += new IdEntity(((ux + 1) * BLOCKSIZE).toDouble, (uy * BLOCKSIZE).toDouble, random.nextDouble() * 4 - 2, -2, blockdrop, 1.toShort)
               removeBlockLighting(ux + 1, uy)
               if (layer == 1) {
                 addSunLighting(ux + 1, uy)
@@ -4731,7 +4775,7 @@ class TerraFrame extends JApplet
           }
           BLOCKDROPS.get(blocks(layer)(uy)(ux)).foreach { blockdrop =>
             if (blockdrop != 0) {
-              entities += new Entity((ux * BLOCKSIZE).toDouble, (uy * BLOCKSIZE).toDouble, random.nextDouble() * 4 - 2, -2, blockdrop, 1.toShort)
+              entities += new IdEntity((ux * BLOCKSIZE).toDouble, (uy * BLOCKSIZE).toDouble, random.nextDouble() * 4 - 2, -2, blockdrop, 1.toShort)
             }
           }
 
@@ -4822,7 +4866,7 @@ class TerraFrame extends JApplet
           }
           if (t != 0) {
             (0 until max(1, n)).foreach { i =>
-              entities += new Entity((ux * BLOCKSIZE).toDouble, (uy * BLOCKSIZE).toDouble, random.nextDouble() * 4 - 2, -2, t.toShort, 1.toShort)
+              entities += new IdEntity((ux * BLOCKSIZE).toDouble, (uy * BLOCKSIZE).toDouble, random.nextDouble() * 4 - 2, -2, t.toShort, 1.toShort)
             }
           }
           removeBlockLighting(ux, uy)
@@ -5899,16 +5943,20 @@ class TerraFrame extends JApplet
       }
       import scala.util.control.Breaks._
       breakable {
-        entities.indices.foreach { i =>
-          entities(i).name.flatMap(UIENTITIES.get).foreach { entityName =>
-            if (entities(i).rect.contains(new Point(playerMouseXOffset, playerMouseYOffset))) {
+        entities.collect {
+          case e @ AIEntity(_, _, _, _, strat)  => (e, UIENTITIES.get(strat.imageName))
+        }.collect {
+          case (e, Some(entityName)) => (e, entityName)
+        }.foreach { p =>
+            val entity = p._1
+            val entityName = p._2
+            if (entity.rect.contains(new Point(playerMouseXOffset, playerMouseYOffset))) {
               pg2.setFont(mobFont)
               pg2.setColor(Color.WHITE)
-              pg2.drawString(entityName + " (" + entities(i).hp + "/" + entities(i).thp + ")", mouseX, mouseY)
+              pg2.drawString(entityName + " (" + entity.hp + "/" + entity.strategy.thp + ")", mouseX, mouseY)
               break
             }
           }
-        }
       }
       if (showInv) {
         ymax = 4
@@ -6447,10 +6495,10 @@ class TerraFrame extends JApplet
               cic.foreach { c =>
                 if (c.ids(i) != 0) {
                   if (player.imgState == StillRight || player.imgState == WalkRight1 || player.imgState == WalkRight2) {
-                    entities += new Entity(player.x, player.y, 2, -2, c.ids(i), c.nums(i), c.durs(i), 75)
+                    entities += IdEntity(player.x, player.y, 2, -2, c.ids(i), c.nums(i), c.durs(i), 75)
                   }
                   if (player.imgState == StillLeft || player.imgState == WalkLeft1 || player.imgState == WalkLeft2) {
-                    entities += new Entity(player.x, player.y, -2, -2, c.ids(i), c.nums(i), c.durs(i), 75)
+                    entities += IdEntity(player.x, player.y, -2, -2, c.ids(i), c.nums(i), c.durs(i), 75)
                   }
                   inventory.removeLocationIC(c, i, c.nums(i))
                 }
@@ -6469,14 +6517,14 @@ class TerraFrame extends JApplet
             if (player.imgState == StillRight || player.imgState == WalkRight1 || player.imgState == WalkRight2) {
               (0 until 9).foreach { i =>
                 if (icTemp.ids(i) != 0) {
-                  entities += new Entity((icx * BLOCKSIZE).toDouble, (icy * BLOCKSIZE).toDouble, 2, -2, icTemp.ids(i), icTemp.nums(i), icTemp.durs(i), 75)
+                  entities += IdEntity((icx * BLOCKSIZE).toDouble, (icy * BLOCKSIZE).toDouble, 2, -2, icTemp.ids(i), icTemp.nums(i), icTemp.durs(i), 75)
                 }
               }
             }
             if (player.imgState == StillLeft || player.imgState == WalkLeft1 || player.imgState == WalkLeft2) {
               (0 until 9).foreach { i =>
                 if (icTemp.ids(i) != 0) {
-                  entities += new Entity((icx * BLOCKSIZE).toDouble, (icy * BLOCKSIZE).toDouble, -2, -2, icTemp.ids(i), icTemp.nums(i), icTemp.durs(i), 75)
+                  entities += IdEntity((icx * BLOCKSIZE).toDouble, (icy * BLOCKSIZE).toDouble, -2, -2, icTemp.ids(i), icTemp.nums(i), icTemp.durs(i), 75)
                 }
               }
             }
@@ -6492,10 +6540,10 @@ class TerraFrame extends JApplet
         }
         if (moveItem != 0) {
           if (player.imgState == StillRight || player.imgState == WalkRight1 || player.imgState == WalkRight2) {
-            entities += new Entity(player.x, player.y, 2, -2, moveItem, moveNum, moveDur, 75)
+            entities += IdEntity(player.x, player.y, 2, -2, moveItem, moveNum, moveDur, 75)
           }
           if (player.imgState == StillLeft || player.imgState == WalkLeft1 || player.imgState == WalkLeft2) {
-            entities += new Entity(player.x, player.y, -2, -2, moveItem, moveNum, moveDur, 75)
+            entities += IdEntity(player.x, player.y, -2, -2, moveItem, moveNum, moveDur, 75)
           }
           moveItem = 0
           moveNum = 0
