@@ -1,3 +1,5 @@
+import wartremover.Wart
+
 lazy val commonSettings = Seq(
   scalaVersion := "2.12.3"
 )
@@ -7,6 +9,9 @@ lazy val librarySettings = Seq(
   "org.specs2"     %% "specs2-scalacheck" % "3.8.6"  % Test,
   "org.scalacheck" %% "scalacheck"        % "1.13.4" % Test
 )
+
+def unsafeBut(ws: Wart*): Seq[Wart] = Warts.unsafe filterNot (w => ws exists (_.clazz == w.clazz))
+
 
 lazy val root = (project in file("."))
   .settings(commonSettings: _*)
@@ -61,3 +66,6 @@ lazy val root = (project in file("."))
       "-Ywarn-unused:privates", // Warn if a private member is unused.
       "-Ywarn-value-discard" // Warn when non-Unit expression results are unused.
     ))
+  //.settings(wartremoverErrors ++= unsafeBut(Wart.NonUnitStatements, Wart.Var))
+
+
