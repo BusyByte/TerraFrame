@@ -675,9 +675,7 @@ class Inventory extends Serializable {
     if (ic.ids(i) == item) {
       if (TerraFrame.MAXSTACKS.get(ic.ids(i)).exists(maxstacks => maxstacks - ic.nums(i) >= updatedQuantity)) {
         ic.nums(i) = (ic.nums(i) + updatedQuantity).toShort
-        if (ic.icType.image != null) {
           updateIC(ic, i)
-        }
         return 0
       } else {
         TerraFrame.MAXSTACKS.get(ic.ids(i)).foreach { maxstacks =>

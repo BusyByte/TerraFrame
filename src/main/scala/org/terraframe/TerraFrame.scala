@@ -1767,7 +1767,7 @@ class TerraFrame extends JApplet
 
   var world: BufferedImage = _
 
-  var icmatrix: Array3D[ItemCollection] = _
+  var icmatrix: Array3D[Option[ItemCollection]] = _
 
   var image, mobImage: BufferedImage = _
   var tool: Option[BufferedImage] = None
@@ -2048,7 +2048,7 @@ class TerraFrame extends JApplet
                                 ldrawn(twy * CHUNKBLOCKS + y)(twx * CHUNKBLOCKS + x) = chunkMatrix(twy)(twx).ldrawn(y)(x)
                               }
                             }
-                            worlds(twy)(twx) = null
+                            worlds(twy)(twx) = None
                           }
                         }
                       }
@@ -2672,49 +2672,51 @@ class TerraFrame extends JApplet
       x = machinesx(j)
       y = machinesy(j)
       (0 until 3).foreach { l =>
-        if (icmatrix(l)(y)(x) != null && icmatrix(l)(y)(x).icType == Furnace) {
-          if (icmatrix(l)(y)(x).F_ON) {
-            if (icmatrix(l)(y)(x).ids(1) == 0) {
-              if (FUELS.get(icmatrix(l)(y)(x).ids(2)) != null) {
-                inventory.addLocationIC(icmatrix(l)(y)(x), 1, icmatrix(l)(y)(x).ids(2), 1.toShort)
-                inventory.removeLocationIC(icmatrix(l)(y)(x), 2, 1.toShort)
-                icmatrix(l)(y)(x).FUELP = 1
+        icmatrix(l)(y)(x).foreach { icMatrixTemp =>
+          if (icMatrixTemp.icType == Furnace) {
+            if (icMatrixTemp.F_ON) {
+              if (icMatrixTemp.ids(1) == 0) {
+                if (FUELS.get(icMatrixTemp.ids(2)) != null) {
+                  inventory.addLocationIC(icMatrixTemp, 1, icMatrixTemp.ids(2), 1.toShort)
+                  inventory.removeLocationIC(icMatrixTemp, 2, 1.toShort)
+                  icMatrixTemp.FUELP = 1
+                }
+                else {
+                  icMatrixTemp.F_ON = false
+                  removeBlockLighting(x, y)
+                  blocks(l)(y)(x) = FurnaceBlockType.id
+                  rdrawn(y)(x) = false
+                }
               }
-              else {
-                icmatrix(l)(y)(x).F_ON = false
-                removeBlockLighting(x, y)
-                blocks(l)(y)(x) = FurnaceBlockType.id
-                rdrawn(y)(x) = false
-              }
-            }
-            FUELS.get(icmatrix(l)(y)(x).ids(1)).foreach { fuel =>
-              icmatrix(l)(y)(x).FUELP -= fuel
-              if (icmatrix(l)(y)(x).FUELP < 0) {
-                icmatrix(l)(y)(x).FUELP = 0
-                inventory.removeLocationIC(icmatrix(l)(y)(x), 1, icmatrix(l)(y)(x).nums(1))
-              }
-              import scala.util.control.Breaks._
-              breakable {
-                FRI1.indices.foreach { i =>
-                  FSPEED.get(icmatrix(l)(y)(x).ids(1)).foreach { fspeed =>
-                    if (icmatrix(l)(y)(x).ids(0) == FRI1(i) && icmatrix(l)(y)(x).nums(0) >= FRN1(i)) {
-                      icmatrix(l)(y)(x).SMELTP += fspeed
-                      if (icmatrix(l)(y)(x).SMELTP > 1) {
-                        icmatrix(l)(y)(x).SMELTP = 0
-                        inventory.removeLocationIC(icmatrix(l)(y)(x), 0, FRN1(i))
-                        inventory.addLocationIC(icmatrix(l)(y)(x), 3, FRI2(i), FRN2(i))
+              FUELS.get(icMatrixTemp.ids(1)).foreach { fuel =>
+                icMatrixTemp.FUELP -= fuel
+                if (icMatrixTemp.FUELP < 0) {
+                  icMatrixTemp.FUELP = 0
+                  inventory.removeLocationIC(icMatrixTemp, 1, icMatrixTemp.nums(1))
+                }
+                import scala.util.control.Breaks._
+                breakable {
+                  FRI1.indices.foreach { i =>
+                    FSPEED.get(icMatrixTemp.ids(1)).foreach { fspeed =>
+                      if (icMatrixTemp.ids(0) == FRI1(i) && icMatrixTemp.nums(0) >= FRN1(i)) {
+                        icMatrixTemp.SMELTP += fspeed
+                        if (icMatrixTemp.SMELTP > 1) {
+                          icMatrixTemp.SMELTP = 0
+                          inventory.removeLocationIC(icMatrixTemp, 0, FRN1(i))
+                          inventory.addLocationIC(icMatrixTemp, 3, FRI2(i), FRN2(i))
+                        }
+                        break
                       }
-                      break
                     }
                   }
                 }
               }
             }
-          }
-          else {
-            icmatrix(l)(y)(x).SMELTP -= 0.00025
-            if (icmatrix(l)(y)(x).SMELTP < 0) {
-              icmatrix(l)(y)(x).SMELTP = 0
+            else {
+              icMatrixTemp.SMELTP -= 0.00025
+              if (icMatrixTemp.SMELTP < 0) {
+                icMatrixTemp.SMELTP = 0
+              }
             }
           }
         }
@@ -2777,7 +2779,7 @@ class TerraFrame extends JApplet
         if (icTemp.icType != Workbench) {
           machinesx += icx
           machinesy += icy
-          icmatrix(iclayer)(icy)(icx) = ItemCollection(icTemp.icType, icTemp.ids, icTemp.nums, icTemp.durs)
+          icmatrix(iclayer)(icy)(icx) = Some(ItemCollection(icTemp.icType, icTemp.ids, icTemp.nums, icTemp.durs))
         }
         if (icTemp.icType == Workbench) {
           if (player.imgState == StillRight || player.imgState == WalkRight1 || player.imgState == WalkRight2) {
@@ -2796,14 +2798,14 @@ class TerraFrame extends JApplet
           }
         }
         if (icTemp.icType == Furnace) {
-          icmatrix(iclayer)(icy)(icx).FUELP = icTemp.FUELP
-          icmatrix(iclayer)(icy)(icx).SMELTP = icTemp.SMELTP
-          icmatrix(iclayer)(icy)(icx).F_ON = icTemp.F_ON
+          icmatrix(iclayer)(icy)(icx).foreach { icMatrixTemp =>
+            icMatrixTemp.FUELP = icTemp.FUELP
+            icMatrixTemp.SMELTP = icTemp.SMELTP
+            icMatrixTemp.F_ON = icTemp.F_ON
+          }
+
         }
         ic = None
-
-      }
-      if (ic != null) {
 
       }
     }
@@ -3482,17 +3484,7 @@ class TerraFrame extends JApplet
             }
             else if (inventory.tool() == 33) {
               if (blocks(layer)(uy)(ux) == FurnaceBlockType.id || blocks(layer)(uy)(ux) == FurnaceOnBlockType.id) {
-                if (icmatrix(layer)(uy)(ux) != null && icmatrix(layer)(uy)(ux).icType == Furnace) {
-                  inventory.durs(inventory.selection) = (inventory.durs(inventory.selection) - 1).toShort
-                  icmatrix(layer)(uy)(ux).F_ON = true
-                  blocks(layer)(uy)(ux) = FurnaceOnBlockType.id
-                  addBlockLighting(ux, uy)
-                  if (inventory.durs(inventory.selection) <= 0) {
-                    inventory.removeLocation(inventory.selection, inventory.nums(inventory.selection))
-                  }
-                  rdrawn(uy)(ux) = false
-                }
-                else {
+                icmatrix(layer)(uy)(ux).fold {
                   ic.foreach { icTemp =>
                     if (icTemp.icType == Furnace) {
                       inventory.durs(inventory.selection) = (inventory.durs(inventory.selection) - 1).toShort
@@ -3504,6 +3496,17 @@ class TerraFrame extends JApplet
                         inventory.removeLocation(inventory.selection, inventory.nums(inventory.selection))
                       }
                     }
+                  }
+                } { icMatrixTemp =>
+                  if (icMatrixTemp.icType == Furnace) {
+                    inventory.durs(inventory.selection) = (inventory.durs(inventory.selection) - 1).toShort
+                    icMatrixTemp.F_ON = true
+                    blocks(layer)(uy)(ux) = FurnaceOnBlockType.id
+                    addBlockLighting(ux, uy)
+                    if (inventory.durs(inventory.selection) <= 0) {
+                      inventory.removeLocation(inventory.selection, inventory.nums(inventory.selection))
+                    }
+                    rdrawn(uy)(ux) = false
                   }
                 }
               }
@@ -3892,7 +3895,7 @@ class TerraFrame extends JApplet
                 if (icTemp.icType != Workbench) {
                   machinesx += icx
                   machinesy += icy
-                  icmatrix(iclayer)(icy)(icx) = ItemCollection(icTemp.icType, icTemp.ids, icTemp.nums, icTemp.durs)
+                  icmatrix(iclayer)(icy)(icx) = Some(ItemCollection(icTemp.icType, icTemp.ids, icTemp.nums, icTemp.durs))
                 }
                 if (icTemp.icType == Workbench) {
                   if (player.imgState == StillRight || player.imgState == WalkRight1 || player.imgState == WalkRight2) {
@@ -3911,128 +3914,120 @@ class TerraFrame extends JApplet
                   }
                 }
                 if (icTemp.icType == Furnace) {
-                  icmatrix(iclayer)(icy)(icx).FUELP = icTemp.FUELP
-                  icmatrix(iclayer)(icy)(icx).SMELTP = icTemp.SMELTP
-                  icmatrix(iclayer)(icy)(icx).F_ON = icTemp.F_ON
+                  icmatrix(iclayer)(icy)(icx).foreach { icMatrixTemp =>
+                    icMatrixTemp.FUELP = icTemp.FUELP
+                    icMatrixTemp.SMELTP = icTemp.SMELTP
+                    icMatrixTemp.F_ON = icTemp.F_ON
+                  }
                 }
                 ic = None
               }
               iclayer = layer
               (0 until 3).foreach { l =>
                 if (blocks(l)(uy)(ux) == WorkbenchBlockType.id) {
-                  if (icmatrix(l)(uy)(ux) != null && icmatrix(l)(uy)(ux).icType == Workbench) {
-                    ic = Some(ItemCollection(Workbench, icmatrix(l)(uy)(ux).ids, icmatrix(l)(uy)(ux).nums, icmatrix(l)(uy)(ux).durs)) // TODO: What is the point of copying this and not using the same one?
+                  ic = icmatrix(l)(uy)(ux) match {
+                    case Some(ItemCollection(Workbench, ids, nums, durs)) =>  Some(ItemCollection(Workbench, ids, nums, durs))
+                    case _ => Some(new ItemCollection(Workbench))
                   }
-                  else {
-                    ic = Some(new ItemCollection(Workbench))
-                  }
+
                   icx = ux
                   icy = uy
                   ic.foreach(inventory.renderCollection)
                   showInv = true
                 }
                 if (blocks(l)(uy)(ux) == WoodenChestBlockType.id) {
-                  if (icmatrix(l)(uy)(ux) != null && icmatrix(l)(uy)(ux).icType == WoodenChest) {
-                    ic = Some(ItemCollection(WoodenChest, icmatrix(l)(uy)(ux).ids, icmatrix(l)(uy)(ux).nums, icmatrix(l)(uy)(ux).durs))
+                  ic = icmatrix(l)(uy)(ux) match {
+                    case Some(ItemCollection(WoodenChest, ids, nums, durs)) =>  Some(ItemCollection(WoodenChest, ids, nums, durs))
+                    case _ => Some(new ItemCollection(WoodenChest))
                   }
-                  else {
-                    ic = Some(new ItemCollection(WoodenChest))
-                  }
+
                   icx = ux
                   icy = uy
                   ic.foreach(inventory.renderCollection)
                   showInv = true
                 }
                 if (blocks(l)(uy)(ux) == StoneChestBlockType.id) {
-                  if (icmatrix(l)(uy)(ux) != null && icmatrix(l)(uy)(ux).icType == StoneChest) {
-                    ic = Some(ItemCollection(StoneChest, icmatrix(l)(uy)(ux).ids, icmatrix(l)(uy)(ux).nums, icmatrix(l)(uy)(ux).durs))
+                  ic = icmatrix(l)(uy)(ux) match {
+                    case Some(ItemCollection(StoneChest, ids, nums, durs)) =>  Some(ItemCollection(StoneChest, ids, nums, durs))
+                    case _ => Some(new ItemCollection(StoneChest))
                   }
-                  else {
-                    ic = Some(new ItemCollection(StoneChest))
-                  }
+
                   icx = ux
                   icy = uy
                   ic.foreach(inventory.renderCollection)
                   showInv = true
                 }
                 if (blocks(l)(uy)(ux) == CopperChestBlockType.id) {
-                  if (icmatrix(l)(uy)(ux) != null && icmatrix(l)(uy)(ux).icType == CopperChest) {
-                    ic = Some(ItemCollection(CopperChest, icmatrix(l)(uy)(ux).ids, icmatrix(l)(uy)(ux).nums, icmatrix(l)(uy)(ux).durs))
+                  ic = icmatrix(l)(uy)(ux) match {
+                    case Some(ItemCollection(CopperChest, ids, nums, durs)) =>  Some(ItemCollection(CopperChest, ids, nums, durs))
+                    case _ => Some(new ItemCollection(CopperChest))
                   }
-                  else {
-                    ic = Some(new ItemCollection(CopperChest))
-                  }
+
                   icx = ux
                   icy = uy
                   ic.foreach(inventory.renderCollection)
                   showInv = true
                 }
                 if (blocks(l)(uy)(ux) == IronChestBlockType.id) { //TODO: seems like all these blocks only differ by type
-                  if (icmatrix(l)(uy)(ux) != null && icmatrix(l)(uy)(ux).icType == IronChest) {
-                    ic = Some(ItemCollection(IronChest, icmatrix(l)(uy)(ux).ids, icmatrix(l)(uy)(ux).nums, icmatrix(l)(uy)(ux).durs))
+                  ic = icmatrix(l)(uy)(ux) match {
+                    case Some(ItemCollection(IronChest, ids, nums, durs)) =>  Some(ItemCollection(IronChest, ids, nums, durs))
+                    case _ => Some(new ItemCollection(IronChest))
                   }
-                  else {
-                    ic = Some(new ItemCollection(IronChest))
-                  }
+
                   icx = ux
                   icy = uy
                   ic.foreach(inventory.renderCollection)
                   showInv = true
                 }
                 if (blocks(l)(uy)(ux) == SilverChestBlockType.id) {
-                  if (icmatrix(l)(uy)(ux) != null && icmatrix(l)(uy)(ux).icType == SilverChest) {
-                    ic = Some(ItemCollection(SilverChest, icmatrix(l)(uy)(ux).ids, icmatrix(l)(uy)(ux).nums, icmatrix(l)(uy)(ux).durs))
+                  ic = icmatrix(l)(uy)(ux) match {
+                    case Some(ItemCollection(SilverChest, ids, nums, durs)) =>  Some(ItemCollection(SilverChest, ids, nums, durs))
+                    case _ => Some(new ItemCollection(SilverChest))
                   }
-                  else {
-                    ic = Some(new ItemCollection(SilverChest))
-                  }
+
                   icx = ux
                   icy = uy
                   ic.foreach(inventory.renderCollection)
                   showInv = true
                 }
                 if (blocks(l)(uy)(ux) == GoldChestBlockType.id) {
-                  if (icmatrix(l)(uy)(ux) != null && icmatrix(l)(uy)(ux).icType == GoldChest) {
-                    ic = Some(ItemCollection(GoldChest, icmatrix(l)(uy)(ux).ids, icmatrix(l)(uy)(ux).nums, icmatrix(l)(uy)(ux).durs))
+                  ic = icmatrix(l)(uy)(ux) match {
+                    case Some(ItemCollection(GoldChest, ids, nums, durs)) =>  Some(ItemCollection(GoldChest, ids, nums, durs))
+                    case _ => Some(new ItemCollection(GoldChest))
                   }
-                  else {
-                    ic = Some(new ItemCollection(GoldChest))
-                  }
+
                   icx = ux
                   icy = uy
                   ic.foreach(inventory.renderCollection)
                   showInv = true
                 }
                 if (blocks(l)(uy)(ux) == ZincChestBlockType.id) {
-                  if (icmatrix(l)(uy)(ux) != null && icmatrix(l)(uy)(ux).icType == ZincChest) {
-                    ic = Some(ItemCollection(ZincChest, icmatrix(l)(uy)(ux).ids, icmatrix(l)(uy)(ux).nums, icmatrix(l)(uy)(ux).durs))
+                  ic = icmatrix(l)(uy)(ux) match {
+                    case Some(ItemCollection(ZincChest, ids, nums, durs)) =>  Some(ItemCollection(ZincChest, ids, nums, durs))
+                    case _ => Some(new ItemCollection(ZincChest))
                   }
-                  else {
-                    ic = Some(new ItemCollection(ZincChest))
-                  }
+
                   icx = ux
                   icy = uy
                   ic.foreach(inventory.renderCollection)
                   showInv = true
                 }
                 if (blocks(l)(uy)(ux) == RhymestoneChestBlockType.id) {
-                  if (icmatrix(l)(uy)(ux) != null && icmatrix(l)(uy)(ux).icType == RhymestoneChest) {
-                    ic = Some(ItemCollection(RhymestoneChest, icmatrix(l)(uy)(ux).ids, icmatrix(l)(uy)(ux).nums, icmatrix(l)(uy)(ux).durs))
+                  ic = icmatrix(l)(uy)(ux) match {
+                    case Some(ItemCollection(RhymestoneChest, ids, nums, durs)) =>  Some(ItemCollection(RhymestoneChest, ids, nums, durs))
+                    case _ => Some(new ItemCollection(RhymestoneChest))
                   }
-                  else {
-                    ic = Some(new ItemCollection(RhymestoneChest))
-                  }
+
                   icx = ux
                   icy = uy
                   ic.foreach(inventory.renderCollection)
                   showInv = true
                 }
                 if (blocks(l)(uy)(ux) == ObduriteChestBlockType.id) {
-                  if (icmatrix(l)(uy)(ux) != null && icmatrix(l)(uy)(ux).icType == ObduriteChest) {
-                    ic = Some(ItemCollection(ObduriteChest, icmatrix(l)(uy)(ux).ids, icmatrix(l)(uy)(ux).nums, icmatrix(l)(uy)(ux).durs))
-                  }
-                  else {
-                    ic = Some(new ItemCollection(ObduriteChest))
+
+                  ic = icmatrix(l)(uy)(ux) match {
+                    case Some(ItemCollection(ObduriteChest, ids, nums, durs)) =>  Some(ItemCollection(ObduriteChest, ids, nums, durs))
+                    case _ => Some(new ItemCollection(ObduriteChest))
                   }
                   icx = ux
                   icy = uy
@@ -4040,25 +4035,23 @@ class TerraFrame extends JApplet
                   showInv = true
                 }
                 if (blocks(l)(uy)(ux) == FurnaceBlockType.id || blocks(l)(uy)(ux) == FurnaceOnBlockType.id) {
-                  if (icmatrix(l)(uy)(ux) != null && icmatrix(l)(uy)(ux).icType == Furnace) {
-                    ic = Some(ItemCollection(Furnace, icmatrix(l)(uy)(ux).ids, icmatrix(l)(uy)(ux).nums, icmatrix(l)(uy)(ux).durs))
-                    ic.foreach { icTemp =>
-                      icTemp.FUELP = icmatrix(l)(uy)(ux).FUELP
-                      icTemp.SMELTP = icmatrix(l)(uy)(ux).SMELTP
-                      icTemp.F_ON = icmatrix(l)(uy)(ux).F_ON
-                      icmatrix(l)(uy)(ux) = null
-                    }
-
-                  }
-                  else {
-                    ic = Some(new ItemCollection(Furnace))
+                  ic = icmatrix(l)(uy)(ux) match {
+                    case Some(origIC @ ItemCollection(Furnace, ids, nums, durs)) =>
+                      val updatedIC = ItemCollection(Furnace, ids, nums, durs)
+                      updatedIC.FUELP = origIC.FUELP
+                      updatedIC.SMELTP = origIC.SMELTP
+                      updatedIC.F_ON = origIC.F_ON
+                      icmatrix(l)(uy)(ux) = None
+                      Some(updatedIC)
+                    case _ => Some(new ItemCollection(Furnace))
                   }
                   icx = ux
                   icy = uy
                   ic.foreach(inventory.renderCollection)
                   showInv = true
                 }
-                if (ic != null && blocks(l)(uy)(ux) != WorkbenchBlockType.id) {
+
+                if (ic.isDefined && blocks(l)(uy)(ux) != WorkbenchBlockType.id) {
                   (machinesx.length - 1 until(-1, -1)).foreach { i =>
                     if (machinesx(i) == icx && machinesy(i) == icy) {
                       machinesx.remove(i)
@@ -4236,7 +4229,7 @@ class TerraFrame extends JApplet
         if (icTemp.icType != Workbench) {
           machinesx += icx
           machinesy += icy
-          icmatrix(iclayer)(icy)(icx) = ItemCollection(icTemp.icType, icTemp.ids, icTemp.nums, icTemp.durs)
+          icmatrix(iclayer)(icy)(icx) = Some(ItemCollection(icTemp.icType, icTemp.ids, icTemp.nums, icTemp.durs))
         }
         if (icTemp.icType == Workbench) {
           if (player.imgState == StillRight || player.imgState == WalkRight1 || player.imgState == WalkRight2) {
@@ -4255,9 +4248,11 @@ class TerraFrame extends JApplet
           }
         }
         if (icTemp.icType == Furnace) {
-          icmatrix(iclayer)(icy)(icx).FUELP = icTemp.FUELP
-          icmatrix(iclayer)(icy)(icx).SMELTP = icTemp.SMELTP
-          icmatrix(iclayer)(icy)(icx).F_ON = icTemp.F_ON
+          icmatrix(iclayer)(icy)(icx).foreach { icMatrixTemp =>
+            icMatrixTemp.FUELP = icTemp.FUELP
+            icMatrixTemp.SMELTP = icTemp.SMELTP
+            icMatrixTemp.F_ON = icTemp.F_ON
+          }
         }
         ic = None
       }
@@ -4502,13 +4497,13 @@ class TerraFrame extends JApplet
             }
           }
         }
-        if (icmatrix(layer)(uy)(ux) != null) {
-          icmatrix(layer)(uy)(ux).ids.indices.foreach { i =>
-            if (icmatrix(layer)(uy)(ux).ids(i) != 0 && !(icmatrix(layer)(uy)(ux).icType == Furnace && i == 1)) {
-              entities += new Entity((ux * BLOCKSIZE).toDouble, (uy * BLOCKSIZE).toDouble, random.nextDouble() * 4 - 2, -2, icmatrix(layer)(uy)(ux).ids(i), icmatrix(layer)(uy)(ux).nums(i), icmatrix(layer)(uy)(ux).durs(i))
+        icmatrix(layer)(uy)(ux).foreach { icMatrixTemp =>
+          icMatrixTemp.ids.indices.foreach { i =>
+            if (icMatrixTemp.ids(i) != 0 && !(icMatrixTemp.icType == Furnace && i == 1)) {
+              entities += new Entity((ux * BLOCKSIZE).toDouble, (uy * BLOCKSIZE).toDouble, random.nextDouble() * 4 - 2, -2, icMatrixTemp.ids(i), icMatrixTemp.nums(i), icMatrixTemp.durs(i))
             }
           }
-          icmatrix(layer)(uy)(ux) = null
+          icmatrix(layer)(uy)(ux) = None
         }
         ic = None
         import scala.util.control.Breaks._
@@ -6463,7 +6458,7 @@ class TerraFrame extends JApplet
           if (icTemp.icType != Workbench) {
             machinesx += icx
             machinesy += icy
-            icmatrix(iclayer)(icy)(icx) = ItemCollection(icTemp.icType, icTemp.ids, icTemp.nums, icTemp.durs)
+            icmatrix(iclayer)(icy)(icx) = Some(ItemCollection(icTemp.icType, icTemp.ids, icTemp.nums, icTemp.durs))
           }
           if (icTemp.icType == Workbench) {
             if (player.imgState == StillRight || player.imgState == WalkRight1 || player.imgState == WalkRight2) {
@@ -6482,9 +6477,11 @@ class TerraFrame extends JApplet
             }
           }
           if (icTemp.icType == Furnace) {
-            icmatrix(iclayer)(icy)(icx).FUELP = icTemp.FUELP
-            icmatrix(iclayer)(icy)(icx).SMELTP = icTemp.SMELTP
-            icmatrix(iclayer)(icy)(icx).F_ON = icTemp.F_ON
+            icmatrix(iclayer)(icy)(icx).foreach { icMatrixTemp =>
+              icMatrixTemp.FUELP = icTemp.FUELP
+              icMatrixTemp.SMELTP = icTemp.SMELTP
+              icMatrixTemp.F_ON = icTemp.F_ON
+            }
           }
           ic = None
         }

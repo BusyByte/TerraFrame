@@ -63,6 +63,6 @@ case class WorldContainer(blocks: Array3D[Int],
                           resunlight: Int,
                           ic: Option[ItemCollection],
                           kworlds: Array2D[Boolean],
-                          icmatrix: Array3D[ItemCollection],
+                          icmatrix: Array3D[Option[ItemCollection]],
                           version: String)
     extends Serializable
