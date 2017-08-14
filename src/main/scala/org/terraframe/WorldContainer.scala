@@ -61,7 +61,7 @@ case class WorldContainer(blocks: Array3D[Int],
                           WORLDWIDTH: Int,
                           WORLDHEIGHT: Int,
                           resunlight: Int,
-                          ic: ItemCollection,
+                          ic: Option[ItemCollection],
                           kworlds: Array2D[Boolean],
                           icmatrix: Array3D[ItemCollection],
                           version: String)
