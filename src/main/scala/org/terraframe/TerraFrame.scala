@@ -529,7 +529,7 @@ object TerraFrame {
 
     val backgroundImgsTemp = new jul.HashMap[Byte, BufferedImage](bgs.length)
 
-    bgs.indices.foreach { i =>
+    (1 until bgs.length).foreach { i =>
       backgroundImgsTemp.put(i.toByte, loadImage("backgrounds/" + bgs(i) + ".png").get)
     }
 
@@ -1617,7 +1617,7 @@ object TerraFrame {
   def postError(e: Throwable): Unit = {
     val sb = new StringBuilder()
     sb.append("Exception in thread " + e.getClass.getName)
-    e.getMessage.foreach { message =>
+    Option(e.getMessage).foreach { message =>
       sb.append(": ")
       sb.append(message)
     }
@@ -5720,9 +5720,6 @@ class TerraFrame extends JApplet
 
   override def paint(g: Graphics): Unit = {
     screen.foreach { screenTemp =>
-      val (mouseX, mouseY) = userInput.currentMousePosition
-      val playerMouseXOffset = mouseX + player.ix - getWidth() / 2 + Player.width / 2
-      val playerMouseYOffset = mouseY + player.iy - getHeight() / 2 + Player.height / 2
       pg2 = screenTemp.createGraphics()
       pg2.setColor(bg)
       pg2.fillRect(0, 0, getWidth, getHeight)
@@ -5895,6 +5892,9 @@ class TerraFrame extends JApplet
             getWidth - save_exit.getWidth() - 24, getHeight - save_exit.getHeight() - 24, getWidth - 24, getHeight - 24,
             0, 0, save_exit.getWidth(), save_exit.getHeight())
         }
+        val (mouseX, mouseY) = userInput.currentMousePosition
+        val mouseXWorldPosition = mouseX + player.ix - getWidth() / 2 + Player.width / 2
+        val mouseYWorldPosition = mouseY + player.iy - getHeight() / 2 + Player.height / 2
 
         if (moveItem != 0) {
           itemImgs.get(moveItem).foreach { i =>
@@ -5919,7 +5919,7 @@ class TerraFrame extends JApplet
           }.foreach { p =>
             val entity = p._1
             val entityName = p._2
-            if (entity.rect.contains(new Point(playerMouseXOffset, playerMouseYOffset))) {
+            if (entity.rect.contains(new Point(mouseXWorldPosition, mouseYWorldPosition))) {
               pg2.setFont(mobFont)
               pg2.setColor(Color.WHITE)
               pg2.drawString(entityName + " (" + entity.hp + "/" + entity.strategy.thp + ")", mouseX, mouseY)
