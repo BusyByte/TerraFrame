@@ -1654,7 +1654,7 @@ class TerraFrame extends JApplet
   import TerraFrame._
 
   var cic: Option[ItemCollection] = None
-  var screen: BufferedImage = _
+  var screen: Option[BufferedImage] = None
   var bg: Color = _
 
   val cl: Array2D[Int] = Array(Array(-1, 0), Array(1, 0), Array(0, -1), Array(0, 1))
@@ -1925,7 +1925,7 @@ class TerraFrame extends JApplet
       addMouseMotionListener(this)
       addMouseWheelListener(this)
 
-      screen = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB)
+      screen = Some(new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB))
 
       logo_white.getWidth
       logo_black.getWidth
@@ -5741,223 +5741,223 @@ class TerraFrame extends JApplet
   }
 
   override def paint(g: Graphics): Unit = {
-    if (screen == null) return
-    val (mouseX, mouseY) = userInput.currentMousePosition
-    val playerMouseXOffset = mouseX + player.ix - getWidth() / 2 + Player.width / 2
-    val playerMouseYOffset = mouseY + player.iy - getHeight() / 2 + Player.height / 2
-    pg2 = screen.createGraphics()
-    pg2.setColor(bg)
-    pg2.fillRect(0, 0, getWidth, getHeight)
-    if (state == InGame) {
-      /*            if (SKYLIGHTS.get(timeOfDay.toInt) != null) {
-                sunlightlevel = SKYLIGHTS.get(timeOfDay.toInt)
-                resunlight = 0
-            }
-            if (resunlight < WIDTH) {
-                (resunlight until min(resunlight+SUNLIGHTSPEED,WIDTH)).foreach { ux =>
-                    removeSunLighting(ux, 0)
-                    addSunLighting(ux, 0)
-                }
-                resunlight += SUNLIGHTSPEED
-            }
-*/
-      if (player.y / 16 < HEIGHT * 0.5) {
-        pg2.translate((getWidth / 2).toDouble, getHeight * 0.85)
-        pg2.rotate((timeOfDay - 70200) / 86400 * Pi * 2)
+    screen.foreach { screenTemp =>
+      val (mouseX, mouseY) = userInput.currentMousePosition
+      val playerMouseXOffset = mouseX + player.ix - getWidth() / 2 + Player.width / 2
+      val playerMouseYOffset = mouseY + player.iy - getHeight() / 2 + Player.height / 2
+      pg2 = screenTemp.createGraphics()
+      pg2.setColor(bg)
+      pg2.fillRect(0, 0, getWidth, getHeight)
+      if (state == InGame) {
+        /*            if (SKYLIGHTS.get(timeOfDay.toInt) != null) {
+                  sunlightlevel = SKYLIGHTS.get(timeOfDay.toInt)
+                  resunlight = 0
+              }
+              if (resunlight < WIDTH) {
+                  (resunlight until min(resunlight+SUNLIGHTSPEED,WIDTH)).foreach { ux =>
+                      removeSunLighting(ux, 0)
+                      addSunLighting(ux, 0)
+                  }
+                  resunlight += SUNLIGHTSPEED
+              }
+  */
+        if (player.y / 16 < HEIGHT * 0.5) {
+          pg2.translate((getWidth / 2).toDouble, getHeight * 0.85)
+          pg2.rotate((timeOfDay - 70200) / 86400 * Pi * 2)
 
-        pg2.drawImage(sun,
-          (-getWidth * 0.65).toInt, 0, (-getWidth * 0.65 + sun.getWidth() * 2).toInt, sun.getHeight() * 2,
-          0, 0, sun.getWidth(), sun.getHeight(),
-          null)
-
-        pg2.rotate(Pi)
-
-        pg2.drawImage(moon,
-          (-getWidth * 0.65).toInt, 0, (-getWidth * 0.65 + moon.getWidth() * 2).toInt, moon.getHeight() * 2,
-          0, 0, moon.getWidth(), moon.getHeight(),
-          null)
-
-        pg2.rotate(-(timeOfDay - 70200) / 86400 * Pi * 2 - Pi)
-        pg2.translate((-getWidth / 2).toDouble, -getHeight * 0.85)
-
-        cloudsx.indices.foreach { i =>
-          cloud = clouds(cloudsn(i))
-          pg2.drawImage(clouds(cloudsn(i)),
-            cloudsx(i).toInt, cloudsy(i).toInt, (cloudsx(i) + cloud.getWidth() * 2).toInt, (cloudsy(i) + cloud.getHeight() * 2).toInt,
-            0, 0, cloud.getWidth(), cloud.getHeight(),
+          pg2.drawImage(sun,
+            (-getWidth * 0.65).toInt, 0, (-getWidth * 0.65 + sun.getWidth() * 2).toInt, sun.getHeight() * 2,
+            0, 0, sun.getWidth(), sun.getHeight(),
             null)
-        }
-      }
 
-      (0 until 2).foreach { pwy =>
-        (0 until 2).foreach { pwx =>
-          val pwxc: Int = pwx + ou
-          val pwyc: Int = pwy + ov
-          worlds(pwy)(pwx).foreach { w =>
-            if (((player.ix + getWidth / 2 + Player.width >= pwxc * CHUNKSIZE &&
-              player.ix + getWidth / 2 + Player.width <= pwxc * CHUNKSIZE + CHUNKSIZE) ||
-              (player.ix - getWidth / 2 + Player.width + BLOCKSIZE >= pwxc * CHUNKSIZE &&
-                player.ix - getWidth / 2 + Player.width - BLOCKSIZE <= pwxc * CHUNKSIZE + CHUNKSIZE)) &&
-              ((player.iy + getHeight / 2 + Player.height >= pwyc * CHUNKSIZE &&
-                player.iy + getHeight / 2 + Player.height <= pwyc * CHUNKSIZE + CHUNKSIZE) ||
-                (player.iy - getHeight / 2 + Player.height >= pwyc * CHUNKSIZE &&
-                  player.iy - getHeight / 2 + Player.height <= pwyc * CHUNKSIZE + CHUNKSIZE))) {
-              pg2.drawImage(w,
-                pwxc * CHUNKSIZE - player.ix + getWidth / 2 - Player.width / 2, pwyc * CHUNKSIZE - player.iy + getHeight / 2 - Player.height / 2, pwxc * CHUNKSIZE - player.ix + getWidth / 2 - Player.width / 2 + CHUNKSIZE, pwyc * CHUNKSIZE - player.iy + getHeight / 2 - Player.height / 2 + CHUNKSIZE,
-                0, 0, CHUNKSIZE, CHUNKSIZE,
-                null)
-            }
-          }
-        }
-      }
+          pg2.rotate(Pi)
 
-      pg2.drawImage(player.image,
-        getWidth / 2 - Player.width / 2, getHeight / 2 - Player.height / 2, getWidth / 2 + Player.width / 2, getHeight / 2 + Player.height / 2,
-        0, 0, player.image.getWidth(), player.image.getHeight(),
-        null)
+          pg2.drawImage(moon,
+            (-getWidth * 0.65).toInt, 0, (-getWidth * 0.65 + moon.getWidth() * 2).toInt, moon.getHeight() * 2,
+            0, 0, moon.getWidth(), moon.getHeight(),
+            null)
 
-      entities.indices.foreach { i =>
-        entity = entities(i)
-        pg2.drawImage(entity.image,
-          entity.ix - player.ix + getWidth / 2 - Player.width / 2, entity.iy - player.iy + getHeight / 2 - Player.height / 2, entity.ix - player.ix + getWidth / 2 - Player.width / 2 + entity.width, entity.iy - player.iy + getHeight / 2 - Player.height / 2 + entity.height,
-          0, 0, entity.image.getWidth(), entity.image.getHeight(),
-          null)
-        pg2.drawImage(entity.image,
-          entity.ix - player.ix + getWidth / 2 - Player.width / 2 - WIDTH * BLOCKSIZE, entity.iy - player.iy + getHeight / 2 - Player.height / 2, entity.ix - player.ix + getWidth / 2 - Player.width / 2 + entity.width - WIDTH * BLOCKSIZE, entity.iy - player.iy + getHeight / 2 - Player.height / 2 + entity.height,
-          0, 0, entity.image.getWidth(), entity.image.getHeight(),
-          null)
-        pg2.drawImage(entity.image,
-          entity.ix - player.ix + getWidth / 2 - Player.width / 2 + WIDTH * BLOCKSIZE, entity.iy - player.iy + getHeight / 2 - Player.height / 2, entity.ix - player.ix + getWidth() / 2 - Player.width / 2 + entity.width + WIDTH * BLOCKSIZE, entity.iy - player.iy + getHeight() / 2 - Player.height / 2 + entity.height,
-          0, 0, entity.image.getWidth(), entity.image.getHeight(),
-          null)
-      }
+          pg2.rotate(-(timeOfDay - 70200) / 86400 * Pi * 2 - Pi)
+          pg2.translate((-getWidth / 2).toDouble, -getHeight * 0.85)
 
-      if (showTool) {
-        tool.foreach { t =>
-          if (player.imgState == StillRight || player.imgState == WalkRight1 || player.imgState == WalkRight2) {
-            pg2.translate(getWidth / 2 + 6, getHeight / 2)
-            pg2.rotate(toolAngle)
-
-            pg2.drawImage(t,
-              0, -t.getHeight() * 2, t.getWidth() * 2, 0,
-              0, 0, t.getWidth(), t.getHeight(),
+          cloudsx.indices.foreach { i =>
+            cloud = clouds(cloudsn(i))
+            pg2.drawImage(clouds(cloudsn(i)),
+              cloudsx(i).toInt, cloudsy(i).toInt, (cloudsx(i) + cloud.getWidth() * 2).toInt, (cloudsy(i) + cloud.getHeight() * 2).toInt,
+              0, 0, cloud.getWidth(), cloud.getHeight(),
               null)
-
-            pg2.rotate(-toolAngle)
-            pg2.translate(-getWidth / 2 - 6, -getHeight / 2)
-          }
-          if (player.imgState == StillLeft || player.imgState == WalkLeft1 || player.imgState == WalkLeft2) {
-            pg2.translate(getWidth / 2 - 6, getHeight / 2)
-            pg2.rotate((Pi * 1.5) - toolAngle)
-
-            pg2.drawImage(t,
-              0, -t.getHeight() * 2, t.getWidth() * 2, 0,
-              0, 0, t.getWidth(), t.getHeight(),
-              null)
-
-            pg2.rotate(-((Pi * 1.5) - toolAngle))
-            pg2.translate(-getWidth / 2 + 6, -getHeight / 2)
           }
         }
 
-      }
-
-      (0 until 2).foreach { pwy =>
-        (0 until 2).foreach { pwx =>
-          val pwxc: Int = pwx + ou
-          val pwyc: Int = pwy + ov
-          fworlds(pwy)(pwx).foreach { fw =>
-            if (((player.ix + getWidth / 2 + Player.width >= pwxc * CHUNKSIZE &&
-              player.ix + getWidth / 2 + Player.width <= pwxc * CHUNKSIZE + CHUNKSIZE) ||
-              (player.ix - getWidth / 2 + Player.width + BLOCKSIZE >= pwxc * CHUNKSIZE &&
-                player.ix - getWidth / 2 + Player.width - BLOCKSIZE <= pwxc * CHUNKSIZE + CHUNKSIZE)) &&
-              ((player.iy + getHeight / 2 + Player.height >= pwyc * CHUNKSIZE &&
-                player.iy + getHeight / 2 + Player.height <= pwyc * CHUNKSIZE + CHUNKSIZE) ||
-                (player.iy - getHeight / 2 + Player.height >= pwyc * CHUNKSIZE &&
-                  player.iy - getHeight / 2 + Player.height <= pwyc * CHUNKSIZE + CHUNKSIZE))) {
-              pg2.drawImage(fw,
-                pwxc * CHUNKSIZE - player.ix + getWidth / 2 - Player.width / 2, pwyc * CHUNKSIZE - player.iy + getHeight / 2 - Player.height / 2, pwxc * CHUNKSIZE - player.ix + getWidth / 2 - Player.width / 2 + CHUNKSIZE, pwyc * CHUNKSIZE - player.iy + getHeight / 2 - Player.height / 2 + CHUNKSIZE,
-                0, 0, CHUNKSIZE, CHUNKSIZE,
-                null)
+        (0 until 2).foreach { pwy =>
+          (0 until 2).foreach { pwx =>
+            val pwxc: Int = pwx + ou
+            val pwyc: Int = pwy + ov
+            worlds(pwy)(pwx).foreach { w =>
+              if (((player.ix + getWidth / 2 + Player.width >= pwxc * CHUNKSIZE &&
+                player.ix + getWidth / 2 + Player.width <= pwxc * CHUNKSIZE + CHUNKSIZE) ||
+                (player.ix - getWidth / 2 + Player.width + BLOCKSIZE >= pwxc * CHUNKSIZE &&
+                  player.ix - getWidth / 2 + Player.width - BLOCKSIZE <= pwxc * CHUNKSIZE + CHUNKSIZE)) &&
+                ((player.iy + getHeight / 2 + Player.height >= pwyc * CHUNKSIZE &&
+                  player.iy + getHeight / 2 + Player.height <= pwyc * CHUNKSIZE + CHUNKSIZE) ||
+                  (player.iy - getHeight / 2 + Player.height >= pwyc * CHUNKSIZE &&
+                    player.iy - getHeight / 2 + Player.height <= pwyc * CHUNKSIZE + CHUNKSIZE))) {
+                pg2.drawImage(w,
+                  pwxc * CHUNKSIZE - player.ix + getWidth / 2 - Player.width / 2, pwyc * CHUNKSIZE - player.iy + getHeight / 2 - Player.height / 2, pwxc * CHUNKSIZE - player.ix + getWidth / 2 - Player.width / 2 + CHUNKSIZE, pwyc * CHUNKSIZE - player.iy + getHeight / 2 - Player.height / 2 + CHUNKSIZE,
+                  0, 0, CHUNKSIZE, CHUNKSIZE,
+                  null)
+              }
             }
           }
         }
-      }
 
-      if (showInv) {
-        pg2.drawImage(inventory.image,
-          0, 0, inventory.image.getWidth(), inventory.image.getHeight(),
-          0, 0, inventory.image.getWidth(), inventory.image.getHeight(),
+        pg2.drawImage(player.image,
+          getWidth / 2 - Player.width / 2, getHeight / 2 - Player.height / 2, getWidth / 2 + Player.width / 2, getHeight / 2 + Player.height / 2,
+          0, 0, player.image.getWidth(), player.image.getHeight(),
           null)
-        pg2.drawImage(armor.icType.image,
-          inventory.image.getWidth() + 6, 6, inventory.image.getWidth() + 6 + armor.icType.image.getWidth(), 6 + armor.icType.image.getHeight(),
-          0, 0, armor.icType.image.getWidth(), armor.icType.image.getHeight(),
-          null)
-        cic.foreach { c =>
-          pg2.drawImage(c.icType.image,
-            inventory.image.getWidth() + 75, 52, inventory.image.getWidth() + 75 + c.icType.image.getWidth(), 52 + c.icType.image.getHeight(),
-            0, 0, c.icType.image.getWidth(), c.icType.image.getHeight(),
+
+        entities.indices.foreach { i =>
+          entity = entities(i)
+          pg2.drawImage(entity.image,
+            entity.ix - player.ix + getWidth / 2 - Player.width / 2, entity.iy - player.iy + getHeight / 2 - Player.height / 2, entity.ix - player.ix + getWidth / 2 - Player.width / 2 + entity.width, entity.iy - player.iy + getHeight / 2 - Player.height / 2 + entity.height,
+            0, 0, entity.image.getWidth(), entity.image.getHeight(),
             null)
-        }
-      }
-      else {
-        pg2.drawImage(inventory.image,
-          0, 0, inventory.image.getWidth(), inventory.image.getHeight() / 4,
-          0, 0, inventory.image.getWidth(), inventory.image.getHeight() / 4,
-          null)
-      }
-
-      ic.foreach { icTemp =>
-        pg2.drawImage(icTemp.icType.image,
-          6, inventory.image.getHeight() + 46, 6 + icTemp.icType.image.getWidth(), inventory.image.getHeight() + 46 + icTemp.icType.image.getHeight(),
-          0, 0, icTemp.icType.image.getWidth(), icTemp.icType.image.getHeight(),
-          null)
-      }
-
-      if (layer == 0) {
-        layerImg = loadImage("interface/layersB.png")//TODO: why are we loading images in the paint method?
-      }
-      if (layer == 1) {
-        layerImg = loadImage("interface/layersN.png")
-      }
-      if (layer == 2) {
-        layerImg = loadImage("interface/layersF.png")
-      }
-
-      pg2.drawImage(layerImg,
-        inventory.image.getWidth() + 58, 6, inventory.image.getWidth() + 58 + layerImg.getWidth(), 6 + layerImg.getHeight(),
-        0, 0, layerImg.getWidth(), layerImg.getHeight(),
-        null)
-
-      if (showInv) {
-        pg2.drawImage(save_exit,
-          getWidth - save_exit.getWidth() - 24, getHeight - save_exit.getHeight() - 24, getWidth - 24, getHeight - 24,
-          0, 0, save_exit.getWidth(), save_exit.getHeight(),
-          null)
-      }
-
-      if (moveItem != 0) {
-        itemImgs.get(moveItem).foreach { i =>
-          width = i.getWidth
-          height = i.getHeight
-          pg2.drawImage(i, mouseX + 12 + ((24 - 12.toDouble / mh.max(width, height, 12) * width * 2) / 2).toInt, mouseY + 12 + ((24 - 12.toDouble / mh.max(width, height, 12) * height * 2) / 2).toInt, mouseX + 36 - ((24 - 12.toDouble / mh.max(width, height, 12) * width * 2) / 2).toInt, mouseY + 36 - ((24 - 12.toDouble / mh.max(width, height, 12) * height * 2) / 2).toInt,
-            0, 0, width, height,
+          pg2.drawImage(entity.image,
+            entity.ix - player.ix + getWidth / 2 - Player.width / 2 - WIDTH * BLOCKSIZE, entity.iy - player.iy + getHeight / 2 - Player.height / 2, entity.ix - player.ix + getWidth / 2 - Player.width / 2 + entity.width - WIDTH * BLOCKSIZE, entity.iy - player.iy + getHeight / 2 - Player.height / 2 + entity.height,
+            0, 0, entity.image.getWidth(), entity.image.getHeight(),
+            null)
+          pg2.drawImage(entity.image,
+            entity.ix - player.ix + getWidth / 2 - Player.width / 2 + WIDTH * BLOCKSIZE, entity.iy - player.iy + getHeight / 2 - Player.height / 2, entity.ix - player.ix + getWidth() / 2 - Player.width / 2 + entity.width + WIDTH * BLOCKSIZE, entity.iy - player.iy + getHeight() / 2 - Player.height / 2 + entity.height,
+            0, 0, entity.image.getWidth(), entity.image.getHeight(),
             null)
         }
 
-        if (moveNum > 1) {
-          pg2.setFont(font)
-          pg2.setColor(Color.WHITE)
-          pg2.drawString(moveNum + " ", mouseX + 13, mouseY + 38)
+        if (showTool) {
+          tool.foreach { t =>
+            if (player.imgState == StillRight || player.imgState == WalkRight1 || player.imgState == WalkRight2) {
+              pg2.translate(getWidth / 2 + 6, getHeight / 2)
+              pg2.rotate(toolAngle)
+
+              pg2.drawImage(t,
+                0, -t.getHeight() * 2, t.getWidth() * 2, 0,
+                0, 0, t.getWidth(), t.getHeight(),
+                null)
+
+              pg2.rotate(-toolAngle)
+              pg2.translate(-getWidth / 2 - 6, -getHeight / 2)
+            }
+            if (player.imgState == StillLeft || player.imgState == WalkLeft1 || player.imgState == WalkLeft2) {
+              pg2.translate(getWidth / 2 - 6, getHeight / 2)
+              pg2.rotate((Pi * 1.5) - toolAngle)
+
+              pg2.drawImage(t,
+                0, -t.getHeight() * 2, t.getWidth() * 2, 0,
+                0, 0, t.getWidth(), t.getHeight(),
+                null)
+
+              pg2.rotate(-((Pi * 1.5) - toolAngle))
+              pg2.translate(-getWidth / 2 + 6, -getHeight / 2)
+            }
+          }
+
         }
-      }
-      import scala.util.control.Breaks._
-      breakable {
-        entities.collect {
-          case e @ AIEntity(_, _, _, _, strat)  => (e, UIENTITIES.get(strat.imageName))
-        }.collect {
-          case (e, Some(entityName)) => (e, entityName)
-        }.foreach { p =>
+
+        (0 until 2).foreach { pwy =>
+          (0 until 2).foreach { pwx =>
+            val pwxc: Int = pwx + ou
+            val pwyc: Int = pwy + ov
+            fworlds(pwy)(pwx).foreach { fw =>
+              if (((player.ix + getWidth / 2 + Player.width >= pwxc * CHUNKSIZE &&
+                player.ix + getWidth / 2 + Player.width <= pwxc * CHUNKSIZE + CHUNKSIZE) ||
+                (player.ix - getWidth / 2 + Player.width + BLOCKSIZE >= pwxc * CHUNKSIZE &&
+                  player.ix - getWidth / 2 + Player.width - BLOCKSIZE <= pwxc * CHUNKSIZE + CHUNKSIZE)) &&
+                ((player.iy + getHeight / 2 + Player.height >= pwyc * CHUNKSIZE &&
+                  player.iy + getHeight / 2 + Player.height <= pwyc * CHUNKSIZE + CHUNKSIZE) ||
+                  (player.iy - getHeight / 2 + Player.height >= pwyc * CHUNKSIZE &&
+                    player.iy - getHeight / 2 + Player.height <= pwyc * CHUNKSIZE + CHUNKSIZE))) {
+                pg2.drawImage(fw,
+                  pwxc * CHUNKSIZE - player.ix + getWidth / 2 - Player.width / 2, pwyc * CHUNKSIZE - player.iy + getHeight / 2 - Player.height / 2, pwxc * CHUNKSIZE - player.ix + getWidth / 2 - Player.width / 2 + CHUNKSIZE, pwyc * CHUNKSIZE - player.iy + getHeight / 2 - Player.height / 2 + CHUNKSIZE,
+                  0, 0, CHUNKSIZE, CHUNKSIZE,
+                  null)
+              }
+            }
+          }
+        }
+
+        if (showInv) {
+          pg2.drawImage(inventory.image,
+            0, 0, inventory.image.getWidth(), inventory.image.getHeight(),
+            0, 0, inventory.image.getWidth(), inventory.image.getHeight(),
+            null)
+          pg2.drawImage(armor.icType.image,
+            inventory.image.getWidth() + 6, 6, inventory.image.getWidth() + 6 + armor.icType.image.getWidth(), 6 + armor.icType.image.getHeight(),
+            0, 0, armor.icType.image.getWidth(), armor.icType.image.getHeight(),
+            null)
+          cic.foreach { c =>
+            pg2.drawImage(c.icType.image,
+              inventory.image.getWidth() + 75, 52, inventory.image.getWidth() + 75 + c.icType.image.getWidth(), 52 + c.icType.image.getHeight(),
+              0, 0, c.icType.image.getWidth(), c.icType.image.getHeight(),
+              null)
+          }
+        }
+        else {
+          pg2.drawImage(inventory.image,
+            0, 0, inventory.image.getWidth(), inventory.image.getHeight() / 4,
+            0, 0, inventory.image.getWidth(), inventory.image.getHeight() / 4,
+            null)
+        }
+
+        ic.foreach { icTemp =>
+          pg2.drawImage(icTemp.icType.image,
+            6, inventory.image.getHeight() + 46, 6 + icTemp.icType.image.getWidth(), inventory.image.getHeight() + 46 + icTemp.icType.image.getHeight(),
+            0, 0, icTemp.icType.image.getWidth(), icTemp.icType.image.getHeight(),
+            null)
+        }
+
+        if (layer == 0) {
+          layerImg = loadImage("interface/layersB.png") //TODO: why are we loading images in the paint method?
+        }
+        if (layer == 1) {
+          layerImg = loadImage("interface/layersN.png")
+        }
+        if (layer == 2) {
+          layerImg = loadImage("interface/layersF.png")
+        }
+
+        pg2.drawImage(layerImg,
+          inventory.image.getWidth() + 58, 6, inventory.image.getWidth() + 58 + layerImg.getWidth(), 6 + layerImg.getHeight(),
+          0, 0, layerImg.getWidth(), layerImg.getHeight(),
+          null)
+
+        if (showInv) {
+          pg2.drawImage(save_exit,
+            getWidth - save_exit.getWidth() - 24, getHeight - save_exit.getHeight() - 24, getWidth - 24, getHeight - 24,
+            0, 0, save_exit.getWidth(), save_exit.getHeight(),
+            null)
+        }
+
+        if (moveItem != 0) {
+          itemImgs.get(moveItem).foreach { i =>
+            width = i.getWidth
+            height = i.getHeight
+            pg2.drawImage(i, mouseX + 12 + ((24 - 12.toDouble / mh.max(width, height, 12) * width * 2) / 2).toInt, mouseY + 12 + ((24 - 12.toDouble / mh.max(width, height, 12) * height * 2) / 2).toInt, mouseX + 36 - ((24 - 12.toDouble / mh.max(width, height, 12) * width * 2) / 2).toInt, mouseY + 36 - ((24 - 12.toDouble / mh.max(width, height, 12) * height * 2) / 2).toInt,
+              0, 0, width, height,
+              null)
+          }
+
+          if (moveNum > 1) {
+            pg2.setFont(font)
+            pg2.setColor(Color.WHITE)
+            pg2.drawString(moveNum + " ", mouseX + 13, mouseY + 38)
+          }
+        }
+        import scala.util.control.Breaks._
+        breakable {
+          entities.collect {
+            case e@AIEntity(_, _, _, _, strat) => (e, UIENTITIES.get(strat.imageName))
+          }.collect {
+            case (e, Some(entityName)) => (e, entityName)
+          }.foreach { p =>
             val entity = p._1
             val entityName = p._2
             if (entity.rect.contains(new Point(playerMouseXOffset, playerMouseYOffset))) {
@@ -5967,233 +5967,234 @@ class TerraFrame extends JApplet
               break
             }
           }
-      }
-      if (showInv) {
-        ymax = 4
-      }
-      else {
-        ymax = 1
-      }
-      (0 until 10).foreach { ux =>
-        (0 until ymax).foreach { uy =>
-          if (mouseX >= ux * 46 + 6 && mouseX <= ux * 46 + 46 &&
-            mouseY >= uy * 46 + 6 && mouseY <= uy * 46 + 46 && inventory.ids(uy * 10 + ux) != 0) {
-            pg2.setFont(mobFont)
-            pg2.setColor(Color.WHITE)
-
-            TOOLDURS.get(inventory.ids(uy * 10 + ux)).fold {
-              UIBLOCKS.get(items(inventory.ids(uy * 10 + ux).toInt)).foreach(pg2.drawString(_, mouseX, mouseY))
-            } { t =>
-              UIBLOCKS.get(items(inventory.ids(uy * 10 + ux).toInt)).foreach(u => pg2.drawString(u + " (" + (inventory.durs(uy * 10 + ux).toDouble / t * 100).toInt + "%)", mouseX, mouseY))
-            }
-          }
         }
-      }
-      pg2.setFont(mobFont)
-      pg2.setColor(Color.WHITE)
-      pg2.drawString("Health: " + player.hp + "/" + Player.totalHP, getWidth - 125, 20)
-      pg2.drawString("Armor: " + player.sumArmor(), getWidth - 125, 40)
-      if (DEBUG_STATS) {
-        pg2.drawString("(" + (player.ix / 16) + ", " + (player.iy / 16) + ")", getWidth - 125, 60)
-        if (player.iy >= 0 && player.iy < HEIGHT * BLOCKSIZE) {
-          pg2.drawString(checkBiome(player.ix / 16 + u, player.iy / 16 + v) + " " + lights(player.iy / 16 + v)(player.ix / 16 + u), getWidth - 125, 80)
+        if (showInv) {
+          ymax = 4
         }
-      }
-      if (showInv) {
-        cic.foreach { c =>
-          (0 until 2).foreach { ux =>
-            (0 until 2).foreach { uy =>
-              if (mouseX >= inventory.image.getWidth() + ux * 40 + 75 &&
-                mouseX < inventory.image.getWidth() + ux * 40 + 115 &&
-                mouseY >= uy * 40 + 52 && mouseY < uy * 40 + 92 && c.ids(uy * 2 + ux) != 0) {
-                pg2.setFont(mobFont)
-                pg2.setColor(Color.WHITE)
-                TOOLDURS.get(c.ids(uy * 2 + ux)).fold {
-                  UIBLOCKS.get(items(c.ids(uy * 2 + ux).toInt)).foreach(pg2.drawString(_, mouseX, mouseY))
-                } { t =>
-                  UIBLOCKS.get(items(c.ids(uy * 2 + ux).toInt)).foreach(u => pg2.drawString(u + " (" + (c.durs(uy * 2 + ux).toDouble / t * 100).toInt + "%)", mouseX, mouseY))
-                }
-              }
-            }
-          }
-          if (mouseX >= inventory.image.getWidth() + 3 * 40 + 75 &&
-            mouseX < inventory.image.getWidth() + 3 * 40 + 115 &&
-            mouseY >= 20 + 52 && mouseY < 20 + 92 && c.ids(4) != 0) {
-            pg2.setFont(mobFont)
-            pg2.setColor(Color.WHITE)
-            TOOLDURS.get(c.ids(4)).fold {
-              UIBLOCKS.get(items(c.ids(4).toInt)).foreach(pg2.drawString(_, mouseX, mouseY))
-            } { t =>
-              UIBLOCKS.get(items(c.ids(4).toInt)).foreach(u => pg2.drawString(u + " (" + (c.durs(4).toDouble / t * 100).toInt + "%)", mouseX, mouseY))
-            }
-          }
+        else {
+          ymax = 1
         }
-        (0 until 4).foreach { uy =>
-          if (mouseX >= inventory.image.getWidth() + 6 && mouseX < inventory.image.getWidth() + 6 + armor.icType.image.getWidth() &&
-            mouseY >= 6 + uy * 46 && mouseY < 6 + uy * 46 + 46 && armor.ids(uy) != 0) {
-            pg2.setFont(mobFont)
-            pg2.setColor(Color.WHITE)
+        (0 until 10).foreach { ux =>
+          (0 until ymax).foreach { uy =>
+            if (mouseX >= ux * 46 + 6 && mouseX <= ux * 46 + 46 &&
+              mouseY >= uy * 46 + 6 && mouseY <= uy * 46 + 46 && inventory.ids(uy * 10 + ux) != 0) {
+              pg2.setFont(mobFont)
+              pg2.setColor(Color.WHITE)
 
-            TOOLDURS.get(armor.ids(uy)).fold {
-              UIBLOCKS.get(items(armor.ids(uy).toInt)).foreach(pg2.drawString(_, mouseX, mouseY))
-            } { t =>
-              UIBLOCKS.get(items(armor.ids(uy).toInt)).foreach(u => pg2.drawString(u + " (" + (armor.durs(uy).toDouble / t * 100).toInt + "%)", mouseX, mouseY))
-            }
-
-          }
-        }
-      }
-      ic.foreach { icTemp =>
-        if (icTemp.icType == Workbench) {
-          (0 until 3).foreach { ux =>
-            (0 until 3).foreach { uy =>
-              if (mouseX >= ux * 40 + 6 && mouseX < ux * 40 + 46 &&
-                mouseY >= uy * 40 + inventory.image.getHeight() + 46 &&
-                mouseY < uy * 40 + inventory.image.getHeight() + 86 &&
-                icTemp.ids(uy * 3 + ux) != 0) {
-                pg2.setFont(mobFont)
-                pg2.setColor(Color.WHITE)
-
-                TOOLDURS.get(icTemp.ids(uy * 3 + ux)).fold {
-                  UIBLOCKS.get(items(icTemp.ids(uy * 3 + ux).toInt)).foreach(pg2.drawString(_, mouseX, mouseY))
-                } { t =>
-                  UIBLOCKS.get(items(icTemp.ids(uy * 3 + ux).toInt)).foreach(u => pg2.drawString(u + " (" + (icTemp.durs(uy * 3 + ux).toDouble / t * 100).toInt + "%)", mouseX, mouseY))
-                }
-              }
-            }
-          }
-          if (mouseX >= 4 * 40 + 6 && mouseX < 4 * 40 + 46 &&
-            mouseY >= 1 * 40 + inventory.image.getHeight() + 46 &&
-            mouseY < 1 * 40 + inventory.image.getHeight() + 86 &&
-            icTemp.ids(9) != 0) {
-            pg2.setFont(mobFont)
-            pg2.setColor(Color.WHITE)
-
-            TOOLDURS.get(icTemp.ids(9)).fold {
-              UIBLOCKS.get(items(icTemp.ids(9).toInt)).foreach(pg2.drawString(_, mouseX, mouseY))
-            } { t =>
-              UIBLOCKS.get(items(icTemp.ids(9).toInt)).foreach(u => pg2.drawString(u + " (" + (icTemp.durs(9).toDouble / t * 100).toInt + "%)", mouseX, mouseY))
-            }
-          }
-        }
-        if (icTemp.icType == WoodenChest|| icTemp.icType == StoneChest ||
-          icTemp.icType == CopperChest || icTemp.icType == IronChest ||
-          icTemp.icType == SilverChest || icTemp.icType == GoldChest ||
-          icTemp.icType == ZincChest || icTemp.icType == RhymestoneChest ||
-          icTemp.icType == ObduriteChest) { //TODO: chest trait?
-          (0 until inventory.CX).foreach { ux =>
-            (0 until inventory.CY).foreach { uy =>
-              if (mouseX >= ux * 46 + 6 && mouseX < ux * 46 + 46 &&
-                mouseY >= uy * 46 + inventory.image.getHeight() + 46 &&
-                mouseY < uy * 46 + inventory.image.getHeight() + 86 &&
-                icTemp.ids(uy * inventory.CX + ux) != 0) {
-                pg2.setFont(mobFont)
-                pg2.setColor(Color.WHITE)
-
-                TOOLDURS.get(icTemp.ids(uy * inventory.CX + ux)).fold {
-                  UIBLOCKS.get(items(icTemp.ids(uy * inventory.CX + ux).toInt)).foreach(pg2.drawString(_, mouseX, mouseY))
-                } { t =>
-                  UIBLOCKS.get(items(icTemp.ids(uy * inventory.CX + ux).toInt)).foreach(u => pg2.drawString(u + " (" + (icTemp.durs(uy * inventory.CX + ux).toDouble / t * 100).toInt + "%)", mouseX, mouseY))
-                }
+              TOOLDURS.get(inventory.ids(uy * 10 + ux)).fold {
+                UIBLOCKS.get(items(inventory.ids(uy * 10 + ux).toInt)).foreach(pg2.drawString(_, mouseX, mouseY))
+              } { t =>
+                UIBLOCKS.get(items(inventory.ids(uy * 10 + ux).toInt)).foreach(u => pg2.drawString(u + " (" + (inventory.durs(uy * 10 + ux).toDouble / t * 100).toInt + "%)", mouseX, mouseY))
               }
             }
           }
         }
-        if (icTemp.icType == Furnace) {
-          if (mouseX >= 6 && mouseX < 46 &&
-            mouseY >= inventory.image.getHeight() + 46 && mouseY < inventory.image.getHeight() + 86 &&
-            icTemp.ids(0) != 0) {
-            pg2.setFont(mobFont)
-            pg2.setColor(Color.WHITE)
-
-            TOOLDURS.get(icTemp.ids(0)).fold {
-              UIBLOCKS.get(items(icTemp.ids(0).toInt)).foreach(pg2.drawString(_, mouseX, mouseY))
-            } { t =>
-              UIBLOCKS.get(items(icTemp.ids(0).toInt)).foreach(u => pg2.drawString(u + " (" + (icTemp.durs(0).toDouble / t * 100).toInt + "%)", mouseX, mouseY))
+        pg2.setFont(mobFont)
+        pg2.setColor(Color.WHITE)
+        pg2.drawString("Health: " + player.hp + "/" + Player.totalHP, getWidth - 125, 20)
+        pg2.drawString("Armor: " + player.sumArmor(), getWidth - 125, 40)
+        if (DEBUG_STATS) {
+          pg2.drawString("(" + (player.ix / 16) + ", " + (player.iy / 16) + ")", getWidth - 125, 60)
+          if (player.iy >= 0 && player.iy < HEIGHT * BLOCKSIZE) {
+            pg2.drawString(checkBiome(player.ix / 16 + u, player.iy / 16 + v) + " " + lights(player.iy / 16 + v)(player.ix / 16 + u), getWidth - 125, 80)
+          }
+        }
+        if (showInv) {
+          cic.foreach { c =>
+            (0 until 2).foreach { ux =>
+              (0 until 2).foreach { uy =>
+                if (mouseX >= inventory.image.getWidth() + ux * 40 + 75 &&
+                  mouseX < inventory.image.getWidth() + ux * 40 + 115 &&
+                  mouseY >= uy * 40 + 52 && mouseY < uy * 40 + 92 && c.ids(uy * 2 + ux) != 0) {
+                  pg2.setFont(mobFont)
+                  pg2.setColor(Color.WHITE)
+                  TOOLDURS.get(c.ids(uy * 2 + ux)).fold {
+                    UIBLOCKS.get(items(c.ids(uy * 2 + ux).toInt)).foreach(pg2.drawString(_, mouseX, mouseY))
+                  } { t =>
+                    UIBLOCKS.get(items(c.ids(uy * 2 + ux).toInt)).foreach(u => pg2.drawString(u + " (" + (c.durs(uy * 2 + ux).toDouble / t * 100).toInt + "%)", mouseX, mouseY))
+                  }
+                }
+              }
+            }
+            if (mouseX >= inventory.image.getWidth() + 3 * 40 + 75 &&
+              mouseX < inventory.image.getWidth() + 3 * 40 + 115 &&
+              mouseY >= 20 + 52 && mouseY < 20 + 92 && c.ids(4) != 0) {
+              pg2.setFont(mobFont)
+              pg2.setColor(Color.WHITE)
+              TOOLDURS.get(c.ids(4)).fold {
+                UIBLOCKS.get(items(c.ids(4).toInt)).foreach(pg2.drawString(_, mouseX, mouseY))
+              } { t =>
+                UIBLOCKS.get(items(c.ids(4).toInt)).foreach(u => pg2.drawString(u + " (" + (c.durs(4).toDouble / t * 100).toInt + "%)", mouseX, mouseY))
+              }
             }
           }
-          if (mouseX >= 6 && mouseX < 46 &&
-            mouseY >= inventory.image.getHeight() + 102 && mouseY < inventory.image.getHeight() + 142 &&
-            icTemp.ids(1) != 0) {
-            pg2.setFont(mobFont)
-            pg2.setColor(Color.WHITE)
+          (0 until 4).foreach { uy =>
+            if (mouseX >= inventory.image.getWidth() + 6 && mouseX < inventory.image.getWidth() + 6 + armor.icType.image.getWidth() &&
+              mouseY >= 6 + uy * 46 && mouseY < 6 + uy * 46 + 46 && armor.ids(uy) != 0) {
+              pg2.setFont(mobFont)
+              pg2.setColor(Color.WHITE)
 
-            TOOLDURS.get(icTemp.ids(1)).fold {
-              UIBLOCKS.get(items(icTemp.ids(1).toInt)).foreach(pg2.drawString(_, mouseX, mouseY))
-            } { t =>
-              UIBLOCKS.get(items(icTemp.ids(1).toInt)).foreach(u => pg2.drawString(u + " (" + (icTemp.durs(1).toDouble / t * 100).toInt + "%)", mouseY, mouseY))
+              TOOLDURS.get(armor.ids(uy)).fold {
+                UIBLOCKS.get(items(armor.ids(uy).toInt)).foreach(pg2.drawString(_, mouseX, mouseY))
+              } { t =>
+                UIBLOCKS.get(items(armor.ids(uy).toInt)).foreach(u => pg2.drawString(u + " (" + (armor.durs(uy).toDouble / t * 100).toInt + "%)", mouseX, mouseY))
+              }
+
             }
           }
-          if (mouseX >= 6 && mouseX < 46 &&
-            mouseY >= inventory.image.getHeight() + 142 && mouseY < inventory.image.getHeight() + 182 &&
-            icTemp.ids(2) != 0) {
-            pg2.setFont(mobFont)
-            pg2.setColor(Color.WHITE)
+        }
+        ic.foreach { icTemp =>
+          if (icTemp.icType == Workbench) {
+            (0 until 3).foreach { ux =>
+              (0 until 3).foreach { uy =>
+                if (mouseX >= ux * 40 + 6 && mouseX < ux * 40 + 46 &&
+                  mouseY >= uy * 40 + inventory.image.getHeight() + 46 &&
+                  mouseY < uy * 40 + inventory.image.getHeight() + 86 &&
+                  icTemp.ids(uy * 3 + ux) != 0) {
+                  pg2.setFont(mobFont)
+                  pg2.setColor(Color.WHITE)
 
-            TOOLDURS.get(icTemp.ids(2)).fold {
-              UIBLOCKS.get(items(icTemp.ids(2).toInt)).foreach(pg2.drawString(_, mouseX, mouseY))
-            } { t =>
-              UIBLOCKS.get(items(icTemp.ids(2).toInt)).foreach(u => pg2.drawString(u + " (" + (icTemp.durs(2).toDouble / t * 100).toInt + "%)", mouseX, mouseY))
+                  TOOLDURS.get(icTemp.ids(uy * 3 + ux)).fold {
+                    UIBLOCKS.get(items(icTemp.ids(uy * 3 + ux).toInt)).foreach(pg2.drawString(_, mouseX, mouseY))
+                  } { t =>
+                    UIBLOCKS.get(items(icTemp.ids(uy * 3 + ux).toInt)).foreach(u => pg2.drawString(u + " (" + (icTemp.durs(uy * 3 + ux).toDouble / t * 100).toInt + "%)", mouseX, mouseY))
+                  }
+                }
+              }
+            }
+            if (mouseX >= 4 * 40 + 6 && mouseX < 4 * 40 + 46 &&
+              mouseY >= 1 * 40 + inventory.image.getHeight() + 46 &&
+              mouseY < 1 * 40 + inventory.image.getHeight() + 86 &&
+              icTemp.ids(9) != 0) {
+              pg2.setFont(mobFont)
+              pg2.setColor(Color.WHITE)
+
+              TOOLDURS.get(icTemp.ids(9)).fold {
+                UIBLOCKS.get(items(icTemp.ids(9).toInt)).foreach(pg2.drawString(_, mouseX, mouseY))
+              } { t =>
+                UIBLOCKS.get(items(icTemp.ids(9).toInt)).foreach(u => pg2.drawString(u + " (" + (icTemp.durs(9).toDouble / t * 100).toInt + "%)", mouseX, mouseY))
+              }
             }
           }
-          if (mouseX >= 62 && mouseX < 102 &&
-            mouseY >= inventory.image.getHeight() + 46 && mouseY < inventory.image.getHeight() + 86 &&
-            icTemp.ids(3) != 0) {
-            pg2.setFont(mobFont)
-            pg2.setColor(Color.WHITE)
+          if (icTemp.icType == WoodenChest || icTemp.icType == StoneChest ||
+            icTemp.icType == CopperChest || icTemp.icType == IronChest ||
+            icTemp.icType == SilverChest || icTemp.icType == GoldChest ||
+            icTemp.icType == ZincChest || icTemp.icType == RhymestoneChest ||
+            icTemp.icType == ObduriteChest) { //TODO: chest trait?
+            (0 until inventory.CX).foreach { ux =>
+              (0 until inventory.CY).foreach { uy =>
+                if (mouseX >= ux * 46 + 6 && mouseX < ux * 46 + 46 &&
+                  mouseY >= uy * 46 + inventory.image.getHeight() + 46 &&
+                  mouseY < uy * 46 + inventory.image.getHeight() + 86 &&
+                  icTemp.ids(uy * inventory.CX + ux) != 0) {
+                  pg2.setFont(mobFont)
+                  pg2.setColor(Color.WHITE)
 
-            TOOLDURS.get(icTemp.ids(3)).fold {
-              UIBLOCKS.get(items(icTemp.ids(3).toInt)).foreach(pg2.drawString(_, mouseX, mouseY))
-            } { t =>
-              UIBLOCKS.get(items(icTemp.ids(3).toInt)).foreach(u => pg2.drawString(u + " (" + (icTemp.durs(3).toDouble / t * 100).toInt + "%)", mouseX, mouseY))
+                  TOOLDURS.get(icTemp.ids(uy * inventory.CX + ux)).fold {
+                    UIBLOCKS.get(items(icTemp.ids(uy * inventory.CX + ux).toInt)).foreach(pg2.drawString(_, mouseX, mouseY))
+                  } { t =>
+                    UIBLOCKS.get(items(icTemp.ids(uy * inventory.CX + ux).toInt)).foreach(u => pg2.drawString(u + " (" + (icTemp.durs(uy * inventory.CX + ux).toDouble / t * 100).toInt + "%)", mouseX, mouseY))
+                  }
+                }
+              }
+            }
+          }
+          if (icTemp.icType == Furnace) {
+            if (mouseX >= 6 && mouseX < 46 &&
+              mouseY >= inventory.image.getHeight() + 46 && mouseY < inventory.image.getHeight() + 86 &&
+              icTemp.ids(0) != 0) {
+              pg2.setFont(mobFont)
+              pg2.setColor(Color.WHITE)
+
+              TOOLDURS.get(icTemp.ids(0)).fold {
+                UIBLOCKS.get(items(icTemp.ids(0).toInt)).foreach(pg2.drawString(_, mouseX, mouseY))
+              } { t =>
+                UIBLOCKS.get(items(icTemp.ids(0).toInt)).foreach(u => pg2.drawString(u + " (" + (icTemp.durs(0).toDouble / t * 100).toInt + "%)", mouseX, mouseY))
+              }
+            }
+            if (mouseX >= 6 && mouseX < 46 &&
+              mouseY >= inventory.image.getHeight() + 102 && mouseY < inventory.image.getHeight() + 142 &&
+              icTemp.ids(1) != 0) {
+              pg2.setFont(mobFont)
+              pg2.setColor(Color.WHITE)
+
+              TOOLDURS.get(icTemp.ids(1)).fold {
+                UIBLOCKS.get(items(icTemp.ids(1).toInt)).foreach(pg2.drawString(_, mouseX, mouseY))
+              } { t =>
+                UIBLOCKS.get(items(icTemp.ids(1).toInt)).foreach(u => pg2.drawString(u + " (" + (icTemp.durs(1).toDouble / t * 100).toInt + "%)", mouseY, mouseY))
+              }
+            }
+            if (mouseX >= 6 && mouseX < 46 &&
+              mouseY >= inventory.image.getHeight() + 142 && mouseY < inventory.image.getHeight() + 182 &&
+              icTemp.ids(2) != 0) {
+              pg2.setFont(mobFont)
+              pg2.setColor(Color.WHITE)
+
+              TOOLDURS.get(icTemp.ids(2)).fold {
+                UIBLOCKS.get(items(icTemp.ids(2).toInt)).foreach(pg2.drawString(_, mouseX, mouseY))
+              } { t =>
+                UIBLOCKS.get(items(icTemp.ids(2).toInt)).foreach(u => pg2.drawString(u + " (" + (icTemp.durs(2).toDouble / t * 100).toInt + "%)", mouseX, mouseY))
+              }
+            }
+            if (mouseX >= 62 && mouseX < 102 &&
+              mouseY >= inventory.image.getHeight() + 46 && mouseY < inventory.image.getHeight() + 86 &&
+              icTemp.ids(3) != 0) {
+              pg2.setFont(mobFont)
+              pg2.setColor(Color.WHITE)
+
+              TOOLDURS.get(icTemp.ids(3)).fold {
+                UIBLOCKS.get(items(icTemp.ids(3).toInt)).foreach(pg2.drawString(_, mouseX, mouseY))
+              } { t =>
+                UIBLOCKS.get(items(icTemp.ids(3).toInt)).foreach(u => pg2.drawString(u + " (" + (icTemp.durs(3).toDouble / t * 100).toInt + "%)", mouseX, mouseY))
+              }
             }
           }
         }
       }
-    }
-    if (state == LoadingGraphics) {
-      pg2.setFont(loadFont)
-      pg2.setColor(Color.GREEN)
-      pg2.drawString("Loading graphics... Please wait.", getWidth() / 2 - 200, getHeight() / 2 - 5)
-    }
-    if (state == TitleScreen) {
-      pg2.drawImage(title_screen,
-        0, 0, getWidth(), getHeight(),
-        0, 0, getWidth(), getHeight(),
-        null)
-    }
-    if (state == SelectWorld) {
-      pg2.drawImage(select_world,
-        0, 0, getWidth(), getHeight(),
-        0, 0, getWidth(), getHeight(),
-        null)
-      worldNames.indices.foreach { i =>
-        pg2.setFont(worldFont)
-        pg2.setColor(Color.BLACK)
-        pg2.drawString(worldNames(i), 180, 140 + i * 35)
-        pg2.fillRect(166, 150 + i * 35, 470, 3)
+      if (state == LoadingGraphics) {
+        pg2.setFont(loadFont)
+        pg2.setColor(Color.GREEN)
+        pg2.drawString("Loading graphics... Please wait.", getWidth() / 2 - 200, getHeight() / 2 - 5)
       }
-    }
-    if (state == NewWorld) {
-      pg2.drawImage(new_world,
+      if (state == TitleScreen) {
+        pg2.drawImage(title_screen,
+          0, 0, getWidth(), getHeight(),
+          0, 0, getWidth(), getHeight(),
+          null)
+      }
+      if (state == SelectWorld) {
+        pg2.drawImage(select_world,
+          0, 0, getWidth(), getHeight(),
+          0, 0, getWidth(), getHeight(),
+          null)
+        worldNames.indices.foreach { i =>
+          pg2.setFont(worldFont)
+          pg2.setColor(Color.BLACK)
+          pg2.drawString(worldNames(i), 180, 140 + i * 35)
+          pg2.fillRect(166, 150 + i * 35, 470, 3)
+        }
+      }
+      if (state == NewWorld) {
+        pg2.drawImage(new_world,
+          0, 0, getWidth(), getHeight(),
+          0, 0, getWidth(), getHeight(),
+          null)
+        pg2.drawImage(newWorldName.image,
+          200, 240, 600, 270,
+          0, 0, 400, 30,
+          null)
+      }
+      if (state == GeneratingWorld) {
+        pg2.setFont(loadFont)
+        pg2.setColor(Color.GREEN)
+        pg2.drawString("Generating new world... Please wait.", getWidth() / 2 - 200, getHeight() / 2 - 5)
+      }
+      g.drawImage(screenTemp,
         0, 0, getWidth(), getHeight(),
         0, 0, getWidth(), getHeight(),
         null)
-      pg2.drawImage(newWorldName.image,
-        200, 240, 600, 270,
-        0, 0, 400, 30,
-        null)
+      ()
     }
-    if (state == GeneratingWorld) {
-      pg2.setFont(loadFont)
-      pg2.setColor(Color.GREEN)
-      pg2.drawString("Generating new world... Please wait.", getWidth() / 2 - 200, getHeight() / 2 - 5)
-    }
-    g.asInstanceOf[Graphics2D].drawImage(screen,
-      0, 0, getWidth(), getHeight(),
-      0, 0, getWidth(), getHeight(),
-      null)
-    ()
   }
 
   def loadWorld(worldFile: String): Boolean = {
