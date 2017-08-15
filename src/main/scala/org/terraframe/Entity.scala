@@ -90,13 +90,13 @@ case class AIEntity(var x: Double, var y: Double, var vx: Double, var vy: Double
   var newMob: Option[Entity] = None
   @transient var image: BufferedImage = strategy.ai match {
     case BubbleAI | FastBubbleAI | ShootingStarAI | SandbotAI | BulletAI | BeeAI =>
-      loadImage("sprites/monsters/" + strategy.imageName + "/normal.png")
+      loadImage("sprites/monsters/" + strategy.imageName + "/normal.png").get
 
     case ZombieAI =>
-      loadImage("sprites/monsters/" + strategy.imageName + "/right_still.png")
+      loadImage("sprites/monsters/" + strategy.imageName + "/right_still.png").get
 
     case BatAI =>
-      loadImage("sprites/monsters/" + strategy.imageName + "/normal_right.png")
+      loadImage("sprites/monsters/" + strategy.imageName + "/normal_right.png").get
 
   }
 
@@ -145,18 +145,18 @@ case class AIEntity(var x: Double, var y: Double, var vx: Double, var vy: Double
               imgState == "walk right 1" || imgState == "walk right 2") { // TODO: sum type image state
             imgDelay = 10
             imgState = "walk left 2"
-            image = loadImage("sprites/monsters/" + strategy.imageName + "/left_walk.png")
+            image = loadImage("sprites/monsters/" + strategy.imageName + "/left_walk.png").get
           }
           if (imgDelay <= 0) {
             if (imgState == "walk left 1") {
               imgDelay = 10
               imgState = "walk left 2"
-              image = loadImage("sprites/monsters/" + strategy.imageName + "/left_walk.png")
+              image = loadImage("sprites/monsters/" + strategy.imageName + "/left_walk.png").get
             } else {
               if (imgState == "walk left 2") {
                 imgDelay = 10
                 imgState = "walk left 1"
-                image = loadImage("sprites/monsters/" + strategy.imageName + "/left_still.png")
+                image = loadImage("sprites/monsters/" + strategy.imageName + "/left_still.png").get
               }
             }
           } else {
@@ -168,18 +168,18 @@ case class AIEntity(var x: Double, var y: Double, var vx: Double, var vy: Double
               imgState == "walk left 1" || imgState == "walk left 2") {
             imgDelay = 10
             imgState = "walk right 2"
-            image = loadImage("sprites/monsters/" + strategy.imageName + "/right_walk.png")
+            image = loadImage("sprites/monsters/" + strategy.imageName + "/right_walk.png").get
           }
           if (imgDelay <= 0) {
             if (imgState == "walk right 1") {
               imgDelay = 10
               imgState = "walk right 2"
-              image = loadImage("sprites/monsters/" + strategy.imageName + "/right_walk.png")
+              image = loadImage("sprites/monsters/" + strategy.imageName + "/right_walk.png").get
             } else {
               if (imgState == "walk right 2") {
                 imgDelay = 10
                 imgState = "walk right 1"
-                image = loadImage("sprites/monsters/" + strategy.imageName + "/right_still.png")
+                image = loadImage("sprites/monsters/" + strategy.imageName + "/right_still.png").get
               }
             }
           } else {
@@ -189,11 +189,11 @@ case class AIEntity(var x: Double, var y: Double, var vx: Double, var vy: Double
         if (!grounded) {
           if (imgState == "still left" || imgState == "walk left 1" ||
               imgState == "walk left 2") {
-            image = loadImage("sprites/monsters/" + strategy.imageName + "/left_jump.png")
+            image = loadImage("sprites/monsters/" + strategy.imageName + "/left_jump.png").get
           }
           if (imgState == "still right" || imgState == "walk right 1" ||
               imgState == "walk right 2") {
-            image = loadImage("sprites/monsters/" + strategy.imageName + "/right_jump.png")
+            image = loadImage("sprites/monsters/" + strategy.imageName + "/right_jump.png").get
           }
         }
         collide(blocks, player, u, v)
@@ -260,20 +260,20 @@ case class AIEntity(var x: Double, var y: Double, var vx: Double, var vy: Double
         }
         bcount += 1
         if (bcount == 110) {
-          image = loadImage("sprites/monsters/" + strategy.imageName + "/ready1.png")
+          image = loadImage("sprites/monsters/" + strategy.imageName + "/ready1.png").get
         }
         if (bcount == 130) {
-          image = loadImage("sprites/monsters/" + strategy.imageName + "/ready2.png")
+          image = loadImage("sprites/monsters/" + strategy.imageName + "/ready2.png").get
         }
         if (bcount == 150) {
           val theta: Double = atan2(player.y - y, player.x - x)
           newMob = Some(AIEntity(x, y, cos(theta) * 3.5, sin(theta) * 3.5, SandbotBullet))
         }
         if (bcount == 170) {
-          image = loadImage("sprites/monsters/" + strategy.imageName + "/ready1.png")
+          image = loadImage("sprites/monsters/" + strategy.imageName + "/ready1.png").get
         }
         if (bcount == 190) {
-          image = loadImage("sprites/monsters/" + strategy.imageName + "/normal.png")
+          image = loadImage("sprites/monsters/" + strategy.imageName + "/normal.png").get
           bcount = 0
         }
         collide(blocks, player, u, v)
@@ -293,32 +293,32 @@ case class AIEntity(var x: Double, var y: Double, var vx: Double, var vy: Double
         imgDelay -= 1
         if (vx > 0 && imgState != "normal right") {
           imgState = "normal right"
-          image = loadImage("sprites/monsters/" + strategy.imageName + "/normal_right.png")
+          image = loadImage("sprites/monsters/" + strategy.imageName + "/normal_right.png").get
           imgDelay = 10
         }
         if (vx < 0 && imgState != "normal left") {
           imgState = "normal left"
-          image = loadImage("sprites/monsters/" + strategy.imageName + "/normal_left.png")
+          image = loadImage("sprites/monsters/" + strategy.imageName + "/normal_left.png").get
           imgDelay = 10
         }
         if (imgState == "normal left" && imgDelay <= 0) {
           imgState = "flap left"
-          image = loadImage("sprites/monsters/" + strategy.imageName + "/flap_left.png")
+          image = loadImage("sprites/monsters/" + strategy.imageName + "/flap_left.png").get
           imgDelay = 10
         }
         if (imgState == "normal right" && imgDelay <= 0) {
           imgState = "flap right"
-          image = loadImage("sprites/monsters/" + strategy.imageName + "/flap_right.png")
+          image = loadImage("sprites/monsters/" + strategy.imageName + "/flap_right.png").get
           imgDelay = 10
         }
         if (imgState == "flap left" && imgDelay <= 0) {
           imgState = "normal left"
-          image = loadImage("sprites/monsters/" + strategy.imageName + "/normal_left.png")
+          image = loadImage("sprites/monsters/" + strategy.imageName + "/normal_left.png").get
           imgDelay = 10
         }
         if (imgState == "flap right" && imgDelay <= 0) {
           imgState = "normal right"
-          image = loadImage("sprites/monsters/" + strategy.imageName + "/normal_right.png")
+          image = loadImage("sprites/monsters/" + strategy.imageName + "/normal_right.png").get
           imgDelay = 10
         }
         collide(blocks, player, u, v)
@@ -547,10 +547,10 @@ case class AIEntity(var x: Double, var y: Double, var vx: Double, var vy: Double
 
   def reloadImage(): Unit = {
     if (strategy.ai == BubbleAI || strategy.ai == ShootingStarAI) {
-      image = loadImage("sprites/monsters/" + strategy.imageName + "/normal.png")
+      image = loadImage("sprites/monsters/" + strategy.imageName + "/normal.png").get
     }
     if (strategy.ai == ZombieAI) {
-      image = loadImage("sprites/monsters/" + strategy.imageName + "/right_still.png")
+      image = loadImage("sprites/monsters/" + strategy.imageName + "/right_still.png").get
     }
   }
 

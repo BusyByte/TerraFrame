@@ -23,6 +23,7 @@ object Inventory {
 class Inventory extends Serializable {
 
   import Inventory._
+  import GraphicsHelper._
 
 
   var n, px, py, selection, width, height: Int = _
@@ -50,20 +51,20 @@ class Inventory extends Serializable {
 
   selection = 0
   image = new BufferedImage(466, 190, BufferedImage.TYPE_INT_ARGB)
-  box = loadImage("interface/inventory.png")
-  box_selected = loadImage("interface/inventory_selected.png")
+  box = loadImage("interface/inventory.png").get
+  box_selected = loadImage("interface/inventory_selected.png").get
   g2 = image.createGraphics()
   (0 until 10).foreach { x =>
     (0 until 4).foreach { y =>
       if (x == 0 && y == 0) {
-        g2.drawImage(box_selected, x * 46 + 6, y * 46 + 6, x * 46 + 46, y * 46 + 46, 0, 0, 40, 40, null)
+        drawImage(g2, box_selected, x * 46 + 6, y * 46 + 6, x * 46 + 46, y * 46 + 46, 0, 0, 40, 40)
         if (y == 0) {
           g2.setFont(font)
           g2.setColor(Color.BLACK)
           g2.drawString(f(x) + " ", x * 46 + trolx, y * 46 + troly)
         }
       } else {
-        g2.drawImage(box, x * 46 + 6, y * 46 + 6, x * 46 + 46, y * 46 + 46, 0, 0, 40, 40, null)
+        drawImage(g2, box, x * 46 + 6, y * 46 + 6, x * 46 + 46, y * 46 + 46, 0, 0, 40, 40)
         if (y == 0) {
           g2.setFont(font)
           g2.setColor(Color.BLACK)
@@ -476,20 +477,20 @@ class Inventory extends Serializable {
 
   def reloadImage(): Unit = {
     image = new BufferedImage(466, 190, BufferedImage.TYPE_INT_ARGB)
-    box = loadImage("interface/inventory.png")
-    box_selected = loadImage("interface/inventory_selected.png")
+    box = loadImage("interface/inventory.png").get
+    box_selected = loadImage("interface/inventory_selected.png").get
     g2 = image.createGraphics()
     (0 until 10).foreach { x =>
       (0 until 4).foreach { y =>
         if (x == 0 && y == 0) {
-          g2.drawImage(box_selected, x * 46 + 6, y * 46 + 6, x * 46 + 46, y * 46 + 46, 0, 0, 40, 40, null)
+          drawImage(g2, box_selected, x * 46 + 6, y * 46 + 6, x * 46 + 46, y * 46 + 46, 0, 0, 40, 40)
           if (y == 0) {
             g2.setFont(font)
             g2.setColor(Color.BLACK)
             g2.drawString(f(x) + " ", x * 46 + trolx, y * 46 + troly)
           }
         } else {
-          g2.drawImage(box, x * 46 + 6, y * 46 + 6, x * 46 + 46, y * 46 + 46, 0, 0, 40, 40, null)
+          drawImage(g2, box, x * 46 + 6, y * 46 + 6, x * 46 + 46, y * 46 + 46, 0, 0, 40, 40)
           if (y == 0) {
             g2.setFont(font)
             g2.setColor(Color.BLACK)
@@ -513,14 +514,14 @@ class Inventory extends Serializable {
     }
     g2 = image.createGraphics()
     if (i == selection) {
-      g2.drawImage(box_selected, px * 46 + 6, py * 46 + 6, px * 46 + 46, py * 46 + 46, 0, 0, 40, 40, null)
+      drawImage(g2, box_selected, px * 46 + 6, py * 46 + 6, px * 46 + 46, py * 46 + 46, 0, 0, 40, 40)
       if (py == 0) {
         g2.setFont(font)
         g2.setColor(Color.BLACK)
         g2.drawString(f(px) + " ", px * 46 + trolx, py * 46 + troly)
       }
     } else {
-      g2.drawImage(box, px * 46 + 6, py * 46 + 6, px * 46 + 46, py * 46 + 46, 0, 0, 40, 40, null)
+      drawImage(g2, box, px * 46 + 6, py * 46 + 6, px * 46 + 46, py * 46 + 46, 0, 0, 40, 40)
       if (py == 0) {
         g2.setFont(font)
         g2.setColor(Color.BLACK)
@@ -531,7 +532,7 @@ class Inventory extends Serializable {
       TerraFrame.itemImgs.get(ids(i)).foreach { itemImg =>
         width = itemImg.getWidth()
         height = itemImg.getHeight()
-        g2.drawImage(
+        drawImage(g2,
           itemImg,
           px * 46 + 14 + ((24 - 12.toDouble / mh.max(width, height, 12) * width * 2) / 2).toInt,
           py * 46 + 14 + ((24 - 12.toDouble / mh.max(width, height, 12) * height * 2) / 2).toInt,
@@ -540,8 +541,7 @@ class Inventory extends Serializable {
           0,
           0,
           width,
-          height,
-          null
+          height
         )
       }
 
@@ -729,12 +729,12 @@ class Inventory extends Serializable {
         }
       }
       g2 = ic.icType.image.createGraphics()
-      g2.drawImage(box, px * 40, py * 40, px * 40 + 40, py * 40 + 40, 0, 0, 40, 40, null)
+      drawImage(g2, box, px * 40, py * 40, px * 40 + 40, py * 40 + 40, 0, 0, 40, 40)
       if (ic.ids(i) != 0) {
         TerraFrame.itemImgs.get(ic.ids(i)).foreach { itemImg =>
           width = itemImg.getWidth()
           height = itemImg.getHeight()
-          g2.drawImage(
+          drawImage(g2,
             itemImg,
             px * 40 + 8 + ((24 - 12.toDouble / mh.max(width, height, 12) * width * 2) / 2).toInt,
             py * 40 + 8 + ((24 - 12.toDouble / mh.max(width, height, 12) * height * 2) / 2).toInt,
@@ -743,8 +743,7 @@ class Inventory extends Serializable {
             0,
             0,
             width,
-            height,
-            null
+            height
           )
         }
 
@@ -814,12 +813,13 @@ class Inventory extends Serializable {
         }
       }
       g2 = ic.icType.image.createGraphics()
-      g2.drawImage(box, 3 * 40, 20, 3 * 40 + 40, 20 + 40, 0, 0, 40, 40, null)
+      drawImage(g2, box, 3 * 40, 20, 3 * 40 + 40, 20 + 40, 0, 0, 40, 40)
       if (ic.ids(4) != 0) {
         TerraFrame.itemImgs.get(ic.ids(4)).foreach { itemImg =>
           width = itemImg.getWidth()
           height = itemImg.getHeight()
-          g2.drawImage(
+          drawImage(
+            g2,
             itemImg,
             3 * 40 + 8 + ((24 - 12.toDouble / mh.max(width, height, 12) * width * 2) / 2).toInt,
             20 + 8 + ((24 - 12.toDouble / mh.max(width, height, 12) * height * 2) / 2).toInt,
@@ -828,8 +828,7 @@ class Inventory extends Serializable {
             0,
             0,
             width,
-            height,
-            null
+            height
           )
 
         }
@@ -850,12 +849,13 @@ class Inventory extends Serializable {
         }
       }
       g2 = ic.icType.image.createGraphics()
-      g2.drawImage(box, px * 46, py * 46, px * 46 + 40, py * 46 + 40, 0, 0, 40, 40, null)
+      drawImage(g2, box, px * 46, py * 46, px * 46 + 40, py * 46 + 40, 0, 0, 40, 40)
       if (ic.ids(i) != 0) {
         TerraFrame.itemImgs.get(ic.ids(i)).foreach { itemImg =>
           width = itemImg.getWidth()
           height = itemImg.getHeight()
-          g2.drawImage(
+          drawImage(
+            g2,
             itemImg,
             px * 46 + 8 + ((24 - 12.toDouble / mh.max(width, height, 12) * width * 2) / 2).toInt,
             py * 46 + 8 + ((24 - 12.toDouble / mh.max(width, height, 12) * height * 2) / 2).toInt,
@@ -864,8 +864,7 @@ class Inventory extends Serializable {
             0,
             0,
             width,
-            height,
-            null
+            height
           )
         }
 
@@ -885,12 +884,13 @@ class Inventory extends Serializable {
         }
       }
       g2 = ic.icType.image.createGraphics()
-      g2.drawImage(box, px * 40, py * 40, px * 40 + 40, py * 40 + 40, 0, 0, 40, 40, null)
+      drawImage(g2, box, px * 40, py * 40, px * 40 + 40, py * 40 + 40, 0, 0, 40, 40)
       if (ic.ids(i) != 0) {
         TerraFrame.itemImgs.get(ic.ids(i)).foreach { itemImg =>
           width = itemImg.getWidth()
           height = itemImg.getHeight()
-          g2.drawImage(
+          drawImage(
+            g2,
             itemImg,
             px * 40 + 8 + ((24 - 12.toDouble / mh.max(width, height, 12) * width * 2) / 2).toInt,
             py * 40 + 8 + ((24 - 12.toDouble / mh.max(width, height, 12) * height * 2) / 2).toInt,
@@ -899,8 +899,7 @@ class Inventory extends Serializable {
             0,
             0,
             width,
-            height,
-            null
+            height
           )
         }
 
@@ -968,12 +967,13 @@ class Inventory extends Serializable {
         }
       }
       g2 = ic.icType.image.createGraphics()
-      g2.drawImage(box, 4 * 40, 1 * 40, 4 * 40 + 40, 1 * 40 + 40, 0, 0, 40, 40, null)
+      drawImage(g2, box, 4 * 40, 1 * 40, 4 * 40 + 40, 1 * 40 + 40, 0, 0, 40, 40)
       if (ic.ids(9) != 0) {
         TerraFrame.itemImgs.get(ic.ids(9)).foreach { itemImg =>
           width = itemImg.getWidth()
           height = itemImg.getHeight()
-          g2.drawImage(
+          drawImage(
+            g2,
             itemImg,
             4 * 40 + 8 + ((24 - 12.toDouble / mh.max(width, height, 12) * width * 2) / 2).toInt,
             1 * 40 + 8 + ((24 - 12.toDouble / mh.max(width, height, 12) * height * 2) / 2).toInt,
@@ -982,8 +982,7 @@ class Inventory extends Serializable {
             0,
             0,
             width,
-            height,
-            null
+            height
           )
         }
 
@@ -1007,12 +1006,13 @@ class Inventory extends Serializable {
         }
       }
       g2 = ic.icType.image.createGraphics()
-      g2.drawImage(box, px * 46, py * 46, px * 46 + 40, py * 46 + 40, 0, 0, 40, 40, null)
+      drawImage(g2, box, px * 46, py * 46, px * 46 + 40, py * 46 + 40, 0, 0, 40, 40)
       if (ic.ids(i) != 0) {
         TerraFrame.itemImgs.get(ic.ids(i)).foreach { itemImg =>
           width = itemImg.getWidth()
           height = itemImg.getHeight()
-          g2.drawImage(
+          drawImage(
+            g2,
             itemImg,
             px * 46 + 8 + ((24 - 12.toDouble / mh.max(width, height, 12) * width * 2) / 2).toInt,
             py * 46 + 8 + ((24 - 12.toDouble / mh.max(width, height, 12) * height * 2) / 2).toInt,
@@ -1021,8 +1021,7 @@ class Inventory extends Serializable {
             0,
             0,
             width,
-            height,
-            null
+            height
           )
         }
 
@@ -1074,7 +1073,8 @@ class Inventory extends Serializable {
           }
         }
         g2 = ic.icType.image.createGraphics()
-        g2.drawImage(box,
+        drawImage(g2,
+                     box,
                      (fpx * 40).toInt,
                      (fpy * 40).toInt,
                      (fpx * 40 + 40).toInt,
@@ -1082,13 +1082,13 @@ class Inventory extends Serializable {
                      0,
                      0,
                      40,
-                     40,
-                     null)
+                     40)
         if (ic.ids(i) != 0) {
           TerraFrame.itemImgs.get(ic.ids(i)).foreach { itemImg =>
             width = itemImg.getWidth()
             height = itemImg.getHeight()
-            g2.drawImage(
+            drawImage(
+              g2,
               itemImg,
               (fpx * 40 + 8 + ((24 - 12.toDouble / mh.max(width, height, 12) * width * 2) / 2).toInt).toInt,
               (fpy * 40 + 8 + ((24 - 12.toDouble / mh.max(width, height, 12) * height * 2) / 2).toInt).toInt,
@@ -1097,8 +1097,7 @@ class Inventory extends Serializable {
               0,
               0,
               width,
-              height,
-              null
+              height
             )
           }
 

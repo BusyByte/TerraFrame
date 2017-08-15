@@ -7,14 +7,13 @@ import javax.imageio.ImageIO
 import scala.util.control.NonFatal
 
 object Images {
-  def loadImage(path: String): BufferedImage = {
+  def loadImage(path: String): Option[BufferedImage] = {
     val url: URL             = getClass.getResource("/" + path)
-    var image: BufferedImage = null
     try {
-      image = ImageIO.read(url)
+      Option(ImageIO.read(url))
     } catch {
-      case NonFatal(_) => println("(ERROR) could not load image '" + path + "'.")
+      case NonFatal(_) =>
+        None
     }
-    image
   }
 }

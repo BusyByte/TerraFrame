@@ -5,6 +5,7 @@ import java.io._
 import javax.imageio.ImageIO
 
 import Images.loadImage
+import GraphicsHelper._
 
 import scala.io.StdIn
 
@@ -52,10 +53,10 @@ object LightConverter {
     (0 until 17).foreach { i =>
       print("Generate new textures [" + i + "] for: ")
       val name: String         = StdIn.readLine()
-      val light: BufferedImage = loadImage("light/" + i + ".png")
+      val light: BufferedImage = loadImage("light/" + i + ".png").get
       (1 until 9).foreach { j =>
-        val texture: BufferedImage = loadImage("blocks/" + name + "/texture" + j + ".png")
-        texture.createGraphics().drawImage(light, 0, 0, IMAGESIZE, IMAGESIZE, 0, 0, IMAGESIZE, IMAGESIZE, null)
+        val texture: BufferedImage = loadImage("blocks/" + name + "/texture" + j + ".png").get
+        drawImage(texture.createGraphics(), light, 0, 0, IMAGESIZE, IMAGESIZE, 0, 0, IMAGESIZE, IMAGESIZE)
         try {
           ImageIO.write(texture, "png", new File("blocks/" + name + "/texture" + j + ".png"))
         } catch {

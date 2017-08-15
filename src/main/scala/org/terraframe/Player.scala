@@ -13,12 +13,12 @@ object Player {
   lazy val width: Int  = TerraFrame.PLAYERSIZEX
   lazy val height: Int = TerraFrame.PLAYERSIZEY
 
-  lazy val leftWalkImage: BufferedImage   = loadImage("sprites/player/left_walk.png")
-  lazy val leftStillImage: BufferedImage  = loadImage("sprites/player/left_still.png")
-  lazy val rightWalkImage: BufferedImage  = loadImage("sprites/player/right_walk.png")
-  lazy val rightStillImage: BufferedImage = loadImage("sprites/player/right_still.png")
-  lazy val leftJumpImage: BufferedImage   = loadImage("sprites/player/left_jump.png")
-  lazy val rightJumpImage: BufferedImage  = loadImage("sprites/player/right_jump.png")
+  lazy val leftWalkImage: BufferedImage   = loadImage("sprites/player/left_walk.png").get
+  lazy val leftStillImage: BufferedImage  = loadImage("sprites/player/left_still.png").get
+  lazy val rightWalkImage: BufferedImage  = loadImage("sprites/player/right_walk.png").get
+  lazy val rightStillImage: BufferedImage = loadImage("sprites/player/right_still.png").get
+  lazy val leftJumpImage: BufferedImage   = loadImage("sprites/player/left_jump.png").get
+  lazy val rightJumpImage: BufferedImage  = loadImage("sprites/player/right_jump.png").get
   lazy val totalHP: Int                   = 50
 }
 

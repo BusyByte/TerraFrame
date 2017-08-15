@@ -63,7 +63,7 @@ object RandConverter {
         if (option == 'O') {
           dirs.indices.foreach { k =>
             (2 until 6).foreach { j =>
-              val texture: BufferedImage = loadImage("outlines/" + name + "/" + dirs(k) + "1.png")
+              val texture: BufferedImage = loadImage("outlines/" + name + "/" + dirs(k) + "1.png").get
               val coords: Array2D[Int]   = Array.ofDim(IMAGESIZE * IMAGESIZE, 2)
               (0 until 7).foreach { i =>
                 (0 until IMAGESIZE).foreach { x =>
@@ -88,7 +88,7 @@ object RandConverter {
             }
           }
         } else {
-          val texture: BufferedImage = loadImage("blocks/" + name + "/texture1.png")
+          val texture: BufferedImage = loadImage("blocks/" + name + "/texture1.png").get
           var coords: Array2D[Int]   = Array.ofDim(IMAGESIZE * IMAGESIZE, 2)
           (0 until 7).foreach { i =>
             (0 until IMAGESIZE).foreach { x =>

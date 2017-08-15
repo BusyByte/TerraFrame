@@ -530,7 +530,7 @@ object TerraFrame {
     val backgroundImgsTemp = new jul.HashMap[Byte, BufferedImage](bgs.length)
 
     bgs.indices.foreach { i =>
-      backgroundImgsTemp.put(i.toByte, loadImage("backgrounds/" + bgs(i) + ".png"))
+      backgroundImgsTemp.put(i.toByte, loadImage("backgrounds/" + bgs(i) + ".png").get)
     }
 
     backgroundImgsTemp.asScala.toMap
@@ -539,9 +539,11 @@ object TerraFrame {
     val itemImgsTemp = new jul.HashMap[Short, BufferedImage](items.length)
 
     (1 until items.length).foreach { i =>
-      itemImgsTemp.put(i.toShort, loadImage("items/" + items(i) + ".png"))
-      if (itemImgsTemp.get(i.toShort) == null) {
+      loadImage("items/" + items(i) + ".png").fold {
         println("(ERROR) Could not load item graphic '" + items(i) + "'.")
+      } { img =>
+        itemImgsTemp.put(i.toShort, img)
+        ()
       }
     }
 
@@ -1163,7 +1165,7 @@ object TerraFrame {
     val lightLevelsTemp = new jul.HashMap[Int, BufferedImage](20)
 
     (0 until 17).foreach { i =>
-      lightLevelsTemp.put(i, loadImage("light/" + i + ".png"))
+      lightLevelsTemp.put(i, loadImage("light/" + i + ".png").get)
     }
 
     lightLevelsTemp.asScala.toMap
@@ -1174,11 +1176,13 @@ object TerraFrame {
 
     (1 until blocknames.length).foreach { i =>
       (0 until 8).foreach { j =>
-        blockImgsTemp.put("blocks/" + blocknames(i) + "/texture" + (j + 1) + ".png",
-          loadImage("blocks/" + blocknames(i) + "/texture" + (j + 1) + ".png"))
-        if (blockImgsTemp.get("blocks/" + blocknames(i) + "/texture" + (j + 1) + ".png") == null) {
-          println("(ERROR) Could not load block graphic '" + blocknames(i) + "'.")
-        }
+        loadImage("blocks/" + blocknames(i) + "/texture" + (j + 1) + ".png")
+            .fold {
+              println("(ERROR) Could not load block graphic '" + blocknames(i) + "'.")
+            } { img =>
+              blockImgsTemp.put("blocks/" + blocknames(i) + "/texture" + (j + 1) + ".png", img)
+              ()
+            }
       }
     }
 
@@ -1193,7 +1197,7 @@ object TerraFrame {
       dirs.foreach { dir =>
         (0 until 5).foreach { k =>
           outlineImgsTemp.put("outlines/" + outlineName + "/" + dir + (k + 1) + ".png",
-            loadImage("outlines/" + outlineName + "/" + dir + (k + 1) + ".png"))
+            loadImage("outlines/" + outlineName + "/" + dir + (k + 1) + ".png").get)
         }
       }
     }
@@ -1635,12 +1639,12 @@ object TerraFrame {
 
   val theSize: Int = CHUNKBLOCKS * 2
 
-  lazy val logo_white: BufferedImage = loadImage("interface/logo_white.png")
-  lazy val logo_black: BufferedImage = loadImage("interface/logo_black.png")
-  lazy val title_screen: BufferedImage = loadImage("interface/title_screen.png")
-  lazy val select_world: BufferedImage = loadImage("interface/select_world.png")
-  lazy val new_world: BufferedImage = loadImage("interface/new_world.png")
-  lazy val save_exit: BufferedImage = loadImage("interface/save_exit.png")
+  lazy val logo_white: BufferedImage = loadImage("interface/logo_white.png").get
+  lazy val logo_black: BufferedImage = loadImage("interface/logo_black.png").get
+  lazy val title_screen: BufferedImage = loadImage("interface/title_screen.png").get
+  lazy val select_world: BufferedImage = loadImage("interface/select_world.png").get
+  lazy val new_world: BufferedImage = loadImage("interface/new_world.png").get
+  lazy val save_exit: BufferedImage = loadImage("interface/save_exit.png").get
 }
 
 
@@ -1652,6 +1656,7 @@ class TerraFrame extends JApplet
   with MouseWheelListener {
 
   import TerraFrame._
+  import GraphicsHelper._
 
   var cic: Option[ItemCollection] = None
   var screen: Option[BufferedImage] = None
@@ -1728,13 +1733,13 @@ class TerraFrame extends JApplet
 
   var loadTextPos: Int = 0
 
-  lazy val sun: BufferedImage = loadImage("environment/sun.png")
-  lazy val moon: BufferedImage = loadImage("environment/moon.png")
+  lazy val sun: BufferedImage = loadImage("environment/sun.png").get
+  lazy val moon: BufferedImage = loadImage("environment/moon.png").get
   var cloud: BufferedImage = _
 
 
-  var clouds: Array[BufferedImage] = Array(loadImage("environment/cloud1.png"))
-  var wcnct_px: BufferedImage = loadImage("misc/wcnct.png")
+  var clouds: Array[BufferedImage] = Array(loadImage("environment/cloud1.png").get)
+  var wcnct_px: BufferedImage = loadImage("misc/wcnct.png").get
 
   var thread: Thread = _
   var createWorldTimer: javax.swing.Timer = _
@@ -2106,50 +2111,44 @@ class TerraFrame extends JApplet
                                         }
                                         if (blockbgs(ty)(tx) != 0) {
                                           backgroundImgs.get(blockbgs(ty)(tx)).foreach(img =>
-                                            wg2.drawImage(img, tx * BLOCKSIZE - twx * CHUNKSIZE, ty * BLOCKSIZE - twy * CHUNKSIZE, tx * BLOCKSIZE + BLOCKSIZE - twx * CHUNKSIZE, ty * BLOCKSIZE + BLOCKSIZE - twy * CHUNKSIZE,
-                                              0, 0, IMAGESIZE, IMAGESIZE,
-                                              null))
+                                            drawImage(wg2, img, tx * BLOCKSIZE - twx * CHUNKSIZE, ty * BLOCKSIZE - twy * CHUNKSIZE, tx * BLOCKSIZE + BLOCKSIZE - twx * CHUNKSIZE, ty * BLOCKSIZE + BLOCKSIZE - twy * CHUNKSIZE,
+                                              0, 0, IMAGESIZE, IMAGESIZE))
                                         }
                                         (0 until 3).foreach { l =>
                                           if (blocks(l)(ty)(tx) != AirBlockType.id) {
                                             if (l == 2) {
                                               OUTLINES.get(blocks(l)(ty)(tx)).foreach { outlineName =>
-                                                fwg2.drawImage(loadBlock(blocks(l)(ty)(tx), blockds(l)(ty)(tx), blockdns(ty)(tx), blockts(ty)(tx), blocknames, dirs, outlineName, tx, ty, l),
+                                                drawImage(fwg2, loadBlock(blocks(l)(ty)(tx), blockds(l)(ty)(tx), blockdns(ty)(tx), blockts(ty)(tx), blocknames, dirs, outlineName, tx, ty, l),
                                                   tx * BLOCKSIZE - twx * CHUNKSIZE, ty * BLOCKSIZE - twy * CHUNKSIZE, tx * BLOCKSIZE + BLOCKSIZE - twx * CHUNKSIZE, ty * BLOCKSIZE + BLOCKSIZE - twy * CHUNKSIZE,
-                                                  0, 0, IMAGESIZE, IMAGESIZE,
-                                                  null)
+                                                  0, 0, IMAGESIZE, IMAGESIZE)
                                               }
                                             }
                                             else {
                                               OUTLINES.get(blocks(l)(ty)(tx)).foreach { outlineName =>
-                                                wg2.drawImage(loadBlock(blocks(l)(ty)(tx), blockds(l)(ty)(tx), blockdns(ty)(tx), blockts(ty)(tx), blocknames, dirs, outlineName, tx, ty, l),
+                                                drawImage(wg2, loadBlock(blocks(l)(ty)(tx), blockds(l)(ty)(tx), blockdns(ty)(tx), blockts(ty)(tx), blocknames, dirs, outlineName, tx, ty, l),
                                                   tx * BLOCKSIZE - twx * CHUNKSIZE, ty * BLOCKSIZE - twy * CHUNKSIZE, tx * BLOCKSIZE + BLOCKSIZE - twx * CHUNKSIZE, ty * BLOCKSIZE + BLOCKSIZE - twy * CHUNKSIZE,
-                                                  0, 0, IMAGESIZE, IMAGESIZE,
-                                                  null)
+                                                  0, 0, IMAGESIZE, IMAGESIZE)
                                               }
 
                                             }
                                           }
                                           if (wcnct(ty)(tx) && blocks(l)(ty)(tx) >= ZythiumWireBlockType.id && blocks(l)(ty)(tx) <= ZythiumWire5PowerBlockType.id) {
                                             if (l == 2) {
-                                              fwg2.drawImage(wcnct_px,
+                                              drawImage(fwg2, wcnct_px,
                                                 tx * BLOCKSIZE - twx * CHUNKSIZE, ty * BLOCKSIZE - twy * CHUNKSIZE, tx * BLOCKSIZE + BLOCKSIZE - twx * CHUNKSIZE, ty * BLOCKSIZE + BLOCKSIZE - twy * CHUNKSIZE,
-                                                0, 0, IMAGESIZE, IMAGESIZE,
-                                                null)
+                                                0, 0, IMAGESIZE, IMAGESIZE)
                                             }
                                             else {
-                                              wg2.drawImage(wcnct_px,
+                                              drawImage(wg2, wcnct_px,
                                                 tx * BLOCKSIZE - twx * CHUNKSIZE, ty * BLOCKSIZE - twy * CHUNKSIZE, tx * BLOCKSIZE + BLOCKSIZE - twx * CHUNKSIZE, ty * BLOCKSIZE + BLOCKSIZE - twy * CHUNKSIZE,
-                                                0, 0, IMAGESIZE, IMAGESIZE,
-                                                null)
+                                                0, 0, IMAGESIZE, IMAGESIZE)
                                             }
                                           }
                                         }
                                         if (!DEBUG_LIGHT) {
-                                          LIGHTLEVELS.get(lights(ty)(tx).toInt).foreach(fwg2.drawImage(_,
+                                          LIGHTLEVELS.get(lights(ty)(tx).toInt).foreach(drawImage(fwg2, _,
                                             tx * BLOCKSIZE - twx * CHUNKSIZE, ty * BLOCKSIZE - twy * CHUNKSIZE, tx * BLOCKSIZE + BLOCKSIZE - twx * CHUNKSIZE, ty * BLOCKSIZE + BLOCKSIZE - twy * CHUNKSIZE,
-                                            0, 0, IMAGESIZE, IMAGESIZE,
-                                            null))
+                                            0, 0, IMAGESIZE, IMAGESIZE))
                                         }
                                         drawn(ty)(tx) = true
                                         rdrawn(ty)(tx) = true
@@ -2169,51 +2168,45 @@ class TerraFrame extends JApplet
                                           }
                                         }
                                         if (blockbgs(ty)(tx) != 0) {
-                                          backgroundImgs.get(blockbgs(ty)(tx)).foreach(wg2.drawImage(_,
+                                          backgroundImgs.get(blockbgs(ty)(tx)).foreach(drawImage(wg2, _,
                                             tx * BLOCKSIZE - twx * CHUNKSIZE, ty * BLOCKSIZE - twy * CHUNKSIZE, tx * BLOCKSIZE + BLOCKSIZE - twx * CHUNKSIZE, ty * BLOCKSIZE + BLOCKSIZE - twy * CHUNKSIZE,
-                                            0, 0, IMAGESIZE, IMAGESIZE,
-                                            null))
+                                            0, 0, IMAGESIZE, IMAGESIZE))
                                         }
                                         (0 until 3).foreach { l =>
                                           if (blocks(l)(ty)(tx) != AirBlockType.id) {
                                             if (l == 2) {
                                               OUTLINES.get(blocks(l)(ty)(tx)).foreach { outlineName =>
-                                                fwg2.drawImage(loadBlock(blocks(l)(ty)(tx), blockds(l)(ty)(tx), blockdns(ty)(tx), blockts(ty)(tx), blocknames, dirs, outlineName, tx, ty, l),
+                                                drawImage(fwg2, loadBlock(blocks(l)(ty)(tx), blockds(l)(ty)(tx), blockdns(ty)(tx), blockts(ty)(tx), blocknames, dirs, outlineName, tx, ty, l),
                                                   tx * BLOCKSIZE - twx * CHUNKSIZE, ty * BLOCKSIZE - twy * CHUNKSIZE, tx * BLOCKSIZE + BLOCKSIZE - twx * CHUNKSIZE, ty * BLOCKSIZE + BLOCKSIZE - twy * CHUNKSIZE,
-                                                  0, 0, IMAGESIZE, IMAGESIZE,
-                                                  null)
+                                                  0, 0, IMAGESIZE, IMAGESIZE)
                                               }
                                             }
                                             else {
                                               OUTLINES.get(blocks(l)(ty)(tx)).foreach { outlineName =>
-                                                wg2.drawImage(loadBlock(blocks(l)(ty)(tx), blockds(l)(ty)(tx), blockdns(ty)(tx), blockts(ty)(tx), blocknames, dirs, outlineName, tx, ty, l),
+                                                drawImage(wg2, loadBlock(blocks(l)(ty)(tx), blockds(l)(ty)(tx), blockdns(ty)(tx), blockts(ty)(tx), blocknames, dirs, outlineName, tx, ty, l),
                                                   tx * BLOCKSIZE - twx * CHUNKSIZE, ty * BLOCKSIZE - twy * CHUNKSIZE, tx * BLOCKSIZE + BLOCKSIZE - twx * CHUNKSIZE, ty * BLOCKSIZE + BLOCKSIZE - twy * CHUNKSIZE,
-                                                  0, 0, IMAGESIZE, IMAGESIZE,
-                                                  null)
+                                                  0, 0, IMAGESIZE, IMAGESIZE)
                                               }
 
                                             }
                                           }
                                           if (wcnct(ty)(tx) && blocks(l)(ty)(tx) >= ZythiumWireBlockType.id && blocks(l)(ty)(tx) <= ZythiumWire5PowerBlockType.id) {
                                             if (l == 2) {
-                                              fwg2.drawImage(wcnct_px,
+                                              drawImage(fwg2, wcnct_px,
                                                 tx * BLOCKSIZE - twx * CHUNKSIZE, ty * BLOCKSIZE - twy * CHUNKSIZE, tx * BLOCKSIZE + BLOCKSIZE - twx * CHUNKSIZE, ty * BLOCKSIZE + BLOCKSIZE - twy * CHUNKSIZE,
-                                                0, 0, IMAGESIZE, IMAGESIZE,
-                                                null)
+                                                0, 0, IMAGESIZE, IMAGESIZE)
                                             }
                                             else {
-                                              wg2.drawImage(wcnct_px,
+                                              drawImage(wg2, wcnct_px,
                                                 tx * BLOCKSIZE - twx * CHUNKSIZE, ty * BLOCKSIZE - twy * CHUNKSIZE, tx * BLOCKSIZE + BLOCKSIZE - twx * CHUNKSIZE, ty * BLOCKSIZE + BLOCKSIZE - twy * CHUNKSIZE,
-                                                0, 0, IMAGESIZE, IMAGESIZE,
-                                                null)
+                                                0, 0, IMAGESIZE, IMAGESIZE)
                                             }
                                           }
                                         }
                                         if (!DEBUG_LIGHT) {
-                                          LIGHTLEVELS.get(lights(ty)(tx).toInt).foreach(fwg2.drawImage(_,
+                                          LIGHTLEVELS.get(lights(ty)(tx).toInt).foreach(drawImage(fwg2, _,
                                             tx * BLOCKSIZE - twx * CHUNKSIZE, ty * BLOCKSIZE - twy * CHUNKSIZE, tx * BLOCKSIZE + BLOCKSIZE - twx * CHUNKSIZE, ty * BLOCKSIZE + BLOCKSIZE - twy * CHUNKSIZE,
-                                            0, 0, IMAGESIZE, IMAGESIZE,
-                                            null))
+                                            0, 0, IMAGESIZE, IMAGESIZE))
                                         }
                                         drawn(ty)(tx) = true
                                         rdrawn(ty)(tx) = true
@@ -2233,53 +2226,47 @@ class TerraFrame extends JApplet
                                           }
                                         }
                                         if (blockbgs(ty)(tx) != 0) {
-                                          backgroundImgs.get(blockbgs(ty)(tx)).foreach(wg2.drawImage(_,
+                                          backgroundImgs.get(blockbgs(ty)(tx)).foreach(drawImage(wg2, _,
                                             tx * BLOCKSIZE - twx * CHUNKSIZE, ty * BLOCKSIZE - twy * CHUNKSIZE, tx * BLOCKSIZE + BLOCKSIZE - twx * CHUNKSIZE, ty * BLOCKSIZE + BLOCKSIZE - twy * CHUNKSIZE,
-                                            0, 0, IMAGESIZE, IMAGESIZE,
-                                            null))
+                                            0, 0, IMAGESIZE, IMAGESIZE))
                                         }
                                         (0 until 3).foreach { l =>
                                           if (blocks(l)(ty)(tx) != AirBlockType.id) {
                                             if (l == 2) {
                                               OUTLINES.get(blocks(l)(ty)(tx)).foreach { outlineName =>
-                                                fwg2.drawImage(loadBlock(blocks(l)(ty)(tx), blockds(l)(ty)(tx), blockdns(ty)(tx), blockts(ty)(tx), blocknames, dirs, outlineName, tx, ty, l),
+                                                drawImage(fwg2, loadBlock(blocks(l)(ty)(tx), blockds(l)(ty)(tx), blockdns(ty)(tx), blockts(ty)(tx), blocknames, dirs, outlineName, tx, ty, l),
                                                   tx * BLOCKSIZE - twx * CHUNKSIZE, ty * BLOCKSIZE - twy * CHUNKSIZE, tx * BLOCKSIZE + BLOCKSIZE - twx * CHUNKSIZE, ty * BLOCKSIZE + BLOCKSIZE - twy * CHUNKSIZE,
-                                                  0, 0, IMAGESIZE, IMAGESIZE,
-                                                  null)
+                                                  0, 0, IMAGESIZE, IMAGESIZE)
                                               }
 
                                             }
                                             else {
                                               OUTLINES.get(blocks(l)(ty)(tx)).foreach { outlineName =>
-                                                wg2.drawImage(loadBlock(blocks(l)(ty)(tx), blockds(l)(ty)(tx), blockdns(ty)(tx), blockts(ty)(tx), blocknames, dirs, outlineName, tx, ty, l),
+                                                drawImage(wg2, loadBlock(blocks(l)(ty)(tx), blockds(l)(ty)(tx), blockdns(ty)(tx), blockts(ty)(tx), blocknames, dirs, outlineName, tx, ty, l),
                                                   tx * BLOCKSIZE - twx * CHUNKSIZE, ty * BLOCKSIZE - twy * CHUNKSIZE, tx * BLOCKSIZE + BLOCKSIZE - twx * CHUNKSIZE, ty * BLOCKSIZE + BLOCKSIZE - twy * CHUNKSIZE,
-                                                  0, 0, IMAGESIZE, IMAGESIZE,
-                                                  null)
+                                                  0, 0, IMAGESIZE, IMAGESIZE)
                                               }
 
                                             }
                                           }
                                           if (wcnct(ty)(tx) && blocks(l)(ty)(tx) >= ZythiumWireBlockType.id && blocks(l)(ty)(tx) <= ZythiumWire5PowerBlockType.id) {
                                             if (l == 2) {
-                                              fwg2.drawImage(wcnct_px,
+                                              drawImage(fwg2, wcnct_px,
                                                 tx * BLOCKSIZE - twx * CHUNKSIZE, ty * BLOCKSIZE - twy * CHUNKSIZE, tx * BLOCKSIZE + BLOCKSIZE - twx * CHUNKSIZE, ty * BLOCKSIZE + BLOCKSIZE - twy * CHUNKSIZE,
-                                                0, 0, IMAGESIZE, IMAGESIZE,
-                                                null)
+                                                0, 0, IMAGESIZE, IMAGESIZE)
                                             }
                                             else {
-                                              wg2.drawImage(wcnct_px,
+                                              drawImage(wg2, wcnct_px,
                                                 tx * BLOCKSIZE - twx * CHUNKSIZE, ty * BLOCKSIZE - twy * CHUNKSIZE, tx * BLOCKSIZE + BLOCKSIZE - twx * CHUNKSIZE, ty * BLOCKSIZE + BLOCKSIZE - twy * CHUNKSIZE,
-                                                0, 0, IMAGESIZE, IMAGESIZE,
-                                                null)
+                                                0, 0, IMAGESIZE, IMAGESIZE)
                                             }
                                           }
                                         }
                                         if (!DEBUG_LIGHT) {
                                           LIGHTLEVELS.get(lights(ty)(tx).toInt)
-                                            .foreach(fwg2.drawImage(_,
+                                            .foreach(drawImage(fwg2, _,
                                               tx * BLOCKSIZE - twx * CHUNKSIZE, ty * BLOCKSIZE - twy * CHUNKSIZE, tx * BLOCKSIZE + BLOCKSIZE - twx * CHUNKSIZE, ty * BLOCKSIZE + BLOCKSIZE - twy * CHUNKSIZE,
-                                              0, 0, IMAGESIZE, IMAGESIZE,
-                                              null))
+                                              0, 0, IMAGESIZE, IMAGESIZE))
                                         }
                                         drawn(ty)(tx) = true
                                         rdrawn(ty)(tx) = true
@@ -2796,14 +2783,14 @@ class TerraFrame extends JApplet
           if (player.imgState == StillRight || player.imgState == WalkRight1 || player.imgState == WalkRight2) {
             (0 until 9).foreach { i =>
               if (icTemp.ids(i) != 0) {
-                entities += new IdEntity((icx * BLOCKSIZE).toDouble, (icy * BLOCKSIZE).toDouble, 2, -2, icTemp.ids(i), icTemp.nums(i), icTemp.durs(i), 75)
+                entities += IdEntity((icx * BLOCKSIZE).toDouble, (icy * BLOCKSIZE).toDouble, 2, -2, icTemp.ids(i), icTemp.nums(i), icTemp.durs(i), 75)
               }
             }
           }
           if (player.imgState == StillLeft || player.imgState == WalkLeft1 || player.imgState == WalkLeft2) {
             (0 until 9).foreach { i =>
               if (icTemp.ids(i) != 0) {
-                entities += new IdEntity((icx * BLOCKSIZE).toDouble, (icy * BLOCKSIZE).toDouble, -2, -2, icTemp.ids(i), icTemp.nums(i), icTemp.durs(i), 75)
+                entities += IdEntity((icx * BLOCKSIZE).toDouble, (icy * BLOCKSIZE).toDouble, -2, -2, icTemp.ids(i), icTemp.nums(i), icTemp.durs(i), 75)
               }
             }
           }
@@ -5765,27 +5752,24 @@ class TerraFrame extends JApplet
           pg2.translate((getWidth / 2).toDouble, getHeight * 0.85)
           pg2.rotate((timeOfDay - 70200) / 86400 * Pi * 2)
 
-          pg2.drawImage(sun,
+          drawImage(pg2, sun,
             (-getWidth * 0.65).toInt, 0, (-getWidth * 0.65 + sun.getWidth() * 2).toInt, sun.getHeight() * 2,
-            0, 0, sun.getWidth(), sun.getHeight(),
-            null)
+            0, 0, sun.getWidth(), sun.getHeight())
 
           pg2.rotate(Pi)
 
-          pg2.drawImage(moon,
+          drawImage(pg2, moon,
             (-getWidth * 0.65).toInt, 0, (-getWidth * 0.65 + moon.getWidth() * 2).toInt, moon.getHeight() * 2,
-            0, 0, moon.getWidth(), moon.getHeight(),
-            null)
+            0, 0, moon.getWidth(), moon.getHeight())
 
           pg2.rotate(-(timeOfDay - 70200) / 86400 * Pi * 2 - Pi)
           pg2.translate((-getWidth / 2).toDouble, -getHeight * 0.85)
 
           cloudsx.indices.foreach { i =>
             cloud = clouds(cloudsn(i))
-            pg2.drawImage(clouds(cloudsn(i)),
+            drawImage(pg2, clouds(cloudsn(i)),
               cloudsx(i).toInt, cloudsy(i).toInt, (cloudsx(i) + cloud.getWidth() * 2).toInt, (cloudsy(i) + cloud.getHeight() * 2).toInt,
-              0, 0, cloud.getWidth(), cloud.getHeight(),
-              null)
+              0, 0, cloud.getWidth(), cloud.getHeight())
           }
         }
 
@@ -5802,34 +5786,29 @@ class TerraFrame extends JApplet
                   player.iy + getHeight / 2 + Player.height <= pwyc * CHUNKSIZE + CHUNKSIZE) ||
                   (player.iy - getHeight / 2 + Player.height >= pwyc * CHUNKSIZE &&
                     player.iy - getHeight / 2 + Player.height <= pwyc * CHUNKSIZE + CHUNKSIZE))) {
-                pg2.drawImage(w,
+                drawImage(pg2, w,
                   pwxc * CHUNKSIZE - player.ix + getWidth / 2 - Player.width / 2, pwyc * CHUNKSIZE - player.iy + getHeight / 2 - Player.height / 2, pwxc * CHUNKSIZE - player.ix + getWidth / 2 - Player.width / 2 + CHUNKSIZE, pwyc * CHUNKSIZE - player.iy + getHeight / 2 - Player.height / 2 + CHUNKSIZE,
-                  0, 0, CHUNKSIZE, CHUNKSIZE,
-                  null)
+                  0, 0, CHUNKSIZE, CHUNKSIZE)
               }
             }
           }
         }
 
-        pg2.drawImage(player.image,
+        drawImage(pg2, player.image,
           getWidth / 2 - Player.width / 2, getHeight / 2 - Player.height / 2, getWidth / 2 + Player.width / 2, getHeight / 2 + Player.height / 2,
-          0, 0, player.image.getWidth(), player.image.getHeight(),
-          null)
+          0, 0, player.image.getWidth(), player.image.getHeight())
 
         entities.indices.foreach { i =>
           entity = entities(i)
-          pg2.drawImage(entity.image,
+          drawImage(pg2, entity.image,
             entity.ix - player.ix + getWidth / 2 - Player.width / 2, entity.iy - player.iy + getHeight / 2 - Player.height / 2, entity.ix - player.ix + getWidth / 2 - Player.width / 2 + entity.width, entity.iy - player.iy + getHeight / 2 - Player.height / 2 + entity.height,
-            0, 0, entity.image.getWidth(), entity.image.getHeight(),
-            null)
-          pg2.drawImage(entity.image,
+            0, 0, entity.image.getWidth(), entity.image.getHeight())
+          drawImage(pg2, entity.image,
             entity.ix - player.ix + getWidth / 2 - Player.width / 2 - WIDTH * BLOCKSIZE, entity.iy - player.iy + getHeight / 2 - Player.height / 2, entity.ix - player.ix + getWidth / 2 - Player.width / 2 + entity.width - WIDTH * BLOCKSIZE, entity.iy - player.iy + getHeight / 2 - Player.height / 2 + entity.height,
-            0, 0, entity.image.getWidth(), entity.image.getHeight(),
-            null)
-          pg2.drawImage(entity.image,
+            0, 0, entity.image.getWidth(), entity.image.getHeight())
+          drawImage(pg2, entity.image,
             entity.ix - player.ix + getWidth / 2 - Player.width / 2 + WIDTH * BLOCKSIZE, entity.iy - player.iy + getHeight / 2 - Player.height / 2, entity.ix - player.ix + getWidth() / 2 - Player.width / 2 + entity.width + WIDTH * BLOCKSIZE, entity.iy - player.iy + getHeight() / 2 - Player.height / 2 + entity.height,
-            0, 0, entity.image.getWidth(), entity.image.getHeight(),
-            null)
+            0, 0, entity.image.getWidth(), entity.image.getHeight())
         }
 
         if (showTool) {
@@ -5838,10 +5817,9 @@ class TerraFrame extends JApplet
               pg2.translate(getWidth / 2 + 6, getHeight / 2)
               pg2.rotate(toolAngle)
 
-              pg2.drawImage(t,
+              drawImage(pg2, t,
                 0, -t.getHeight() * 2, t.getWidth() * 2, 0,
-                0, 0, t.getWidth(), t.getHeight(),
-                null)
+                0, 0, t.getWidth(), t.getHeight())
 
               pg2.rotate(-toolAngle)
               pg2.translate(-getWidth / 2 - 6, -getHeight / 2)
@@ -5850,10 +5828,9 @@ class TerraFrame extends JApplet
               pg2.translate(getWidth / 2 - 6, getHeight / 2)
               pg2.rotate((Pi * 1.5) - toolAngle)
 
-              pg2.drawImage(t,
+              drawImage(pg2, t,
                 0, -t.getHeight() * 2, t.getWidth() * 2, 0,
-                0, 0, t.getWidth(), t.getHeight(),
-                null)
+                0, 0, t.getWidth(), t.getHeight())
 
               pg2.rotate(-((Pi * 1.5) - toolAngle))
               pg2.translate(-getWidth / 2 + 6, -getHeight / 2)
@@ -5875,74 +5852,66 @@ class TerraFrame extends JApplet
                   player.iy + getHeight / 2 + Player.height <= pwyc * CHUNKSIZE + CHUNKSIZE) ||
                   (player.iy - getHeight / 2 + Player.height >= pwyc * CHUNKSIZE &&
                     player.iy - getHeight / 2 + Player.height <= pwyc * CHUNKSIZE + CHUNKSIZE))) {
-                pg2.drawImage(fw,
+                drawImage(pg2, fw,
                   pwxc * CHUNKSIZE - player.ix + getWidth / 2 - Player.width / 2, pwyc * CHUNKSIZE - player.iy + getHeight / 2 - Player.height / 2, pwxc * CHUNKSIZE - player.ix + getWidth / 2 - Player.width / 2 + CHUNKSIZE, pwyc * CHUNKSIZE - player.iy + getHeight / 2 - Player.height / 2 + CHUNKSIZE,
-                  0, 0, CHUNKSIZE, CHUNKSIZE,
-                  null)
+                  0, 0, CHUNKSIZE, CHUNKSIZE)
               }
             }
           }
         }
 
         if (showInv) {
-          pg2.drawImage(inventory.image,
+          drawImage(pg2, inventory.image,
             0, 0, inventory.image.getWidth(), inventory.image.getHeight(),
-            0, 0, inventory.image.getWidth(), inventory.image.getHeight(),
-            null)
-          pg2.drawImage(armor.icType.image,
+            0, 0, inventory.image.getWidth(), inventory.image.getHeight())
+          drawImage(pg2, armor.icType.image,
             inventory.image.getWidth() + 6, 6, inventory.image.getWidth() + 6 + armor.icType.image.getWidth(), 6 + armor.icType.image.getHeight(),
-            0, 0, armor.icType.image.getWidth(), armor.icType.image.getHeight(),
-            null)
+            0, 0, armor.icType.image.getWidth(), armor.icType.image.getHeight())
           cic.foreach { c =>
-            pg2.drawImage(c.icType.image,
+            drawImage(pg2, c.icType.image,
               inventory.image.getWidth() + 75, 52, inventory.image.getWidth() + 75 + c.icType.image.getWidth(), 52 + c.icType.image.getHeight(),
-              0, 0, c.icType.image.getWidth(), c.icType.image.getHeight(),
-              null)
+              0, 0, c.icType.image.getWidth(), c.icType.image.getHeight())
           }
         }
         else {
-          pg2.drawImage(inventory.image,
+          drawImage(pg2, inventory.image,
             0, 0, inventory.image.getWidth(), inventory.image.getHeight() / 4,
-            0, 0, inventory.image.getWidth(), inventory.image.getHeight() / 4,
-            null)
+            0, 0, inventory.image.getWidth(), inventory.image.getHeight() / 4)
         }
 
         ic.foreach { icTemp =>
-          pg2.drawImage(icTemp.icType.image,
+          drawImage(pg2, icTemp.icType.image,
             6, inventory.image.getHeight() + 46, 6 + icTemp.icType.image.getWidth(), inventory.image.getHeight() + 46 + icTemp.icType.image.getHeight(),
-            0, 0, icTemp.icType.image.getWidth(), icTemp.icType.image.getHeight(),
-            null)
+            0, 0, icTemp.icType.image.getWidth(), icTemp.icType.image.getHeight())
         }
 
         if (layer == 0) {
-          layerImg = loadImage("interface/layersB.png") //TODO: why are we loading images in the paint method?
+          layerImg = loadImage("interface/layersB.png").get //TODO: why are we loading images in the paint method?
         }
         if (layer == 1) {
-          layerImg = loadImage("interface/layersN.png")
+          layerImg = loadImage("interface/layersN.png").get
         }
         if (layer == 2) {
-          layerImg = loadImage("interface/layersF.png")
+
+          layerImg = loadImage("interface/layersF.png").get
         }
 
-        pg2.drawImage(layerImg,
+        drawImage(pg2, layerImg,
           inventory.image.getWidth() + 58, 6, inventory.image.getWidth() + 58 + layerImg.getWidth(), 6 + layerImg.getHeight(),
-          0, 0, layerImg.getWidth(), layerImg.getHeight(),
-          null)
+          0, 0, layerImg.getWidth(), layerImg.getHeight())
 
         if (showInv) {
-          pg2.drawImage(save_exit,
+          drawImage(pg2, save_exit,
             getWidth - save_exit.getWidth() - 24, getHeight - save_exit.getHeight() - 24, getWidth - 24, getHeight - 24,
-            0, 0, save_exit.getWidth(), save_exit.getHeight(),
-            null)
+            0, 0, save_exit.getWidth(), save_exit.getHeight())
         }
 
         if (moveItem != 0) {
           itemImgs.get(moveItem).foreach { i =>
             width = i.getWidth
             height = i.getHeight
-            pg2.drawImage(i, mouseX + 12 + ((24 - 12.toDouble / mh.max(width, height, 12) * width * 2) / 2).toInt, mouseY + 12 + ((24 - 12.toDouble / mh.max(width, height, 12) * height * 2) / 2).toInt, mouseX + 36 - ((24 - 12.toDouble / mh.max(width, height, 12) * width * 2) / 2).toInt, mouseY + 36 - ((24 - 12.toDouble / mh.max(width, height, 12) * height * 2) / 2).toInt,
-              0, 0, width, height,
-              null)
+            drawImage(pg2, i, mouseX + 12 + ((24 - 12.toDouble / mh.max(width, height, 12) * width * 2) / 2).toInt, mouseY + 12 + ((24 - 12.toDouble / mh.max(width, height, 12) * height * 2) / 2).toInt, mouseX + 36 - ((24 - 12.toDouble / mh.max(width, height, 12) * width * 2) / 2).toInt, mouseY + 36 - ((24 - 12.toDouble / mh.max(width, height, 12) * height * 2) / 2).toInt,
+              0, 0, width, height)
           }
 
           if (moveNum > 1) {
@@ -6157,16 +6126,14 @@ class TerraFrame extends JApplet
         pg2.drawString("Loading graphics... Please wait.", getWidth() / 2 - 200, getHeight() / 2 - 5)
       }
       if (state == TitleScreen) {
-        pg2.drawImage(title_screen,
+        drawImage(pg2, title_screen,
           0, 0, getWidth(), getHeight(),
-          0, 0, getWidth(), getHeight(),
-          null)
+          0, 0, getWidth(), getHeight())
       }
       if (state == SelectWorld) {
-        pg2.drawImage(select_world,
+        drawImage(pg2, select_world,
           0, 0, getWidth(), getHeight(),
-          0, 0, getWidth(), getHeight(),
-          null)
+          0, 0, getWidth(), getHeight())
         worldNames.indices.foreach { i =>
           pg2.setFont(worldFont)
           pg2.setColor(Color.BLACK)
@@ -6175,24 +6142,22 @@ class TerraFrame extends JApplet
         }
       }
       if (state == NewWorld) {
-        pg2.drawImage(new_world,
+        drawImage(pg2, new_world,
           0, 0, getWidth(), getHeight(),
-          0, 0, getWidth(), getHeight(),
-          null)
-        pg2.drawImage(newWorldName.image,
+          0, 0, getWidth(), getHeight())
+        drawImage(pg2, newWorldName.image,
           200, 240, 600, 270,
-          0, 0, 400, 30,
-          null)
+          0, 0, 400, 30)
       }
       if (state == GeneratingWorld) {
         pg2.setFont(loadFont)
         pg2.setColor(Color.GREEN)
         pg2.drawString("Generating new world... Please wait.", getWidth() / 2 - 200, getHeight() / 2 - 5)
       }
-      g.drawImage(screenTemp,
+      drawImage(g, screenTemp,
         0, 0, getWidth(), getHeight(),
         0, 0, getWidth(), getHeight(),
-        null)
+        )
       ()
     }
   }
@@ -6201,11 +6166,14 @@ class TerraFrame extends JApplet
     try {
       val fileIn = new FileInputStream("worlds/" + worldFile)
       val in = new ObjectInputStream(fileIn)
-      val wc = in.readObject().asInstanceOf[WorldContainer]
+      val wc: Option[WorldContainer] = in.readObject() match {
+        case w: WorldContainer => Some(w)
+        case _ => None
+      }
       in.close()
       fileIn.close()
-      emptyWorldContainer(wc)
-      true
+      wc.foreach(emptyWorldContainer)
+      wc.isDefined
     }
     catch {
       case NonFatal(_) => false

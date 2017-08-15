@@ -66,6 +66,6 @@ lazy val root = (project in file("."))
       "-Ywarn-unused:privates", // Warn if a private member is unused.
       "-Ywarn-value-discard" // Warn when non-Unit expression results are unused.
     ))
-  //.settings(wartremoverErrors ++= unsafeBut(Wart.NonUnitStatements, Wart.Var))
+  .settings(wartremoverErrors ++= unsafeBut(Wart.NonUnitStatements, Wart.Var, Wart.StringPlusAny, Wart.Return, Wart.Any, Wart.OptionPartial))
 
 
