@@ -277,6 +277,11 @@ import org.terraframe.{MathHelper => mh}
 
 */
 
+sealed trait DebugItem
+object NormalDebugItem extends DebugItem
+object ToolsDebugItem extends DebugItem
+object TestingDebugItem extends DebugItem
+
 object TerraFrame {
   val config: GraphicsConfiguration =
     GraphicsEnvironment.getLocalGraphicsEnvironment
@@ -313,7 +318,7 @@ object TerraFrame {
   val DEBUG_GRASSGROW: Int = 1
   val DEBUG_MOBTEST: Option[EntityStrategy] = None
   val DEBUG_STATS: Boolean = true
-  val DEBUG_ITEMS: String = "testing"
+  val DEBUG_ITEMS: Option[DebugItem] = Some(TestingDebugItem)
   val DEBUG_GPLACE: Boolean = true
 
   var WORLDWIDTH: Int = WIDTH / CHUNKBLOCKS + 1
@@ -1905,7 +1910,7 @@ class TerraFrame extends JApplet
     frn2Temp.asScala.toList
   }
 
-  var g2, wg2, fwg2, ug2, pg2: Graphics2D = _
+  var g2, wg2, fwg2, pg2: Graphics2D = _
 
   var output, boutput: ObjectOutputStream = _
   var input: ObjectInputStream = _
@@ -2473,8 +2478,9 @@ class TerraFrame extends JApplet
 
     inventory = new Inventory()
 
-    if (DEBUG_ITEMS != null) {
-      if (DEBUG_ITEMS.equals("normal")) {
+    DEBUG_ITEMS match {
+      case Some(NormalDebugItem) =>
+
         inventory.addItem(172.toShort, 1.toShort)
         inventory.addItem(173.toShort, 1.toShort)
         inventory.addItem(174.toShort, 1.toShort)
@@ -2490,8 +2496,9 @@ class TerraFrame extends JApplet
         inventory.addItem(1.toShort, 100.toShort)
         inventory.addItem(2.toShort, 100.toShort)
         inventory.addItem(15.toShort, 100.toShort)
-      }
-      if (DEBUG_ITEMS.equals("tools")) {
+
+      case Some(ToolsDebugItem) =>
+
         inventory.addItem(154.toShort, 1.toShort)
         inventory.addItem(155.toShort, 1.toShort)
         inventory.addItem(156.toShort, 1.toShort)
@@ -2533,8 +2540,9 @@ class TerraFrame extends JApplet
         inventory.addItem(174.toShort, 1.toShort)
 
         inventory.addItem(19.toShort, 1.toShort)
-      }
-      if (DEBUG_ITEMS.equals("testing")) {
+
+      case Some(TestingDebugItem) =>
+
         inventory.addItem(172.toShort, 1.toShort)
         inventory.addItem(173.toShort, 1.toShort)
         inventory.addItem(175.toShort, 100.toShort)
@@ -2560,7 +2568,9 @@ class TerraFrame extends JApplet
         inventory.addItem(188.toShort, 100.toShort)
         inventory.addItem(189.toShort, 100.toShort)
         inventory.addItem(190.toShort, 1.toShort)
-      }
+
+      case None =>
+
     }
 
     cic = Some(new ItemCollection(Crafting))
@@ -2675,16 +2685,15 @@ class TerraFrame extends JApplet
           if (icMatrixTemp.icType == Furnace) {
             if (icMatrixTemp.F_ON) {
               if (icMatrixTemp.ids(1) == 0) {
-                if (FUELS.get(icMatrixTemp.ids(2)) != null) {
-                  inventory.addLocationIC(icMatrixTemp, 1, icMatrixTemp.ids(2), 1.toShort)
-                  inventory.removeLocationIC(icMatrixTemp, 2, 1.toShort)
-                  icMatrixTemp.FUELP = 1
-                }
-                else {
+                FUELS.get(icMatrixTemp.ids(2)).fold {
                   icMatrixTemp.F_ON = false
                   removeBlockLighting(x, y)
                   blocks(l)(y)(x) = FurnaceBlockType.id
                   rdrawn(y)(x) = false
+                } { _ =>
+                  inventory.addLocationIC(icMatrixTemp, 1, icMatrixTemp.ids(2), 1.toShort)
+                  inventory.removeLocationIC(icMatrixTemp, 2, 1.toShort)
+                  icMatrixTemp.FUELP = 1
                 }
               }
               FUELS.get(icMatrixTemp.ids(1)).foreach { fuel =>
@@ -2726,16 +2735,19 @@ class TerraFrame extends JApplet
       if (icTemp.icType == Furnace) {
         if (icTemp.F_ON) {
           if (icTemp.ids(1) == 0) {
-            if (FUELS.get(icTemp.ids(2)) != null) {
-              inventory.addLocationIC(icTemp, 1, icTemp.ids(2), 1.toShort)
-              inventory.removeLocationIC(icTemp, 2, 1.toShort)
-              icTemp.FUELP = 1
-            }
-            else {
+            FUELS.get(icTemp.ids(2)).fold {
+
               icTemp.F_ON = false
               removeBlockLighting(icx, icy)
               blocks(iclayer)(icy)(icx) = FurnaceBlockType.id
               rdrawn(icy)(icx) = false
+
+            } { _ =>
+
+              inventory.addLocationIC(icTemp, 1, icTemp.ids(2), 1.toShort)
+              inventory.removeLocationIC(icTemp, 2, 1.toShort)
+              icTemp.FUELP = 1
+
             }
           }
           FUELS.get(icTemp.ids(1)).foreach { fuels =>
@@ -3013,12 +3025,12 @@ class TerraFrame extends JApplet
                       }
                     }
                   }
-                  if (mobSpawn != null && checkBiome(xpos, ypos).equals("desert")) {//TODO: need sum type
+                  if (mobSpawn.isDefined && checkBiome(xpos, ypos).equals("desert")) {//TODO: need sum type
                     if (random.nextInt(3) == 0) { // 33% of all spawns in desert
                       mobSpawn = Some(Sandbot)
                     }
                   }
-                  if (mobSpawn != null && checkBiome(xpos, ypos).equals("frost")) {
+                  if (mobSpawn.isDefined && checkBiome(xpos, ypos).equals("frost")) {
                     if (random.nextInt(3) == 0) { // 33% of all spawns in frost
                       mobSpawn = Some(Snowman)
                     }
@@ -3495,7 +3507,6 @@ class TerraFrame extends JApplet
                     inventory.removeLocation(inventory.selection, inventory.nums(inventory.selection))
                   }
                 }
-                ug2 = null
               }
             }
             else if (inventory.tool() == 33) {
