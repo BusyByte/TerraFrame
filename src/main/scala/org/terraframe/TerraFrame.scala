@@ -1608,9 +1608,9 @@ object TerraFrame {
   def postError(e: Throwable): Unit = {
     val sb = new StringBuilder()
     sb.append("Exception in thread " + e.getClass.getName)
-    if (e.getMessage != null) {
+    e.getMessage.foreach { message =>
       sb.append(": ")
-      sb.append(e.getMessage)
+      sb.append(message)
     }
     e.getStackTrace.foreach { ste =>
       sb.append("\n        at " + ste.toString)
@@ -1683,8 +1683,8 @@ class TerraFrame extends JApplet
   var cloudsn: mutable.ArrayBuffer[Int] = _
   var machinesx, machinesy: mutable.ArrayBuffer[Int] = _
 
-  var temporarySaveFile: Array2D[Chunk] = _
-  var chunkMatrix: Array2D[Chunk] = _
+  var temporarySaveFile: Array2D[Option[Chunk]] = _
+  var chunkMatrix: Array2D[Option[Chunk]] = _
 
   var rgnc1: Int = 0
   var rgnc2: Int = 0
@@ -1974,10 +1974,7 @@ class TerraFrame extends JApplet
 
       repaint()
 
-      menuTimer = new javax.swing.Timer(20, null)
-
-      menuTimer.addActionListener(new ActionListener() {
-
+      val actionListener = new ActionListener() {
         def actionPerformed(ae: ActionEvent): Unit = {
           try {
             if (userInput.isLeftMousePressed) {
@@ -1994,9 +1991,9 @@ class TerraFrame extends JApplet
                         val chunkTemp = mutable.ArrayBuffer.empty[Chunk]
                         (0 until 2).foreach { twy =>
                           (0 until 2).foreach { twx =>
-                            if (chunkMatrix(twy)(twx) != null) {
-                              chunkTemp += chunkMatrix(twy)(twx)
-                              chunkMatrix(twy)(twx) = null
+                            chunkMatrix(twy)(twx).foreach { c =>
+                              chunkTemp += c
+                              chunkMatrix(twy)(twx) = None
                             }
                           }
                         }
@@ -2004,48 +2001,51 @@ class TerraFrame extends JApplet
                           import scala.util.control.Breaks._
                           breakable {
                             (0 until 2).foreach { twx =>
-                              (chunkTemp.length - 1 until(-1, -1)).foreach { i =>
-                                if (chunkTemp(i).cx == twx && chunkTemp(i).cy == twy) {
-                                  chunkMatrix(twy)(twx) = chunkTemp(i)
-                                  chunkTemp.remove(i)
+                              chunkTemp.toList.zipWithIndex.reverse.foreach { p =>
+                                val c = p._1
+                                val index = p._2
+                                if (c.cx == twx && c.cy == twy) {
+                                  chunkMatrix(twy)(twx) = Some(c)
+                                  chunkTemp.remove(index)
                                   break
                                 }
                               }
-                              if (chunkMatrix(twy)(twx) == null) {
-                                if (temporarySaveFile(twy)(twx) != null) {
-                                  chunkMatrix(twy)(twx) = temporarySaveFile(twy)(twx)
-                                }
-                                else {
-                                  chunkMatrix(twy)(twx) = Chunk(twx + ou, twy + ov, random)
+                              if (chunkMatrix(twy)(twx).isEmpty) {
+                                temporarySaveFile(twy)(twx).fold {
+                                  chunkMatrix(twy)(twx) = Some(Chunk(twx + ou, twy + ov, random))
+                                } { c =>
+                                  chunkMatrix(twy)(twx) = Some(c)
                                 }
                               }
                             }
                           }
                         }
                         chunkTemp.foreach { chunk =>
-                          temporarySaveFile(twy)(twx) = chunk
+                          temporarySaveFile(twy)(twx) = Some(chunk) //TODO: this line seems fishy
                         }
                         (0 until 2).foreach { twy =>
                           (0 until 2).foreach { twx =>
-                            (0 until CHUNKBLOCKS).foreach { y =>
-                              (0 until CHUNKBLOCKS).foreach { x =>
-                                (0 until 3).foreach { l =>
-                                  blocks(l)(twy * CHUNKBLOCKS + y)(twx * CHUNKBLOCKS + x) = chunkMatrix(twy)(twx).blocks(l)(y)(x)
-                                  power(l)(twy * CHUNKBLOCKS + y)(twx * CHUNKBLOCKS + x) = chunkMatrix(twy)(twx).power(l)(y)(x)
-                                  pzqn(l)(twy * CHUNKBLOCKS + y)(twx * CHUNKBLOCKS + x) = chunkMatrix(twy)(twx).pzqn(l)(y)(x)
-                                  arbprd(l)(twy * CHUNKBLOCKS + y)(twx * CHUNKBLOCKS + x) = chunkMatrix(twy)(twx).arbprd(l)(y)(x)
-                                  blockds(l)(twy * CHUNKBLOCKS + y)(twx * CHUNKBLOCKS + x) = chunkMatrix(twy)(twx).blockds(l)(y)(x)
+                            chunkMatrix(twy)(twx).foreach { cMatrix =>
+                              (0 until CHUNKBLOCKS).foreach { y =>
+                                (0 until CHUNKBLOCKS).foreach { x =>
+                                  (0 until 3).foreach { l =>
+                                    blocks(l)(twy * CHUNKBLOCKS + y)(twx * CHUNKBLOCKS + x) = cMatrix.blocks(l)(y)(x)
+                                    power(l)(twy * CHUNKBLOCKS + y)(twx * CHUNKBLOCKS + x) = cMatrix.power(l)(y)(x)
+                                    pzqn(l)(twy * CHUNKBLOCKS + y)(twx * CHUNKBLOCKS + x) = cMatrix.pzqn(l)(y)(x)
+                                    arbprd(l)(twy * CHUNKBLOCKS + y)(twx * CHUNKBLOCKS + x) = cMatrix.arbprd(l)(y)(x)
+                                    blockds(l)(twy * CHUNKBLOCKS + y)(twx * CHUNKBLOCKS + x) = cMatrix.blockds(l)(y)(x)
+                                  }
+                                  blockdns(twy * CHUNKBLOCKS + y)(twx * CHUNKBLOCKS + x) = cMatrix.blockdns(y)(x)
+                                  blockbgs(twy * CHUNKBLOCKS + y)(twx * CHUNKBLOCKS + x) = cMatrix.blockbgs(y)(x)
+                                  blockts(twy * CHUNKBLOCKS + y)(twx * CHUNKBLOCKS + x) = cMatrix.blockts(y)(x)
+                                  lights(twy * CHUNKBLOCKS + y)(twx * CHUNKBLOCKS + x) = cMatrix.lights(y)(x)
+                                  lsources(twy * CHUNKBLOCKS + y)(twx * CHUNKBLOCKS + x) = cMatrix.lsources(y)(x)
+                                  zqn(twy * CHUNKBLOCKS + y)(twx * CHUNKBLOCKS + x) = cMatrix.zqn(y)(x)
+                                  wcnct(twy * CHUNKBLOCKS + y)(twx * CHUNKBLOCKS + x) = cMatrix.wcnct(y)(x)
+                                  drawn(twy * CHUNKBLOCKS + y)(twx * CHUNKBLOCKS + x) = cMatrix.drawn(y)(x)
+                                  rdrawn(twy * CHUNKBLOCKS + y)(twx * CHUNKBLOCKS + x) = cMatrix.rdrawn(y)(x)
+                                  ldrawn(twy * CHUNKBLOCKS + y)(twx * CHUNKBLOCKS + x) = cMatrix.ldrawn(y)(x)
                                 }
-                                blockdns(twy * CHUNKBLOCKS + y)(twx * CHUNKBLOCKS + x) = chunkMatrix(twy)(twx).blockdns(y)(x)
-                                blockbgs(twy * CHUNKBLOCKS + y)(twx * CHUNKBLOCKS + x) = chunkMatrix(twy)(twx).blockbgs(y)(x)
-                                blockts(twy * CHUNKBLOCKS + y)(twx * CHUNKBLOCKS + x) = chunkMatrix(twy)(twx).blockts(y)(x)
-                                lights(twy * CHUNKBLOCKS + y)(twx * CHUNKBLOCKS + x) = chunkMatrix(twy)(twx).lights(y)(x)
-                                lsources(twy * CHUNKBLOCKS + y)(twx * CHUNKBLOCKS + x) = chunkMatrix(twy)(twx).lsources(y)(x)
-                                zqn(twy * CHUNKBLOCKS + y)(twx * CHUNKBLOCKS + x) = chunkMatrix(twy)(twx).zqn(y)(x)
-                                wcnct(twy * CHUNKBLOCKS + y)(twx * CHUNKBLOCKS + x) = chunkMatrix(twy)(twx).wcnct(y)(x)
-                                drawn(twy * CHUNKBLOCKS + y)(twx * CHUNKBLOCKS + x) = chunkMatrix(twy)(twx).drawn(y)(x)
-                                rdrawn(twy * CHUNKBLOCKS + y)(twx * CHUNKBLOCKS + x) = chunkMatrix(twy)(twx).rdrawn(y)(x)
-                                ldrawn(twy * CHUNKBLOCKS + y)(twx * CHUNKBLOCKS + x) = chunkMatrix(twy)(twx).ldrawn(y)(x)
                               }
                             }
                             worlds(twy)(twx) = None
@@ -2420,11 +2420,10 @@ class TerraFrame extends JApplet
             case NonFatal(e) => postError(e)
           }
         }
-      })
-
+      }
+      menuTimer = new javax.swing.Timer(20, actionListener)
       menuTimer.start()
     }
-
     catch {
       case NonFatal(e) => postError(e)
     }
