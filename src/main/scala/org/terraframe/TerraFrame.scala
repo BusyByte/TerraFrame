@@ -1645,142 +1645,10 @@ object TerraFrame {
   lazy val select_world: BufferedImage = loadImage("interface/select_world.png").get
   lazy val new_world: BufferedImage = loadImage("interface/new_world.png").get
   lazy val save_exit: BufferedImage = loadImage("interface/save_exit.png").get
-}
-
-
-class TerraFrame extends JApplet
-  with ChangeListener
-  with KeyListener
-  with MouseListener
-  with MouseMotionListener
-  with MouseWheelListener {
-
-  import TerraFrame._
-  import GraphicsHelper._
-
-  var cic: Option[ItemCollection] = None
-  var screen: Option[BufferedImage] = None
-  var bg: Color = _
-
-  val cl: Array2D[Int] = Array(Array(-1, 0), Array(1, 0), Array(0, -1), Array(0, 1))
-
-  var timer, menuTimer, paIntTimer: javax.swing.Timer = _
-  var worldFiles, worldNames: List[String] = _
-  var currentWorld: String = _
-  var newWorldName: TextField = _
-
-  var blocks: Array3D[Int] = _
-  var blockds: Array3D[Byte] = _
-  var blockdns: Array2D[Byte] = _
-  var blockbgs: Array2D[Byte] = _
-  var blockts: Array2D[Byte] = _
-  var lights: Array2D[Float] = _
-  var power: Array3D[Float] = _
-  var lsources: Array2D[Boolean] = _
-  var lqx, lqy, pqx, pqy, zqx, zqy, pzqx, pzqy: mutable.ArrayBuffer[Int] = _
-  var lqd, zqd, pqd, pzqd: Array2D[Boolean] = _
-  var zqn: Array2D[Byte] = _
-  var pzqn: Array3D[Byte] = _
-  var arbprd: Array3D[Boolean] = _
-  var updatex, updatey, updatet, updatel: mutable.ArrayBuffer[Int] = _
-  var wcnct: Array2D[Boolean] = _
-  var drawn, ldrawn, rdrawn: Array2D[Boolean] = _
-  var player: Player = _
-  var inventory: Inventory = _
-
-  var entities: mutable.ArrayBuffer[Entity] = _
-  var cloudsx, cloudsy, cloudsv: mutable.ArrayBuffer[Double] = _
-  var cloudsn: mutable.ArrayBuffer[Int] = _
-  var machinesx, machinesy: mutable.ArrayBuffer[Int] = _
-
-  var temporarySaveFile: Array2D[Option[Chunk]] = _
-  var chunkMatrix: Array2D[Option[Chunk]] = _
-
-  var rgnc1: Int = 0
-  var rgnc2: Int = 0
-  var layer: Int = 1
-  var iclayer: Int = _
-  var layerTemp: Int = _
-  var blockTemp: Int = _
-  var layerImg: BufferedImage = _
-
-  var entity: Entity = _
-  var state: GameState = LoadingGraphics
-  var msg: String = "If you are reading this then\nplease report an error."
-  var mobSpawn: Option[EntityStrategy] = None
-
-  private[this] var width, height = 0
-  var u, v, ou, ov, uNew, vNew: Int = _
-  var i, j, k, t, wx, wy, lx, ly, tx, ty, twx, twy, tlx, tly, ux, uy, ux2, uy2, uwx, uwy, uwx2, ulx, uly, ulx2, uly2, ucx, ucy, uclx, ucly, pwx, pwy, icx, icy, n, m, dx, dy, dx2, dy2, mx, my, lsx, lsy, lsn, ax, ay, axl, ayl, nl, vc, xpos, ypos, xpos2, ypos2, x2, y2, rnum, mining, immune, xmin, xmax, ymin, ymax, Intpercent, ground: Int = _
-  private[this] var x, y = 0
-  var p, q: Double = _
-  var s, miningTool: Short = _
-
-  var moveItem, moveNum, moveDur, moveItemTemp, moveNumTemp, moveDurTemp: Short = _
-  var msi: Int = 0
-
-  var top, bottom, percent: Double = _
-
-  var toolAngle, toolSpeed: Double = _
-
-  var timeOfDay: Double = 0 // 28000 (before dusk), 32000 (after dusk)
-  var currentSkyLight: Int = 28800
-  var day: Int = 0
-
-  var mobCount: Int = 0
-
-  var tp1, tp2, tp3, tp4, tp5: Point = _
-
-  var loadTextPos: Int = 0
-
   lazy val sun: BufferedImage = loadImage("environment/sun.png").get
   lazy val moon: BufferedImage = loadImage("environment/moon.png").get
-  var cloud: BufferedImage = _
-
-
-  var clouds: Array[BufferedImage] = Array(loadImage("environment/cloud1.png").get)
-  var wcnct_px: BufferedImage = loadImage("misc/wcnct.png").get
-
-  var thread: Thread = _
-  var createWorldTimer: javax.swing.Timer = _
-
-  val userInput = UserInput()
-
-  var done: Boolean = false
-  var ready: Boolean = true
-  var showTool: Boolean = false
-  var showInv: Boolean = false
-  var checkBlocks: Boolean = true
-  var mouseClicked: Boolean = true
-  var mouseClicked2: Boolean = true
-  var mouseNoLongerClicked: Boolean = false
-  var mouseNoLongerClicked2: Boolean = false
-  var addSources: Boolean = false
-  var removeSources: Boolean = false
-  var beginLight: Boolean = false
-  var doMobSpawn: Boolean = false
-  var keepLeaf: Boolean = false
-  var newWorldFocus: Boolean = false
-  var menuPressed: Boolean = false
-  var doGenerateWorld: Boolean = true
-  var doGrassGrow: Boolean = false
-  var reallyAddPower: Boolean = false
-  var reallyRemovePower: Boolean = false
-
-  var resunlight: Int = WIDTH
-  var sunlightlevel: Int = 19
-
-  var ic: Option[ItemCollection] = None
-
-  var worlds, fworlds: Array2D[Option[BufferedImage]] = _
-  var kworlds: Array2D[Boolean] = _
-
-  var world: BufferedImage = _
-
-  var icmatrix: Array3D[Option[ItemCollection]] = _
-
-  var image, mobImage: BufferedImage = _
-  var tool: Option[BufferedImage] = None
+  lazy val clouds: Array[BufferedImage] = Array(loadImage("environment/cloud1.png").get)
+  lazy val wcnct_px: BufferedImage = loadImage("misc/wcnct.png").get
 
   lazy val FRI1: List[Short] = {
     val fri1Temp = new jul.ArrayList[Short](180)
@@ -1813,7 +1681,7 @@ class TerraFrame extends JApplet
       fri1Temp.add(j.toShort)
     }
 
-   fri1Temp.asScala.toList
+    fri1Temp.asScala.toList
   }
   lazy val FRN1: List[Short] = {
     val frn1Temp = new jul.ArrayList[Short](180)
@@ -1915,10 +1783,134 @@ class TerraFrame extends JApplet
     frn2Temp.asScala.toList
   }
 
-  var g2, wg2, fwg2, pg2: Graphics2D = _
+  lazy val sunlightlevel: Int = 19
+}
 
-  var output, boutput: ObjectOutputStream = _
-  var input: ObjectInputStream = _
+
+class TerraFrame extends JApplet
+  with ChangeListener
+  with KeyListener
+  with MouseListener
+  with MouseMotionListener
+  with MouseWheelListener {
+
+  import TerraFrame._
+  import GraphicsHelper._
+
+  var cic: Option[ItemCollection] = None
+  var screen: Option[BufferedImage] = None
+  var bg: Color = _
+
+  val cl: Array2D[Int] = Array(Array(-1, 0), Array(1, 0), Array(0, -1), Array(0, 1))
+
+  var timer, menuTimer, paIntTimer: javax.swing.Timer = _
+  var worldFiles, worldNames: List[String] = _
+  var currentWorld: String = _
+  var newWorldName: TextField = _
+
+  var blocks: Array3D[Int] = _
+  var blockds: Array3D[Byte] = _
+  var blockdns: Array2D[Byte] = _
+  var blockbgs: Array2D[Byte] = _
+  var blockts: Array2D[Byte] = _
+  var lights: Array2D[Float] = _
+  var power: Array3D[Float] = _
+  var lsources: Array2D[Boolean] = _
+  var lqx, lqy, pqx, pqy, zqx, zqy, pzqx, pzqy: mutable.ArrayBuffer[Int] = _
+  var lqd, zqd, pqd, pzqd: Array2D[Boolean] = _
+  var zqn: Array2D[Byte] = _
+  var pzqn: Array3D[Byte] = _
+  var arbprd: Array3D[Boolean] = _
+  var updatex, updatey, updatet, updatel: mutable.ArrayBuffer[Int] = _
+  var wcnct: Array2D[Boolean] = _
+  var drawn, ldrawn, rdrawn: Array2D[Boolean] = _
+  var player: Player = _
+  var inventory: Inventory = _
+
+  var entities: mutable.ArrayBuffer[Entity] = _
+  var cloudsx, cloudsy, cloudsv: mutable.ArrayBuffer[Double] = _
+  var cloudsn: mutable.ArrayBuffer[Int] = _
+  var machinesx, machinesy: mutable.ArrayBuffer[Int] = _
+
+  var temporarySaveFile: Array2D[Option[Chunk]] = _
+  var chunkMatrix: Array2D[Option[Chunk]] = _
+
+  var rgnc1: Int = 0
+  var rgnc2: Int = 0
+  var layer: Int = 1
+  var iclayer: Int = _
+  var layerTemp: Int = _
+  var blockTemp: Int = _
+  var layerImg: BufferedImage = _
+
+  var state: GameState = LoadingGraphics
+  var mobSpawn: Option[EntityStrategy] = None
+
+  private[this] var width, height = 0
+  var u, v, ou, ov, uNew, vNew: Int = _
+  var i, j, k, t, wx, wy, lx, ly, tx, ty, twx, twy, tlx, tly, ux, uy, ux2, uy2, uwx, uwy, uwx2, ulx, uly, ulx2, uly2, ucx, ucy, uclx, ucly, pwx, pwy, icx, icy, n, m, dx, dy, dx2, dy2, mx, my, lsx, lsy, lsn, ax, ay, axl, ayl, nl, vc, xpos, ypos, xpos2, ypos2, x2, y2, rnum, mining, immune, xmin, xmax, ymin, ymax, Intpercent, ground: Int = _
+  private[this] var x, y = 0
+  var p, q: Double = _
+  var s, miningTool: Short = _
+
+  var moveItem, moveNum, moveDur, moveItemTemp, moveNumTemp, moveDurTemp: Short = _
+  var msi: Int = 0
+
+  var top, bottom, percent: Double = _
+
+  var toolAngle, toolSpeed: Double = _
+
+  var timeOfDay: Double = 0 // 28000 (before dusk), 32000 (after dusk)
+  var currentSkyLight: Int = 28800
+  var day: Int = 0
+
+  var mobCount: Int = 0
+
+  var loadTextPos: Int = 0
+
+  var cloud: BufferedImage = _
+
+  var thread: Thread = _
+  var createWorldTimer: javax.swing.Timer = _
+
+  val userInput = UserInput()
+
+  var done: Boolean = false
+  var ready: Boolean = true
+  var showTool: Boolean = false
+  var showInv: Boolean = false
+  var checkBlocks: Boolean = true
+  var mouseClicked: Boolean = true
+  var mouseClicked2: Boolean = true
+  var mouseNoLongerClicked: Boolean = false
+  var mouseNoLongerClicked2: Boolean = false
+  var addSources: Boolean = false
+  var removeSources: Boolean = false
+  var beginLight: Boolean = false
+  var doMobSpawn: Boolean = false
+  var keepLeaf: Boolean = false
+  var newWorldFocus: Boolean = false
+  var menuPressed: Boolean = false
+  var doGenerateWorld: Boolean = true
+  var doGrassGrow: Boolean = false
+  var reallyAddPower: Boolean = false
+  var reallyRemovePower: Boolean = false
+
+  var resunlight: Int = WIDTH
+
+  var ic: Option[ItemCollection] = None
+
+  var worlds, fworlds: Array2D[Option[BufferedImage]] = _
+  var kworlds: Array2D[Boolean] = _
+
+  var world: BufferedImage = _
+
+  var icmatrix: Array3D[Option[ItemCollection]] = _
+
+  var tool: Option[BufferedImage] = None
+
+  var wg2, fwg2, pg2: Graphics2D = _
+
 
   override def init(): Unit = {
     try {
@@ -2876,13 +2868,11 @@ class TerraFrame extends JApplet
       }
     }
 
-    (0 until 3).foreach { l =>
-      (0 until theSize).foreach { y =>
-        (0 until theSize).foreach { x =>
-          if (random.nextInt(1000) == 0) {
-            if (blocks(1)(y)(x) == TreeNoBarkBlockType.id) {
-              blocks(1)(y)(x) = TreeBlockType.id
-            }
+    (0 until theSize).foreach { y =>
+      (0 until theSize).foreach { x =>
+        if (random.nextInt(1000) == 0) {
+          if (blocks(1)(y)(x) == TreeNoBarkBlockType.id) {
+            blocks(1)(y)(x) = TreeBlockType.id
           }
         }
       }
@@ -4311,28 +4301,33 @@ class TerraFrame extends JApplet
       showTool = false
     }
     if (showTool) {
-      tool.foreach { t =>
-        if (player.imgState == StillRight || player.imgState == WalkRight1 || player.imgState == WalkRight2) {
-          tp1 = new Point((player.x + Player.width / 2 + 6).toInt, (player.y + Player.height / 2).toInt)
-          tp2 = new Point((player.x + Player.width / 2 + 6 + t.getWidth() * 2 * cos(toolAngle) + t.getHeight() * 2 * sin(toolAngle)).toInt,
-            (player.y + Player.height / 2 + t.getWidth() * 2 * sin(toolAngle) - t.getHeight() * 2 * cos(toolAngle)).toInt)
-          tp3 = new Point((player.x + Player.width / 2 + 6 + t.getWidth() * 1 * cos(toolAngle) + t.getHeight() * 1 * sin(toolAngle)).toInt,
-            (player.y + Player.height / 2 + t.getWidth() * 1 * sin(toolAngle) - t.getHeight() * 1 * cos(toolAngle)).toInt)
-          tp4 = new Point((player.x + Player.width / 2 + 6 + t.getWidth() * 0.5 * cos(toolAngle) + t.getHeight() * 0.5 * sin(toolAngle)).toInt,
-            (player.y + Player.height / 2 + t.getWidth() * 0.5 * sin(toolAngle) - t.getHeight() * 0.5 * cos(toolAngle)).toInt)
-          tp5 = new Point((player.x + Player.width / 2 + 6 + t.getWidth() * 1.5 * cos(toolAngle) + t.getHeight() * 1.5 * sin(toolAngle)).toInt,
-            (player.y + Player.height / 2 + t.getWidth() * 1.5 * sin(toolAngle) - t.getHeight() * 1.5 * cos(toolAngle)).toInt)
-        }
-        if (player.imgState == StillLeft || player.imgState == WalkLeft1 || player.imgState == WalkLeft2) {
-          tp1 = new Point((player.x + Player.width / 2 - 6).toInt, (player.y + Player.height / 2).toInt)
-          tp2 = new Point((player.x + Player.width / 2 - 6 + t.getWidth() * 2 * cos((Pi * 1.5) - toolAngle) + t.getHeight() * 2 * sin((Pi * 1.5) - toolAngle)).toInt,
-            (player.y + Player.height / 2 + t.getWidth() * 2 * sin((Pi * 1.5) - toolAngle) - t.getHeight() * 2 * cos((Pi * 1.5) - toolAngle)).toInt)
-          tp3 = new Point((player.x + Player.width / 2 - 6 + t.getWidth() * 1 * cos((Pi * 1.5) - toolAngle) + t.getHeight() * 1 * sin((Pi * 1.5) - toolAngle)).toInt,
-            (player.y + Player.height / 2 + t.getWidth() * 1 * sin((Pi * 1.5) - toolAngle) - t.getHeight() * 1 * cos((Pi * 1.5) - toolAngle)).toInt)
-          tp4 = new Point((player.x + Player.width / 2 - 6 + t.getWidth() * 0.5 * cos((Pi * 1.5) - toolAngle) + t.getHeight() * 0.5 * sin((Pi * 1.5) - toolAngle)).toInt,
-            (player.y + Player.height / 2 + t.getWidth() * 0.5 * sin((Pi * 1.5) - toolAngle) - t.getHeight() * 0.5 * cos((Pi * 1.5) - toolAngle)).toInt)
-          tp5 = new Point((player.x + Player.width / 2 - 6 + t.getWidth() * 1.5 * cos((Pi * 1.5) - toolAngle) + t.getHeight() * 1.5 * sin((Pi * 1.5) - toolAngle)).toInt,
-            (player.y + Player.height / 2 + t.getWidth() * 1.5 * sin((Pi * 1.5) - toolAngle) - t.getHeight() * 1.5 * cos((Pi * 1.5) - toolAngle)).toInt)
+      val points: List[Point] = tool.toList.flatMap { t =>
+        player.imgState match {
+          case (StillRight | WalkRight1 | WalkRight2) =>
+            List[Point](
+              new Point((player.x + Player.width / 2 + 6).toInt, (player.y + Player.height / 2).toInt),
+              new Point((player.x + Player.width / 2 + 6 + t.getWidth() * 2 * cos(toolAngle) + t.getHeight() * 2 * sin(toolAngle)).toInt,
+                (player.y + Player.height / 2 + t.getWidth() * 2 * sin(toolAngle) - t.getHeight() * 2 * cos(toolAngle)).toInt),
+              new Point((player.x + Player.width / 2 + 6 + t.getWidth() * 1 * cos(toolAngle) + t.getHeight() * 1 * sin(toolAngle)).toInt,
+                (player.y + Player.height / 2 + t.getWidth() * 1 * sin(toolAngle) - t.getHeight() * 1 * cos(toolAngle)).toInt),
+              new Point((player.x + Player.width / 2 + 6 + t.getWidth() * 0.5 * cos(toolAngle) + t.getHeight() * 0.5 * sin(toolAngle)).toInt,
+                (player.y + Player.height / 2 + t.getWidth() * 0.5 * sin(toolAngle) - t.getHeight() * 0.5 * cos(toolAngle)).toInt),
+              new Point((player.x + Player.width / 2 + 6 + t.getWidth() * 1.5 * cos(toolAngle) + t.getHeight() * 1.5 * sin(toolAngle)).toInt,
+                (player.y + Player.height / 2 + t.getWidth() * 1.5 * sin(toolAngle) - t.getHeight() * 1.5 * cos(toolAngle)).toInt)
+            )
+
+          case (StillLeft | WalkLeft1 | WalkLeft2) =>
+            List[Point](
+              new Point((player.x + Player.width / 2 - 6).toInt, (player.y + Player.height / 2).toInt),
+              new Point((player.x + Player.width / 2 - 6 + t.getWidth() * 2 * cos((Pi * 1.5) - toolAngle) + t.getHeight() * 2 * sin((Pi * 1.5) - toolAngle)).toInt,
+                (player.y + Player.height / 2 + t.getWidth() * 2 * sin((Pi * 1.5) - toolAngle) - t.getHeight() * 2 * cos((Pi * 1.5) - toolAngle)).toInt),
+              new Point((player.x + Player.width / 2 - 6 + t.getWidth() * 1 * cos((Pi * 1.5) - toolAngle) + t.getHeight() * 1 * sin((Pi * 1.5) - toolAngle)).toInt,
+                (player.y + Player.height / 2 + t.getWidth() * 1 * sin((Pi * 1.5) - toolAngle) - t.getHeight() * 1 * cos((Pi * 1.5) - toolAngle)).toInt),
+              new Point((player.x + Player.width / 2 - 6 + t.getWidth() * 0.5 * cos((Pi * 1.5) - toolAngle) + t.getHeight() * 0.5 * sin((Pi * 1.5) - toolAngle)).toInt,
+                (player.y + Player.height / 2 + t.getWidth() * 0.5 * sin((Pi * 1.5) - toolAngle) - t.getHeight() * 0.5 * cos((Pi * 1.5) - toolAngle)).toInt),
+              new Point((player.x + Player.width / 2 - 6 + t.getWidth() * 1.5 * cos((Pi * 1.5) - toolAngle) + t.getHeight() * 1.5 * sin((Pi * 1.5) - toolAngle)).toInt,
+                (player.y + Player.height / 2 + t.getWidth() * 1.5 * sin((Pi * 1.5) - toolAngle) - t.getHeight() * 1.5 * cos((Pi * 1.5) - toolAngle)).toInt)
+            )
         }
       }
 
@@ -4340,11 +4335,7 @@ class TerraFrame extends JApplet
         case (e : AIEntity, index) => (e, index)
       }.filter { p =>
         val e = p._1
-        val anyPointInRect = e.rect.contains(tp1) ||
-          e.rect.contains(tp2) ||
-          e.rect.contains(tp3) ||
-          e.rect.contains(tp4) ||
-          e.rect.contains(tp5)
+        val anyPointInRect = points.exists(e.rect.contains)
 
         !e.nohit &&
         showTool &&
@@ -5798,8 +5789,7 @@ class TerraFrame extends JApplet
           getWidth / 2 - Player.width / 2, getHeight / 2 - Player.height / 2, getWidth / 2 + Player.width / 2, getHeight / 2 + Player.height / 2,
           0, 0, player.image.getWidth(), player.image.getHeight())
 
-        entities.indices.foreach { i =>
-          entity = entities(i)
+        entities.foreach { entity =>
           drawImage(pg2, entity.image,
             entity.ix - player.ix + getWidth / 2 - Player.width / 2, entity.iy - player.iy + getHeight / 2 - Player.height / 2, entity.ix - player.ix + getWidth / 2 - Player.width / 2 + entity.width, entity.iy - player.iy + getHeight / 2 - Player.height / 2 + entity.height,
             0, 0, entity.image.getWidth(), entity.image.getHeight())
