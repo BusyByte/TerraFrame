@@ -1847,14 +1847,14 @@ class TerraFrame extends JApplet
   var mobSpawn: Option[EntityStrategy] = None
 
   private[this] var width, height = 0
-  var u, v, ou, ov, uNew, vNew: Int = _
-  var i, j, k, t, wx, wy, lx, ly, tx, ty, twx, twy, tlx, tly, ux, uy, ux2, uy2, uwx, uwy, uwx2, ulx, uly, ulx2, uly2, ucx, ucy, uclx, ucly, pwx, pwy, icx, icy, n, m, dx, dy, dx2, dy2, mx, my, lsx, lsy, lsn, ax, ay, axl, ayl, nl, vc, xpos, ypos, xpos2, ypos2, x2, y2, rnum, mining, immune, xmin, xmax, ymin, ymax, Intpercent, ground: Int = _
+  var u, v, uNew, vNew: Int = _
+  var i, j, k, t, wx, wy, lx, ly, tx, ty, twx, twy, tlx, tly, ux, uy, ux2, uy2, uwx, uwy, uwx2, ulx, uly, ulx2, uly2, ucx, ucy, uclx, ucly, pwx, pwy, n, m, dx, dy, dx2, dy2, mx, my, lsx, lsy, lsn, ax, ay, axl, ayl, nl, vc, xpos, ypos, xpos2, ypos2, x2, y2, rnum, mining, xmin, xmax, ymin, ymax, Intpercent, ground: Int = _
   private[this] var x, y = 0
   var p, q: Double = _
   var s, miningTool: Short = _
 
   var moveItem, moveNum, moveDur, moveItemTemp, moveNumTemp, moveDurTemp: Short = _
-  var msi: Int = 0
+  var msi, ou, ov, icx, icy, immune: Int = 0
 
   var top, bottom, percent: Double = _
 
@@ -2434,8 +2434,8 @@ class TerraFrame extends JApplet
   }
 
   def createNewWorld(): Unit = {
-    temporarySaveFile = Array.ofDim(WORLDHEIGHT, WORLDWIDTH)
-    chunkMatrix = Array.ofDim(2, 2)
+    temporarySaveFile = Array.fill(2, 2)(None)
+    chunkMatrix = Array.fill(2, 2)(None)
 
     blocks = Array.ofDim(3, theSize, theSize)
     blockds = Array.ofDim(3, theSize, theSize)
@@ -2452,6 +2452,8 @@ class TerraFrame extends JApplet
     drawn = Array.ofDim(theSize, theSize)
     rdrawn = Array.ofDim(theSize, theSize)
     ldrawn = Array.ofDim(theSize, theSize)
+    lqd = Array.fill(theSize, theSize)(false)
+    zqd = Array.fill(theSize, theSize)(false)
 
     player = new Player(WIDTH * 0.5 * BLOCKSIZE, 45)
 
@@ -2579,9 +2581,9 @@ class TerraFrame extends JApplet
 
     icmatrix = Array.ofDim(3, HEIGHT, WIDTH)
 
-    worlds = Array.ofDim(2, 2)
-    fworlds = Array.ofDim(2, 2)
-    kworlds = Array.ofDim(2, 2)
+    worlds = Array.fill(2, 2)(None)
+    fworlds = Array.fill(2, 2)(None)
+    kworlds = Array.fill(2, 2)(false)
 
     pqx = mutable.ArrayBuffer.empty[Int]
     pqy = mutable.ArrayBuffer.empty[Int]
@@ -6254,7 +6256,7 @@ class TerraFrame extends JApplet
       entity.reloadImage()
     }
     worlds = Array.ofDim(2, 2)
-    fworlds = Array.ofDim(2, 2)
+    fworlds = Array.fill(2, 2)(None)
   }
 
   def resetDrawn(): Unit = {
