@@ -702,19 +702,19 @@ object World {
             if (right) {
               if (up) {
                 if (down) {
-                  blockds(y)(x) = 0
+                  blockds(y)(x) = CenterOutlineDirection.id
                 } else {
                   if (upleft) {
                     if (upright) {
-                      blockds(y)(x) = 1
+                      blockds(y)(x) = TdownBothOutlineDirection.id
                     } else {
-                      blockds(y)(x) = 2
+                      blockds(y)(x) = TdownCwOutlineDirection.id
                     }
                   } else {
                     if (upright) {
-                      blockds(y)(x) = 3
+                      blockds(y)(x) = CdownCcwOutlineDirection.id
                     } else {
-                      blockds(y)(x) = 4
+                      blockds(y)(x) = TdownOutlineDirection.id
                     }
                   }
                 }
@@ -722,19 +722,19 @@ object World {
                 if (down) {
                   if (downright) {
                     if (downleft) {
-                      blockds(y)(x) = 5
+                      blockds(y)(x) = TupBothOutlineDirection.id
                     } else {
-                      blockds(y)(x) = 6
+                      blockds(y)(x) = TupCwOutlineDirection.id
                     }
                   } else {
                     if (downleft) {
-                      blockds(y)(x) = 7
+                      blockds(y)(x) = TupCcwOutlineDirection.id
                     } else {
-                      blockds(y)(x) = 8
+                      blockds(y)(x) = TupOutlineDirection.id
                     }
                   }
                 } else {
-                  blockds(y)(x) = 9
+                  blockds(y)(x) = LeftrightOutlineDirection.id
                 }
               }
             } else {
@@ -742,33 +742,33 @@ object World {
                 if (down) {
                   if (downleft) {
                     if (upleft) {
-                      blockds(y)(x) = 10
+                      blockds(y)(x) = TrightBothOutlineDirection.id
                     } else {
-                      blockds(y)(x) = 11
+                      blockds(y)(x) = TrightCwOutlineDirection.id
                     }
                   } else {
                     if (upleft) {
-                      blockds(y)(x) = 12
+                      blockds(y)(x) = TrightCcwOutlineDirection.id
                     } else {
-                      blockds(y)(x) = 13
+                      blockds(y)(x) = TrightOutlineDirection.id
                     }
                   }
                 } else {
                   if (upleft) {
-                    blockds(y)(x) = 14
+                    blockds(y)(x) = UpleftdiagOutlineDirection.id
                   } else {
-                    blockds(y)(x) = 15
+                    blockds(y)(x) = UpleftOutlineDirection.id
                   }
                 }
               } else {
                 if (down) {
                   if (downleft) {
-                    blockds(y)(x) = 16
+                    blockds(y)(x) = DownleftdiagOutlineDirection.id
                   } else {
-                    blockds(y)(x) = 17
+                    blockds(y)(x) = DownleftOutlineDirection.id
                   }
                 } else {
-                  blockds(y)(x) = 18
+                  blockds(y)(x) = LeftOutlineDirection.id
                 }
               }
             }
@@ -778,47 +778,47 @@ object World {
                 if (down) {
                   if (upright) {
                     if (downright) {
-                      blockds(y)(x) = 19
+                      blockds(y)(x) = TleftBothOutlineDirection.id
                     } else {
-                      blockds(y)(x) = 20
+                      blockds(y)(x) = TleftCwOutlineDirection.id
                     }
                   } else {
                     if (downright) {
-                      blockds(y)(x) = 21
+                      blockds(y)(x) = TleftCcwOutlineDirection.id
                     } else {
-                      blockds(y)(x) = 22
+                      blockds(y)(x) = TleftOutlineDirection.id
                     }
                   }
                 } else {
                   if (upright) {
-                    blockds(y)(x) = 23
+                    blockds(y)(x) = UprightdiagOutlineDirection.id
                   } else {
-                    blockds(y)(x) = 24
+                    blockds(y)(x) = UprightOutlineDirection.id
                   }
                 }
               } else {
                 if (down) {
                   if (downright) {
-                    blockds(y)(x) = 25
+                    blockds(y)(x) = DownrightdiagOutlineDirection.id
                   } else {
-                    blockds(y)(x) = 26
+                    blockds(y)(x) = DownrightOutlineDirection.id
                   }
                 } else {
-                  blockds(y)(x) = 27
+                  blockds(y)(x) = RightOutlineDirection.id
                 }
               }
             } else {
               if (up) {
                 if (down) {
-                  blockds(y)(x) = 28
+                  blockds(y)(x) = UpdownOutlineDirection.id
                 } else {
-                  blockds(y)(x) = 29
+                  blockds(y)(x) = UpOutlineDirection.id
                 }
               } else {
                 if (down) {
-                  blockds(y)(x) = 30
+                  blockds(y)(x) = DownOutlineDirection.id
                 } else {
-                  blockds(y)(x) = 31
+                  blockds(y)(x) = SingleOutlineDirection.id
                 }
               }
             }
