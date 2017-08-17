@@ -3464,7 +3464,7 @@ class TerraFrame extends JApplet
             ucx = ux - CHUNKBLOCKS * (ux / CHUNKBLOCKS)
             ucy = uy - CHUNKBLOCKS * (uy / CHUNKBLOCKS)
             if (toolList.contains(inventory.tool())) {
-              if (blocks(layer)(uy)(ux) != AirBlockType.id && BLOCKTOOLS.get(blocks(layer)(uy)(ux)).exists(_.contains(inventory.tool()))) {
+              if (layer < blocks.length && uy < blocks(layer).length && ux < blocks(layer)(uy).length && blocks(layer)(uy)(ux) != AirBlockType.id && BLOCKTOOLS.get(blocks(layer)(uy)(ux)).exists(_.contains(inventory.tool()))) {
                 blockdns(uy)(ux) = random.nextInt(5).toByte
                 drawn(uy)(ux) = false
                 if (ux == mx && uy == my && inventory.tool() == miningTool) {
@@ -3898,7 +3898,7 @@ class TerraFrame extends JApplet
           if (DEBUG_REACH || sqrt(pow(player.x + player.image.getWidth() - ux * BLOCKSIZE + BLOCKSIZE / 2, 2) + pow(player.y + player.image.getHeight() - uy * BLOCKSIZE + BLOCKSIZE / 2, 2)) <= 160) {
             ucx = ux - CHUNKBLOCKS * (ux / CHUNKBLOCKS)
             ucy = uy - CHUNKBLOCKS * (uy / CHUNKBLOCKS)
-            if (blocks(layer)(uy)(ux) >= WorkbenchBlockType.id && blocks(layer)(uy)(ux) <= GoldChestBlockType.id || blocks(layer)(uy)(ux) == FurnaceBlockType.id || blocks(layer)(uy)(ux) == FurnaceOnBlockType.id || blocks(layer)(uy)(ux) >= ZincChestBlockType.id && blocks(layer)(uy)(ux) <= ObduriteChestBlockType.id) {
+            if (layer < blocks.length && uy < blocks(layer).length && ux < blocks(layer)(uy).length && blocks(layer)(uy)(ux) >= WorkbenchBlockType.id && blocks(layer)(uy)(ux) <= GoldChestBlockType.id || blocks(layer)(uy)(ux) == FurnaceBlockType.id || blocks(layer)(uy)(ux) == FurnaceOnBlockType.id || blocks(layer)(uy)(ux) >= ZincChestBlockType.id && blocks(layer)(uy)(ux) <= ObduriteChestBlockType.id) {
               ic.foreach { icTemp =>
                 if (icTemp.icType != Workbench) {
                   machinesx += icx
