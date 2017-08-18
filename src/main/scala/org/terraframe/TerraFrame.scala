@@ -31,38 +31,6 @@ import org.terraframe.{MathHelper => mh}
 
 /*
 
-0    center
-1    tdown_both
-2    tdown_cw
-3    tdown_ccw
-4    tdown
-5    tup_both
-6    tup_cw
-7    tup_ccw
-8    tup
-9    leftright
-10    tright_both
-11    tright_cw
-12    tright_ccw
-13    tright
-14    upleftdiag
-15    upleft
-16    downleftdiag
-17    downleft
-18    left
-19    tleft_both
-20    tleft_cw
-21    tleft_ccw
-22    tleft
-23    uprightdiag
-24    upright
-25    downrightdiag
-26    downright
-27    right
-28    updown
-29    up
-30    down
-31    single
 
 0    None
 1    Dirt/None downleft
