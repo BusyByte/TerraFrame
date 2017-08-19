@@ -52,25 +52,6 @@ object StoneNoneDownBackground extends Background("stone_none/down",            
 
 /*
 
-0    None
-1    Dirt/None downleft
-2    Dirt/None downright
-3    Dirt/None left
-4    Dirt/None right
-5    Dirt/None up
-6    Dirt/None upleft
-7    Dirt/None upright
-8    Dirt
-9    Stone/Dirt downleft
-10    Stone/Dirt downright
-11    Stone/Dirt left
-12    Stone/Dirt right
-13    Stone/Dirt up
-14    Stone/Dirt upleft
-15    Stone/Dirt upright
-16    Stone
-17    Stone/None down
-
 0    Empty
 1    Dirt
 2    Stone
