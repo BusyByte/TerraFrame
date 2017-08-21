@@ -2,6 +2,7 @@ package org.terraframe
 
 import scala.math._
 import org.terraframe.{ MathHelper => mh }
+import TypeSafeComparisons._
 
 object World {
 
@@ -10,7 +11,7 @@ object World {
   var coordlist: Array2D[Boolean]  = _
   var coordlist2: Array2D[Boolean] = _
 
-  def generateOutlines(blocks: Array2D[Int]): Array2D[Byte] = {
+  def generateOutlines(blocks: Array2D[BlockType]): Array2D[Byte] = {
     generate2(blocks, false)
   }
 
@@ -49,7 +50,7 @@ object World {
             }
             bvar = true
             (0 until width).foreach { x =>
-                if (bCount == 0) {
+                if (bCount === 0) {
                     rnum = random.nextInt(100)
                     if (rnum >= 0 && rnum < 50) {
                         biome = "plains" // 50%
@@ -98,17 +99,17 @@ object World {
             (0 until height).foreach { y =>
                 if (y >= (int)terrain(x)) {
                     blocks(y)(x) = 1 // dirt
-                    if (biomes(x) == "desert") {
+                    if (biomes(x) === "desert") {
                         if (y <= terrain(x) + random.nextInt(5) + 30) {
                             blocks(y)(x) = 45 // sand
                         }
                     }
-                    if (biomes(x) == "swamp") {
+                    if (biomes(x) === "swamp") {
                         if (y <= terrain(x) + random.nextInt(5) + 35) {
                             blocks(y)(x) = 75 // mud
                         }
                     }
-                    if (biomes(x) == "frost") {
+                    if (biomes(x) === "frost") {
                         if (y <= terrain(x) + random.nextInt(5) + 35) {
                             blocks(y)(x) = 46 // snow
                         }
@@ -118,32 +119,32 @@ object World {
         }
         (1 until width-1).foreach { x =>
             (1 until height-1).foreach { y =>
-                if (biomes(x) == "plains") {
-                    if (blocks(y)(x) == 1) { // dirt
-                        if (blocks(y-1)(x) == 0 || blocks(y+1)(x) == 0 ||
-                            blocks(y)(x-1) == 0 || blocks(y)(x+1) == 0 ||
-                            blocks(y-1)(x-1) == 0 || blocks(y+1)(x+1) == 0 ||
-                            blocks(y-1)(x+1) == 0 || blocks(y+1)(x-1) == 0) {
+                if (biomes(x) === "plains") {
+                    if (blocks(y)(x) === 1) { // dirt
+                        if (blocks(y-1)(x) === 0 || blocks(y+1)(x) === 0 ||
+                            blocks(y)(x-1) === 0 || blocks(y)(x+1) === 0 ||
+                            blocks(y-1)(x-1) === 0 || blocks(y+1)(x+1) === 0 ||
+                            blocks(y-1)(x+1) === 0 || blocks(y+1)(x-1) === 0) {
                             blocks(y)(x) = 72 // grass
                         }
                     }
                 }
-                if (biomes(x) == "jungle") {
-                    if (blocks(y)(x) == 1) { // dirt
-                        if (blocks(y-1)(x) == 0 || blocks(y+1)(x) == 0 ||
-                            blocks(y)(x-1) == 0 || blocks(y)(x+1) == 0 ||
-                            blocks(y-1)(x-1) == 0 || blocks(y+1)(x+1) == 0 ||
-                            blocks(y-1)(x+1) == 0 || blocks(y+1)(x-1) == 0) {
+                if (biomes(x) === "jungle") {
+                    if (blocks(y)(x) === 1) { // dirt
+                        if (blocks(y-1)(x) === 0 || blocks(y+1)(x) === 0 ||
+                            blocks(y)(x-1) === 0 || blocks(y)(x+1) === 0 ||
+                            blocks(y-1)(x-1) === 0 || blocks(y+1)(x+1) === 0 ||
+                            blocks(y-1)(x+1) === 0 || blocks(y+1)(x-1) === 0) {
                             blocks(y)(x) = 73 // jungle_grass
                         }
                     }
                 }
-                if (biomes(x) == "swamp") {
-                    if (blocks(y)(x) == 75) { // mud
-                        if (blocks(y-1)(x) == 0 || blocks(y+1)(x) == 0 ||
-                            blocks(y)(x-1) == 0 || blocks(y)(x+1) == 0 ||
-                            blocks(y-1)(x-1) == 0 || blocks(y+1)(x+1) == 0 ||
-                            blocks(y-1)(x+1) == 0 || blocks(y+1)(x-1) == 0) {
+                if (biomes(x) === "swamp") {
+                    if (blocks(y)(x) === 75) { // mud
+                        if (blocks(y-1)(x) === 0 || blocks(y+1)(x) === 0 ||
+                            blocks(y)(x-1) === 0 || blocks(y)(x+1) === 0 ||
+                            blocks(y-1)(x-1) === 0 || blocks(y+1)(x+1) === 0 ||
+                            blocks(y-1)(x+1) === 0 || blocks(y+1)(x-1) === 0) {
                             blocks(y)(x) = 74 // swamp_grass
                         }
                     }
@@ -166,7 +167,7 @@ object World {
             (0 until coordlist(0).length).foreach { y =>
                 (0 until coordlist.length).foreach { x =>
                     if (coordlist(x)(y)) {
-                        if (xpos+x > 0 && xpos+x < width && ypos+y > 0 && ypos+y < height && blocks(ypos+y)(xpos+x) != 0) {
+                        if (xpos+x > 0 && xpos+x < width && ypos+y > 0 && ypos+y < height && blocks(ypos+y)(xpos+x) =/= 0) {
                             blocks(ypos+y)(xpos+x) = 2 // stone
                         }
                     }
@@ -180,7 +181,7 @@ object World {
             (0 until coordlist(0).length).foreach { y =>
                 (0 until coordlist.length).foreach { x =>
                     if (coordlist(x)(y)) {
-                        if (xpos+x > 0 && xpos+x < width && ypos+y > 0 && ypos+y < height && blocks(ypos+y)(xpos+x) != 0) {
+                        if (xpos+x > 0 && xpos+x < width && ypos+y > 0 && ypos+y < height && blocks(ypos+y)(xpos+x) =/= 0) {
                             blocks(ypos+y)(xpos+x) = 1 // dirt
                         }
                     }
@@ -195,7 +196,7 @@ object World {
                 (0 until coordlist(0).length).foreach { y =>
                     (0 until coordlist.length).foreach { x =>
                         if (coordlist(x)(y)) {
-                            if (xpos+x > 0 && xpos+x < width && ypos+y > 0 && ypos+y < height && blocks(ypos+y)(xpos+x) != 0) {
+                            if (xpos+x > 0 && xpos+x < width && ypos+y > 0 && ypos+y < height && blocks(ypos+y)(xpos+x) =/= 0) {
                                 blocks(ypos+y)(xpos+x) = 88 // clay
                             }
                         }
@@ -211,7 +212,7 @@ object World {
                 (0 until coordlist(0).length).foreach { y =>
                     (0 until coordlist.length).foreach { x =>
                         if (coordlist(x)(y)) {
-                        if (xpos+x > 0 && xpos+x < width && ypos+y > 0 && ypos+y < height && blocks(ypos+y)(xpos+x) != 0) {
+                        if (xpos+x > 0 && xpos+x < width && ypos+y > 0 && ypos+y < height && blocks(ypos+y)(xpos+x) =/= 0) {
                                 blocks(ypos+y)(xpos+x) = 18 // coal
                             }
                         }
@@ -227,7 +228,7 @@ object World {
                 (0 until coordlist(0).length).foreach { y =>
                     (0 until coordlist.length).foreach { x =>
                         if (coordlist(x)(y)) {
-                            if (xpos+x > 0 && xpos+x < width && ypos+y > 0 && ypos+y < height && blocks(ypos+y)(xpos+x) != 0) {
+                            if (xpos+x > 0 && xpos+x < width && ypos+y > 0 && ypos+y < height && blocks(ypos+y)(xpos+x) =/= 0) {
                                 blocks(ypos+y)(xpos+x) = 19 // lumenstone
                             }
                         }
@@ -243,7 +244,7 @@ object World {
                 (0 until coordlist(0).length).foreach { y =>
                     (0 until coordlist.length).foreach { x =>
                         if (coordlist(x)(y)) {
-                            if (xpos+x > 0 && xpos+x < width && ypos+y > 0 && ypos+y < height && blocks(ypos+y)(xpos+x) != 0) {
+                            if (xpos+x > 0 && xpos+x < width && ypos+y > 0 && ypos+y < height && blocks(ypos+y)(xpos+x) =/= 0) {
                                 blocks(ypos+y)(xpos+x) = 3 // copper_ore
                             }
                         }
@@ -259,7 +260,7 @@ object World {
                 (0 until coordlist(0).length).foreach { y =>
                     (0 until coordlist.length).foreach { x =>
                         if (coordlist(x)(y)) {
-                            if (xpos+x > 0 && xpos+x < width && ypos+y > 0 && ypos+y < height && blocks(ypos+y)(xpos+x) != 0) {
+                            if (xpos+x > 0 && xpos+x < width && ypos+y > 0 && ypos+y < height && blocks(ypos+y)(xpos+x) =/= 0) {
                                 blocks(ypos+y)(xpos+x) = 4 // iron_ore
                             }
                         }
@@ -275,7 +276,7 @@ object World {
                 (0 until coordlist(0).length).foreach { y =>
                     (0 until coordlist.length).foreach { x =>
                         if (coordlist(x)(y)) {
-                            if (xpos+x > 0 && xpos+x < width && ypos+y > 0 && ypos+y < height && blocks(ypos+y)(xpos+x) != 0) {
+                            if (xpos+x > 0 && xpos+x < width && ypos+y > 0 && ypos+y < height && blocks(ypos+y)(xpos+x) =/= 0) {
                                 blocks(ypos+y)(xpos+x) = 5 // silver_ore
                             }
                         }
@@ -291,7 +292,7 @@ object World {
                 (0 until coordlist(0).length).foreach { y =>
                     (0 until coordlist.length).foreach { x =>
                         if (coordlist(x)(y)) {
-                            if (xpos+x > 0 && xpos+x < width && ypos+y > 0 && ypos+y < height && blocks(ypos+y)(xpos+x) != 0) {
+                            if (xpos+x > 0 && xpos+x < width && ypos+y > 0 && ypos+y < height && blocks(ypos+y)(xpos+x) =/= 0) {
                                 blocks(ypos+y)(xpos+x) = 6 // gold_ore
                             }
                         }
@@ -307,7 +308,7 @@ object World {
                 (0 until coordlist(0).length).foreach { y =>
                     (0 until coordlist.length).foreach { x =>
                         if (coordlist(x)(y)) {
-                            if (xpos+x > 0 && xpos+x < width && ypos+y > 0 && ypos+y < height && blocks(ypos+y)(xpos+x) != 0) {
+                            if (xpos+x > 0 && xpos+x < width && ypos+y > 0 && ypos+y < height && blocks(ypos+y)(xpos+x) =/= 0) {
                                 blocks(ypos+y)(xpos+x) = 31 // zinc_ore
                             }
                         }
@@ -323,7 +324,7 @@ object World {
                 (0 until coordlist(0).length).foreach { y =>
                     (0 until coordlist.length).foreach { x =>
                         if (coordlist(x)(y)) {
-                            if (xpos+x > 0 && xpos+x < width && ypos+y > 0 && ypos+y < height && blocks(ypos+y)(xpos+x) != 0) {
+                            if (xpos+x > 0 && xpos+x < width && ypos+y > 0 && ypos+y < height && blocks(ypos+y)(xpos+x) =/= 0) {
                                 blocks(ypos+y)(xpos+x) = 32 // rhymestone_ore
                             }
                         }
@@ -339,7 +340,7 @@ object World {
                 (0 until coordlist(0).length).foreach { y =>
                     (0 until coordlist.length).foreach { x =>
                         if (coordlist(x)(y)) {
-                            if (xpos+x > 0 && xpos+x < width && ypos+y > 0 && ypos+y < height && blocks(ypos+y)(xpos+x) != 0) {
+                            if (xpos+x > 0 && xpos+x < width && ypos+y > 0 && ypos+y < height && blocks(ypos+y)(xpos+x) =/= 0) {
                                 blocks(ypos+y)(xpos+x) = 33 // obdurite_ore
                             }
                         }
@@ -355,7 +356,7 @@ object World {
                 (0 until coordlist(0).length).foreach { y =>
                     (0 until coordlist.length).foreach { x =>
                         if (coordlist(x)(y)) {
-                            if (xpos+x > 0 && xpos+x < width && ypos+y > 0 && ypos+y < height && blocks(ypos+y)(xpos+x) != 0) {
+                            if (xpos+x > 0 && xpos+x < width && ypos+y > 0 && ypos+y < height && blocks(ypos+y)(xpos+x) =/= 0) {
                                 blocks(ypos+y)(xpos+x) = 34 // aluminum_ore
                             }
                         }
@@ -371,7 +372,7 @@ object World {
                 (0 until coordlist(0).length).foreach { y =>
                     (0 until coordlist.length).foreach { x =>
                         if (coordlist(x)(y)) {
-                            if (xpos+x > 0 && xpos+x < width && ypos+y > 0 && ypos+y < height && blocks(ypos+y)(xpos+x) != 0) {
+                            if (xpos+x > 0 && xpos+x < width && ypos+y > 0 && ypos+y < height && blocks(ypos+y)(xpos+x) =/= 0) {
                                 blocks(ypos+y)(xpos+x) = 35 // lead_ore
                             }
                         }
@@ -387,7 +388,7 @@ object World {
                 (0 until coordlist(0).length).foreach { y =>
                     (0 until coordlist.length).foreach { x =>
                         if (coordlist(x)(y)) {
-                            if (xpos+x > 0 && xpos+x < width && ypos+y > 0 && ypos+y < height && blocks(ypos+y)(xpos+x) != 0) {
+                            if (xpos+x > 0 && xpos+x < width && ypos+y > 0 && ypos+y < height && blocks(ypos+y)(xpos+x) =/= 0) {
                                 blocks(ypos+y)(xpos+x) = 36 // uranium_ore
                             }
                         }
@@ -403,7 +404,7 @@ object World {
                 (0 until coordlist(0).length).foreach { y =>
                     (0 until coordlist.length).foreach { x =>
                         if (coordlist(x)(y)) {
-                            if (xpos+x > 0 && xpos+x < width && ypos+y > 0 && ypos+y < height && blocks(ypos+y)(xpos+x) != 0) {
+                            if (xpos+x > 0 && xpos+x < width && ypos+y > 0 && ypos+y < height && blocks(ypos+y)(xpos+x) =/= 0) {
                                 blocks(ypos+y)(xpos+x) = 37 // zythium_ore
                             }
                         }
@@ -419,7 +420,7 @@ object World {
                 (0 until coordlist(0).length).foreach { y =>
                     (0 until coordlist.length).foreach { x =>
                         if (coordlist(x)(y)) {
-                            if (xpos+x > 0 && xpos+x < width && ypos+y > 0 && ypos+y < height && blocks(ypos+y)(xpos+x) != 0) {
+                            if (xpos+x > 0 && xpos+x < width && ypos+y > 0 && ypos+y < height && blocks(ypos+y)(xpos+x) =/= 0) {
                                 blocks(ypos+y)(xpos+x) = 39 // silicon_ore
                             }
                         }
@@ -430,7 +431,7 @@ object World {
         (0 until width*height/20000).foreach { i =>
             xpos = random.nextInt(width)
             ypos = random.nextInt(height-sealevel-v)+sealevel
-            if (blocks(ypos)(xpos) != 0) {
+            if (blocks(ypos)(xpos) =/= 0) {
                 blocks(ypos)(xpos) = 40 // unobtainium_ore
             }
         }
@@ -468,7 +469,7 @@ object World {
                 (0 until coordlist(0).length).foreach { y =>
                     (0 until coordlist.length).foreach { x =>
                         if (coordlist(x)(y)) {
-                            if (ypos2+y > 0 && ypos2+y < height && blocks(ypos2+y)[mod(xpos2+x,width)] == 91) { // dirt_trans
+                            if (ypos2+y > 0 && ypos2+y < height && blocks(ypos2+y)[mod(xpos2+x,width)] === 91) { // dirt_trans
                                 blocks(ypos2+y)[mod(xpos2+x,width)] = 92 // magnetite_ore_trans
                             }
                         }
@@ -478,7 +479,7 @@ object World {
         }
         (0 until height).foreach { y =>
             (0 until width).foreach { x =>
-                if (blocks(y)(x) == 91 && TerraFrame.hasOpenSpace(x, y, blocks)) {
+                if (blocks(y)(x) === 91 && TerraFrame.hasOpenSpace(x, y, blocks)) {
                     blocks(y)(x) = 93 // grass_trans
                 }
             }
@@ -486,7 +487,7 @@ object World {
         pmsg("-> Adding vegetation...")
         (0 until width).foreach { x =>
             for (y=(int)(terrain(x)+35) y>5 y--) {
-                if (blocks(y)(x) == 45 && blocks(y-1)(x) == 45 && blocks(y-2)(x) == 45 && blocks(y-3)(x) == 45 && blocks(y+1)(x) != 45) { // sand
+                if (blocks(y)(x) === 45 && blocks(y-1)(x) === 45 && blocks(y-2)(x) === 45 && blocks(y-3)(x) === 45 && blocks(y+1)(x) =/= 45) { // sand
                     (0 until random.nextInt(5)+5).foreach { i =>
                         blocks(y+i)(x) = 76 // sandstone
                     }
@@ -498,28 +499,28 @@ object World {
             x = random.nextInt(width)
             y = random.nextInt(height)
             if (x >= 1 && x < width-1 && y >= 1 && y < height-1) {
-                if (blocks(y)(x) == 1 && TerraFrame.hasOpenSpace(x, y, blocks) && blocks[y+random.nextInt(3)-1][x+random.nextInt(3)-1] == 72) {
+                if (blocks(y)(x) === 1 && TerraFrame.hasOpenSpace(x, y, blocks) && blocks[y+random.nextInt(3)-1][x+random.nextInt(3)-1] === 72) {
                     blocks(y)(x) = 72
                 }
-                if (blocks(y)(x) == 1 && TerraFrame.hasOpenSpace(x, y, blocks) && blocks[y+random.nextInt(3)-1][x+random.nextInt(3)-1] == 73) {
+                if (blocks(y)(x) === 1 && TerraFrame.hasOpenSpace(x, y, blocks) && blocks[y+random.nextInt(3)-1][x+random.nextInt(3)-1] === 73) {
                     blocks(y)(x) = 73
                 }
-                if (blocks(y)(x) == 75 && TerraFrame.hasOpenSpace(x, y, blocks) && blocks[y+random.nextInt(3)-1][x+random.nextInt(3)-1] == 74) {
+                if (blocks(y)(x) === 75 && TerraFrame.hasOpenSpace(x, y, blocks) && blocks[y+random.nextInt(3)-1][x+random.nextInt(3)-1] === 74) {
                     blocks(y)(x) = 74
                 }
             }
         }
 
         (0 until width).foreach { x =>
-            if (biomes(x) == "plains") {
+            if (biomes(x) === "plains") {
                 (2 until terrain(x)+10).foreach { y =>
-                    if (blocks(y)(x) == 72 && blocks(y-1)(x) == 0 && blocks(y-2)(x) == 0 && random.nextInt(10) == 0) { // grass
+                    if (blocks(y)(x) === 72 && blocks(y-1)(x) === 0 && blocks(y-2)(x) === 0 && random.nextInt(10) === 0) { // grass
                         i = 1
                         blocksB(y)(x) = 30
                         while (true) {
                             blocks(y-i)(x) = 15 // tree
                             i += 1
-                            if (i >= 10 && random.nextInt(3) == 0 || y-i-1 < 0 || y - i == 0 || blocks(y-i-1)(x) != 0) {
+                            if (i >= 10 && random.nextInt(3) === 0 || y-i-1 < 0 || y - i === 0 || blocks(y-i-1)(x) =/= 0) {
                                 n = random.nextInt(2) + 3
                                 coordlist = blob(n, n, 0.5)
                                 (0 until coordlist(0).length).foreach { y2 =>
@@ -539,15 +540,15 @@ object World {
                     }
                 }
             }
-            if (biomes(x) == "desert") {
+            if (biomes(x) === "desert") {
                 (1 until terrain(x)+10).foreach { y =>
-                    if (blocks(y)(x) == 45 && blocks(y-1)(x) == 0 && random.nextInt(30) == 0) { // dirt
+                    if (blocks(y)(x) === 45 && blocks(y-1)(x) === 0 && random.nextInt(30) === 0) { // dirt
                         i = 1
                         blocksB(y)(x) = 30
                         while (true) {
                             blocks(y-i)(x) = 15 // tree
                             i += 1
-                            if (i >= 10 && random.nextInt(3) == 0 || y-i-1 < 0 || y - i == 0 || blocks(y-i-1)(x) != 0) {
+                            if (i >= 10 && random.nextInt(3) === 0 || y-i-1 < 0 || y - i === 0 || blocks(y-i-1)(x) =/= 0) {
                                 break
                             }
                         }
@@ -555,15 +556,15 @@ object World {
                     }
                 }
             }
-            if (biomes(x) == "jungle") {
+            if (biomes(x) === "jungle") {
                 (1 until terrain(x)+10).foreach { y =>
-                    if (blocks(y)(x) == 73 && blocks(y-1)(x) == 0 && random.nextInt(3) == 0) { // jungle_grass
+                    if (blocks(y)(x) === 73 && blocks(y-1)(x) === 0 && random.nextInt(3) === 0) { // jungle_grass
                         i = 1
                         blocksB(y)(x) = 30
                         while (true) {
                             blocks(y-i)(x) = 15 // tree
                             i += 1
-                            if (i >= 10 && random.nextInt(4) == 0 || y-i-1 < 0 || y - i == 0 || blocks(y-i-1)(x) != 0) {
+                            if (i >= 10 && random.nextInt(4) === 0 || y-i-1 < 0 || y - i === 0 || blocks(y-i-1)(x) =/= 0) {
                                 n = random.nextInt(2) + 3
                                 coordlist = blob(n, n, 0.5)
                                 (0 until coordlist(0).length).foreach { y2 =>
@@ -583,15 +584,15 @@ object World {
                     }
                 }
             }
-            if (biomes(x) == "swamp") {
+            if (biomes(x) === "swamp") {
                 (1 until terrain(x)+10).foreach { y =>
-                    if (blocks(y)(x) == 74 && blocks(y-1)(x) == 0 && random.nextInt(10) == 0) { // swamp_grass
+                    if (blocks(y)(x) === 74 && blocks(y-1)(x) === 0 && random.nextInt(10) === 0) { // swamp_grass
                         i = 1
                         blocksB(y)(x) = 30
                         while (true) {
                             blocks(y-i)(x) = 15 // tree
                             i += 1
-                            if (i >= 10 && random.nextInt(3) == 0 || y-i-1 < 0 || y - i == 0 || blocks(y-i-1)(x) != 0) {
+                            if (i >= 10 && random.nextInt(3) === 0 || y-i-1 < 0 || y - i === 0 || blocks(y-i-1)(x) =/= 0) {
                                 n = random.nextInt(2) + 3
                                 coordlist = blob(n, n, 0.5)
                                 (0 until coordlist(0).length).foreach { y2 =>
@@ -611,15 +612,15 @@ object World {
                     }
                 }
             }
-            if (biomes(x) == "frost") {
+            if (biomes(x) === "frost") {
                 (1 until terrain(x)+10).foreach { y =>
-                    if (blocks(y)(x) == 46 && blocks(y-1)(x) == 0 && random.nextInt(10) == 0) { // dirt
+                    if (blocks(y)(x) === 46 && blocks(y-1)(x) === 0 && random.nextInt(10) === 0) { // dirt
                         i = 1
                         blocksB(y)(x) = 30
                         while (true) {
                             blocks(y-i)(x) = 15 // tree
                             i += 1
-                            if (i >= 10 && random.nextInt(3) == 0 || y-i-1 < 0 || y - i == 0 || blocks(y-i-1)(x) != 0) {
+                            if (i >= 10 && random.nextInt(3) === 0 || y-i-1 < 0 || y - i === 0 || blocks(y-i-1)(x) =/= 0) {
                                 break
                             }
                         }
@@ -637,32 +638,32 @@ object World {
         }
         (0 until height-1).foreach { y =>
             (0 until width).foreach { x =>
-                if (blocks(y)(x) == 0) {
-                    if (blocks(y+1)(x) == 72 && random.nextInt(100) == 0) {
+                if (blocks(y)(x) === 0) {
+                    if (blocks(y+1)(x) === 72 && random.nextInt(100) === 0) {
                         blocks(y)(x) = 50
                     }
-                    if (blocks(y+1)(x) == 72 && random.nextInt(100) == 0) {
+                    if (blocks(y+1)(x) === 72 && random.nextInt(100) === 0) {
                         blocks(y)(x) = 53
                     }
-                    if (blocks(y+1)(x) == 45 && random.nextInt(100) == 0) {
+                    if (blocks(y+1)(x) === 45 && random.nextInt(100) === 0) {
                         blocks(y)(x) = 56
                     }
-                    if (blocks(y+1)(x) == 73 && random.nextInt(100) == 0) {
+                    if (blocks(y+1)(x) === 73 && random.nextInt(100) === 0) {
                         blocks(y)(x) = 59
                     }
-                    if (blocks(y+1)(x) == 46 && random.nextInt(100) == 0) {
+                    if (blocks(y+1)(x) === 46 && random.nextInt(100) === 0) {
                         blocks(y)(x) = 62
                     }
-                    if (blocks(y+1)(x) == 2 && random.nextInt(400) == 0 && y >= height * 0.2) {
+                    if (blocks(y+1)(x) === 2 && random.nextInt(400) === 0 && y >= height * 0.2) {
                         blocks(y)(x) = 65
                     }
-                    if (blocks(y+1)(x) == 93 && random.nextInt(20) == 0 && y <= height * 0.05) {
+                    if (blocks(y+1)(x) === 93 && random.nextInt(20) === 0 && y <= height * 0.05) {
                         blocks(y)(x) = 68
                     }
-                    if (blocks(y+1)(x) == 2 && random.nextInt(300) == 0 && y >= height * 0.98) {
+                    if (blocks(y+1)(x) === 2 && random.nextInt(300) === 0 && y >= height * 0.98) {
                         blocks(y)(x) = 71
                     }
-                    if (blocks(y+1)(x) == 74 && random.nextInt(100) == 0) {
+                    if (blocks(y+1)(x) === 74 && random.nextInt(100) === 0) {
                         blocks(y)(x) = 79
                     }
                 }
@@ -676,7 +677,7 @@ object World {
     }
    */
 
-  def generate2(blocks: Array2D[Int], msg: Boolean): Array2D[Byte] = {
+  def generate2(blocks: Array2D[BlockType], msg: Boolean): Array2D[Byte] = {
     var x: Int      = 0
     val width: Int  = blocks(0).length
     val height: Int = blocks.length
@@ -689,7 +690,7 @@ object World {
     (0 until height).foreach { y =>
       (0 until width).foreach { x2 =>
         x = mh.mod(x2, width)
-        if (y > 0 && y < height - 1 && blocks(y)(x) != 0) {
+        if (y > 0 && y < height - 1 && blocks(y)(x) =/= AirBlockType) {
           left = connect(x - 1, y, x, y, blocks)
           right = connect(x + 1, y, x, y, blocks)
           up = connect(x, y - 1, x, y, blocks)
@@ -829,7 +830,7 @@ object World {
     blockds
   }
 
-  def generate2b(blocks: Array2D[Int], blockds: Array2D[Byte], xpos: Int, ypos: Int): Array2D[Byte] = {
+  def generate2b(blocks: Array2D[BlockType], blockds: Array2D[Byte], xpos: Int, ypos: Int): Array2D[Byte] = {
     var x: Int                                                               = 0
     val width: Int                                                           = blocks(0).length
     val height: Int                                                          = blocks.length
@@ -837,7 +838,7 @@ object World {
     (ypos - 1 until ypos + 2).foreach { y =>
       (xpos - 1 until xpos + 2).foreach { x2 =>
         x = mh.mod(x2, width)
-        if (y > 0 && y < height - 1 && blocks(y)(x) != 0) {
+        if (y > 0 && y < height - 1 && blocks(y)(x) =/= AirBlockType) {
           left = connect(x - 1, y, x, y, blocks)
           right = connect(x + 1, y, x, y, blocks)
           up = connect(x, y - 1, x, y, blocks)
@@ -977,24 +978,24 @@ object World {
     blockds
   }
 
-  def connect(b1: Int, b2: Int): Boolean = {
-    b1 != 0 && b1 == b2 ||
-    b1 == 1 && b2 == 72 ||
-    b2 == 1 && b1 == 72 ||
-    b1 == 1 && b2 == 73 ||
-    b2 == 1 && b1 == 73 ||
-    b1 == 75 && b2 == 74 ||
-    b2 == 75 && b1 == 74 ||
-    b1 == 91 && b2 == 93 ||
-    b2 == 91 && b1 == 93 ||
-    b2 >= 94 && b2 <= 99 && TerraFrame.wirec(b1) ||
-    b1 == 103 && b2 == 104 ||
-    b2 == 103 && b1 == 104 ||
-    b1 == 15 && b2 == 83 ||
-    b2 == 83 && b1 == 15
+  def connect(b1: BlockType, b2: BlockType): Boolean = {
+    b1 =/= AirBlockType && b1 === b2 ||
+    b1 === DirtBlockType && b2 === GrassBlockType ||
+    b2 === DirtBlockType && b1 === GrassBlockType ||
+    b1 === DirtBlockType && b2 === JungleGrassBlockType ||
+    b2 === DirtBlockType && b1 === JungleGrassBlockType ||
+    b1 === MudBlockType && b2 === SwampGrassBlockType ||
+    b2 === MudBlockType && b1 === SwampGrassBlockType ||
+    b1 === DirtTransparentBlockType && b2 === GrasstransparentBlockType ||
+    b2 === DirtTransparentBlockType && b1 === GrasstransparentBlockType ||
+    b2.id >= ZythiumWireBlockType.id && b2.id <= ZythiumWire5PowerBlockType.id && TerraFrame.wirec(b1.id) ||
+    b1 === ZythiumLampBlockType && b2 === ZythiumLampOnBlockType ||
+    b2 === ZythiumLampBlockType && b1 === ZythiumLampOnBlockType ||
+    b1 === TreeBlockType && b2 === TreeNoBarkBlockType ||
+    b2 === TreeNoBarkBlockType && b1 === TreeBlockType
   }
 
-  def connect(x1: Int, y1: Int, x2: Int, y2: Int, blocks: Array2D[Int]): Boolean = {
+  def connect(x1: Int, y1: Int, x2: Int, y2: Int, blocks: Array2D[BlockType]): Boolean = {
     y1 > 0 && y1 < blocks.length - 1 && connect(
       blocks(y1)(mh.mod(x1, blocks(0).length)),
       blocks(y2)(mh.mod(x2, blocks(0).length)))
@@ -1003,18 +1004,18 @@ object World {
             blockcds: Array[Boolean] = TerraFrame.getBLOCKCDS()
             b1: Short = blocks(y1)(x1)
             b2: Short = blocks(y2)(x2)
-            if (b1 == b2) return true
+            if (b1 === b2) return true
             if (!(x1 > 0 && x1 < WIDTH-1 &&
                   y1 > 0 && y1 < HEIGHT-1 &&
                   x2 > 0 && x2 < WIDTH-1 &&
                   y2 > 0 && y2 < HEIGHT-1)) return false
             return (
-                b1 == 1 && b2 == 72 && (blocks(2*y2-y1)(2*x2-x1) == 0 || !blockcds(blocks(2*y2-y1)(2*x2-x1)) || blocks(2*y2-y1)(2*x2-x1) == 72) ||
-                b2 == 1 && b1 == 72 && (blocks(2*y1-y2)(2*x1-x2) == 0 || !blockcds(blocks(2*y1-y2)(2*x1-x2)) || blocks(2*y1-y2)(2*x1-x2) == 72) ||
-                b1 == 1 && b2 == 73 && (blocks(2*y2-y1)(2*x2-x1) == 0 || !blockcds(blocks(2*y2-y1)(2*x2-x1)) || blocks(2*y2-y1)(2*x2-x1) == 73) ||
-                b2 == 1 && b1 == 73 && (blocks(2*y1-y2)(2*x1-x2) == 0 || !blockcds(blocks(2*y1-y2)(2*x1-x2)) || blocks(2*y1-y2)(2*x1-x2) == 73) ||
-                b1 == 75 && b2 == 74 && (blocks(2*y2-y1)(2*x2-x1) == 0 || !blockcds(blocks(2*y2-y1)(2*x2-x1)) || blocks(2*y2-y1)(2*x2-x1) == 74) ||
-                b2 == 75 && b1 == 74 && (blocks(2*y1-y2)(2*x1-x2) == 0 || !blockcds(blocks(2*y1-y2)(2*x1-x2)) || blocks(2*y1-y2)(2*x1-x2) == 74))
+                b1 === 1 && b2 === 72 && (blocks(2*y2-y1)(2*x2-x1) === 0 || !blockcds(blocks(2*y2-y1)(2*x2-x1)) || blocks(2*y2-y1)(2*x2-x1) === 72) ||
+                b2 === 1 && b1 === 72 && (blocks(2*y1-y2)(2*x1-x2) === 0 || !blockcds(blocks(2*y1-y2)(2*x1-x2)) || blocks(2*y1-y2)(2*x1-x2) === 72) ||
+                b1 === 1 && b2 === 73 && (blocks(2*y2-y1)(2*x2-x1) === 0 || !blockcds(blocks(2*y2-y1)(2*x2-x1)) || blocks(2*y2-y1)(2*x2-x1) === 73) ||
+                b2 === 1 && b1 === 73 && (blocks(2*y1-y2)(2*x1-x2) === 0 || !blockcds(blocks(2*y1-y2)(2*x1-x2)) || blocks(2*y1-y2)(2*x1-x2) === 73) ||
+                b1 === 75 && b2 === 74 && (blocks(2*y2-y1)(2*x2-x1) === 0 || !blockcds(blocks(2*y2-y1)(2*x2-x1)) || blocks(2*y2-y1)(2*x2-x1) === 74) ||
+                b2 === 75 && b1 === 74 && (blocks(2*y1-y2)(2*x1-x2) === 0 || !blockcds(blocks(2*y1-y2)(2*x1-x2)) || blocks(2*y1-y2)(2*x1-x2) === 74))
    */
   }
 
@@ -1036,8 +1037,8 @@ object World {
     }
     (0 until height).foreach { y =>
       (0 until width).foreach { x =>
-        if (!(x == 0 || x == width - 1 || y == 0 || y == height - 1)) {
-          if (blockbgsi(y)(x - 1) == 0 && blockbgsi(y)(x + 1) == 0) {
+        if (!(x === 0 || x === width - 1 || y === 0 || y === height - 1)) {
+          if (blockbgsi(y)(x - 1) === 0 && blockbgsi(y)(x + 1) === 0) {
             blockbgsi(y)(x) = 0
           }
         }
@@ -1047,138 +1048,138 @@ object World {
     (0 until height).foreach { y =>
       (0 until width).foreach { x =>
         blockbgs(y)(x) = blockbgsi(y)(x)
-        if (!(x == 0 || x == width - 1 || y == 0 || y == height - 1)) {
-          if (blockbgsi(y)(x) == 8) {
-            if (blockbgsi(y - 1)(x - 1) == 0 && blockbgsi(y + 1)(x - 1) != 0 &&
-                blockbgsi(y - 1)(x + 1) == 0 && blockbgsi(y + 1)(x + 1) == 0 &&
-                blockbgsi(y - 1)(x) == 0 && blockbgsi(y + 1)(x) != 0 &&
-                blockbgsi(y)(x - 1) != 0 && blockbgsi(y)(x + 1) == 0) {
+        if (!(x === 0 || x === width - 1 || y === 0 || y === height - 1)) {
+          if (blockbgsi(y)(x) === 8) {
+            if (blockbgsi(y - 1)(x - 1) === 0 && blockbgsi(y + 1)(x - 1) =/= 0 &&
+                blockbgsi(y - 1)(x + 1) === 0 && blockbgsi(y + 1)(x + 1) === 0 &&
+                blockbgsi(y - 1)(x) === 0 && blockbgsi(y + 1)(x) =/= 0 &&
+                blockbgsi(y)(x - 1) =/= 0 && blockbgsi(y)(x + 1) === 0) {
               blockbgs(y)(x) = 1
             }
-            if (blockbgsi(y - 1)(x - 1) != 0 && blockbgsi(y + 1)(x - 1) != 0 &&
-                blockbgsi(y - 1)(x + 1) == 0 && blockbgsi(y + 1)(x + 1) == 0 &&
-                blockbgsi(y - 1)(x) == 0 && blockbgsi(y + 1)(x) != 0 &&
-                blockbgsi(y)(x - 1) != 0 && blockbgsi(y)(x + 1) == 0) {
+            if (blockbgsi(y - 1)(x - 1) =/= 0 && blockbgsi(y + 1)(x - 1) =/= 0 &&
+                blockbgsi(y - 1)(x + 1) === 0 && blockbgsi(y + 1)(x + 1) === 0 &&
+                blockbgsi(y - 1)(x) === 0 && blockbgsi(y + 1)(x) =/= 0 &&
+                blockbgsi(y)(x - 1) =/= 0 && blockbgsi(y)(x + 1) === 0) {
               blockbgs(y)(x) = 1
             }
-            if (blockbgsi(y - 1)(x - 1) == 0 && blockbgsi(y + 1)(x - 1) != 0 &&
-                blockbgsi(y - 1)(x + 1) == 0 && blockbgsi(y + 1)(x + 1) != 0 &&
-                blockbgsi(y - 1)(x) == 0 && blockbgsi(y + 1)(x) != 0 &&
-                blockbgsi(y)(x - 1) != 0 && blockbgsi(y)(x + 1) == 0) {
+            if (blockbgsi(y - 1)(x - 1) === 0 && blockbgsi(y + 1)(x - 1) =/= 0 &&
+                blockbgsi(y - 1)(x + 1) === 0 && blockbgsi(y + 1)(x + 1) =/= 0 &&
+                blockbgsi(y - 1)(x) === 0 && blockbgsi(y + 1)(x) =/= 0 &&
+                blockbgsi(y)(x - 1) =/= 0 && blockbgsi(y)(x + 1) === 0) {
               blockbgs(y)(x) = 1
             }
-            if (blockbgsi(y - 1)(x - 1) != 0 && blockbgsi(y + 1)(x - 1) != 0 &&
-                blockbgsi(y - 1)(x + 1) == 0 && blockbgsi(y + 1)(x + 1) != 0 &&
-                blockbgsi(y - 1)(x) == 0 && blockbgsi(y + 1)(x) != 0 &&
-                blockbgsi(y)(x - 1) != 0 && blockbgsi(y)(x + 1) == 0) {
+            if (blockbgsi(y - 1)(x - 1) =/= 0 && blockbgsi(y + 1)(x - 1) =/= 0 &&
+                blockbgsi(y - 1)(x + 1) === 0 && blockbgsi(y + 1)(x + 1) =/= 0 &&
+                blockbgsi(y - 1)(x) === 0 && blockbgsi(y + 1)(x) =/= 0 &&
+                blockbgsi(y)(x - 1) =/= 0 && blockbgsi(y)(x + 1) === 0) {
               blockbgs(y)(x) = 1
             }
-            if (blockbgsi(y - 1)(x - 1) == 0 && blockbgsi(y + 1)(x - 1) == 0 &&
-                blockbgsi(y - 1)(x + 1) == 0 && blockbgsi(y + 1)(x + 1) != 0 &&
-                blockbgsi(y - 1)(x) == 0 && blockbgsi(y + 1)(x) != 0 &&
-                blockbgsi(y)(x - 1) == 0 && blockbgsi(y)(x + 1) != 0) {
+            if (blockbgsi(y - 1)(x - 1) === 0 && blockbgsi(y + 1)(x - 1) === 0 &&
+                blockbgsi(y - 1)(x + 1) === 0 && blockbgsi(y + 1)(x + 1) =/= 0 &&
+                blockbgsi(y - 1)(x) === 0 && blockbgsi(y + 1)(x) =/= 0 &&
+                blockbgsi(y)(x - 1) === 0 && blockbgsi(y)(x + 1) =/= 0) {
               blockbgs(y)(x) = 2
             }
-            if (blockbgsi(y - 1)(x - 1) == 0 && blockbgsi(y + 1)(x - 1) == 0 &&
-                blockbgsi(y - 1)(x + 1) != 0 && blockbgsi(y + 1)(x + 1) != 0 &&
-                blockbgsi(y - 1)(x) == 0 && blockbgsi(y + 1)(x) != 0 &&
-                blockbgsi(y)(x - 1) == 0 && blockbgsi(y)(x + 1) != 0) {
+            if (blockbgsi(y - 1)(x - 1) === 0 && blockbgsi(y + 1)(x - 1) === 0 &&
+                blockbgsi(y - 1)(x + 1) =/= 0 && blockbgsi(y + 1)(x + 1) =/= 0 &&
+                blockbgsi(y - 1)(x) === 0 && blockbgsi(y + 1)(x) =/= 0 &&
+                blockbgsi(y)(x - 1) === 0 && blockbgsi(y)(x + 1) =/= 0) {
               blockbgs(y)(x) = 2
             }
-            if (blockbgsi(y - 1)(x - 1) == 0 && blockbgsi(y + 1)(x - 1) != 0 &&
-                blockbgsi(y - 1)(x + 1) == 0 && blockbgsi(y + 1)(x + 1) != 0 &&
-                blockbgsi(y - 1)(x) == 0 && blockbgsi(y + 1)(x) != 0 &&
-                blockbgsi(y)(x - 1) == 0 && blockbgsi(y)(x + 1) != 0) {
+            if (blockbgsi(y - 1)(x - 1) === 0 && blockbgsi(y + 1)(x - 1) =/= 0 &&
+                blockbgsi(y - 1)(x + 1) === 0 && blockbgsi(y + 1)(x + 1) =/= 0 &&
+                blockbgsi(y - 1)(x) === 0 && blockbgsi(y + 1)(x) =/= 0 &&
+                blockbgsi(y)(x - 1) === 0 && blockbgsi(y)(x + 1) =/= 0) {
               blockbgs(y)(x) = 2
             }
-            if (blockbgsi(y - 1)(x - 1) == 0 && blockbgsi(y + 1)(x - 1) != 0 &&
-                blockbgsi(y - 1)(x + 1) != 0 && blockbgsi(y + 1)(x + 1) != 0 &&
-                blockbgsi(y - 1)(x) == 0 && blockbgsi(y + 1)(x) != 0 &&
-                blockbgsi(y)(x - 1) == 0 && blockbgsi(y)(x + 1) != 0) {
+            if (blockbgsi(y - 1)(x - 1) === 0 && blockbgsi(y + 1)(x - 1) =/= 0 &&
+                blockbgsi(y - 1)(x + 1) =/= 0 && blockbgsi(y + 1)(x + 1) =/= 0 &&
+                blockbgsi(y - 1)(x) === 0 && blockbgsi(y + 1)(x) =/= 0 &&
+                blockbgsi(y)(x - 1) === 0 && blockbgsi(y)(x + 1) =/= 0) {
               blockbgs(y)(x) = 2
             }
-            if (blockbgsi(y - 1)(x - 1) == 0 && blockbgsi(y + 1)(x - 1) == 0 &&
-                blockbgsi(y - 1)(x + 1) != 0 && blockbgsi(y + 1)(x + 1) != 0 &&
-                blockbgsi(y - 1)(x) != 0 && blockbgsi(y + 1)(x) != 0 &&
-                blockbgsi(y)(x - 1) == 0 && blockbgsi(y)(x + 1) != 0) {
+            if (blockbgsi(y - 1)(x - 1) === 0 && blockbgsi(y + 1)(x - 1) === 0 &&
+                blockbgsi(y - 1)(x + 1) =/= 0 && blockbgsi(y + 1)(x + 1) =/= 0 &&
+                blockbgsi(y - 1)(x) =/= 0 && blockbgsi(y + 1)(x) =/= 0 &&
+                blockbgsi(y)(x - 1) === 0 && blockbgsi(y)(x + 1) =/= 0) {
               blockbgs(y)(x) = 3
             }
-            if (blockbgsi(y - 1)(x - 1) != 0 && blockbgsi(y + 1)(x - 1) == 0 &&
-                blockbgsi(y - 1)(x + 1) != 0 && blockbgsi(y + 1)(x + 1) != 0 &&
-                blockbgsi(y - 1)(x) != 0 && blockbgsi(y + 1)(x) != 0 &&
-                blockbgsi(y)(x - 1) == 0 && blockbgsi(y)(x + 1) != 0) {
+            if (blockbgsi(y - 1)(x - 1) =/= 0 && blockbgsi(y + 1)(x - 1) === 0 &&
+                blockbgsi(y - 1)(x + 1) =/= 0 && blockbgsi(y + 1)(x + 1) =/= 0 &&
+                blockbgsi(y - 1)(x) =/= 0 && blockbgsi(y + 1)(x) =/= 0 &&
+                blockbgsi(y)(x - 1) === 0 && blockbgsi(y)(x + 1) =/= 0) {
               blockbgs(y)(x) = 3
             }
-            if (blockbgsi(y - 1)(x - 1) == 0 && blockbgsi(y + 1)(x - 1) != 0 &&
-                blockbgsi(y - 1)(x + 1) != 0 && blockbgsi(y + 1)(x + 1) != 0 &&
-                blockbgsi(y - 1)(x) != 0 && blockbgsi(y + 1)(x) != 0 &&
-                blockbgsi(y)(x - 1) == 0 && blockbgsi(y)(x + 1) != 0) {
+            if (blockbgsi(y - 1)(x - 1) === 0 && blockbgsi(y + 1)(x - 1) =/= 0 &&
+                blockbgsi(y - 1)(x + 1) =/= 0 && blockbgsi(y + 1)(x + 1) =/= 0 &&
+                blockbgsi(y - 1)(x) =/= 0 && blockbgsi(y + 1)(x) =/= 0 &&
+                blockbgsi(y)(x - 1) === 0 && blockbgsi(y)(x + 1) =/= 0) {
               blockbgs(y)(x) = 3
             }
-            if (blockbgsi(y - 1)(x - 1) != 0 && blockbgsi(y + 1)(x - 1) != 0 &&
-                blockbgsi(y - 1)(x + 1) != 0 && blockbgsi(y + 1)(x + 1) != 0 &&
-                blockbgsi(y - 1)(x) != 0 && blockbgsi(y + 1)(x) != 0 &&
-                blockbgsi(y)(x - 1) == 0 && blockbgsi(y)(x + 1) != 0) {
+            if (blockbgsi(y - 1)(x - 1) =/= 0 && blockbgsi(y + 1)(x - 1) =/= 0 &&
+                blockbgsi(y - 1)(x + 1) =/= 0 && blockbgsi(y + 1)(x + 1) =/= 0 &&
+                blockbgsi(y - 1)(x) =/= 0 && blockbgsi(y + 1)(x) =/= 0 &&
+                blockbgsi(y)(x - 1) === 0 && blockbgsi(y)(x + 1) =/= 0) {
               blockbgs(y)(x) = 3
             }
-            if (blockbgsi(y - 1)(x - 1) != 0 && blockbgsi(y + 1)(x - 1) != 0 &&
-                blockbgsi(y - 1)(x + 1) == 0 && blockbgsi(y + 1)(x + 1) == 0 &&
-                blockbgsi(y - 1)(x) != 0 && blockbgsi(y + 1)(x) != 0 &&
-                blockbgsi(y)(x - 1) != 0 && blockbgsi(y)(x + 1) == 0) {
+            if (blockbgsi(y - 1)(x - 1) =/= 0 && blockbgsi(y + 1)(x - 1) =/= 0 &&
+                blockbgsi(y - 1)(x + 1) === 0 && blockbgsi(y + 1)(x + 1) === 0 &&
+                blockbgsi(y - 1)(x) =/= 0 && blockbgsi(y + 1)(x) =/= 0 &&
+                blockbgsi(y)(x - 1) =/= 0 && blockbgsi(y)(x + 1) === 0) {
               blockbgs(y)(x) = 4
             }
-            if (blockbgsi(y - 1)(x - 1) != 0 && blockbgsi(y + 1)(x - 1) != 0 &&
-                blockbgsi(y - 1)(x + 1) != 0 && blockbgsi(y + 1)(x + 1) == 0 &&
-                blockbgsi(y - 1)(x) != 0 && blockbgsi(y + 1)(x) != 0 &&
-                blockbgsi(y)(x - 1) != 0 && blockbgsi(y)(x + 1) == 0) {
+            if (blockbgsi(y - 1)(x - 1) =/= 0 && blockbgsi(y + 1)(x - 1) =/= 0 &&
+                blockbgsi(y - 1)(x + 1) =/= 0 && blockbgsi(y + 1)(x + 1) === 0 &&
+                blockbgsi(y - 1)(x) =/= 0 && blockbgsi(y + 1)(x) =/= 0 &&
+                blockbgsi(y)(x - 1) =/= 0 && blockbgsi(y)(x + 1) === 0) {
               blockbgs(y)(x) = 4
             }
-            if (blockbgsi(y - 1)(x - 1) != 0 && blockbgsi(y + 1)(x - 1) != 0 &&
-                blockbgsi(y - 1)(x + 1) == 0 && blockbgsi(y + 1)(x + 1) != 0 &&
-                blockbgsi(y - 1)(x) != 0 && blockbgsi(y + 1)(x) != 0 &&
-                blockbgsi(y)(x - 1) != 0 && blockbgsi(y)(x + 1) == 0) {
+            if (blockbgsi(y - 1)(x - 1) =/= 0 && blockbgsi(y + 1)(x - 1) =/= 0 &&
+                blockbgsi(y - 1)(x + 1) === 0 && blockbgsi(y + 1)(x + 1) =/= 0 &&
+                blockbgsi(y - 1)(x) =/= 0 && blockbgsi(y + 1)(x) =/= 0 &&
+                blockbgsi(y)(x - 1) =/= 0 && blockbgsi(y)(x + 1) === 0) {
               blockbgs(y)(x) = 4
             }
-            if (blockbgsi(y - 1)(x - 1) != 0 && blockbgsi(y + 1)(x - 1) != 0 &&
-                blockbgsi(y - 1)(x + 1) != 0 && blockbgsi(y + 1)(x + 1) != 0 &&
-                blockbgsi(y - 1)(x) != 0 && blockbgsi(y + 1)(x) != 0 &&
-                blockbgsi(y)(x - 1) != 0 && blockbgsi(y)(x + 1) == 0) {
+            if (blockbgsi(y - 1)(x - 1) =/= 0 && blockbgsi(y + 1)(x - 1) =/= 0 &&
+                blockbgsi(y - 1)(x + 1) =/= 0 && blockbgsi(y + 1)(x + 1) =/= 0 &&
+                blockbgsi(y - 1)(x) =/= 0 && blockbgsi(y + 1)(x) =/= 0 &&
+                blockbgsi(y)(x - 1) =/= 0 && blockbgsi(y)(x + 1) === 0) {
               blockbgs(y)(x) = 4
             }
-            if (blockbgsi(y - 1)(x - 1) == 0 && blockbgsi(y + 1)(x - 1) != 0 &&
-                blockbgsi(y - 1)(x + 1) == 0 && blockbgsi(y + 1)(x + 1) != 0 &&
-                blockbgsi(y - 1)(x) == 0 && blockbgsi(y + 1)(x) != 0 &&
-                blockbgsi(y)(x - 1) != 0 && blockbgsi(y)(x + 1) != 0) {
+            if (blockbgsi(y - 1)(x - 1) === 0 && blockbgsi(y + 1)(x - 1) =/= 0 &&
+                blockbgsi(y - 1)(x + 1) === 0 && blockbgsi(y + 1)(x + 1) =/= 0 &&
+                blockbgsi(y - 1)(x) === 0 && blockbgsi(y + 1)(x) =/= 0 &&
+                blockbgsi(y)(x - 1) =/= 0 && blockbgsi(y)(x + 1) =/= 0) {
               blockbgs(y)(x) = 5
             }
-            if (blockbgsi(y - 1)(x - 1) != 0 && blockbgsi(y + 1)(x - 1) != 0 &&
-                blockbgsi(y - 1)(x + 1) == 0 && blockbgsi(y + 1)(x + 1) != 0 &&
-                blockbgsi(y - 1)(x) == 0 && blockbgsi(y + 1)(x) != 0 &&
-                blockbgsi(y)(x - 1) != 0 && blockbgsi(y)(x + 1) != 0) {
+            if (blockbgsi(y - 1)(x - 1) =/= 0 && blockbgsi(y + 1)(x - 1) =/= 0 &&
+                blockbgsi(y - 1)(x + 1) === 0 && blockbgsi(y + 1)(x + 1) =/= 0 &&
+                blockbgsi(y - 1)(x) === 0 && blockbgsi(y + 1)(x) =/= 0 &&
+                blockbgsi(y)(x - 1) =/= 0 && blockbgsi(y)(x + 1) =/= 0) {
               blockbgs(y)(x) = 5
             }
-            if (blockbgsi(y - 1)(x - 1) == 0 && blockbgsi(y + 1)(x - 1) != 0 &&
-                blockbgsi(y - 1)(x + 1) != 0 && blockbgsi(y + 1)(x + 1) != 0 &&
-                blockbgsi(y - 1)(x) == 0 && blockbgsi(y + 1)(x) != 0 &&
-                blockbgsi(y)(x - 1) != 0 && blockbgsi(y)(x + 1) != 0) {
+            if (blockbgsi(y - 1)(x - 1) === 0 && blockbgsi(y + 1)(x - 1) =/= 0 &&
+                blockbgsi(y - 1)(x + 1) =/= 0 && blockbgsi(y + 1)(x + 1) =/= 0 &&
+                blockbgsi(y - 1)(x) === 0 && blockbgsi(y + 1)(x) =/= 0 &&
+                blockbgsi(y)(x - 1) =/= 0 && blockbgsi(y)(x + 1) =/= 0) {
               blockbgs(y)(x) = 5
             }
-            if (blockbgsi(y - 1)(x - 1) != 0 && blockbgsi(y + 1)(x - 1) != 0 &&
-                blockbgsi(y - 1)(x + 1) != 0 && blockbgsi(y + 1)(x + 1) != 0 &&
-                blockbgsi(y - 1)(x) == 0 && blockbgsi(y + 1)(x) != 0 &&
-                blockbgsi(y)(x - 1) != 0 && blockbgsi(y)(x + 1) != 0) {
+            if (blockbgsi(y - 1)(x - 1) =/= 0 && blockbgsi(y + 1)(x - 1) =/= 0 &&
+                blockbgsi(y - 1)(x + 1) =/= 0 && blockbgsi(y + 1)(x + 1) =/= 0 &&
+                blockbgsi(y - 1)(x) === 0 && blockbgsi(y + 1)(x) =/= 0 &&
+                blockbgsi(y)(x - 1) =/= 0 && blockbgsi(y)(x + 1) =/= 0) {
               blockbgs(y)(x) = 5
             }
-            if (blockbgsi(y - 1)(x - 1) == 0 && blockbgsi(y + 1)(x - 1) != 0 &&
-                blockbgsi(y - 1)(x + 1) != 0 && blockbgsi(y + 1)(x + 1) != 0 &&
-                blockbgsi(y - 1)(x) != 0 && blockbgsi(y + 1)(x) != 0 &&
-                blockbgsi(y)(x - 1) != 0 && blockbgsi(y)(x + 1) != 0) {
+            if (blockbgsi(y - 1)(x - 1) === 0 && blockbgsi(y + 1)(x - 1) =/= 0 &&
+                blockbgsi(y - 1)(x + 1) =/= 0 && blockbgsi(y + 1)(x + 1) =/= 0 &&
+                blockbgsi(y - 1)(x) =/= 0 && blockbgsi(y + 1)(x) =/= 0 &&
+                blockbgsi(y)(x - 1) =/= 0 && blockbgsi(y)(x + 1) =/= 0) {
               blockbgs(y)(x) = 6
             }
-            if (blockbgsi(y - 1)(x - 1) != 0 && blockbgsi(y + 1)(x - 1) != 0 &&
-                blockbgsi(y - 1)(x + 1) == 0 && blockbgsi(y + 1)(x + 1) != 0 &&
-                blockbgsi(y - 1)(x) != 0 && blockbgsi(y + 1)(x) != 0 &&
-                blockbgsi(y)(x - 1) != 0 && blockbgsi(y)(x + 1) != 0) {
+            if (blockbgsi(y - 1)(x - 1) =/= 0 && blockbgsi(y + 1)(x - 1) =/= 0 &&
+                blockbgsi(y - 1)(x + 1) === 0 && blockbgsi(y + 1)(x + 1) =/= 0 &&
+                blockbgsi(y - 1)(x) =/= 0 && blockbgsi(y + 1)(x) =/= 0 &&
+                blockbgsi(y)(x - 1) =/= 0 && blockbgsi(y)(x + 1) =/= 0) {
               blockbgs(y)(x) = 7
             }
           }
@@ -1187,7 +1188,7 @@ object World {
     }
     (0 until height).foreach { y =>
       (0 until width).foreach { x =>
-        if (y == (height * 0.975).toInt) {
+        if (y === (height * 0.975).toInt) {
           blockbgs(y)(x) = 17
         } else if (y > (height * 0.975).toInt) {
           blockbgs(y)(x) = 0

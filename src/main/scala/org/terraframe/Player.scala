@@ -9,6 +9,8 @@ import TerraFrame.BLOCKSIZE
 
 import scala.math._
 
+import TypeSafeComparisons._
+
 object Player {
   lazy val width: Int  = TerraFrame.PLAYERSIZEX
   lazy val height: Int = TerraFrame.PLAYERSIZEY
@@ -58,25 +60,25 @@ case class Player(var x: Double, var y: Double) extends Serializable {
   val playerRect    = new Rectangle(ix, iy, width, height)
   val intersectRect = new Rectangle(-1, -1, -1, -1)
 
-  def update(blocks: Array2D[Int], userInput: UserInput, u: Int, v: Int): Unit = {
+  def update(blocks: Array2D[BlockType], userInput: UserInput, u: Int, v: Int): Unit = {
     grounded = onGround || onGroundDelay
     if (userInput.isLeftKeyPressed) {
       if (vx > -4 || TerraFrame.DEBUG_SPEED) {
         vx = vx - 0.5
       }
-      if (imgState == StillLeft || imgState == StillRight ||
-          imgState == WalkRight1 || imgState == WalkRight2) {
+      if (imgState === StillLeft || imgState === StillRight ||
+          imgState === WalkRight1 || imgState === WalkRight2) {
         imgDelay = 5
         imgState = WalkLeft2
         image = leftWalkImage
       }
       if (imgDelay <= 0) {
-        if (imgState == WalkLeft1) {
+        if (imgState === WalkLeft1) {
           imgDelay = 5
           imgState = WalkLeft2
           image = leftWalkImage
         } else {
-          if (imgState == WalkLeft2) {
+          if (imgState === WalkLeft2) {
             imgDelay = 5
             imgState = WalkLeft1
             image = leftStillImage
@@ -90,19 +92,19 @@ case class Player(var x: Double, var y: Double) extends Serializable {
       if (vx < 4 || TerraFrame.DEBUG_SPEED) {
         vx = vx + 0.5
       }
-      if (imgState == StillLeft || imgState == StillRight ||
-          imgState == WalkLeft1 || imgState == WalkLeft2) {
+      if (imgState === StillLeft || imgState === StillRight ||
+          imgState === WalkLeft1 || imgState === WalkLeft2) {
         imgDelay = 5
         imgState = WalkRight2
         image = rightWalkImage
       }
       if (imgDelay <= 0) {
-        if (imgState == WalkRight1) {
+        if (imgState === WalkRight1) {
           imgDelay = 5
           imgState = WalkRight2
           image = rightWalkImage
         } else {
-          if (imgState == WalkRight2) {
+          if (imgState === WalkRight2) {
             imgDelay = 5
             imgState = WalkRight1
             image = rightStillImage
@@ -147,13 +149,13 @@ case class Player(var x: Double, var y: Double) extends Serializable {
         vx = vx + 0.3
       }
       if (grounded) {
-        if (imgState == StillLeft || imgState == WalkLeft1 ||
-            imgState == WalkLeft2) {
+        if (imgState === StillLeft || imgState === WalkLeft1 ||
+            imgState === WalkLeft2) {
           imgState = StillLeft
           image = leftStillImage
         }
-        if (imgState == StillRight || imgState == WalkRight1 ||
-            imgState == WalkRight2) {
+        if (imgState === StillRight || imgState === WalkRight1 ||
+            imgState === WalkRight2) {
           imgState = StillLeft
           image = rightStillImage
         }
@@ -161,12 +163,12 @@ case class Player(var x: Double, var y: Double) extends Serializable {
     }
 
     if (!grounded) {
-      if (imgState == StillLeft || imgState == WalkLeft1 ||
-          imgState == WalkLeft2) {
+      if (imgState === StillLeft || imgState === WalkLeft1 ||
+          imgState === WalkLeft2) {
         image = leftJumpImage
       }
-      if (imgState == StillRight || imgState == WalkRight1 ||
-          imgState == WalkRight2) {
+      if (imgState === StillRight || imgState === WalkRight1 ||
+          imgState === WalkRight2) {
         image = rightJumpImage
       }
     }
@@ -179,7 +181,7 @@ case class Player(var x: Double, var y: Double) extends Serializable {
     x = x + vx
 
     if (!TerraFrame.DEBUG_NOCLIP) {
-      (0 until 2).foreach { i =>
+      (0 until 2).foreach { _ =>
         ix = x.toInt
         iy = y.toInt
         ivx = vx.toInt
@@ -194,7 +196,7 @@ case class Player(var x: Double, var y: Double) extends Serializable {
 
         (bx1 to bx2).foreach { i =>
           (by1 to by2).foreach { j =>
-            if (blocks(j + v)(i + u) != 0 && TerraFrame.BLOCKCD.get(blocks(j + v)(i + u)).exists(identity)) {
+            if (blocks(j + v)(i + u) =/= AirBlockType && TerraFrame.BLOCKCD.get(blocks(j + v)(i + u).id).exists(identity)) {
               intersectRect.setBounds(i * BLOCKSIZE, j * BLOCKSIZE, BLOCKSIZE, BLOCKSIZE)
               if (playerRect.intersects(intersectRect)) {
                 if (oldx <= i * 16 - width && vx > 0) {
@@ -215,7 +217,7 @@ case class Player(var x: Double, var y: Double) extends Serializable {
     y = y + vy
     onGround = false
     if (!TerraFrame.DEBUG_NOCLIP) {
-      (0 until 2).foreach { i =>
+      (0 until 2).foreach { _ =>
         ix = x.toInt
         iy = y.toInt
         ivx = vx.toInt
@@ -230,7 +232,7 @@ case class Player(var x: Double, var y: Double) extends Serializable {
 
         (bx1 to bx2).foreach { i =>
           (by1 to by2).foreach { j =>
-            if (blocks(j + v)(i + u) != 0 && TerraFrame.BLOCKCD.get(blocks(j + v)(i + u)).exists(identity)) {
+            if (blocks(j + v)(i + u) =/= AirBlockType && TerraFrame.BLOCKCD.get(blocks(j + v)(i + u).id).exists(identity)) {
               intersectRect.setBounds(i * BLOCKSIZE, j * BLOCKSIZE, BLOCKSIZE, BLOCKSIZE)
               if (playerRect.intersects(intersectRect)) {
                 if (oldy <= j * 16 - height && vy > 0) {
@@ -263,25 +265,25 @@ case class Player(var x: Double, var y: Double) extends Serializable {
 
   def reloadImage(): Unit = {
     if (grounded) {
-      if (imgState == StillLeft || imgState == WalkLeft1) {
+      if (imgState === StillLeft || imgState === WalkLeft1) {
         image = leftStillImage
       }
-      if (imgState == WalkLeft2) {
+      if (imgState === WalkLeft2) {
         image = leftWalkImage
       }
-      if (imgState == StillRight || imgState == WalkRight1) {
+      if (imgState === StillRight || imgState === WalkRight1) {
         image = rightStillImage
       }
-      if (imgState == WalkRight2) {
+      if (imgState === WalkRight2) {
         image = rightWalkImage
       }
     } else {
-      if (imgState == StillLeft || imgState == WalkLeft1 ||
-          imgState == WalkLeft2) {
+      if (imgState === StillLeft || imgState === WalkLeft1 ||
+          imgState === WalkLeft2) {
         image = leftJumpImage
       }
-      if (imgState == StillRight || imgState == WalkRight1 ||
-          imgState == WalkRight2) {
+      if (imgState === StillRight || imgState === WalkRight1 ||
+          imgState === WalkRight2) {
         image = rightJumpImage
       }
     }
@@ -305,13 +307,11 @@ case class Player(var x: Double, var y: Double) extends Serializable {
   }
 
   def sumArmor(): Int = {
-    val s = for {
-      armor0 <- TerraFrame.ARMOR.get(TerraFrame.armor.ids(0))
-      armor1 <- TerraFrame.ARMOR.get(TerraFrame.armor.ids(1))
-      armor2 <- TerraFrame.ARMOR.get(TerraFrame.armor.ids(2))
-      armor3 <- TerraFrame.ARMOR.get(TerraFrame.armor.ids(3))
-    } yield armor0 + armor1 + armor2 + armor3
-    s.getOrElse(0)
+    val armor0 = UiItem.armor(TerraFrame.armor.ids(0))
+    val armor1 = UiItem.armor(TerraFrame.armor.ids(1))
+    val armor2 = UiItem.armor(TerraFrame.armor.ids(2))
+    val armor3 = UiItem.armor(TerraFrame.armor.ids(3))
+    armor0 + armor1 + armor2 + armor3
   }
 
 }

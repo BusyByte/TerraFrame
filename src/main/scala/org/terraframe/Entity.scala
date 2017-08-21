@@ -10,6 +10,8 @@ import scala.collection.mutable.ArrayBuffer
 import scala.math._
 import scala.util.Random
 
+import TypeSafeComparisons._
+
 sealed trait AI
 case object BubbleAI       extends AI
 case object FastBubbleAI   extends AI
@@ -69,7 +71,7 @@ sealed trait Entity {
   def reloadImage(): Unit
   var immune: Boolean
 
-  def update(blocks: Array2D[Int], player: Player, u: Int, v: Int): Boolean
+  def update(blocks: Array2D[BlockType], player: Player, u: Int, v: Int): Boolean
 }
 
 case class AIEntity(var x: Double, var y: Double, var vx: Double, var vy: Double, strategy: EntityStrategy)
@@ -125,7 +127,7 @@ case class AIEntity(var x: Double, var y: Double, var vx: Double, var vy: Double
 
   var hp: Int = strategy.thp
 
-  def update(blocks: Array2D[Int], player: Player, u: Int, v: Int): Boolean = {
+  def update(blocks: Array2D[BlockType], player: Player, u: Int, v: Int): Boolean = {
     newMob = None
 
     strategy.ai match {
@@ -141,19 +143,19 @@ case class AIEntity(var x: Double, var y: Double, var vx: Double, var vy: Double
         }
         if (x > player.x) {
           vx = max(vx - 0.1, -1.2)
-          if (imgState == "still left" || imgState == "still right" ||
-              imgState == "walk right 1" || imgState == "walk right 2") { // TODO: sum type image state
+          if (imgState === "still left" || imgState === "still right" ||
+              imgState === "walk right 1" || imgState === "walk right 2") { // TODO: sum type image state
             imgDelay = 10
             imgState = "walk left 2"
             image = loadImage("sprites/monsters/" + strategy.imageName + "/left_walk.png").get
           }
           if (imgDelay <= 0) {
-            if (imgState == "walk left 1") {
+            if (imgState === "walk left 1") {
               imgDelay = 10
               imgState = "walk left 2"
               image = loadImage("sprites/monsters/" + strategy.imageName + "/left_walk.png").get
             } else {
-              if (imgState == "walk left 2") {
+              if (imgState === "walk left 2") {
                 imgDelay = 10
                 imgState = "walk left 1"
                 image = loadImage("sprites/monsters/" + strategy.imageName + "/left_still.png").get
@@ -164,19 +166,19 @@ case class AIEntity(var x: Double, var y: Double, var vx: Double, var vy: Double
           }
         } else {
           vx = min(vx + 0.1, 1.2)
-          if (imgState == "still left" || imgState == "still right" ||
-              imgState == "walk left 1" || imgState == "walk left 2") {
+          if (imgState === "still left" || imgState === "still right" ||
+              imgState === "walk left 1" || imgState === "walk left 2") {
             imgDelay = 10
             imgState = "walk right 2"
             image = loadImage("sprites/monsters/" + strategy.imageName + "/right_walk.png").get
           }
           if (imgDelay <= 0) {
-            if (imgState == "walk right 1") {
+            if (imgState === "walk right 1") {
               imgDelay = 10
               imgState = "walk right 2"
               image = loadImage("sprites/monsters/" + strategy.imageName + "/right_walk.png").get
             } else {
-              if (imgState == "walk right 2") {
+              if (imgState === "walk right 2") {
                 imgDelay = 10
                 imgState = "walk right 1"
                 image = loadImage("sprites/monsters/" + strategy.imageName + "/right_still.png").get
@@ -187,12 +189,12 @@ case class AIEntity(var x: Double, var y: Double, var vx: Double, var vy: Double
           }
         }
         if (!grounded) {
-          if (imgState == "still left" || imgState == "walk left 1" ||
-              imgState == "walk left 2") {
+          if (imgState === "still left" || imgState === "walk left 1" ||
+              imgState === "walk left 2") {
             image = loadImage("sprites/monsters/" + strategy.imageName + "/left_jump.png").get
           }
-          if (imgState == "still right" || imgState == "walk right 1" ||
-              imgState == "walk right 2") {
+          if (imgState === "still right" || imgState === "walk right 1" ||
+              imgState === "walk right 2") {
             image = loadImage("sprites/monsters/" + strategy.imageName + "/right_jump.png").get
           }
         }
@@ -259,20 +261,20 @@ case class AIEntity(var x: Double, var y: Double, var vx: Double, var vy: Double
           }
         }
         bcount += 1
-        if (bcount == 110) {
+        if (bcount === 110) {
           image = loadImage("sprites/monsters/" + strategy.imageName + "/ready1.png").get
         }
-        if (bcount == 130) {
+        if (bcount === 130) {
           image = loadImage("sprites/monsters/" + strategy.imageName + "/ready2.png").get
         }
-        if (bcount == 150) {
+        if (bcount === 150) {
           val theta: Double = atan2(player.y - y, player.x - x)
           newMob = Some(AIEntity(x, y, cos(theta) * 3.5, sin(theta) * 3.5, SandbotBullet))
         }
-        if (bcount == 170) {
+        if (bcount === 170) {
           image = loadImage("sprites/monsters/" + strategy.imageName + "/ready1.png").get
         }
-        if (bcount == 190) {
+        if (bcount === 190) {
           image = loadImage("sprites/monsters/" + strategy.imageName + "/normal.png").get
           bcount = 0
         }
@@ -291,32 +293,32 @@ case class AIEntity(var x: Double, var y: Double, var vx: Double, var vy: Double
           vy = min(vy + 0.05, 2.0)
         }
         imgDelay -= 1
-        if (vx > 0 && imgState != "normal right") {
+        if (vx > 0 && imgState =/= "normal right") {
           imgState = "normal right"
           image = loadImage("sprites/monsters/" + strategy.imageName + "/normal_right.png").get
           imgDelay = 10
         }
-        if (vx < 0 && imgState != "normal left") {
+        if (vx < 0 && imgState =/= "normal left") {
           imgState = "normal left"
           image = loadImage("sprites/monsters/" + strategy.imageName + "/normal_left.png").get
           imgDelay = 10
         }
-        if (imgState == "normal left" && imgDelay <= 0) {
+        if (imgState === "normal left" && imgDelay <= 0) {
           imgState = "flap left"
           image = loadImage("sprites/monsters/" + strategy.imageName + "/flap_left.png").get
           imgDelay = 10
         }
-        if (imgState == "normal right" && imgDelay <= 0) {
+        if (imgState === "normal right" && imgDelay <= 0) {
           imgState = "flap right"
           image = loadImage("sprites/monsters/" + strategy.imageName + "/flap_right.png").get
           imgDelay = 10
         }
-        if (imgState == "flap left" && imgDelay <= 0) {
+        if (imgState === "flap left" && imgDelay <= 0) {
           imgState = "normal left"
           image = loadImage("sprites/monsters/" + strategy.imageName + "/normal_left.png").get
           imgDelay = 10
         }
-        if (imgState == "flap right" && imgDelay <= 0) {
+        if (imgState === "flap right" && imgDelay <= 0) {
           imgState = "normal right"
           image = loadImage("sprites/monsters/" + strategy.imageName + "/normal_right.png").get
           imgDelay = 10
@@ -331,7 +333,7 @@ case class AIEntity(var x: Double, var y: Double, var vx: Double, var vy: Double
     }
   }
 
-  def collide(blocks: Array2D[Int], player: Player, u: Int, v: Int): Boolean = {
+  def collide(blocks: Array2D[BlockType], player: Player, u: Int, v: Int): Boolean = {
     var rv: Boolean = false
 
     grounded = onGround || onGroundDelay
@@ -357,35 +359,35 @@ case class AIEntity(var x: Double, var y: Double, var vx: Double, var vy: Double
 
     (bx1 to bx2).foreach { i =>
       (by1 to by2).foreach { j =>
-        if (blocks(j)(i) != 0 && TerraFrame.BLOCKCD.get(blocks(j + v)(i + u)).exists(identity)) {
+        if (blocks(j)(i) =/= AirBlockType && TerraFrame.BLOCKCD.get(blocks(j + v)(i + u).id).exists(identity)) {
           intersectRect.setBounds(i * BLOCKSIZE, j * BLOCKSIZE, BLOCKSIZE, BLOCKSIZE)
           if (rect.intersects(intersectRect)) {
-            if (oldx <= i * 16 - width && (vx > 0 || strategy.ai == ShootingStarAI)) {
+            if (oldx <= i * 16 - width && (vx > 0 || strategy.ai === ShootingStarAI)) {
               x = (i * 16 - width).toDouble
-              if (strategy.ai == BubbleAI) {
+              if (strategy.ai === BubbleAI) {
                 vx = -vx
-              } else if (strategy.ai == ZombieAI) {
+              } else if (strategy.ai === ZombieAI) {
                 vx = 0
                 if (onGround && player.x > x) {
                   vy = -7
                 }
-              } else if (strategy.ai == BatAI) {
+              } else if (strategy.ai === BatAI) {
                 vx = -vx
               } else {
                 vx = 0 // right
               }
               rv = true
             }
-            if (oldx >= i * 16 + BLOCKSIZE && (vx < 0 || strategy.ai == ShootingStarAI)) {
+            if (oldx >= i * 16 + BLOCKSIZE && (vx < 0 || strategy.ai === ShootingStarAI)) {
               x = (i * 16 + BLOCKSIZE).toDouble
-              if (strategy.ai == BubbleAI) {
+              if (strategy.ai === BubbleAI) {
                 vx = -vx
-              } else if (strategy.ai == ZombieAI) {
+              } else if (strategy.ai === ZombieAI) {
                 vx = 0
                 if (onGround && player.x < x) {
                   vy = -7
                 }
-              } else if (strategy.ai == BatAI) {
+              } else if (strategy.ai === BatAI) {
                 vx = -vx
               } else {
                 vx = 0 // left
@@ -409,22 +411,22 @@ case class AIEntity(var x: Double, var y: Double, var vx: Double, var vy: Double
 
     (bx1 to bx2).foreach { i =>
       (by1 to by2).foreach { j =>
-        if (blocks(j)(i) != 0 && TerraFrame.BLOCKCD.get(blocks(j + v)(i + u)).exists(identity)) {
+        if (blocks(j)(i) =/= AirBlockType && TerraFrame.BLOCKCD.get(blocks(j + v)(i + u).id).exists(identity)) {
           intersectRect.setBounds(i * BLOCKSIZE, j * BLOCKSIZE, BLOCKSIZE, BLOCKSIZE)
           if (rect.intersects(intersectRect)) {
-            if (oldy <= j * 16 - height && (vy > 0 || strategy.ai == ShootingStarAI)) {
+            if (oldy <= j * 16 - height && (vy > 0 || strategy.ai === ShootingStarAI)) {
               y = (j * 16 - height).toDouble
               onGround = true
-              if (strategy.ai == BubbleAI) {
+              if (strategy.ai === BubbleAI) {
                 vy = -vy
               } else {
                 vy = 0 // down
               }
               rv = true
             }
-            if (oldy >= j * 16 + BLOCKSIZE && (vy < 0 || strategy.ai == ShootingStarAI)) {
+            if (oldy >= j * 16 + BLOCKSIZE && (vy < 0 || strategy.ai === ShootingStarAI)) {
               y = (j * 16 + BLOCKSIZE).toDouble
-              if (strategy.ai == BubbleAI) {
+              if (strategy.ai === BubbleAI) {
                 vy = -vy
               } else {
                 vy = 0 // up
@@ -450,7 +452,7 @@ case class AIEntity(var x: Double, var y: Double, var vx: Double, var vy: Double
     if (!immune && !nohit) {
       hp -= max(1, damage - strategy.ap)
       immune = true
-      if (strategy.ai == ShootingStarAI) {
+      if (strategy.ai === ShootingStarAI) {
         if (player.x + Player.width / 2 < x + width / 2) {
           vx = 4
         } else {
@@ -468,73 +470,73 @@ case class AIEntity(var x: Double, var y: Double, var vx: Double, var vy: Double
     hp <= 0
   }
 
-  def drops(): ArrayBuffer[Short] = {
-    val dropList       = ArrayBuffer.empty[Short]
+  def drops(): ArrayBuffer[ImageUiItem] = {
+    val dropList       = ArrayBuffer.empty[ImageUiItem]
     val random: Random = TerraFrame.random
 
     // TODO: type-classes could be used here and no need for mutability
     strategy match {
       case BlueBubble =>
-        (0 until random.nextInt(3)).foreach { i =>
-          dropList += 97.toShort
+        (0 until random.nextInt(3)).foreach { _ =>
+          dropList += BlueGooUiItem
         }
       case GreenBubble =>
-        (0 until random.nextInt(3)).foreach { i =>
-          dropList += 98.toShort
+        (0 until random.nextInt(3)).foreach { _ =>
+          dropList += GreenGooUiItem
         }
       case RedBubble =>
-        (0 until random.nextInt(3)).foreach { i =>
-          dropList += 99.toShort
+        (0 until random.nextInt(3)).foreach { _ =>
+          dropList += RedGooUiItem
         }
       case YellowBubble =>
-        (0 until random.nextInt(3)).foreach { i =>
-          dropList += 100.toShort
+        (0 until random.nextInt(3)).foreach { _ =>
+          dropList += YellowGooUiItem
         }
       case BlackBubble =>
-        (0 until random.nextInt(3)).foreach { i =>
-          dropList += 101.toShort
+        (0 until random.nextInt(3)).foreach { _ =>
+          dropList += BlackGooUiItem
         }
       case WhiteBubble =>
-        (0 until random.nextInt(3)).foreach { i =>
-          dropList += 102.toShort
+        (0 until random.nextInt(3)).foreach { _ =>
+          dropList += WhiteGooUiItem
         }
       case ShootingStar =>
-        (0 until random.nextInt(2)).foreach { i =>
-          dropList += 103.toShort
+        (0 until random.nextInt(2)).foreach { _ =>
+          dropList += AstralShardUiItem
         }
       case Zombie =>
-        (0 until random.nextInt(3)).foreach { i =>
-          dropList += 104.toShort
+        (0 until random.nextInt(3)).foreach { _ =>
+          dropList += RottenChunkUiItem
         }
       case ArmoredZombie =>
-        (0 until random.nextInt(3)).foreach { i =>
-          dropList += 104.toShort
+        (0 until random.nextInt(3)).foreach { _ =>
+          dropList += RottenChunkUiItem
         }
-        if (random.nextInt(15) == 0) {
-          dropList += 109.toShort
+        if (random.nextInt(15) === 0) {
+          dropList += IronHelmetUiItem
         }
-        if (random.nextInt(15) == 0) {
-          dropList += 110.toShort
+        if (random.nextInt(15) === 0) {
+          dropList += IronChestplateUiItem
         }
-        if (random.nextInt(15) == 0) {
-          dropList += 111.toShort
+        if (random.nextInt(15) === 0) {
+          dropList += IronLeggingsUiItem
         }
-        if (random.nextInt(15) == 0) {
-          dropList += 112.toShort
+        if (random.nextInt(15) === 0) {
+          dropList += IronGreavesUiItem
         }
       case Sandbot =>
-        (0 until random.nextInt(3)).foreach { i =>
-          dropList += 74.toShort
+        (0 until random.nextInt(3)).foreach { _ =>
+          dropList += SandUiItem
         }
-        if (random.nextInt(2) == 0) {
-          dropList += 44.toShort
+        if (random.nextInt(2) === 0) {
+          dropList += ZythiumOreUiItem
         }
-        if (random.nextInt(6) == 0) {
-          dropList += 45.toShort
+        if (random.nextInt(6) === 0) {
+          dropList += SiliconOreUiItem
         }
       case Snowman =>
         (0 until random.nextInt(3)).foreach { _ =>
-          dropList += 75.toShort
+          dropList += SnowUiItem
         }
       case Bat           => //TODO: figure out what this drops
       case Bee           => //TODO: figure out what this drops
@@ -546,10 +548,10 @@ case class AIEntity(var x: Double, var y: Double, var vx: Double, var vy: Double
   }
 
   def reloadImage(): Unit = {
-    if (strategy.ai == BubbleAI || strategy.ai == ShootingStarAI) {
+    if (strategy.ai === BubbleAI || strategy.ai === ShootingStarAI) {
       image = loadImage("sprites/monsters/" + strategy.imageName + "/normal.png").get
     }
-    if (strategy.ai == ZombieAI) {
+    if (strategy.ai === ZombieAI) {
       image = loadImage("sprites/monsters/" + strategy.imageName + "/right_still.png").get
     }
   }
@@ -560,7 +562,7 @@ case class IdEntity(var x: Double,
                     var y: Double,
                     var vx: Double,
                     var vy: Double,
-                    id: Short,
+                    id: ImageUiItem,//TODO: rename
                     num: Short,
                     dur: Short,
                     var mdelay: Int)
@@ -573,7 +575,7 @@ case class IdEntity(var x: Double,
   var oldy: Double = y
 
   var onGround, immune, grounded, onGroundDelay: Boolean = false
-  @transient val image: BufferedImage                    = TerraFrame.itemImgs(id)
+  @transient val image: BufferedImage                    = id.image
 
   val width: Int  = image.getWidth() * 2
   val height: Int = image.getHeight() * 2
@@ -585,23 +587,20 @@ case class IdEntity(var x: Double,
   val rect          = new Rectangle(ix - 1, iy, width + 2, height)
   val intersectRect = new Rectangle(-1, -1, -1, -1)
 
-  def this(x: Double, y: Double, vx: Double, vy: Double) {
-    this(x, y, vx, vy, 0, 0, 0, 0)
-  }
 
-  def this(x: Double, y: Double, vx: Double, vy: Double, id: Short, num: Short) {
+  def this(x: Double, y: Double, vx: Double, vy: Double, id: ImageUiItem, num: Short) {
     this(x, y, vx, vy, id, num, 0, 0)
   }
 
-  def this(x: Double, y: Double, vx: Double, vy: Double, id: Short, num: Short, mdelay: Int) {
+  def this(x: Double, y: Double, vx: Double, vy: Double, id: ImageUiItem, num: Short, mdelay: Int) {
     this(x, y, vx, vy, id, num, 0, mdelay)
   }
 
-  def this(x: Double, y: Double, vx: Double, vy: Double, id: Short, num: Short, dur: Short) {
+  def this(x: Double, y: Double, vx: Double, vy: Double, id: ImageUiItem, num: Short, dur: Short) {
     this(x, y, vx, vy, id, num, dur, 0)
   }
 
-  def update(blocks: Array2D[Int], player: Player, u: Int, v: Int): Boolean = {
+  def update(blocks: Array2D[BlockType], player: Player, u: Int, v: Int): Boolean = {
     if (!onGround) {
       vy = vy + 0.3
       if (vy > 7) {
@@ -620,7 +619,7 @@ case class IdEntity(var x: Double,
     false
   }
 
-  def collide(blocks: Array2D[Int], u: Int, v: Int): Boolean = {
+  def collide(blocks: Array2D[BlockType], u: Int, v: Int): Boolean = {
     var rv: Boolean = false
 
     grounded = onGround || onGroundDelay
@@ -646,7 +645,7 @@ case class IdEntity(var x: Double,
 
     (bx1 to bx2).foreach { i =>
       (by1 to by2).foreach { j =>
-        if (blocks(j)(i) != 0 && TerraFrame.BLOCKCD.get(blocks(j + v)(i + u)).exists(identity)) {
+        if (blocks(j)(i) =/= AirBlockType && TerraFrame.BLOCKCD.get(blocks(j + v)(i + u).id).exists(identity)) {
           intersectRect.setBounds(i * BLOCKSIZE, j * BLOCKSIZE, BLOCKSIZE, BLOCKSIZE)
           if (rect.intersects(intersectRect)) {
             if (oldx <= i * 16 - width && (vx > 0)) {
@@ -676,7 +675,7 @@ case class IdEntity(var x: Double,
 
     (bx1 to bx2).foreach { i =>
       (by1 to by2).foreach { j =>
-        if (blocks(j)(i) != 0 && TerraFrame.BLOCKCD.get(blocks(j + v)(i + u)).exists(identity)) {
+        if (blocks(j)(i) =/= AirBlockType && TerraFrame.BLOCKCD.get(blocks(j + v)(i + u).id).exists(identity)) {
           intersectRect.setBounds(i * BLOCKSIZE, j * BLOCKSIZE, BLOCKSIZE, BLOCKSIZE)
           if (rect.intersects(intersectRect)) {
             if (oldy <= j * 16 - height && (vy > 0)) {

@@ -1,24 +1,31 @@
 package org.terraframe
 
-import java.awt._
+import java.awt.{Color, Font, Graphics2D}
 import java.awt.image._
 import java.io.Serializable
 
 import Images.loadImage
+import TypeSafeComparisons._
 
 import scala.collection.mutable
-import org.terraframe.{ MathHelper => mh }
+import org.terraframe.{MathHelper => mh}
 
 object Inventory {
 
   def f(x: Int): Int = {
-    if (x == 9) {
+    if (x === 9) {
       0
     } else {
       x + 1
     }
   }
 }
+
+//TODO: can these be collapsed
+case class CicRecipe(ingredients: List[UiItem], result: UiItem, count: Short) // TODO ingredients or less enforcement 2 x 2 matrix
+case class ShapelessCicRecipe(ingredients: List[UiItem], result: UiItem, count: Short) // TODO ingredients or less  enforcement 2 x 2 matrix
+case class WorkbenchRecipe(ingredients: List[UiItem], result: UiItem, count: Short) // TODO ingredient or less enforcement 3 x 3 matrix
+case class ShapelessRecipe(ingredients: List[UiItem], result: UiItem, count: Short) // TODO ingredient or less enforcement 3 x 3 matrix
 
 class Inventory extends Serializable {
 
@@ -34,7 +41,7 @@ class Inventory extends Serializable {
 
   @transient var g2: Graphics2D = _
 
-  val ids: Array[Short]  = Array.fill(40)(0)
+  val ids: Array[UiItem]  = Array.fill(40)(EmptyUiItem)
   val nums: Array[Short] = Array.fill(40)(0)
   val durs: Array[Short] = Array.fill(40)(0)
 
@@ -45,7 +52,11 @@ class Inventory extends Serializable {
 
   var valid: Boolean = false
 
-  val RECIPES: Map[String, Array2D[Short]] = createRecipies
+  //val RECIPES: Map[String, Array2D[UiItem]] = createRecipies
+  val cicRecipes: List[CicRecipe] = createCicRecipes
+  val shapelessCicRecipes: List[ShapelessCicRecipe] = createShapelessCicRecipes
+  val workbenchRecipes: List[WorkbenchRecipe] = createWorkbenchRecipes
+  val shapelessRecipes: List[ShapelessRecipe] = createShapelessRecipes
 
   //Begin Constructor
 
@@ -56,16 +67,16 @@ class Inventory extends Serializable {
   g2 = image.createGraphics()
   (0 until 10).foreach { x =>
     (0 until 4).foreach { y =>
-      if (x == 0 && y == 0) {
+      if (x === 0 && y === 0) {
         drawImage(g2, box_selected, x * 46 + 6, y * 46 + 6, x * 46 + 46, y * 46 + 46, 0, 0, 40, 40)
-        if (y == 0) {
+        if (y === 0) {
           g2.setFont(font)
           g2.setColor(Color.BLACK)
           g2.drawString(f(x) + " ", x * 46 + trolx, y * 46 + troly)
         }
       } else {
         drawImage(g2, box, x * 46 + 6, y * 46 + 6, x * 46 + 46, y * 46 + 46, 0, 0, 40, 40)
-        if (y == 0) {
+        if (y === 0) {
           g2.setFont(font)
           g2.setColor(Color.BLACK)
           g2.drawString(f(x) + " ", x * 46 + trolx, y * 46 + troly)
@@ -74,384 +85,354 @@ class Inventory extends Serializable {
     }
   }
 
-  def createRecipies: Map[String, Array2D[Short]] = {
-    import java.{ util => jul }
-    import scala.collection.JavaConverters._
-    val recipesTemp = new jul.HashMap[String, Array2D[Short]](1000)
-
-    val workbenchRecipies: Array2D[Short] = Array(
-      Array[Short](15, 15, 15, 0, 15, 0, 0, 15, 0, 154, 1), // Wooden Pick
-      Array[Short](2, 2, 2, 0, 15, 0, 0, 15, 0, 157, 1), // Stone Pick
-      Array[Short](29, 29, 29, 0, 15, 0, 0, 15, 0, 7, 1), // Copper Pick
-      Array[Short](30, 30, 30, 0, 15, 0, 0, 15, 0, 8, 1), // Iron Pick
-      Array[Short](31, 31, 31, 0, 15, 0, 0, 15, 0, 9, 1), // Silver Pick
-      Array[Short](32, 32, 32, 0, 15, 0, 0, 15, 0, 10, 1), // Gold Pick
-      Array[Short](60, 60, 60, 0, 15, 0, 0, 15, 0, 51, 1), // Zinc Pick
-      Array[Short](61, 61, 61, 0, 15, 0, 0, 15, 0, 54, 1), // Rhymestone Pick
-      Array[Short](62, 62, 62, 0, 15, 0, 0, 15, 0, 57, 1), // Obdurite Pick
-      Array[Short](73, 73, 73, 0, 15, 0, 0, 15, 0, 169, 1), // Magnetite Pick
-      Array[Short](69, 69, 69, 0, 15, 0, 0, 15, 0, 172, 1), // Irradium Pick
-      Array[Short](15, 15, 0, 15, 15, 0, 0, 15, 0, 155, 1), // Wooden Axe
-      Array[Short](0, 15, 15, 0, 15, 15, 0, 15, 0, 155, 1),
-      Array[Short](15, 15, 0, 15, 15, 0, 15, 0, 0, 155, 1),
-      Array[Short](0, 15, 15, 0, 15, 15, 0, 0, 15, 155, 1),
-      Array[Short](2, 2, 0, 2, 15, 0, 0, 15, 0, 158, 1), // Stone Axe
-      Array[Short](0, 2, 2, 0, 15, 2, 0, 15, 0, 158, 1),
-      Array[Short](2, 2, 0, 15, 2, 0, 15, 0, 0, 158, 1),
-      Array[Short](0, 2, 2, 0, 2, 15, 0, 0, 15, 158, 1),
-      Array[Short](29, 29, 0, 29, 15, 0, 0, 15, 0, 11, 1), // Copper Axe
-      Array[Short](0, 29, 29, 0, 15, 29, 0, 15, 0, 11, 1),
-      Array[Short](29, 29, 0, 15, 29, 0, 15, 0, 0, 11, 1),
-      Array[Short](0, 29, 29, 0, 29, 15, 0, 0, 15, 11, 1),
-      Array[Short](30, 30, 0, 30, 15, 0, 0, 15, 0, 11, 1), // Iron Axe
-      Array[Short](0, 30, 30, 0, 15, 30, 0, 15, 0, 11, 1),
-      Array[Short](30, 30, 0, 15, 30, 0, 15, 0, 0, 11, 1),
-      Array[Short](0, 30, 30, 0, 30, 15, 0, 0, 15, 11, 1),
-      Array[Short](31, 31, 0, 31, 15, 0, 0, 15, 0, 11, 1), // Silver Axe
-      Array[Short](0, 31, 31, 0, 15, 31, 0, 15, 0, 11, 1),
-      Array[Short](31, 31, 0, 15, 31, 0, 15, 0, 0, 11, 1),
-      Array[Short](0, 31, 31, 0, 31, 15, 0, 0, 15, 11, 1),
-      Array[Short](32, 32, 0, 32, 15, 0, 0, 15, 0, 11, 1), // Gold Axe
-      Array[Short](0, 32, 32, 0, 15, 32, 0, 15, 0, 11, 1),
-      Array[Short](32, 32, 0, 15, 32, 0, 15, 0, 0, 11, 1),
-      Array[Short](0, 32, 32, 0, 32, 15, 0, 0, 15, 11, 1),
-      Array[Short](60, 60, 0, 60, 15, 0, 0, 15, 0, 52, 1), // Zinc Axe
-      Array[Short](0, 60, 60, 0, 15, 60, 0, 15, 0, 52, 1),
-      Array[Short](60, 60, 0, 15, 60, 0, 15, 0, 0, 52, 1),
-      Array[Short](0, 60, 60, 0, 60, 15, 0, 0, 15, 52, 1),
-      Array[Short](61, 61, 0, 61, 15, 0, 0, 15, 0, 55, 1), // Rhymestone Axe
-      Array[Short](0, 61, 61, 0, 15, 61, 0, 15, 0, 55, 1),
-      Array[Short](61, 61, 0, 15, 61, 0, 15, 0, 0, 55, 1),
-      Array[Short](0, 61, 61, 0, 61, 15, 0, 0, 15, 55, 1),
-      Array[Short](62, 62, 0, 62, 15, 0, 0, 15, 0, 58, 1), // Obdurite Axe
-      Array[Short](0, 62, 62, 0, 15, 62, 0, 15, 0, 58, 1),
-      Array[Short](62, 62, 0, 15, 62, 0, 15, 0, 0, 58, 1),
-      Array[Short](0, 62, 62, 0, 62, 15, 0, 0, 15, 58, 1),
-      Array[Short](73, 73, 0, 73, 15, 0, 0, 15, 0, 170, 1), // Magnetite Axe
-      Array[Short](0, 73, 73, 0, 15, 73, 0, 15, 0, 170, 1),
-      Array[Short](73, 73, 0, 15, 73, 0, 15, 0, 0, 170, 1),
-      Array[Short](0, 73, 73, 0, 73, 15, 0, 0, 15, 170, 1),
-      Array[Short](69, 69, 0, 69, 15, 0, 0, 15, 0, 169, 1), // Irradium Axe
-      Array[Short](0, 69, 69, 0, 15, 69, 0, 15, 0, 169, 1),
-      Array[Short](69, 69, 0, 15, 69, 0, 15, 0, 0, 169, 1),
-      Array[Short](0, 69, 69, 0, 69, 15, 0, 0, 15, 169, 1),
-      Array[Short](15, 0, 0, 15, 0, 0, 15, 0, 0, 156, 1), // Wooden Sword
-      Array[Short](0, 15, 0, 0, 15, 0, 0, 15, 0, 156, 1),
-      Array[Short](0, 0, 15, 0, 0, 15, 0, 0, 15, 156, 1),
-      Array[Short](2, 0, 0, 2, 0, 0, 15, 0, 0, 159, 1), // Stone Sword
-      Array[Short](0, 2, 0, 0, 2, 0, 0, 15, 0, 159, 1),
-      Array[Short](0, 0, 2, 0, 0, 2, 0, 0, 15, 159, 1),
-      Array[Short](29, 0, 0, 29, 0, 0, 15, 0, 0, 16, 1), // Copper Sword
-      Array[Short](0, 29, 0, 0, 29, 0, 0, 15, 0, 16, 1),
-      Array[Short](0, 0, 29, 0, 0, 29, 0, 0, 15, 16, 1),
-      Array[Short](30, 0, 0, 30, 0, 0, 15, 0, 0, 17, 1), // Iron Sword
-      Array[Short](0, 30, 0, 0, 30, 0, 0, 15, 0, 17, 1),
-      Array[Short](0, 0, 30, 0, 0, 30, 0, 0, 15, 17, 1),
-      Array[Short](31, 0, 0, 31, 0, 0, 15, 0, 0, 18, 1), // Silver Sword
-      Array[Short](0, 31, 0, 0, 31, 0, 0, 15, 0, 18, 1),
-      Array[Short](0, 0, 31, 0, 0, 31, 0, 0, 15, 18, 1),
-      Array[Short](32, 0, 0, 32, 0, 0, 15, 0, 0, 19, 1), // Gold Sword
-      Array[Short](0, 32, 0, 0, 32, 0, 0, 15, 0, 19, 1),
-      Array[Short](0, 0, 32, 0, 0, 32, 0, 0, 15, 19, 1),
-      Array[Short](38, 0, 0, 38, 0, 0, 15, 0, 0, 19, 1), // Zinc Sword
-      Array[Short](0, 38, 0, 0, 38, 0, 0, 15, 0, 19, 1),
-      Array[Short](0, 0, 38, 0, 0, 38, 0, 0, 15, 19, 1),
-      Array[Short](39, 0, 0, 39, 0, 0, 15, 0, 0, 19, 1), // Rhymestone Sword
-      Array[Short](0, 39, 0, 0, 39, 0, 0, 15, 0, 19, 1),
-      Array[Short](0, 0, 39, 0, 0, 39, 0, 0, 15, 19, 1),
-      Array[Short](40, 0, 0, 40, 0, 0, 15, 0, 0, 19, 1), // Obdurite Sword
-      Array[Short](0, 40, 0, 0, 40, 0, 0, 15, 0, 19, 1),
-      Array[Short](0, 0, 40, 0, 0, 40, 0, 0, 15, 19, 1),
-      Array[Short](73, 0, 0, 73, 0, 0, 15, 0, 0, 171, 1), // Magnetite Sword
-      Array[Short](0, 73, 0, 0, 73, 0, 0, 15, 0, 171, 1),
-      Array[Short](0, 0, 73, 0, 0, 73, 0, 0, 15, 171, 1),
-      Array[Short](69, 0, 0, 69, 0, 0, 15, 0, 0, 174, 1), // Irradium Sword
-      Array[Short](0, 69, 0, 0, 69, 0, 0, 15, 0, 174, 1),
-      Array[Short](0, 0, 69, 0, 0, 69, 0, 0, 15, 174, 1),
-      Array[Short](63, 0, 63, 0, 63, 0, 0, 63, 0, 190, 1), // Wrench
-      Array[Short](15, 0, 0, 2, 0, 0, 175, 0, 0, 178, 1), // Lever
-      Array[Short](0, 15, 0, 0, 2, 0, 0, 175, 0, 178, 1),
-      Array[Short](0, 0, 15, 0, 0, 2, 0, 0, 175, 178, 1),
-      Array[Short](29, 29, 29, 29, 0, 29, 0, 0, 0, 105, 1), // Copper Helmet
-      Array[Short](0, 0, 0, 29, 29, 29, 29, 0, 29, 105, 1),
-      Array[Short](29, 0, 29, 29, 29, 29, 29, 29, 29, 106, 1), // Copper Chestplate
-      Array[Short](29, 29, 29, 29, 0, 29, 29, 0, 29, 107, 1), // Copper Leggings
-      Array[Short](29, 0, 29, 29, 0, 29, 0, 0, 0, 108, 1), // Copper Greaves
-      Array[Short](0, 0, 0, 29, 0, 29, 29, 0, 29, 108, 1),
-      Array[Short](30, 30, 30, 30, 0, 30, 0, 0, 0, 109, 1), // Iron Helmet
-      Array[Short](0, 0, 0, 30, 30, 30, 30, 0, 30, 109, 1),
-      Array[Short](30, 0, 30, 30, 30, 30, 30, 30, 30, 110, 1), // Iron Chestplate
-      Array[Short](30, 30, 30, 30, 0, 30, 30, 0, 30, 111, 1), // Iron Leggings
-      Array[Short](30, 0, 30, 30, 0, 30, 0, 0, 0, 112, 1), // Iron Greaves
-      Array[Short](0, 0, 0, 30, 0, 30, 30, 0, 30, 112, 1),
-      Array[Short](31, 31, 31, 31, 0, 31, 0, 0, 0, 113, 1), // Silver Helmet
-      Array[Short](0, 0, 0, 31, 31, 31, 31, 0, 31, 113, 1),
-      Array[Short](31, 0, 31, 31, 31, 31, 31, 31, 31, 114, 1), // Silver Chestplate
-      Array[Short](31, 31, 31, 31, 0, 31, 31, 0, 31, 115, 1), // Silver Leggings
-      Array[Short](31, 0, 31, 31, 0, 31, 0, 0, 0, 116, 1), // Silver Greaves
-      Array[Short](0, 0, 0, 31, 0, 31, 31, 0, 31, 116, 1),
-      Array[Short](32, 32, 32, 32, 0, 32, 0, 0, 0, 117, 1), // Gold Helmet
-      Array[Short](0, 0, 0, 32, 32, 32, 32, 0, 32, 117, 1),
-      Array[Short](32, 0, 32, 32, 32, 32, 32, 32, 32, 118, 1), // Gold Chestplate
-      Array[Short](32, 32, 32, 32, 0, 32, 32, 0, 32, 119, 1), // Gold Leggings
-      Array[Short](32, 0, 32, 32, 0, 32, 0, 0, 0, 120, 1), // Gold Greaves
-      Array[Short](0, 0, 0, 32, 0, 32, 32, 0, 32, 120, 1),
-      Array[Short](60, 60, 60, 60, 0, 60, 0, 0, 0, 121, 1), // Zinc Helmet
-      Array[Short](0, 0, 0, 60, 60, 60, 60, 0, 60, 121, 1),
-      Array[Short](60, 0, 60, 60, 60, 60, 60, 60, 60, 122, 1), // Zinc Chestplate
-      Array[Short](60, 60, 60, 60, 0, 60, 60, 0, 60, 123, 1), // Zinc Leggings
-      Array[Short](60, 0, 60, 60, 0, 60, 0, 0, 0, 124, 1), // Zinc Greaves
-      Array[Short](0, 0, 0, 60, 0, 60, 60, 0, 60, 124, 1),
-      Array[Short](61, 61, 61, 61, 0, 61, 0, 0, 0, 125, 1), // Rhymestone Helmet
-      Array[Short](0, 0, 0, 61, 61, 61, 61, 0, 61, 125, 1),
-      Array[Short](61, 0, 61, 61, 61, 61, 61, 61, 61, 126, 1), // Rhymestone Chestplate
-      Array[Short](61, 61, 61, 61, 0, 61, 61, 0, 61, 127, 1), // Rhymestone Leggings
-      Array[Short](61, 0, 61, 61, 0, 61, 0, 0, 0, 128, 1), // Rhymestone Greaves
-      Array[Short](0, 0, 0, 61, 0, 61, 61, 0, 61, 128, 1),
-      Array[Short](62, 62, 62, 62, 0, 62, 0, 0, 0, 129, 1), // Obdurite Helmet
-      Array[Short](0, 0, 0, 62, 62, 62, 62, 0, 62, 129, 1),
-      Array[Short](62, 0, 62, 62, 62, 62, 62, 62, 62, 130, 1), // Obdurite Chestplate
-      Array[Short](62, 62, 62, 62, 0, 62, 62, 0, 62, 131, 1), // Obdurite Leggings
-      Array[Short](62, 0, 62, 62, 0, 62, 0, 0, 0, 132, 1), // Obdurite Greaves
-      Array[Short](0, 0, 0, 62, 0, 62, 62, 0, 62, 132, 1),
-      Array[Short](63, 63, 63, 63, 0, 63, 0, 0, 0, 133, 1), // Aluminum Helmet
-      Array[Short](0, 0, 0, 63, 63, 63, 63, 0, 63, 133, 1),
-      Array[Short](63, 0, 63, 63, 63, 63, 63, 63, 63, 134, 1), // Aluminum Chestplate
-      Array[Short](63, 63, 63, 63, 0, 63, 63, 0, 63, 135, 1), // Aluminum Leggings
-      Array[Short](63, 0, 63, 63, 0, 63, 0, 0, 0, 136, 1), // Aluminum Greaves
-      Array[Short](0, 0, 0, 63, 0, 63, 63, 0, 63, 136, 1),
-      Array[Short](64, 64, 64, 64, 0, 64, 0, 0, 0, 137, 1), // Lead Helmet
-      Array[Short](0, 0, 0, 64, 64, 64, 64, 0, 64, 137, 1),
-      Array[Short](64, 0, 64, 64, 64, 64, 64, 64, 64, 138, 1), // Lead Chestplate
-      Array[Short](64, 64, 64, 64, 0, 64, 64, 0, 64, 139, 1), // Lead Leggings
-      Array[Short](64, 0, 64, 64, 0, 64, 0, 0, 0, 140, 1), // Lead Greaves
-      Array[Short](0, 0, 0, 64, 0, 64, 64, 0, 64, 140, 1),
-      Array[Short](15, 15, 15, 15, 0, 15, 15, 15, 15, 21, 1), // Wooden Chest
-      Array[Short](2, 2, 2, 2, 21, 2, 2, 2, 2, 22, 1), // Stone Chest
-      Array[Short](29, 29, 29, 29, 22, 29, 29, 29, 29, 23, 1), // Copper Chest
-      Array[Short](30, 30, 30, 30, 22, 30, 30, 30, 30, 24, 1), // Iron Chest
-      Array[Short](31, 31, 31, 31, 22, 31, 31, 31, 31, 25, 1), // Silver Chest
-      Array[Short](32, 32, 32, 32, 22, 32, 32, 32, 32, 26, 1), // Gold Chest
-      Array[Short](60, 60, 60, 60, 22, 60, 60, 60, 60, 151, 1), // Zinc Chest
-      Array[Short](61, 61, 61, 61, 22, 61, 61, 61, 61, 152, 1), // Rhymestone Chest
-      Array[Short](62, 62, 62, 62, 22, 62, 62, 62, 62, 153, 1), // Obdurite Chest
-      Array[Short](76, 76, 76, 76, 34, 76, 76, 175, 76, 177, 1), // Zythium Lamp
-      Array[Short](76, 76, 76, 175, 44, 175, 76, 76, 76, 180, 1), // Zythium Amplifier
-      Array[Short](76, 76, 76, 44, 175, 44, 76, 76, 76, 181, 1), // Zythium Inverter
-      Array[Short](76, 175, 76, 175, 175, 175, 76, 175, 76, 186, 1), // Zythium Delayer
-      Array[Short](15, 15, 0, 15, 15, 0, 0, 0, 0, 20, 1), // Workbench
-      Array[Short](0, 15, 15, 0, 15, 15, 0, 0, 0, 20, 1),
-      Array[Short](0, 0, 0, 15, 15, 0, 15, 15, 0, 20, 1),
-      Array[Short](0, 0, 0, 0, 15, 15, 0, 15, 15, 20, 1),
-      Array[Short](160, 160, 0, 160, 160, 0, 0, 0, 0, 15, 1), // Bark -> Wood
-      Array[Short](0, 160, 160, 0, 160, 160, 0, 0, 0, 15, 1),
-      Array[Short](0, 0, 0, 160, 160, 0, 160, 160, 0, 15, 1),
-      Array[Short](0, 0, 0, 0, 160, 160, 0, 160, 160, 15, 1),
-      Array[Short](2, 2, 0, 2, 2, 0, 0, 0, 0, 161, 4), // Cobblestone
-      Array[Short](0, 2, 2, 0, 2, 2, 0, 0, 0, 161, 4),
-      Array[Short](0, 0, 0, 2, 2, 0, 2, 2, 0, 161, 4),
-      Array[Short](0, 0, 0, 0, 2, 2, 0, 2, 2, 161, 4),
-      Array[Short](162, 162, 0, 162, 162, 0, 0, 0, 0, 163, 4), // Chiseled Cobblestone
-      Array[Short](0, 162, 162, 0, 162, 162, 0, 0, 0, 163, 4),
-      Array[Short](0, 0, 0, 162, 162, 0, 162, 162, 0, 163, 4),
-      Array[Short](0, 0, 0, 0, 162, 162, 0, 162, 162, 163, 4),
-      Array[Short](163, 163, 0, 163, 163, 0, 0, 0, 0, 164, 4), // Stone Bricks
-      Array[Short](0, 163, 163, 0, 163, 163, 0, 0, 0, 164, 4),
-      Array[Short](0, 0, 0, 163, 163, 0, 163, 163, 0, 164, 4),
-      Array[Short](0, 0, 0, 0, 163, 163, 0, 163, 163, 164, 4),
-      Array[Short](2, 2, 2, 2, 0, 2, 2, 2, 2, 27, 1), // Furnace
-      Array[Short](67, 67, 67, 0, 0, 0, 0, 0, 0, 175, 10), // Zythium Wire
-      Array[Short](0, 0, 0, 67, 67, 67, 0, 0, 0, 175, 20),
-      Array[Short](0, 0, 0, 0, 0, 0, 67, 67, 67, 175, 20),
-      Array[Short](2, 0, 0, 0, 2, 0, 0, 0, 0, 33, 1), // Stone Lighter
-      Array[Short](0, 2, 0, 0, 0, 2, 0, 0, 0, 33, 1),
-      Array[Short](0, 0, 0, 2, 0, 0, 0, 2, 0, 33, 1),
-      Array[Short](0, 0, 0, 0, 2, 0, 0, 0, 2, 33, 1),
-      Array[Short](0, 2, 0, 2, 0, 0, 0, 0, 0, 33, 1),
-      Array[Short](0, 0, 2, 0, 2, 0, 0, 0, 0, 33, 1),
-      Array[Short](0, 0, 0, 0, 2, 0, 2, 0, 0, 33, 1),
-      Array[Short](0, 0, 0, 0, 0, 2, 0, 2, 0, 33, 1),
-      Array[Short](15, 0, 0, 15, 0, 0, 0, 0, 0, 35, 4), // Wooden Torch
-      Array[Short](0, 15, 0, 0, 15, 0, 0, 0, 0, 35, 4),
-      Array[Short](0, 0, 15, 0, 0, 15, 0, 0, 0, 35, 4),
-      Array[Short](0, 0, 0, 15, 0, 0, 15, 0, 0, 35, 4),
-      Array[Short](0, 0, 0, 0, 15, 0, 0, 15, 0, 35, 4),
-      Array[Short](0, 0, 0, 0, 0, 15, 0, 0, 15, 35, 4),
-      Array[Short](28, 0, 0, 15, 0, 0, 0, 0, 0, 36, 4), // Coal Torch
-      Array[Short](0, 28, 0, 0, 15, 0, 0, 0, 0, 36, 4),
-      Array[Short](0, 0, 28, 0, 0, 15, 0, 0, 0, 36, 4),
-      Array[Short](0, 0, 0, 28, 0, 0, 15, 0, 0, 36, 4),
-      Array[Short](0, 0, 0, 0, 28, 0, 0, 15, 0, 36, 4),
-      Array[Short](0, 0, 0, 0, 0, 28, 0, 0, 15, 36, 4),
-      Array[Short](34, 0, 0, 15, 0, 0, 0, 0, 0, 37, 4), // Lumenstone Torch
-      Array[Short](0, 34, 0, 0, 15, 0, 0, 0, 0, 37, 4),
-      Array[Short](0, 0, 34, 0, 0, 15, 0, 0, 0, 37, 4),
-      Array[Short](0, 0, 0, 34, 0, 0, 15, 0, 0, 37, 4),
-      Array[Short](0, 0, 0, 0, 34, 0, 0, 15, 0, 37, 4),
-      Array[Short](0, 0, 0, 0, 0, 34, 0, 0, 15, 37, 4),
-      Array[Short](44, 0, 0, 15, 0, 0, 0, 0, 0, 176, 4), // Zythium Torch
-      Array[Short](0, 44, 0, 0, 15, 0, 0, 0, 0, 176, 4),
-      Array[Short](0, 0, 44, 0, 0, 15, 0, 0, 0, 176, 4),
-      Array[Short](0, 0, 0, 44, 0, 0, 15, 0, 0, 176, 4),
-      Array[Short](0, 0, 0, 0, 44, 0, 0, 15, 0, 176, 4),
-      Array[Short](0, 0, 0, 0, 0, 44, 0, 0, 15, 176, 4),
-      Array[Short](15, 15, 0, 0, 0, 0, 0, 0, 0, 183, 1), // Wooden Pressure Plate
-      Array[Short](0, 15, 15, 0, 0, 0, 0, 0, 0, 183, 1),
-      Array[Short](0, 0, 0, 15, 15, 0, 0, 0, 0, 183, 1),
-      Array[Short](0, 0, 0, 0, 15, 15, 0, 0, 0, 183, 1),
-      Array[Short](0, 0, 0, 0, 0, 0, 15, 15, 0, 183, 1),
-      Array[Short](0, 0, 0, 0, 0, 0, 0, 15, 15, 183, 1),
-      Array[Short](2, 2, 0, 0, 0, 0, 0, 0, 0, 184, 1), // Stone Pressure Plate
-      Array[Short](0, 2, 2, 0, 0, 0, 0, 0, 0, 184, 1),
-      Array[Short](0, 0, 0, 2, 2, 0, 0, 0, 0, 184, 1),
-      Array[Short](0, 0, 0, 0, 2, 2, 0, 0, 0, 184, 1),
-      Array[Short](0, 0, 0, 0, 0, 0, 2, 2, 0, 184, 1),
-      Array[Short](0, 0, 0, 0, 0, 0, 0, 2, 2, 184, 1),
-      Array[Short](162, 44, 162, 0, 175, 0, 0, 0, 0, 185, 1), // Zythium Pressure Plate
-      Array[Short](0, 0, 0, 162, 44, 162, 0, 175, 0, 185, 1)
+  def createCicRecipes: List[CicRecipe] =
+    List(
+      CicRecipe(WoodUiItem :: WoodUiItem :: WoodUiItem :: WoodUiItem :: Nil, WorkbenchUiItem, 1), // Workbench
+      CicRecipe(BarkUiItem :: BarkUiItem :: BarkUiItem :: BarkUiItem :: Nil, WoodUiItem, 1), // Bark -> Wood
+      CicRecipe(StoneUiItem :: StoneUiItem :: StoneUiItem :: StoneUiItem :: Nil, CobblestoneUiItem, 4), // Cobblestone
+      CicRecipe(ChiseledStoneUiItem :: ChiseledStoneUiItem :: ChiseledStoneUiItem :: ChiseledStoneUiItem :: Nil, ChiseledCobblestoneUiItem, 4), // Chiseled Cobblestone
+      CicRecipe(ChiseledCobblestoneUiItem :: ChiseledCobblestoneUiItem :: ChiseledCobblestoneUiItem :: ChiseledCobblestoneUiItem :: Nil, StoneBricksUiItem, 4), // Stone Bricks
+      CicRecipe(StoneUiItem :: EmptyUiItem :: EmptyUiItem :: StoneUiItem :: Nil, StoneLighterUiItem, 1), // Stone Lighter
+      CicRecipe(EmptyUiItem :: StoneUiItem :: StoneUiItem :: EmptyUiItem :: Nil, StoneLighterUiItem, 1),
+      CicRecipe(WoodUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: Nil, WoodenTorchUiItem, 4), // Wooden Torch
+      CicRecipe(EmptyUiItem :: WoodUiItem :: EmptyUiItem :: WoodUiItem :: Nil, WoodenTorchUiItem, 4),
+      CicRecipe(CoalUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: Nil, CoalTorchUiItem, 4), // Coal Torch
+      CicRecipe(EmptyUiItem :: CoalUiItem :: EmptyUiItem :: WoodUiItem :: Nil, CoalTorchUiItem, 4),
+      CicRecipe(LumenstoneUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: Nil, LumenstoneTorchUiItem, 4), // Lumenstone Torch
+      CicRecipe(EmptyUiItem :: LumenstoneUiItem :: EmptyUiItem :: WoodUiItem :: Nil, LumenstoneTorchUiItem, 4),
+      CicRecipe(ZythiumOreUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: Nil, ZythiumTorchUiItem, 4), // Zythium Torch
+      CicRecipe(EmptyUiItem :: ZythiumOreUiItem :: EmptyUiItem :: WoodUiItem :: Nil, ZythiumTorchUiItem, 4),
+      CicRecipe(WoodUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: Nil, WoodenPressurePlateUiItem, 1), // Wooden Pressure Plate
+      CicRecipe(EmptyUiItem :: EmptyUiItem :: WoodUiItem :: WoodUiItem :: Nil, WoodenPressurePlateUiItem, 1),
+      CicRecipe(StoneUiItem :: StoneUiItem :: EmptyUiItem :: EmptyUiItem :: Nil, StonePressurePlateUiItem, 1), // Stone Pressure Plate
+      CicRecipe(EmptyUiItem :: EmptyUiItem :: StoneUiItem :: StoneUiItem :: Nil, StonePressurePlateUiItem, 1)
     )
 
-    recipesTemp.put("workbench", workbenchRecipies)
 
-    val cicRecipies: Array2D[Short] = Array(
-      Array[Short](15, 15, 15, 15, 20, 1), // Workbench
-      Array[Short](160, 160, 160, 160, 15, 1), // Bark -> Wood
-      Array[Short](2, 2, 2, 2, 161, 4), // Cobblestone
-      Array[Short](162, 162, 162, 162, 163, 4), // Chiseled Cobblestone
-      Array[Short](163, 163, 163, 163, 164, 4), // Stone Bricks
-      Array[Short](2, 0, 0, 2, 33, 1), // Stone Lighter
-      Array[Short](0, 2, 2, 0, 33, 1),
-      Array[Short](15, 0, 15, 0, 35, 4), // Wooden Torch
-      Array[Short](0, 15, 0, 15, 35, 4),
-      Array[Short](28, 0, 15, 0, 36, 4), // Coal Torch
-      Array[Short](0, 28, 0, 15, 36, 4),
-      Array[Short](34, 0, 15, 0, 37, 4), // Lumenstone Torch
-      Array[Short](0, 34, 0, 15, 37, 4),
-      Array[Short](44, 0, 15, 0, 176, 4), // Zythium Torch
-      Array[Short](0, 44, 0, 15, 176, 4),
-      Array[Short](15, 15, 0, 0, 183, 1), // Wooden Pressure Plate
-      Array[Short](0, 0, 15, 15, 183, 1),
-      Array[Short](2, 2, 0, 0, 184, 1), // Stone Pressure Plate
-      Array[Short](0, 0, 2, 2, 184, 1)
-    )
+  def createShapelessCicRecipes: List[ShapelessCicRecipe] = List( // TODO: don't really need a separate create function, just do lazy val
+    ShapelessCicRecipe(WoodUiItem :: VarnishUiItem :: EmptyUiItem :: EmptyUiItem :: Nil, VarnishedWoodUiItem, 1),
+    ShapelessCicRecipe(ChiseledStoneUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: Nil, ButtonUiItem, 1)
+  )
 
-    recipesTemp.put("cic", cicRecipies)
+  def createWorkbenchRecipes: List[WorkbenchRecipe] = List(
+    WorkbenchRecipe(WoodUiItem :: WoodUiItem :: WoodUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: Nil, WoodenPickUiItem, 1), // Wooden Pick
+    WorkbenchRecipe(StoneUiItem :: StoneUiItem :: StoneUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: Nil, StonePickUiItem, 1), // Stone Pick
+    WorkbenchRecipe(CopperIngotUiItem :: CopperIngotUiItem :: CopperIngotUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: Nil, CopperPickUiItem, 1), // Copper Pick
+    WorkbenchRecipe(IronIngotUiItem :: IronIngotUiItem :: IronIngotUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: Nil, IronPickUiItem, 1), // Iron Pick
+    WorkbenchRecipe(SilverIngotUiItem :: SilverIngotUiItem :: SilverIngotUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: Nil, SilverPickUiItem, 1), // Silver Pick
+    WorkbenchRecipe(GoldIngotUiItem :: GoldIngotUiItem :: GoldIngotUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: Nil, GoldPickUiItem, 1), // Gold Pick
+    WorkbenchRecipe(ZincIngotUiItem :: ZincIngotUiItem :: ZincIngotUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: Nil, ZincPickUiItem, 1), // Zinc Pick
+    WorkbenchRecipe(RhymestoneIngotUiItem :: RhymestoneIngotUiItem :: RhymestoneIngotUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: Nil, RhymestonePickUiItem, 1), // Rhymestone Pick
+    WorkbenchRecipe(ObduriteIngotUiItem :: ObduriteIngotUiItem :: ObduriteIngotUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: Nil, ObduritePickUiItem, 1), // Obdurite Pick
+    WorkbenchRecipe(MagnetiteIngotUiItem :: MagnetiteIngotUiItem :: MagnetiteIngotUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: Nil, MagnetitePickUiItem, 1), // Magnetite Pick
+    WorkbenchRecipe(IrradiumIngotUiItem :: IrradiumIngotUiItem :: IrradiumIngotUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: Nil, IrradiumPickUiItem, 1), // Irradium Pick
+    WorkbenchRecipe(WoodUiItem :: WoodUiItem :: EmptyUiItem :: WoodUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: Nil, WoodenAxeUiItem, 1), // Wooden Axe
+    WorkbenchRecipe(EmptyUiItem :: WoodUiItem :: WoodUiItem :: EmptyUiItem :: WoodUiItem :: WoodUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: Nil, WoodenAxeUiItem, 1),
+    WorkbenchRecipe(WoodUiItem :: WoodUiItem :: EmptyUiItem :: WoodUiItem :: WoodUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: Nil, WoodenAxeUiItem, 1),
+    WorkbenchRecipe(EmptyUiItem :: WoodUiItem :: WoodUiItem :: EmptyUiItem :: WoodUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: Nil, WoodenAxeUiItem, 1),
+    WorkbenchRecipe(StoneUiItem :: StoneUiItem :: EmptyUiItem :: StoneUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: Nil, StoneAxeUiItem, 1), // Stone Axe
+    WorkbenchRecipe(EmptyUiItem :: StoneUiItem :: StoneUiItem :: EmptyUiItem :: WoodUiItem :: StoneUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: Nil, StoneAxeUiItem, 1),
+    WorkbenchRecipe(StoneUiItem :: StoneUiItem :: EmptyUiItem :: WoodUiItem :: StoneUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: Nil, StoneAxeUiItem, 1),
+    WorkbenchRecipe(EmptyUiItem :: StoneUiItem :: StoneUiItem :: EmptyUiItem :: StoneUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: Nil, StoneAxeUiItem, 1),
+    WorkbenchRecipe(CopperIngotUiItem :: CopperIngotUiItem :: EmptyUiItem :: CopperIngotUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: Nil, CopperAxeUiItem, 1), // Copper Axe
+    WorkbenchRecipe(EmptyUiItem :: CopperIngotUiItem :: CopperIngotUiItem :: EmptyUiItem :: WoodUiItem :: CopperIngotUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: Nil, CopperAxeUiItem, 1),
+    WorkbenchRecipe(CopperIngotUiItem :: CopperIngotUiItem :: EmptyUiItem :: WoodUiItem :: CopperIngotUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: Nil, CopperAxeUiItem, 1),
+    WorkbenchRecipe(EmptyUiItem :: CopperIngotUiItem :: CopperIngotUiItem :: EmptyUiItem :: CopperIngotUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: Nil, CopperAxeUiItem, 1),
+    WorkbenchRecipe(IronIngotUiItem :: IronIngotUiItem :: EmptyUiItem :: IronIngotUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: Nil, CopperAxeUiItem, 1), // Iron Axe
+    WorkbenchRecipe(EmptyUiItem :: IronIngotUiItem :: IronIngotUiItem :: EmptyUiItem :: WoodUiItem :: IronIngotUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: Nil, CopperAxeUiItem, 1),
+    WorkbenchRecipe(IronIngotUiItem :: IronIngotUiItem :: EmptyUiItem :: WoodUiItem :: IronIngotUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: Nil, CopperAxeUiItem, 1),
+    WorkbenchRecipe(EmptyUiItem :: IronIngotUiItem :: IronIngotUiItem :: EmptyUiItem :: IronIngotUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: Nil, CopperAxeUiItem, 1),
+    WorkbenchRecipe(SilverIngotUiItem :: SilverIngotUiItem :: EmptyUiItem :: SilverIngotUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: Nil, CopperAxeUiItem, 1), // Silver Axe
+    WorkbenchRecipe(EmptyUiItem :: SilverIngotUiItem :: SilverIngotUiItem :: EmptyUiItem :: WoodUiItem :: SilverIngotUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: Nil, CopperAxeUiItem, 1),
+    WorkbenchRecipe(SilverIngotUiItem :: SilverIngotUiItem :: EmptyUiItem :: WoodUiItem :: SilverIngotUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: Nil, CopperAxeUiItem, 1),
+    WorkbenchRecipe(EmptyUiItem :: SilverIngotUiItem :: SilverIngotUiItem :: EmptyUiItem :: SilverIngotUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: Nil, CopperAxeUiItem, 1),
+    WorkbenchRecipe(GoldIngotUiItem :: GoldIngotUiItem :: EmptyUiItem :: GoldIngotUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: Nil, CopperAxeUiItem, 1), // Gold Axe
+    WorkbenchRecipe(EmptyUiItem :: GoldIngotUiItem :: GoldIngotUiItem :: EmptyUiItem :: WoodUiItem :: GoldIngotUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: Nil, CopperAxeUiItem, 1),
+    WorkbenchRecipe(GoldIngotUiItem :: GoldIngotUiItem :: EmptyUiItem :: WoodUiItem :: GoldIngotUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: Nil, CopperAxeUiItem, 1),
+    WorkbenchRecipe(EmptyUiItem :: GoldIngotUiItem :: GoldIngotUiItem :: EmptyUiItem :: GoldIngotUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: Nil, CopperAxeUiItem, 1),
+    WorkbenchRecipe(ZincIngotUiItem :: ZincIngotUiItem :: EmptyUiItem :: ZincIngotUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: Nil, ZincAxeUiItem, 1), // Zinc Axe
+    WorkbenchRecipe(EmptyUiItem :: ZincIngotUiItem :: ZincIngotUiItem :: EmptyUiItem :: WoodUiItem :: ZincIngotUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: Nil, ZincAxeUiItem, 1),
+    WorkbenchRecipe(ZincIngotUiItem :: ZincIngotUiItem :: EmptyUiItem :: WoodUiItem :: ZincIngotUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: Nil, ZincAxeUiItem, 1),
+    WorkbenchRecipe(EmptyUiItem :: ZincIngotUiItem :: ZincIngotUiItem :: EmptyUiItem :: ZincIngotUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: Nil, ZincAxeUiItem, 1),
+    WorkbenchRecipe(RhymestoneIngotUiItem :: RhymestoneIngotUiItem :: EmptyUiItem :: RhymestoneIngotUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: Nil, RhymestoneAxeUiItem, 1), // Rhymestone Axe
+    WorkbenchRecipe(EmptyUiItem :: RhymestoneIngotUiItem :: RhymestoneIngotUiItem :: EmptyUiItem :: WoodUiItem :: RhymestoneIngotUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: Nil, RhymestoneAxeUiItem, 1),
+    WorkbenchRecipe(RhymestoneIngotUiItem :: RhymestoneIngotUiItem :: EmptyUiItem :: WoodUiItem :: RhymestoneIngotUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: Nil, RhymestoneAxeUiItem, 1),
+    WorkbenchRecipe(EmptyUiItem :: RhymestoneIngotUiItem :: RhymestoneIngotUiItem :: EmptyUiItem :: RhymestoneIngotUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: Nil, RhymestoneAxeUiItem, 1),
+    WorkbenchRecipe(ObduriteIngotUiItem :: ObduriteIngotUiItem :: EmptyUiItem :: ObduriteIngotUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: Nil, ObduriteAxeUiItem, 1), // Obdurite Axe
+    WorkbenchRecipe(EmptyUiItem :: ObduriteIngotUiItem :: ObduriteIngotUiItem :: EmptyUiItem :: WoodUiItem :: ObduriteIngotUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: Nil, ObduriteAxeUiItem, 1),
+    WorkbenchRecipe(ObduriteIngotUiItem :: ObduriteIngotUiItem :: EmptyUiItem :: WoodUiItem :: ObduriteIngotUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: Nil, ObduriteAxeUiItem, 1),
+    WorkbenchRecipe(EmptyUiItem :: ObduriteIngotUiItem :: ObduriteIngotUiItem :: EmptyUiItem :: ObduriteIngotUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: Nil, ObduriteAxeUiItem, 1),
+    WorkbenchRecipe(MagnetiteIngotUiItem :: MagnetiteIngotUiItem :: EmptyUiItem :: MagnetiteIngotUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: Nil, MagnetiteAxeUiItem, 1), // Magnetite Axe
+    WorkbenchRecipe(EmptyUiItem :: MagnetiteIngotUiItem :: MagnetiteIngotUiItem :: EmptyUiItem :: WoodUiItem :: MagnetiteIngotUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: Nil, MagnetiteAxeUiItem, 1),
+    WorkbenchRecipe(MagnetiteIngotUiItem :: MagnetiteIngotUiItem :: EmptyUiItem :: WoodUiItem :: MagnetiteIngotUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: Nil, MagnetiteAxeUiItem, 1),
+    WorkbenchRecipe(EmptyUiItem :: MagnetiteIngotUiItem :: MagnetiteIngotUiItem :: EmptyUiItem :: MagnetiteIngotUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: Nil, MagnetiteAxeUiItem, 1),
+    WorkbenchRecipe(IrradiumIngotUiItem :: IrradiumIngotUiItem :: EmptyUiItem :: IrradiumIngotUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: Nil, MagnetitePickUiItem, 1), // Irradium Axe
+    WorkbenchRecipe(EmptyUiItem :: IrradiumIngotUiItem :: IrradiumIngotUiItem :: EmptyUiItem :: WoodUiItem :: IrradiumIngotUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: Nil, MagnetitePickUiItem, 1),
+    WorkbenchRecipe(IrradiumIngotUiItem :: IrradiumIngotUiItem :: EmptyUiItem :: WoodUiItem :: IrradiumIngotUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: Nil, MagnetitePickUiItem, 1),
+    WorkbenchRecipe(EmptyUiItem :: IrradiumIngotUiItem :: IrradiumIngotUiItem :: EmptyUiItem :: IrradiumIngotUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: Nil, MagnetitePickUiItem, 1),
+    WorkbenchRecipe(WoodUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: Nil, WoodenSwordUiItem, 1), // Wooden Sword
+    WorkbenchRecipe(EmptyUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: Nil, WoodenSwordUiItem, 1),
+    WorkbenchRecipe(EmptyUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: Nil, WoodenSwordUiItem, 1),
+    WorkbenchRecipe(StoneUiItem :: EmptyUiItem :: EmptyUiItem :: StoneUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: Nil, StoneSwordUiItem, 1), // Stone Sword
+    WorkbenchRecipe(EmptyUiItem :: StoneUiItem :: EmptyUiItem :: EmptyUiItem :: StoneUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: Nil, StoneSwordUiItem, 1),
+    WorkbenchRecipe(EmptyUiItem :: EmptyUiItem :: StoneUiItem :: EmptyUiItem :: EmptyUiItem :: StoneUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: Nil, StoneSwordUiItem, 1),
+    WorkbenchRecipe(CopperIngotUiItem :: EmptyUiItem :: EmptyUiItem :: CopperIngotUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: Nil, CopperSwordUiItem, 1), // Copper Sword
+    WorkbenchRecipe(EmptyUiItem :: CopperIngotUiItem :: EmptyUiItem :: EmptyUiItem :: CopperIngotUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: Nil, CopperSwordUiItem, 1),
+    WorkbenchRecipe(EmptyUiItem :: EmptyUiItem :: CopperIngotUiItem :: EmptyUiItem :: EmptyUiItem :: CopperIngotUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: Nil, CopperSwordUiItem, 1),
+    WorkbenchRecipe(IronIngotUiItem :: EmptyUiItem :: EmptyUiItem :: IronIngotUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: Nil, IronSwordUiItem, 1), // Iron Sword
+    WorkbenchRecipe(EmptyUiItem :: IronIngotUiItem :: EmptyUiItem :: EmptyUiItem :: IronIngotUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: Nil, IronSwordUiItem, 1),
+    WorkbenchRecipe(EmptyUiItem :: EmptyUiItem :: IronIngotUiItem :: EmptyUiItem :: EmptyUiItem :: IronIngotUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: Nil, IronSwordUiItem, 1),
+    WorkbenchRecipe(SilverIngotUiItem :: EmptyUiItem :: EmptyUiItem :: SilverIngotUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: Nil, SilverSwordUiItem, 1), // Silver Sword
+    WorkbenchRecipe(EmptyUiItem :: SilverIngotUiItem :: EmptyUiItem :: EmptyUiItem :: SilverIngotUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: Nil, SilverSwordUiItem, 1),
+    WorkbenchRecipe(EmptyUiItem :: EmptyUiItem :: SilverIngotUiItem :: EmptyUiItem :: EmptyUiItem :: SilverIngotUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: Nil, SilverSwordUiItem, 1),
+    WorkbenchRecipe(GoldIngotUiItem :: EmptyUiItem :: EmptyUiItem :: GoldIngotUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: Nil, GoldSwordUiItem, 1), // Gold Sword
+    WorkbenchRecipe(EmptyUiItem :: GoldIngotUiItem :: EmptyUiItem :: EmptyUiItem :: GoldIngotUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: Nil, GoldSwordUiItem, 1),
+    WorkbenchRecipe(EmptyUiItem :: EmptyUiItem :: GoldIngotUiItem :: EmptyUiItem :: EmptyUiItem :: GoldIngotUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: Nil, GoldSwordUiItem, 1),
+    WorkbenchRecipe(ZincOreUiItem :: EmptyUiItem :: EmptyUiItem :: ZincOreUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: Nil, GoldSwordUiItem, 1), // Zinc Sword
+    WorkbenchRecipe(EmptyUiItem :: ZincOreUiItem :: EmptyUiItem :: EmptyUiItem :: ZincOreUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: Nil, GoldSwordUiItem, 1),
+    WorkbenchRecipe(EmptyUiItem :: EmptyUiItem :: ZincOreUiItem :: EmptyUiItem :: EmptyUiItem :: ZincOreUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: Nil, GoldSwordUiItem, 1),
+    WorkbenchRecipe(RhymestoneOreUiItem :: EmptyUiItem :: EmptyUiItem :: RhymestoneOreUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: Nil, GoldSwordUiItem, 1), // Rhymestone Sword
+    WorkbenchRecipe(EmptyUiItem :: RhymestoneOreUiItem :: EmptyUiItem :: EmptyUiItem :: RhymestoneOreUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: Nil, GoldSwordUiItem, 1),
+    WorkbenchRecipe(EmptyUiItem :: EmptyUiItem :: RhymestoneOreUiItem :: EmptyUiItem :: EmptyUiItem :: RhymestoneOreUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: Nil, GoldSwordUiItem, 1),
+    WorkbenchRecipe(ObduriteOreUiItem :: EmptyUiItem :: EmptyUiItem :: ObduriteOreUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: Nil, GoldSwordUiItem, 1), // Obdurite Sword
+    WorkbenchRecipe(EmptyUiItem :: ObduriteOreUiItem :: EmptyUiItem :: EmptyUiItem :: ObduriteOreUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: Nil, GoldSwordUiItem, 1),
+    WorkbenchRecipe(EmptyUiItem :: EmptyUiItem :: ObduriteOreUiItem :: EmptyUiItem :: EmptyUiItem :: ObduriteOreUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: Nil, GoldSwordUiItem, 1),
+    WorkbenchRecipe(MagnetiteIngotUiItem :: EmptyUiItem :: EmptyUiItem :: MagnetiteIngotUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: Nil, MagnetiteSwordUiItem, 1), // Magnetite Sword
+    WorkbenchRecipe(EmptyUiItem :: MagnetiteIngotUiItem :: EmptyUiItem :: EmptyUiItem :: MagnetiteIngotUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: Nil, MagnetiteSwordUiItem, 1),
+    WorkbenchRecipe(EmptyUiItem :: EmptyUiItem :: MagnetiteIngotUiItem :: EmptyUiItem :: EmptyUiItem :: MagnetiteIngotUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: Nil, MagnetiteSwordUiItem, 1),
+    WorkbenchRecipe(IrradiumIngotUiItem :: EmptyUiItem :: EmptyUiItem :: IrradiumIngotUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: Nil, IrradiumSwordUiItem, 1), // Irradium Sword
+    WorkbenchRecipe(EmptyUiItem :: IrradiumIngotUiItem :: EmptyUiItem :: EmptyUiItem :: IrradiumIngotUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: Nil, IrradiumSwordUiItem, 1),
+    WorkbenchRecipe(EmptyUiItem :: EmptyUiItem :: IrradiumIngotUiItem :: EmptyUiItem :: EmptyUiItem :: IrradiumIngotUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: Nil, IrradiumSwordUiItem, 1),
+    WorkbenchRecipe(AluminumIngotUiItem :: EmptyUiItem :: AluminumIngotUiItem :: EmptyUiItem :: AluminumIngotUiItem :: EmptyUiItem :: EmptyUiItem :: AluminumIngotUiItem :: EmptyUiItem :: Nil, WrenchUiItem, 1), // Wrench
+    WorkbenchRecipe(WoodUiItem :: EmptyUiItem :: EmptyUiItem :: StoneUiItem :: EmptyUiItem :: EmptyUiItem :: ZythiumWireUiItem :: EmptyUiItem :: EmptyUiItem :: Nil, LeverUiItem, 1), // Lever
+    WorkbenchRecipe(EmptyUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: StoneUiItem :: EmptyUiItem :: EmptyUiItem :: ZythiumWireUiItem :: EmptyUiItem :: Nil, LeverUiItem, 1),
+    WorkbenchRecipe(EmptyUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: StoneUiItem :: EmptyUiItem :: EmptyUiItem :: ZythiumWireUiItem :: Nil, LeverUiItem, 1),
+    WorkbenchRecipe(CopperIngotUiItem :: CopperIngotUiItem :: CopperIngotUiItem :: CopperIngotUiItem :: EmptyUiItem :: CopperIngotUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: Nil, CopperHelmetUiItem, 1), // Copper Helmet
+    WorkbenchRecipe(EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: CopperIngotUiItem :: CopperIngotUiItem :: CopperIngotUiItem :: CopperIngotUiItem :: EmptyUiItem :: CopperIngotUiItem :: Nil, CopperHelmetUiItem, 1),
+    WorkbenchRecipe(CopperIngotUiItem :: EmptyUiItem :: CopperIngotUiItem :: CopperIngotUiItem :: CopperIngotUiItem :: CopperIngotUiItem :: CopperIngotUiItem :: CopperIngotUiItem :: CopperIngotUiItem :: Nil, CopperChestplateUiItem, 1), // Copper Chestplate
+    WorkbenchRecipe(CopperIngotUiItem :: CopperIngotUiItem :: CopperIngotUiItem :: CopperIngotUiItem :: EmptyUiItem :: CopperIngotUiItem :: CopperIngotUiItem :: EmptyUiItem :: CopperIngotUiItem :: Nil, CopperLeggingsUiItem, 1), // Copper Leggings
+    WorkbenchRecipe(CopperIngotUiItem :: EmptyUiItem :: CopperIngotUiItem :: CopperIngotUiItem :: EmptyUiItem :: CopperIngotUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: Nil, CopperGreavesUiItem, 1), // Copper Greaves
+    WorkbenchRecipe(EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: CopperIngotUiItem :: EmptyUiItem :: CopperIngotUiItem :: CopperIngotUiItem :: EmptyUiItem :: CopperIngotUiItem :: Nil, CopperGreavesUiItem, 1),
+    WorkbenchRecipe(IronIngotUiItem :: IronIngotUiItem :: IronIngotUiItem :: IronIngotUiItem :: EmptyUiItem :: IronIngotUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: Nil, IronHelmetUiItem, 1), // Iron Helmet
+    WorkbenchRecipe(EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: IronIngotUiItem :: IronIngotUiItem :: IronIngotUiItem :: IronIngotUiItem :: EmptyUiItem :: IronIngotUiItem :: Nil, IronHelmetUiItem, 1),
+    WorkbenchRecipe(IronIngotUiItem :: EmptyUiItem :: IronIngotUiItem :: IronIngotUiItem :: IronIngotUiItem :: IronIngotUiItem :: IronIngotUiItem :: IronIngotUiItem :: IronIngotUiItem :: Nil, IronChestplateUiItem, 1), // Iron Chestplate
+    WorkbenchRecipe(IronIngotUiItem :: IronIngotUiItem :: IronIngotUiItem :: IronIngotUiItem :: EmptyUiItem :: IronIngotUiItem :: IronIngotUiItem :: EmptyUiItem :: IronIngotUiItem :: Nil, IronLeggingsUiItem, 1), // Iron Leggings
+    WorkbenchRecipe(IronIngotUiItem :: EmptyUiItem :: IronIngotUiItem :: IronIngotUiItem :: EmptyUiItem :: IronIngotUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: Nil, IronGreavesUiItem, 1), // Iron Greaves
+    WorkbenchRecipe(EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: IronIngotUiItem :: EmptyUiItem :: IronIngotUiItem :: IronIngotUiItem :: EmptyUiItem :: IronIngotUiItem :: Nil, IronGreavesUiItem, 1),
+    WorkbenchRecipe(SilverIngotUiItem :: SilverIngotUiItem :: SilverIngotUiItem :: SilverIngotUiItem :: EmptyUiItem :: SilverIngotUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: Nil, SilverHelmetUiItem, 1), // Silver Helmet
+    WorkbenchRecipe(EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: SilverIngotUiItem :: SilverIngotUiItem :: SilverIngotUiItem :: SilverIngotUiItem :: EmptyUiItem :: SilverIngotUiItem :: Nil, SilverHelmetUiItem, 1),
+    WorkbenchRecipe(SilverIngotUiItem :: EmptyUiItem :: SilverIngotUiItem :: SilverIngotUiItem :: SilverIngotUiItem :: SilverIngotUiItem :: SilverIngotUiItem :: SilverIngotUiItem :: SilverIngotUiItem :: Nil, SilverChestplateUiItem, 1), // Silver Chestplate
+    WorkbenchRecipe(SilverIngotUiItem :: SilverIngotUiItem :: SilverIngotUiItem :: SilverIngotUiItem :: EmptyUiItem :: SilverIngotUiItem :: SilverIngotUiItem :: EmptyUiItem :: SilverIngotUiItem :: Nil, SilverLeggingsUiItem, 1), // Silver Leggings
+    WorkbenchRecipe(SilverIngotUiItem :: EmptyUiItem :: SilverIngotUiItem :: SilverIngotUiItem :: EmptyUiItem :: SilverIngotUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: Nil, SilverGreavesUiItem, 1), // Silver Greaves
+    WorkbenchRecipe(EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: SilverIngotUiItem :: EmptyUiItem :: SilverIngotUiItem :: SilverIngotUiItem :: EmptyUiItem :: SilverIngotUiItem :: Nil, SilverGreavesUiItem, 1),
+    WorkbenchRecipe(GoldIngotUiItem :: GoldIngotUiItem :: GoldIngotUiItem :: GoldIngotUiItem :: EmptyUiItem :: GoldIngotUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: Nil, GoldHelmetUiItem, 1), // Gold Helmet
+    WorkbenchRecipe(EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: GoldIngotUiItem :: GoldIngotUiItem :: GoldIngotUiItem :: GoldIngotUiItem :: EmptyUiItem :: GoldIngotUiItem :: Nil, GoldHelmetUiItem, 1),
+    WorkbenchRecipe(GoldIngotUiItem :: EmptyUiItem :: GoldIngotUiItem :: GoldIngotUiItem :: GoldIngotUiItem :: GoldIngotUiItem :: GoldIngotUiItem :: GoldIngotUiItem :: GoldIngotUiItem :: Nil, GoldChestplateUiItem, 1), // Gold Chestplate
+    WorkbenchRecipe(GoldIngotUiItem :: GoldIngotUiItem :: GoldIngotUiItem :: GoldIngotUiItem :: EmptyUiItem :: GoldIngotUiItem :: GoldIngotUiItem :: EmptyUiItem :: GoldIngotUiItem :: Nil, GoldLeggingsUiItem, 1), // Gold Leggings
+    WorkbenchRecipe(GoldIngotUiItem :: EmptyUiItem :: GoldIngotUiItem :: GoldIngotUiItem :: EmptyUiItem :: GoldIngotUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: Nil, GoldGreavesUiItem, 1), // Gold Greaves
+    WorkbenchRecipe(EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: GoldIngotUiItem :: EmptyUiItem :: GoldIngotUiItem :: GoldIngotUiItem :: EmptyUiItem :: GoldIngotUiItem :: Nil, GoldGreavesUiItem, 1),
+    WorkbenchRecipe(ZincIngotUiItem :: ZincIngotUiItem :: ZincIngotUiItem :: ZincIngotUiItem :: EmptyUiItem :: ZincIngotUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: Nil, ZincHelmetUiItem, 1), // Zinc Helmet
+    WorkbenchRecipe(EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: ZincIngotUiItem :: ZincIngotUiItem :: ZincIngotUiItem :: ZincIngotUiItem :: EmptyUiItem :: ZincIngotUiItem :: Nil, ZincHelmetUiItem, 1),
+    WorkbenchRecipe(ZincIngotUiItem :: EmptyUiItem :: ZincIngotUiItem :: ZincIngotUiItem :: ZincIngotUiItem :: ZincIngotUiItem :: ZincIngotUiItem :: ZincIngotUiItem :: ZincIngotUiItem :: Nil, ZincChestplateUiItem, 1), // Zinc Chestplate
+    WorkbenchRecipe(ZincIngotUiItem :: ZincIngotUiItem :: ZincIngotUiItem :: ZincIngotUiItem :: EmptyUiItem :: ZincIngotUiItem :: ZincIngotUiItem :: EmptyUiItem :: ZincIngotUiItem :: Nil, ZincLeggingsUiItem, 1), // Zinc Leggings
+    WorkbenchRecipe(ZincIngotUiItem :: EmptyUiItem :: ZincIngotUiItem :: ZincIngotUiItem :: EmptyUiItem :: ZincIngotUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: Nil, ZincGreavesUiItem, 1), // Zinc Greaves
+    WorkbenchRecipe(EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: ZincIngotUiItem :: EmptyUiItem :: ZincIngotUiItem :: ZincIngotUiItem :: EmptyUiItem :: ZincIngotUiItem :: Nil, ZincGreavesUiItem, 1),
+    WorkbenchRecipe(RhymestoneIngotUiItem :: RhymestoneIngotUiItem :: RhymestoneIngotUiItem :: RhymestoneIngotUiItem :: EmptyUiItem :: RhymestoneIngotUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: Nil, RhymestoneHelmetUiItem, 1), // Rhymestone Helmet
+    WorkbenchRecipe(EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: RhymestoneIngotUiItem :: RhymestoneIngotUiItem :: RhymestoneIngotUiItem :: RhymestoneIngotUiItem :: EmptyUiItem :: RhymestoneIngotUiItem :: Nil, RhymestoneHelmetUiItem, 1),
+    WorkbenchRecipe(RhymestoneIngotUiItem :: EmptyUiItem :: RhymestoneIngotUiItem :: RhymestoneIngotUiItem :: RhymestoneIngotUiItem :: RhymestoneIngotUiItem :: RhymestoneIngotUiItem :: RhymestoneIngotUiItem :: RhymestoneIngotUiItem :: Nil, RhymestoneChestplateUiItem, 1), // Rhymestone Chestplate
+    WorkbenchRecipe(RhymestoneIngotUiItem :: RhymestoneIngotUiItem :: RhymestoneIngotUiItem :: RhymestoneIngotUiItem :: EmptyUiItem :: RhymestoneIngotUiItem :: RhymestoneIngotUiItem :: EmptyUiItem :: RhymestoneIngotUiItem :: Nil, RhymestoneLeggingsUiItem, 1), // Rhymestone Leggings
+    WorkbenchRecipe(RhymestoneIngotUiItem :: EmptyUiItem :: RhymestoneIngotUiItem :: RhymestoneIngotUiItem :: EmptyUiItem :: RhymestoneIngotUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: Nil, RhymestoneGreavesUiItem, 1), // Rhymestone Greaves
+    WorkbenchRecipe(EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: RhymestoneIngotUiItem :: EmptyUiItem :: RhymestoneIngotUiItem :: RhymestoneIngotUiItem :: EmptyUiItem :: RhymestoneIngotUiItem :: Nil, RhymestoneGreavesUiItem, 1),
+    WorkbenchRecipe(ObduriteIngotUiItem :: ObduriteIngotUiItem :: ObduriteIngotUiItem :: ObduriteIngotUiItem :: EmptyUiItem :: ObduriteIngotUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: Nil, ObduriteHelmetUiItem, 1), // Obdurite Helmet
+    WorkbenchRecipe(EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: ObduriteIngotUiItem :: ObduriteIngotUiItem :: ObduriteIngotUiItem :: ObduriteIngotUiItem :: EmptyUiItem :: ObduriteIngotUiItem :: Nil, ObduriteHelmetUiItem, 1),
+    WorkbenchRecipe(ObduriteIngotUiItem :: EmptyUiItem :: ObduriteIngotUiItem :: ObduriteIngotUiItem :: ObduriteIngotUiItem :: ObduriteIngotUiItem :: ObduriteIngotUiItem :: ObduriteIngotUiItem :: ObduriteIngotUiItem :: Nil, ObduriteChestplateUiItem, 1), // Obdurite Chestplate
+    WorkbenchRecipe(ObduriteIngotUiItem :: ObduriteIngotUiItem :: ObduriteIngotUiItem :: ObduriteIngotUiItem :: EmptyUiItem :: ObduriteIngotUiItem :: ObduriteIngotUiItem :: EmptyUiItem :: ObduriteIngotUiItem :: Nil, ObduriteLeggingsUiItem, 1), // Obdurite Leggings
+    WorkbenchRecipe(ObduriteIngotUiItem :: EmptyUiItem :: ObduriteIngotUiItem :: ObduriteIngotUiItem :: EmptyUiItem :: ObduriteIngotUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: Nil, ObduriteGreavesUiItem, 1), // Obdurite Greaves
+    WorkbenchRecipe(EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: ObduriteIngotUiItem :: EmptyUiItem :: ObduriteIngotUiItem :: ObduriteIngotUiItem :: EmptyUiItem :: ObduriteIngotUiItem :: Nil, ObduriteGreavesUiItem, 1),
+    WorkbenchRecipe(AluminumIngotUiItem :: AluminumIngotUiItem :: AluminumIngotUiItem :: AluminumIngotUiItem :: EmptyUiItem :: AluminumIngotUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: Nil, AluminumHelmetUiItem, 1), // Aluminum Helmet
+    WorkbenchRecipe(EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: AluminumIngotUiItem :: AluminumIngotUiItem :: AluminumIngotUiItem :: AluminumIngotUiItem :: EmptyUiItem :: AluminumIngotUiItem :: Nil, AluminumHelmetUiItem, 1),
+    WorkbenchRecipe(AluminumIngotUiItem :: EmptyUiItem :: AluminumIngotUiItem :: AluminumIngotUiItem :: AluminumIngotUiItem :: AluminumIngotUiItem :: AluminumIngotUiItem :: AluminumIngotUiItem :: AluminumIngotUiItem :: Nil, AluminumChestplateUiItem, 1), // Aluminum Chestplate
+    WorkbenchRecipe(AluminumIngotUiItem :: AluminumIngotUiItem :: AluminumIngotUiItem :: AluminumIngotUiItem :: EmptyUiItem :: AluminumIngotUiItem :: AluminumIngotUiItem :: EmptyUiItem :: AluminumIngotUiItem :: Nil, AluminumLeggingsUiItem, 1), // Aluminum Leggings
+    WorkbenchRecipe(AluminumIngotUiItem :: EmptyUiItem :: AluminumIngotUiItem :: AluminumIngotUiItem :: EmptyUiItem :: AluminumIngotUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: Nil, AluminumGreavesUiItem, 1), // Aluminum Greaves
+    WorkbenchRecipe(EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: AluminumIngotUiItem :: EmptyUiItem :: AluminumIngotUiItem :: AluminumIngotUiItem :: EmptyUiItem :: AluminumIngotUiItem :: Nil, AluminumGreavesUiItem, 1),
+    WorkbenchRecipe(LeadIngotUiItem :: LeadIngotUiItem :: LeadIngotUiItem :: LeadIngotUiItem :: EmptyUiItem :: LeadIngotUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: Nil, LeadHelmetUiItem, 1), // Lead Helmet
+    WorkbenchRecipe(EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: LeadIngotUiItem :: LeadIngotUiItem :: LeadIngotUiItem :: LeadIngotUiItem :: EmptyUiItem :: LeadIngotUiItem :: Nil, LeadHelmetUiItem, 1),
+    WorkbenchRecipe(LeadIngotUiItem :: EmptyUiItem :: LeadIngotUiItem :: LeadIngotUiItem :: LeadIngotUiItem :: LeadIngotUiItem :: LeadIngotUiItem :: LeadIngotUiItem :: LeadIngotUiItem :: Nil, LeadChestplateUiItem, 1), // Lead Chestplate
+    WorkbenchRecipe(LeadIngotUiItem :: LeadIngotUiItem :: LeadIngotUiItem :: LeadIngotUiItem :: EmptyUiItem :: LeadIngotUiItem :: LeadIngotUiItem :: EmptyUiItem :: LeadIngotUiItem :: Nil, LeadLeggingsUiItem, 1), // Lead Leggings
+    WorkbenchRecipe(LeadIngotUiItem :: EmptyUiItem :: LeadIngotUiItem :: LeadIngotUiItem :: EmptyUiItem :: LeadIngotUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: Nil, LeadGreavesUiItem, 1), // Lead Greaves
+    WorkbenchRecipe(EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: LeadIngotUiItem :: EmptyUiItem :: LeadIngotUiItem :: LeadIngotUiItem :: EmptyUiItem :: LeadIngotUiItem :: Nil, LeadGreavesUiItem, 1),
+    WorkbenchRecipe(WoodUiItem :: WoodUiItem :: WoodUiItem :: WoodUiItem :: EmptyUiItem :: WoodUiItem :: WoodUiItem :: WoodUiItem :: WoodUiItem :: Nil, WoodenChestUiItem, 1), // Wooden Chest
+    WorkbenchRecipe(StoneUiItem :: StoneUiItem :: StoneUiItem :: StoneUiItem :: WoodenChestUiItem :: StoneUiItem :: StoneUiItem :: StoneUiItem :: StoneUiItem :: Nil, StoneChestUiItem, 1), // Stone Chest
+    WorkbenchRecipe(CopperIngotUiItem :: CopperIngotUiItem :: CopperIngotUiItem :: CopperIngotUiItem :: StoneChestUiItem :: CopperIngotUiItem :: CopperIngotUiItem :: CopperIngotUiItem :: CopperIngotUiItem :: Nil, CopperChestUiItem, 1), // Copper Chest
+    WorkbenchRecipe(IronIngotUiItem :: IronIngotUiItem :: IronIngotUiItem :: IronIngotUiItem :: StoneChestUiItem :: IronIngotUiItem :: IronIngotUiItem :: IronIngotUiItem :: IronIngotUiItem :: Nil, IronChestUiItem, 1), // Iron Chest
+    WorkbenchRecipe(SilverIngotUiItem :: SilverIngotUiItem :: SilverIngotUiItem :: SilverIngotUiItem :: StoneChestUiItem :: SilverIngotUiItem :: SilverIngotUiItem :: SilverIngotUiItem :: SilverIngotUiItem :: Nil, SilverChestUiItem, 1), // Silver Chest
+    WorkbenchRecipe(GoldIngotUiItem :: GoldIngotUiItem :: GoldIngotUiItem :: GoldIngotUiItem :: StoneChestUiItem :: GoldIngotUiItem :: GoldIngotUiItem :: GoldIngotUiItem :: GoldIngotUiItem :: Nil, GoldChestUiItem, 1), // Gold Chest
+    WorkbenchRecipe(ZincIngotUiItem :: ZincIngotUiItem :: ZincIngotUiItem :: ZincIngotUiItem :: StoneChestUiItem :: ZincIngotUiItem :: ZincIngotUiItem :: ZincIngotUiItem :: ZincIngotUiItem :: Nil, ZincChestUiItem, 1), // Zinc Chest
+    WorkbenchRecipe(RhymestoneIngotUiItem :: RhymestoneIngotUiItem :: RhymestoneIngotUiItem :: RhymestoneIngotUiItem :: StoneChestUiItem :: RhymestoneIngotUiItem :: RhymestoneIngotUiItem :: RhymestoneIngotUiItem :: RhymestoneIngotUiItem :: Nil, RhymestoneChestUiItem, 1), // Rhymestone Chest
+    WorkbenchRecipe(ObduriteIngotUiItem :: ObduriteIngotUiItem :: ObduriteIngotUiItem :: ObduriteIngotUiItem :: StoneChestUiItem :: ObduriteIngotUiItem :: ObduriteIngotUiItem :: ObduriteIngotUiItem :: ObduriteIngotUiItem :: Nil, ObduriteChestUiItem, 1), // Obdurite Chest
+    WorkbenchRecipe(GlassUiItem :: GlassUiItem :: GlassUiItem :: GlassUiItem :: LumenstoneUiItem :: GlassUiItem :: GlassUiItem :: ZythiumWireUiItem :: GlassUiItem :: Nil, ZythiumLampUiItem, 1), // Zythium Lamp
+    WorkbenchRecipe(GlassUiItem :: GlassUiItem :: GlassUiItem :: ZythiumWireUiItem :: ZythiumOreUiItem :: ZythiumWireUiItem :: GlassUiItem :: GlassUiItem :: GlassUiItem :: Nil, ZythiumAmplifierUiItem, 1), // Zythium Amplifier
+    WorkbenchRecipe(GlassUiItem :: GlassUiItem :: GlassUiItem :: ZythiumOreUiItem :: ZythiumWireUiItem :: ZythiumOreUiItem :: GlassUiItem :: GlassUiItem :: GlassUiItem :: Nil, ZythiumInverterUiItem, 1), // Zythium Inverter
+    WorkbenchRecipe(GlassUiItem :: ZythiumWireUiItem :: GlassUiItem :: ZythiumWireUiItem :: ZythiumWireUiItem :: ZythiumWireUiItem :: GlassUiItem :: ZythiumWireUiItem :: GlassUiItem :: Nil, ZythiumDelayer1UiItem, 1), // Zythium Delayer
+    WorkbenchRecipe(WoodUiItem :: WoodUiItem :: EmptyUiItem :: WoodUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: Nil, WorkbenchUiItem, 1), // Workbench
+    WorkbenchRecipe(EmptyUiItem :: WoodUiItem :: WoodUiItem :: EmptyUiItem :: WoodUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: Nil, WorkbenchUiItem, 1),
+    WorkbenchRecipe(EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: WoodUiItem :: EmptyUiItem :: WoodUiItem :: WoodUiItem :: EmptyUiItem :: Nil, WorkbenchUiItem, 1),
+    WorkbenchRecipe(EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: WoodUiItem :: EmptyUiItem :: WoodUiItem :: WoodUiItem :: Nil, WorkbenchUiItem, 1),
+    WorkbenchRecipe(BarkUiItem :: BarkUiItem :: EmptyUiItem :: BarkUiItem :: BarkUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: Nil, WoodUiItem, 1), // Bark -> Wood
+    WorkbenchRecipe(EmptyUiItem :: BarkUiItem :: BarkUiItem :: EmptyUiItem :: BarkUiItem :: BarkUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: Nil, WoodUiItem, 1),
+    WorkbenchRecipe(EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: BarkUiItem :: BarkUiItem :: EmptyUiItem :: BarkUiItem :: BarkUiItem :: EmptyUiItem :: Nil, WoodUiItem, 1),
+    WorkbenchRecipe(EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: BarkUiItem :: BarkUiItem :: EmptyUiItem :: BarkUiItem :: BarkUiItem :: Nil, WoodUiItem, 1),
+    WorkbenchRecipe(StoneUiItem :: StoneUiItem :: EmptyUiItem :: StoneUiItem :: StoneUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: Nil, CobblestoneUiItem, 4), // Cobblestone
+    WorkbenchRecipe(EmptyUiItem :: StoneUiItem :: StoneUiItem :: EmptyUiItem :: StoneUiItem :: StoneUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: Nil, CobblestoneUiItem, 4),
+    WorkbenchRecipe(EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: StoneUiItem :: StoneUiItem :: EmptyUiItem :: StoneUiItem :: StoneUiItem :: EmptyUiItem :: Nil, CobblestoneUiItem, 4),
+    WorkbenchRecipe(EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: StoneUiItem :: StoneUiItem :: EmptyUiItem :: StoneUiItem :: StoneUiItem :: Nil, CobblestoneUiItem, 4),
+    WorkbenchRecipe(ChiseledStoneUiItem :: ChiseledStoneUiItem :: EmptyUiItem :: ChiseledStoneUiItem :: ChiseledStoneUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: Nil, ChiseledCobblestoneUiItem, 4), // Chiseled Cobblestone
+    WorkbenchRecipe(EmptyUiItem :: ChiseledStoneUiItem :: ChiseledStoneUiItem :: EmptyUiItem :: ChiseledStoneUiItem :: ChiseledStoneUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: Nil, ChiseledCobblestoneUiItem, 4),
+    WorkbenchRecipe(EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: ChiseledStoneUiItem :: ChiseledStoneUiItem :: EmptyUiItem :: ChiseledStoneUiItem :: ChiseledStoneUiItem :: EmptyUiItem :: Nil, ChiseledCobblestoneUiItem, 4),
+    WorkbenchRecipe(EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: ChiseledStoneUiItem :: ChiseledStoneUiItem :: EmptyUiItem :: ChiseledStoneUiItem :: ChiseledStoneUiItem :: Nil, ChiseledCobblestoneUiItem, 4),
+    WorkbenchRecipe(ChiseledCobblestoneUiItem :: ChiseledCobblestoneUiItem :: EmptyUiItem :: ChiseledCobblestoneUiItem :: ChiseledCobblestoneUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: Nil, StoneBricksUiItem, 4), // Stone Bricks
+    WorkbenchRecipe(EmptyUiItem :: ChiseledCobblestoneUiItem :: ChiseledCobblestoneUiItem :: EmptyUiItem :: ChiseledCobblestoneUiItem :: ChiseledCobblestoneUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: Nil, StoneBricksUiItem, 4),
+    WorkbenchRecipe(EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: ChiseledCobblestoneUiItem :: ChiseledCobblestoneUiItem :: EmptyUiItem :: ChiseledCobblestoneUiItem :: ChiseledCobblestoneUiItem :: EmptyUiItem :: Nil, StoneBricksUiItem, 4),
+    WorkbenchRecipe(EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: ChiseledCobblestoneUiItem :: ChiseledCobblestoneUiItem :: EmptyUiItem :: ChiseledCobblestoneUiItem :: ChiseledCobblestoneUiItem :: Nil, StoneBricksUiItem, 4),
+    WorkbenchRecipe(StoneUiItem :: StoneUiItem :: StoneUiItem :: StoneUiItem :: EmptyUiItem :: StoneUiItem :: StoneUiItem :: StoneUiItem :: StoneUiItem :: Nil, FurnaceUiItem, 1), // Furnace
+    WorkbenchRecipe(ZythiumBarUiItem :: ZythiumBarUiItem :: ZythiumBarUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: Nil, ZythiumWireUiItem, 10), // Zythium Wire
+    WorkbenchRecipe(EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: ZythiumBarUiItem :: ZythiumBarUiItem :: ZythiumBarUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: Nil, ZythiumWireUiItem, 20),
+    WorkbenchRecipe(EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: ZythiumBarUiItem :: ZythiumBarUiItem :: ZythiumBarUiItem :: Nil, ZythiumWireUiItem, 20),
+    WorkbenchRecipe(StoneUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: StoneUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: Nil, StoneLighterUiItem, 1), // Stone Lighter
+    WorkbenchRecipe(EmptyUiItem :: StoneUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: StoneUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: Nil, StoneLighterUiItem, 1),
+    WorkbenchRecipe(EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: StoneUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: StoneUiItem :: EmptyUiItem :: Nil, StoneLighterUiItem, 1),
+    WorkbenchRecipe(EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: StoneUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: StoneUiItem :: Nil, StoneLighterUiItem, 1),
+    WorkbenchRecipe(EmptyUiItem :: StoneUiItem :: EmptyUiItem :: StoneUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: Nil, StoneLighterUiItem, 1),
+    WorkbenchRecipe(EmptyUiItem :: EmptyUiItem :: StoneUiItem :: EmptyUiItem :: StoneUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: Nil, StoneLighterUiItem, 1),
+    WorkbenchRecipe(EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: StoneUiItem :: EmptyUiItem :: StoneUiItem :: EmptyUiItem :: EmptyUiItem :: Nil, StoneLighterUiItem, 1),
+    WorkbenchRecipe(EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: StoneUiItem :: EmptyUiItem :: StoneUiItem :: EmptyUiItem :: Nil, StoneLighterUiItem, 1),
+    WorkbenchRecipe(WoodUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: Nil, WoodenTorchUiItem, 4), // Wooden Torch
+    WorkbenchRecipe(EmptyUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: Nil, WoodenTorchUiItem, 4),
+    WorkbenchRecipe(EmptyUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: Nil, WoodenTorchUiItem, 4),
+    WorkbenchRecipe(EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: Nil, WoodenTorchUiItem, 4),
+    WorkbenchRecipe(EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: Nil, WoodenTorchUiItem, 4),
+    WorkbenchRecipe(EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: Nil, WoodenTorchUiItem, 4),
+    WorkbenchRecipe(CoalUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: Nil, CoalTorchUiItem, 4), // Coal Torch
+    WorkbenchRecipe(EmptyUiItem :: CoalUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: Nil, CoalTorchUiItem, 4),
+    WorkbenchRecipe(EmptyUiItem :: EmptyUiItem :: CoalUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: Nil, CoalTorchUiItem, 4),
+    WorkbenchRecipe(EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: CoalUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: Nil, CoalTorchUiItem, 4),
+    WorkbenchRecipe(EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: CoalUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: Nil, CoalTorchUiItem, 4),
+    WorkbenchRecipe(EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: CoalUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: Nil, CoalTorchUiItem, 4),
+    WorkbenchRecipe(LumenstoneUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: Nil, LumenstoneTorchUiItem, 4), // Lumenstone Torch
+    WorkbenchRecipe(EmptyUiItem :: LumenstoneUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: Nil, LumenstoneTorchUiItem, 4),
+    WorkbenchRecipe(EmptyUiItem :: EmptyUiItem :: LumenstoneUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: Nil, LumenstoneTorchUiItem, 4),
+    WorkbenchRecipe(EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: LumenstoneUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: Nil, LumenstoneTorchUiItem, 4),
+    WorkbenchRecipe(EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: LumenstoneUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: Nil, LumenstoneTorchUiItem, 4),
+    WorkbenchRecipe(EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: LumenstoneUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: Nil, LumenstoneTorchUiItem, 4),
+    WorkbenchRecipe(ZythiumOreUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: Nil, ZythiumTorchUiItem, 4), // Zythium Torch
+    WorkbenchRecipe(EmptyUiItem :: ZythiumOreUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: Nil, ZythiumTorchUiItem, 4),
+    WorkbenchRecipe(EmptyUiItem :: EmptyUiItem :: ZythiumOreUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: Nil, ZythiumTorchUiItem, 4),
+    WorkbenchRecipe(EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: ZythiumOreUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: Nil, ZythiumTorchUiItem, 4),
+    WorkbenchRecipe(EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: ZythiumOreUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: EmptyUiItem :: Nil, ZythiumTorchUiItem, 4),
+    WorkbenchRecipe(EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: ZythiumOreUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: Nil, ZythiumTorchUiItem, 4),
+    WorkbenchRecipe(WoodUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: Nil, WoodenPressurePlateUiItem, 1), // Wooden Pressure Plate
+    WorkbenchRecipe(EmptyUiItem :: WoodUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: Nil, WoodenPressurePlateUiItem, 1),
+    WorkbenchRecipe(EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: Nil, WoodenPressurePlateUiItem, 1),
+    WorkbenchRecipe(EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: WoodUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: Nil, WoodenPressurePlateUiItem, 1),
+    WorkbenchRecipe(EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: WoodUiItem :: EmptyUiItem :: Nil, WoodenPressurePlateUiItem, 1),
+    WorkbenchRecipe(EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: WoodUiItem :: WoodUiItem :: Nil, WoodenPressurePlateUiItem, 1),
+    WorkbenchRecipe(StoneUiItem :: StoneUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: Nil, StonePressurePlateUiItem, 1), // Stone Pressure Plate
+    WorkbenchRecipe(EmptyUiItem :: StoneUiItem :: StoneUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: Nil, StonePressurePlateUiItem, 1),
+    WorkbenchRecipe(EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: StoneUiItem :: StoneUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: Nil, StonePressurePlateUiItem, 1),
+    WorkbenchRecipe(EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: StoneUiItem :: StoneUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: Nil, StonePressurePlateUiItem, 1),
+    WorkbenchRecipe(EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: StoneUiItem :: StoneUiItem :: EmptyUiItem :: Nil, StonePressurePlateUiItem, 1),
+    WorkbenchRecipe(EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: StoneUiItem :: StoneUiItem :: Nil, StonePressurePlateUiItem, 1),
+    WorkbenchRecipe(ChiseledStoneUiItem :: ZythiumOreUiItem :: ChiseledStoneUiItem :: EmptyUiItem :: ZythiumWireUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: Nil, ZythiumPressurePlateUiItem, 1), // Zythium Pressure Plate
+    WorkbenchRecipe(EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: ChiseledStoneUiItem :: ZythiumOreUiItem :: ChiseledStoneUiItem :: EmptyUiItem :: ZythiumWireUiItem :: EmptyUiItem :: Nil, ZythiumPressurePlateUiItem, 1)
+  )
 
-    val shapelessRecipies: Array2D[Short] = Array(
-      Array[Short](15, 167, 0, 0, 0, 0, 0, 0, 0, 168, 1),
-      Array[Short](162, 0, 0, 0, 0, 0, 0, 0, 0, 182, 1)
-    )
 
-    recipesTemp.put("shapeless", shapelessRecipies)
+  def createShapelessRecipes: List[ShapelessRecipe] = List(
+    ShapelessRecipe(WoodUiItem :: VarnishUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: Nil, VarnishedWoodUiItem, 1),
+    ShapelessRecipe(ChiseledStoneUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: EmptyUiItem :: Nil, ButtonUiItem, 1)
+  )
 
-    def shapelessCicRecipies: Array2D[Short] = Array(
-      Array[Short](15, 167, 0, 0, 168, 1),
-      Array[Short](162, 0, 0, 0, 182, 1)
-    )
-
-    recipesTemp.put("shapeless_cic", shapelessCicRecipies)
-
-    recipesTemp.asScala.toMap
-  }
   // END CONSTRUCTOR
 
-  def addItem(item: Short, quantity: Short): Short = {
-
-    TerraFrame.TOOLDURS
-      .get(item)
-      .fold {
-        addItem(item, quantity, 0.toShort)
-      } { t =>
-        addItem(item, quantity, t)
-      }
-  }
-
-  def addItem(item: Short, quantity: Short, durability: Short): Short = {
+  def addItem(item: UiItem, quantity: Short): Short = {
+    val maxstacks = item.maxStacks
     var updatedQuantity: Short = quantity
     (0 until 40).foreach { i =>
-      if (ids(i) == item && TerraFrame.MAXSTACKS.get(ids(i)).exists(maxstacks => nums(i) < maxstacks)) {
-        if (TerraFrame.MAXSTACKS.get(ids(i)).exists(maxstacks => maxstacks - nums(i) >= updatedQuantity)) {
+      if (ids(i) === item && nums(i) < maxstacks) {
+        if (maxstacks - nums(i) >= updatedQuantity) {
           nums(i) = (nums(i) + updatedQuantity).toShort
           update(i)
           return 0
         } else {
-          TerraFrame.MAXSTACKS.get(ids(i)).foreach { maxstacks =>
-            updatedQuantity = (updatedQuantity - maxstacks - nums(i)).toShort
-            nums(i) = maxstacks
-          }
-
+          updatedQuantity = (updatedQuantity - maxstacks - nums(i)).toShort
+          nums(i) = maxstacks
           update(i)
         }
       }
     }
     (0 until 40).foreach { i =>
-      if (ids(i) == 0) {
+      if (ids(i) === EmptyUiItem) {
         ids(i) = item
-        if (TerraFrame.MAXSTACKS.get(ids(i)).exists(maxstacks => updatedQuantity <= maxstacks)) {
+        if (updatedQuantity <= maxstacks) {
           nums(i) = updatedQuantity
-          durs(i) = durability
+          durs(i) = UiItem.toolDurability(item)
           update(i)
           return 0
         } else {
-          TerraFrame.MAXSTACKS.get(ids(i)).foreach { maxstacks =>
-            nums(i) = maxstacks
-            updatedQuantity = (updatedQuantity - maxstacks).toShort
-          }
-          durs(i) = durability
+          nums(i) = maxstacks
+          updatedQuantity = (updatedQuantity - maxstacks).toShort
+          durs(i) = UiItem.toolDurability(item)
         }
       }
     }
     updatedQuantity
   }
 
-  def removeItem(item: Short, quantity: Short): Short = {
-    var updatedQuantity: Short = quantity
-    (0 until 40).foreach { i =>
-      if (ids(i) == item) {
-        if (nums(i) <= updatedQuantity) {
-          nums(i) = (nums(i) - updatedQuantity).toShort
-          if (nums(i) == 0) {
-            ids(i) = 0
-          }
-          update(i)
-          return 0
-        } else {
-          updatedQuantity = (updatedQuantity - nums(i)).toShort
-          nums(i) = 0
-          ids(i) = 0
-          update(i)
-        }
-      }
-    }
-    updatedQuantity
-  }
+//  def removeItem(item: Short, quantity: Short): Short = {
+//    var updatedQuantity: Short = quantity
+//    (0 until 40).foreach { i =>
+//      if (ids(i) === EmptyUiItem) {
+//        if (nums(i) <= updatedQuantity) {
+//          nums(i) = (nums(i) - updatedQuantity).toShort
+//          if (nums(i) === 0) {
+//            ids(i) = EmptyUiItem
+//          }
+//          update(i)
+//          return 0
+//        } else {
+//          updatedQuantity = (updatedQuantity - nums(i)).toShort
+//          nums(i) = 0
+//          ids(i) = EmptyUiItem
+//          update(i)
+//        }
+//      }
+//    }
+//    updatedQuantity
+//  }
 
-  def addLocation(i: Int, item: Short, quantity: Short, durability: Short): Short = {
+  def addLocation(i: Int, item: UiItem, quantity: Short): Short = {
     var updatedQuantity: Short = quantity
-    if (ids(i) == item) {
-      if (TerraFrame.MAXSTACKS.get(ids(i)).exists(maxstacks => maxstacks - nums(i) >= updatedQuantity)) {
+    val maxstacks = item.maxStacks
+    if (ids(i) === item) {
+      if (maxstacks - nums(i) >= updatedQuantity) {
         nums(i) = (nums(i) + updatedQuantity).toShort
         update(i)
         return 0
       } else {
-        TerraFrame.MAXSTACKS.get(ids(i)).foreach { maxstacks =>
-          updatedQuantity = (updatedQuantity - maxstacks - nums(i)).toShort
-          nums(i) = maxstacks
-        }
+        updatedQuantity = (updatedQuantity - maxstacks - nums(i)).toShort
+        nums(i) = maxstacks
 
         update(i)
       }
     } else {
-      if (TerraFrame.MAXSTACKS.get(ids(i)).exists(maxstacks => updatedQuantity <= maxstacks)) {
+      if (updatedQuantity <= maxstacks) {
         ids(i) = item
         nums(i) = updatedQuantity
-        durs(i) = durability
+        durs(i) = UiItem.toolDurability(item)
         update(i)
         return 0
       } else {
-        TerraFrame.MAXSTACKS.get(ids(i)).foreach { maxstacks =>
-          updatedQuantity = (updatedQuantity - maxstacks).toShort
-        }
+        updatedQuantity = (updatedQuantity - maxstacks).toShort
       }
     }
     updatedQuantity
@@ -461,15 +442,15 @@ class Inventory extends Serializable {
     var updatedQuantity: Short = quantity
     if (nums(i) >= updatedQuantity) {
       nums(i) = (nums(i) - updatedQuantity).toShort
-      if (nums(i) == 0) {
-        ids(i) = 0
+      if (nums(i) === 0) {
+        ids(i) = EmptyUiItem
       }
       update(i)
       return 0
     } else {
       updatedQuantity = (updatedQuantity - nums(i)).toShort
       nums(i) = 0
-      ids(i) = 0
+      ids(i) = EmptyUiItem
       update(i)
     }
     updatedQuantity
@@ -482,16 +463,16 @@ class Inventory extends Serializable {
     g2 = image.createGraphics()
     (0 until 10).foreach { x =>
       (0 until 4).foreach { y =>
-        if (x == 0 && y == 0) {
+        if (x === 0 && y === 0) {
           drawImage(g2, box_selected, x * 46 + 6, y * 46 + 6, x * 46 + 46, y * 46 + 46, 0, 0, 40, 40)
-          if (y == 0) {
+          if (y === 0) {
             g2.setFont(font)
             g2.setColor(Color.BLACK)
             g2.drawString(f(x) + " ", x * 46 + trolx, y * 46 + troly)
           }
         } else {
           drawImage(g2, box, x * 46 + 6, y * 46 + 6, x * 46 + 46, y * 46 + 46, 0, 0, 40, 40)
-          if (y == 0) {
+          if (y === 0) {
             g2.setFont(font)
             g2.setColor(Color.BLACK)
             g2.drawString(f(x) + " ", x * 46 + trolx, y * 46 + troly)
@@ -513,23 +494,25 @@ class Inventory extends Serializable {
       }
     }
     g2 = image.createGraphics()
-    if (i == selection) {
+    if (i === selection) {
       drawImage(g2, box_selected, px * 46 + 6, py * 46 + 6, px * 46 + 46, py * 46 + 46, 0, 0, 40, 40)
-      if (py == 0) {
+      if (py === 0) {
         g2.setFont(font)
         g2.setColor(Color.BLACK)
         g2.drawString(f(px) + " ", px * 46 + trolx, py * 46 + troly)
       }
     } else {
       drawImage(g2, box, px * 46 + 6, py * 46 + 6, px * 46 + 46, py * 46 + 46, 0, 0, 40, 40)
-      if (py == 0) {
+      if (py === 0) {
         g2.setFont(font)
         g2.setColor(Color.BLACK)
         g2.drawString(f(px) + " ", px * 46 + trolx, py * 46 + troly)
       }
     }
-    if (ids(i) != 0) {
-      TerraFrame.itemImgs.get(ids(i)).foreach { itemImg =>
+    val item = ids(i)
+    item match {
+      case imageUiItem: ImageUiItem =>
+        val itemImg = imageUiItem.image
         width = itemImg.getWidth()
         height = itemImg.getHeight()
         drawImage(g2,
@@ -543,18 +526,17 @@ class Inventory extends Serializable {
           width,
           height
         )
-      }
-
-      if (nums(i) > 1) {
-        g2.setFont(font)
-        g2.setColor(Color.WHITE)
-        g2.drawString(nums(i) + " ", px * 46 + 15, py * 46 + 40)
-      }
+        if (nums(i) > 1) {
+          g2.setFont(font)
+          g2.setColor(Color.WHITE)
+          g2.drawString(nums(i) + " ", px * 46 + 15, py * 46 + 40)
+        }
+      case _ =>
     }
   }
 
   def select(i: Int): Unit = {
-    if (i == 0) {
+    if (i === 0) {
       n = selection
       selection = 9
       update(n)
@@ -574,128 +556,122 @@ class Inventory extends Serializable {
     update(i)
   }
 
-  def tool(): Short = {
+  def tool(): UiItem = {
     ids(selection)
   }
 
   def renderCollection(ic: ItemCollection): Unit = {
-    if (ic.icType == Crafting) {
+    if (ic.icType === Crafting) {
       (0 until 4).foreach { i =>
         updateIC(ic, i)
       }
     }
-    if (ic.icType == Armor) {
+    if (ic.icType === Armor) {
       CX = 1
       CY = 4
       (0 until 4).foreach { i =>
         updateIC(ic, i)
       }
     }
-    if (ic.icType == Workbench) { //TODO: type classes
+    if (ic.icType === Workbench) { //TODO: type classes
       (0 until 9).foreach { i =>
         updateIC(ic, i)
       }
     }
-    if (ic.icType == WoodenChest) {
+    if (ic.icType === WoodenChest) {
       CX = 3
       CY = 3
       (0 until 9).foreach { i =>
         updateIC(ic, i)
       }
     }
-    if (ic.icType == StoneChest) {
+    if (ic.icType === StoneChest) {
       CX = 5
       CY = 3
       (0 until 15).foreach { i =>
         updateIC(ic, i)
       }
     }
-    if (ic.icType == CopperChest) {
+    if (ic.icType === CopperChest) {
       CX = 5
       CY = 4
       (0 until 20).foreach { i =>
         updateIC(ic, i)
       }
     }
-    if (ic.icType == IronChest) {
+    if (ic.icType === IronChest) {
       CX = 7
       CY = 4
       (0 until 28).foreach { i =>
         updateIC(ic, i)
       }
     }
-    if (ic.icType == SilverChest) {
+    if (ic.icType === SilverChest) {
       CX = 7
       CY = 5
       (0 until 35).foreach { i =>
         updateIC(ic, i)
       }
     }
-    if (ic.icType == GoldChest) {
+    if (ic.icType === GoldChest) {
       CX = 7
       CY = 6
       (0 until 42).foreach { i =>
         updateIC(ic, i)
       }
     }
-    if (ic.icType == ZincChest) {
+    if (ic.icType === ZincChest) {
       CX = 7
       CY = 8
       (0 until 56).foreach { i =>
         updateIC(ic, i)
       }
     }
-    if (ic.icType == RhymestoneChest) {
+    if (ic.icType === RhymestoneChest) {
       CX = 8
       CY = 9
       (0 until 72).foreach { i =>
         updateIC(ic, i)
       }
     }
-    if (ic.icType == ObduriteChest) {
+    if (ic.icType === ObduriteChest) {
       CX = 10
       CY = 10
       (0 until 100).foreach { i =>
         updateIC(ic, i)
       }
     }
-    if (ic.icType == Furnace) {
+    if (ic.icType === Furnace) {
       (-1 until 4).foreach { i =>
         updateIC(ic, i)
       }
     }
   }
 
-  def addLocationIC(ic: ItemCollection, i: Int, item: Short, quantity: Short): Short = {
-    addLocationIC(ic, i, item, quantity, 0.toShort)
-  }
 
-  def addLocationIC(ic: ItemCollection, i: Int, item: Short, quantity: Short, durability: Short): Short = {
+  def addLocationIC(ic: ItemCollection, i: Int, item: UiItem, quantity: Short): Short = {
     var updatedQuantity: Short = quantity
-    if (ic.ids(i) == item) {
-      if (TerraFrame.MAXSTACKS.get(ic.ids(i)).exists(maxstacks => maxstacks - ic.nums(i) >= updatedQuantity)) {
+    val maxstacks = item.maxStacks
+    if (ic.ids(i) === item) {
+      if (maxstacks - ic.nums(i) >= updatedQuantity) {
         ic.nums(i) = (ic.nums(i) + updatedQuantity).toShort
           updateIC(ic, i)
         return 0
       } else {
-        TerraFrame.MAXSTACKS.get(ic.ids(i)).foreach { maxstacks =>
-          updatedQuantity = (updatedQuantity - maxstacks - ic.nums(i)).toShort
-          ic.nums(i) = maxstacks
-        }
+        updatedQuantity = (updatedQuantity - maxstacks - ic.nums(i)).toShort
+        ic.nums(i) = maxstacks
 
         updateIC(ic, i)
       }
     } else {
-      if (TerraFrame.MAXSTACKS.get(ic.ids(i)).exists(maxstacks => updatedQuantity <= maxstacks)) {
+      if (updatedQuantity <= maxstacks) {
         ic.ids(i) = item
         ic.nums(i) = updatedQuantity
-        ic.durs(i) = durability
+        ic.durs(i) = UiItem.toolDurability(item)
         updateIC(ic, i)
         return 0
       } else {
-        TerraFrame.MAXSTACKS.get(ic.ids(i)).foreach { maxstacks =>
-          updatedQuantity = (updatedQuantity - maxstacks).toShort
-        }
+        updatedQuantity = (updatedQuantity - maxstacks).toShort
       }
     }
     updatedQuantity
@@ -705,22 +681,22 @@ class Inventory extends Serializable {
     var updatedQuantity: Short = quantity
     if (ic.nums(i) >= updatedQuantity) {
       ic.nums(i) = (ic.nums(i) - updatedQuantity).toShort
-      if (ic.nums(i) == 0) {
-        ic.ids(i) = 0
+      if (ic.nums(i) === 0) {
+        ic.ids(i) = EmptyUiItem
       }
       updateIC(ic, i)
       return 0
     } else {
       updatedQuantity = (updatedQuantity - ic.nums(i)).toShort
       ic.nums(i) = 0
-      ic.ids(i) = 0
+      ic.ids(i) = EmptyUiItem
       updateIC(ic, i)
     }
     updatedQuantity
   }
 
   def updateIC(ic: ItemCollection, i: Int): Unit = {
-    if (ic.icType == Crafting) {
+    if (ic.icType === Crafting) {//TODO: typeclass per trait
       py = i / 2
       px = i - (py * 2)
       (px * 40 until px * 40 + 40).foreach { x =>
@@ -730,8 +706,10 @@ class Inventory extends Serializable {
       }
       g2 = ic.icType.image.createGraphics()
       drawImage(g2, box, px * 40, py * 40, px * 40 + 40, py * 40 + 40, 0, 0, 40, 40)
-      if (ic.ids(i) != 0) {
-        TerraFrame.itemImgs.get(ic.ids(i)).foreach { itemImg =>
+      val itemi = ic.ids(i)
+      itemi match {
+        case imageUiItem: ImageUiItem =>
+          val itemImg = imageUiItem.image
           width = itemImg.getWidth()
           height = itemImg.getHeight()
           drawImage(g2,
@@ -745,50 +723,48 @@ class Inventory extends Serializable {
             width,
             height
           )
-        }
-
-        if (ic.nums(i) > 1) {
-          g2.setFont(font)
-          g2.setColor(Color.WHITE)
-          g2.drawString(ic.nums(i) + " ", px * 40 + 9, py * 40 + 34)
-        }
+          if (ic.nums(i) > 1) {
+            g2.setFont(font)
+            g2.setColor(Color.WHITE)
+            g2.drawString(ic.nums(i) + " ", px * 40 + 9, py * 40 + 34)
+          }
+        case _ =>
       }
-      ic.ids(4) = 0
+
+      ic.ids(4) = EmptyUiItem
       import scala.util.control.Breaks._
       breakable {
-        RECIPES.get("cic").toList.flatten.foreach { r2 =>
+        cicRecipes.foreach { cicRecipe =>
           valid = true
 
           breakable {
-            (0 until 4).foreach { i =>
-              if (ic.ids(i) != r2(i)) {
+            cicRecipe.ingredients.foreach { ingredient =>
+              if (ic.ids(i) =/= ingredient) {
                 valid = false
                 break
               }
             }
           }
           if (valid) {
-            ic.ids(4) = r2(4)
-            ic.nums(4) = r2(5)
-            TerraFrame.TOOLDURS.get(r2(4)).foreach { d =>
-              ic.durs(4) = d
-            }
+            ic.ids(4) = cicRecipe.result
+            ic.nums(4) = cicRecipe.count
+            ic.durs(4) = UiItem.toolDurability(cicRecipe.result)
             break
           }
         }
       }
-      val r3 = mutable.ArrayBuffer.empty[Short]
-      breakable {
-        RECIPES.get("shapeless_cic").toList.flatten.foreach { r2 =>
+      val r3 = mutable.ArrayBuffer.empty[UiItem]
+      breakable {  // TODO: recipe logic for matching ingredients needs some help
+        shapelessCicRecipes.foreach { shapelessCicRecipe =>
           valid = true
           r3.clear()
-          (0 until r2.length - 2).foreach { j =>
-            r3 += r2(j)
+          shapelessCicRecipe.ingredients.foreach { j =>
+            r3 += j
           }
           breakable {
             (0 until 4).foreach { j =>
               n = r3.indexOf(ic.ids(j))
-              if (n == -1) {
+              if (n === -1) {
                 valid = false
                 break
               } else {
@@ -797,12 +773,9 @@ class Inventory extends Serializable {
             }
           }
           if (valid) {
-            ic.ids(4) = r2(r2.length - 2)
-            ic.nums(4) = r2(r2.length - 1)
-            TerraFrame.TOOLDURS.get(r2(r2.length - 2)).foreach { d =>
-              ic.durs(4) = d
-            }
-
+            ic.ids(4) = shapelessCicRecipe.result
+            ic.nums(4) = shapelessCicRecipe.count
+            ic.durs(4) = UiItem.toolDurability(shapelessCicRecipe.result)
             break
           }
         }
@@ -814,8 +787,10 @@ class Inventory extends Serializable {
       }
       g2 = ic.icType.image.createGraphics()
       drawImage(g2, box, 3 * 40, 20, 3 * 40 + 40, 20 + 40, 0, 0, 40, 40)
-      if (ic.ids(4) != 0) {
-        TerraFrame.itemImgs.get(ic.ids(4)).foreach { itemImg =>
+      val item4 = ic.ids(4)
+      item4 match {
+        case imageUiItem: ImageUiItem => //TODO: this doesn't require anything from Inventory: render typeclass?
+          val itemImg = imageUiItem.image
           width = itemImg.getWidth()
           height = itemImg.getHeight()
           drawImage(
@@ -830,17 +805,16 @@ class Inventory extends Serializable {
             width,
             height
           )
+          if (ic.nums(4) > 1) {
+            g2.setFont(font)
+            g2.setColor(Color.WHITE)
+            g2.drawString(ic.nums(4) + " ", 3 * 40 + 9, 20 + 34)
+          }
 
-        }
-
-        if (ic.nums(4) > 1) {
-          g2.setFont(font)
-          g2.setColor(Color.WHITE)
-          g2.drawString(ic.nums(4) + " ", 3 * 40 + 9, 20 + 34)
-        }
+        case _ =>
       }
     }
-    if (ic.icType == Armor) {
+    if (ic.icType === Armor) {
       py = i / CX
       px = i - (py * CX)
       (px * 46 until px * 46 + 40).foreach { x =>
@@ -850,23 +824,22 @@ class Inventory extends Serializable {
       }
       g2 = ic.icType.image.createGraphics()
       drawImage(g2, box, px * 46, py * 46, px * 46 + 40, py * 46 + 40, 0, 0, 40, 40)
-      if (ic.ids(i) != 0) {
-        TerraFrame.itemImgs.get(ic.ids(i)).foreach { itemImg =>
-          width = itemImg.getWidth()
-          height = itemImg.getHeight()
-          drawImage(
-            g2,
-            itemImg,
-            px * 46 + 8 + ((24 - 12.toDouble / mh.max(width, height, 12) * width * 2) / 2).toInt,
-            py * 46 + 8 + ((24 - 12.toDouble / mh.max(width, height, 12) * height * 2) / 2).toInt,
-            px * 46 + 32 - ((24 - 12.toDouble / mh.max(width, height, 12) * width * 2) / 2).toInt,
-            py * 46 + 32 - ((24 - 12.toDouble / mh.max(width, height, 12) * height * 2) / 2).toInt,
-            0,
-            0,
-            width,
-            height
-          )
-        }
+      UiItem.onImageItem(ic.ids(i)) { imageUiItem =>
+        val itemImg = imageUiItem.image
+        width = itemImg.getWidth()
+        height = itemImg.getHeight()
+        drawImage(
+          g2,
+          itemImg,
+          px * 46 + 8 + ((24 - 12.toDouble / mh.max(width, height, 12) * width * 2) / 2).toInt,
+          py * 46 + 8 + ((24 - 12.toDouble / mh.max(width, height, 12) * height * 2) / 2).toInt,
+          px * 46 + 32 - ((24 - 12.toDouble / mh.max(width, height, 12) * width * 2) / 2).toInt,
+          py * 46 + 32 - ((24 - 12.toDouble / mh.max(width, height, 12) * height * 2) / 2).toInt,
+          0,
+          0,
+          width,
+          height
+        )
 
         if (ic.nums(i) > 1) {
           g2.setFont(font)
@@ -875,7 +848,7 @@ class Inventory extends Serializable {
         }
       }
     }
-    if (ic.icType == Workbench) {
+    if (ic.icType === Workbench) {
       py = i / 3
       px = i - (py * 3)
       (px * 40 until px * 40 + 40).foreach { x =>
@@ -885,8 +858,10 @@ class Inventory extends Serializable {
       }
       g2 = ic.icType.image.createGraphics()
       drawImage(g2, box, px * 40, py * 40, px * 40 + 40, py * 40 + 40, 0, 0, 40, 40)
-      if (ic.ids(i) != 0) {
-        TerraFrame.itemImgs.get(ic.ids(i)).foreach { itemImg =>
+      val itemi = ic.ids(i)
+      itemi match {
+        case imageUiItem: ImageUiItem =>
+          val itemImg = imageUiItem.image
           width = itemImg.getWidth()
           height = itemImg.getHeight()
           drawImage(
@@ -901,49 +876,48 @@ class Inventory extends Serializable {
             width,
             height
           )
-        }
 
-        if (ic.nums(i) > 1) {
-          g2.setFont(font)
-          g2.setColor(Color.WHITE)
-          g2.drawString(ic.nums(i) + " ", px * 40 + 9, py * 40 + 34)
-        }
+          if (ic.nums(i) > 1) {
+            g2.setFont(font)
+            g2.setColor(Color.WHITE)
+            g2.drawString(ic.nums(i) + " ", px * 40 + 9, py * 40 + 34)
+          }
+
+        case _ =>
       }
-      ic.ids(9) = 0
+      ic.ids(9) = EmptyUiItem
       import scala.util.control.Breaks._
       breakable {
-        RECIPES.get("workbench").toList.flatten.foreach { r2 =>
+        workbenchRecipes.foreach { workbenchRecipe =>
           valid = true
           breakable {
             (0 until 9).foreach { i =>
-              if (ic.ids(i) != r2(i)) {
+              if (ic.ids(i) =/= workbenchRecipe.ingredients(i)) {
                 valid = false
                 break
               }
             }
           }
           if (valid) {
-            ic.ids(9) = r2(9)
-            ic.nums(9) = r2(10)
-            TerraFrame.TOOLDURS.get(r2(9)).foreach { d =>
-              ic.durs(9) = d
-            }
+            ic.ids(9) = workbenchRecipe.result
+            ic.nums(9) = workbenchRecipe.count
+            ic.durs(9) = UiItem.toolDurability(workbenchRecipe.result)
             break
           }
         }
       }
-      val r3 = mutable.ListBuffer.empty[Short]
+      val r3 = mutable.ListBuffer.empty[UiItem]
       breakable {
-        RECIPES.get("shapeless").toList.flatten.foreach { r2 =>
+        shapelessRecipes.foreach { shapelessRecipe =>
           valid = true
           r3.clear()
-          (0 until r2.length - 2).foreach { j =>
-            r3 += r2(j)
+          shapelessRecipe.ingredients.foreach { j =>
+            r3 += j
           }
           breakable {
             (0 until 9).foreach { j =>
               n = r3.indexOf(ic.ids(j))
-              if (n == -1) {
+              if (n === -1) {
                 valid = false
                 break
               } else {
@@ -952,11 +926,9 @@ class Inventory extends Serializable {
             }
           }
           if (valid) {
-            ic.ids(9) = r2(r2.length - 2)
-            ic.nums(9) = r2(r2.length - 1)
-            TerraFrame.TOOLDURS.get(r2(r2.length - 2)).foreach { d =>
-              ic.durs(9) = d
-            }
+            ic.ids(9) = shapelessRecipe.result
+            ic.nums(9) = shapelessRecipe.count
+            ic.durs(9) = UiItem.toolDurability(shapelessRecipe.result)
             break
           }
         }
@@ -968,8 +940,10 @@ class Inventory extends Serializable {
       }
       g2 = ic.icType.image.createGraphics()
       drawImage(g2, box, 4 * 40, 1 * 40, 4 * 40 + 40, 1 * 40 + 40, 0, 0, 40, 40)
-      if (ic.ids(9) != 0) {
-        TerraFrame.itemImgs.get(ic.ids(9)).foreach { itemImg =>
+      val item9 = ic.ids(9)
+      item9 match {
+        case imageUiItem: ImageUiItem =>
+          val itemImg = imageUiItem.image
           width = itemImg.getWidth()
           height = itemImg.getHeight()
           drawImage(
@@ -984,20 +958,20 @@ class Inventory extends Serializable {
             width,
             height
           )
-        }
 
-        if (ic.nums(9) > 1) {
-          g2.setFont(font)
-          g2.setColor(Color.WHITE)
-          g2.drawString(ic.nums(9) + " ", 4 * 40 + 9, 1 * 40 + 34)
-        }
+          if (ic.nums(9) > 1) {
+            g2.setFont(font)
+            g2.setColor(Color.WHITE)
+            g2.drawString(ic.nums(9) + " ", 4 * 40 + 9, 1 * 40 + 34)
+          }
+        case _ =>
       }
     }
-    if (ic.icType == WoodenChest || ic.icType == StoneChest ||
-        ic.icType == CopperChest || ic.icType == IronChest ||
-        ic.icType == SilverChest || ic.icType == GoldChest ||
-        ic.icType == ZincChest || ic.icType == RhymestoneChest ||
-        ic.icType == ObduriteChest) { //TODO: chest trait?
+    if (ic.icType === WoodenChest || ic.icType === StoneChest ||
+        ic.icType === CopperChest || ic.icType === IronChest ||
+        ic.icType === SilverChest || ic.icType === GoldChest ||
+        ic.icType === ZincChest || ic.icType === RhymestoneChest ||
+        ic.icType === ObduriteChest) { //TODO: chest trait?
       py = i / CX
       px = i - (py * CX)
       (px * 46 until px * 46 + 40).foreach { x =>
@@ -1007,8 +981,10 @@ class Inventory extends Serializable {
       }
       g2 = ic.icType.image.createGraphics()
       drawImage(g2, box, px * 46, py * 46, px * 46 + 40, py * 46 + 40, 0, 0, 40, 40)
-      if (ic.ids(i) != 0) {
-        TerraFrame.itemImgs.get(ic.ids(i)).foreach { itemImg =>
+      val uiItem = ic.ids(i)
+      uiItem match {
+        case imageUiItem : ImageUiItem =>
+          val itemImg = imageUiItem.image
           width = itemImg.getWidth()
           height = itemImg.getHeight()
           drawImage(
@@ -1023,17 +999,20 @@ class Inventory extends Serializable {
             width,
             height
           )
-        }
 
-        if (ic.nums(i) > 1) {
-          g2.setFont(font)
-          g2.setColor(Color.WHITE)
-          g2.drawString(ic.nums(i) + " ", px * 46 + 9, py * 46 + 34)
-        }
+          if (ic.nums(i) > 1) {
+            g2.setFont(font)
+            g2.setColor(Color.WHITE)
+            g2.drawString(ic.nums(i) + " ", px * 46 + 9, py * 46 + 34)
+          }
+
+        case _ =>
       }
+
+
     }
-    if (ic.icType == Furnace) {
-      if (i == -1) {
+    if (ic.icType === Furnace) {
+      if (i === -1) {
         (0 until 5).foreach { y =>
           (0 until (ic.FUELP * 38).toInt).foreach { x =>
             ic.icType.image.setRGB(x + 1, y + 51, new Color(255, 0, 0).getRGB)
@@ -1051,19 +1030,19 @@ class Inventory extends Serializable {
           }
         }
       } else {
-        if (i == 0) {
+        if (i === 0) {
           fpx = 0
           fpy = 0
         }
-        if (i == 1) {
+        if (i === 1) {
           fpx = 0
           fpy = 1.4
         }
-        if (i == 2) {
+        if (i === 2) {
           fpx = 0
           fpy = 2.4
         }
-        if (i == 3) {
+        if (i === 3) {
           fpx = 1.4
           fpy = 0
         }
@@ -1083,8 +1062,10 @@ class Inventory extends Serializable {
                      0,
                      40,
                      40)
-        if (ic.ids(i) != 0) {
-          TerraFrame.itemImgs.get(ic.ids(i)).foreach { itemImg =>
+        val itemi = ic.ids(i)
+        itemi match {
+          case imageUiItem: ImageUiItem =>
+            val itemImg = imageUiItem.image
             width = itemImg.getWidth()
             height = itemImg.getHeight()
             drawImage(
@@ -1099,25 +1080,26 @@ class Inventory extends Serializable {
               width,
               height
             )
-          }
 
-          if (ic.nums(i) > 1) {
-            g2.setFont(font)
-            g2.setColor(Color.WHITE)
-            g2.drawString(ic.nums(i) + " ", (fpx * 40 + 9).toInt, (fpy * 40 + 34).toInt)
-          }
+            if (ic.nums(i) > 1) {
+              g2.setFont(font)
+              g2.setColor(Color.WHITE)
+              g2.drawString(ic.nums(i) + " ", (fpx * 40 + 9).toInt, (fpy * 40 + 34).toInt)
+            }
+
+          case _ =>
         }
       }
     }
   }
 
   def useRecipeWorkbench(ic: ItemCollection): Unit = {
-    RECIPES.get("workbench").toList.flatten.foreach { r2 =>
+    workbenchRecipes.foreach { workbenchRecipe =>
       valid = true
       import scala.util.control.Breaks._
       breakable {
         (0 until 9).foreach { i =>
-          if (ic.ids(i) != r2(i)) {
+          if (ic.ids(i) =/= workbenchRecipe.ingredients(i)) {
             valid = false
             break
           }
@@ -1130,19 +1112,19 @@ class Inventory extends Serializable {
         }
       }
     }
-    val r3 = mutable.ArrayBuffer.empty[Short]
+    val r3 = mutable.ArrayBuffer.empty[UiItem]
     import scala.util.control.Breaks._
     breakable {
-      RECIPES.get("shapeless").toList.flatten.foreach { r2 =>
+      shapelessRecipes.foreach { shapelessRecipe =>
         valid = true
         r3.clear()
-        (0 until r2.length - 2).foreach { k =>
-          r3 += r2(k)
+        shapelessRecipe.ingredients.foreach { ingredient =>
+          r3 += ingredient
         }
         breakable {
           (0 until 9).foreach { k =>
             n = r3.indexOf(ic.ids(k))
-            if (n == -1) {
+            if (n === -1) {
               valid = false
               break
             } else {
@@ -1152,8 +1134,8 @@ class Inventory extends Serializable {
         }
         if (valid) {
           r3.clear()
-          (0 until r2.length - 2).foreach { k =>
-            r3 += r2(k)
+          shapelessRecipe.ingredients.foreach { ingredient =>
+            r3 += ingredient
           }
           (0 until 9).foreach { k =>
             n = r3.indexOf(ic.ids(k))
@@ -1168,12 +1150,12 @@ class Inventory extends Serializable {
   }
 
   def useRecipeCIC(ic: ItemCollection): Unit = {
-    RECIPES.get("cic").toList.flatten.foreach { r2 =>
+    cicRecipes.foreach { cicRecipe =>
       valid = true
       import scala.util.control.Breaks._
       breakable {
         (0 until 4).foreach { i =>
-          if (ic.ids(i) != r2(i)) {
+          if (ic.ids(i) =/= cicRecipe.ingredients(i)) {
             valid = false
             break
           }
@@ -1186,19 +1168,19 @@ class Inventory extends Serializable {
         }
       }
     }
-    val r3 = mutable.ArrayBuffer.empty[Short]
+    val r3 = mutable.ArrayBuffer.empty[UiItem]
     import scala.util.control.Breaks._
     breakable {
-      RECIPES.get("shapeless_cic").toList.flatten.foreach { r2 =>
+      shapelessCicRecipes.foreach { shapelessCicRecipe =>
         valid = true
         r3.clear()
-        (0 until r2.length - 2).foreach { k =>
-          r3 += r2(k)
+        shapelessCicRecipe.ingredients.foreach { r =>
+          r3 += r
         }
         breakable {
           (0 until 4).foreach { k =>
             n = r3.indexOf(ic.ids(k))
-            if (n == -1) {
+            if (n === -1) {
               valid = false
               break
             } else {
@@ -1208,8 +1190,8 @@ class Inventory extends Serializable {
         }
         if (valid) {
           r3.clear()
-          (0 until r2.length - 2).foreach { k =>
-            r3 += r2(k)
+          shapelessCicRecipe.ingredients.foreach { k =>
+            r3 += k
           }
           (0 until 4).foreach { k =>
             n = r3.indexOf(ic.ids(k))

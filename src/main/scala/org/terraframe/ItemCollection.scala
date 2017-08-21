@@ -48,14 +48,13 @@ case object Furnace         extends ItemCollectionType(4) {
   lazy val image = loadImage("interface/furnace.png").get
 }
 
-//TODO: should is be an Array[Int] to avoid converting Short to Int every time if only used for indexing?
-case class ItemCollection(icType: ItemCollectionType, ids: Array[Short], nums: Array[Short], durs: Array[Short])
+case class ItemCollection(icType: ItemCollectionType, ids: Array[UiItem], nums: Array[Short], durs: Array[Short])
     extends Serializable {
 
   def this(icType: ItemCollectionType) =
     this(
       icType,
-      Array.fill(icType.collectionSize)(0),
+      Array.fill(icType.collectionSize)(EmptyUiItem),
       Array.fill(icType.collectionSize)(0),
       Array.fill(icType.collectionSize)(0))
 

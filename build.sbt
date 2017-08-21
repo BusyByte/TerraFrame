@@ -10,7 +10,7 @@ lazy val librarySettings = Seq(
   "org.scalacheck" %% "scalacheck"        % "1.13.4" % Test
 )
 
-def unsafeBut(ws: Wart*): Seq[Wart] = Warts.unsafe filterNot (w => ws exists (_.clazz == w.clazz))
+def unsafeBut(ws: Wart*): Seq[Wart] = Warts.unsafe ++ Seq(Wart.Equals) filterNot (w => ws exists (_.clazz == w.clazz))
 
 
 lazy val root = (project in file("."))

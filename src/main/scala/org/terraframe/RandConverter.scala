@@ -9,6 +9,8 @@ import Images.loadImage
 import scala.io.StdIn
 import scala.util.Random
 
+import TypeSafeComparisons._
+
 object RandConverter {
 
   val BLOCKSIZE: Int = 16
@@ -57,10 +59,10 @@ object RandConverter {
       while (true) {
         System.out.print("Generate new textures for: ")
         val name: String = StdIn.readLine()
-        if (name.equals("exit")) {
+        if (name === "exit") {
           break
         }
-        if (option == 'O') {
+        if (option === 'O') {
           dirs.indices.foreach { k =>
             (2 until 6).foreach { j =>
               val texture: BufferedImage = loadImage("outlines/" + name + "/" + dirs(k) + "1.png").get
@@ -97,7 +99,7 @@ object RandConverter {
                 coords(x * IMAGESIZE + y)(1) = y
               }
             }
-            if (option == 'R') {
+            if (option === 'R') {
               coords = Random.shuffle(coords.toList).toArray
             }
             val result = new BufferedImage(IMAGESIZE, IMAGESIZE, BufferedImage.TYPE_INT_ARGB)
