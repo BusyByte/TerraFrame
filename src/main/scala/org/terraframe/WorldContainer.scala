@@ -6,7 +6,7 @@ import scala.collection.mutable.ArrayBuffer
 import scala.util.Random
 
 case class WorldContainer(blocks: Array3D[BlockType],
-                          blockds: Array3D[Byte],
+                          blockds: Array3D[OutlineDirection],
                           blockdns: Array2D[Byte],
                           blockbgs: Array2D[Background],
                           blockts: Array2D[Byte],

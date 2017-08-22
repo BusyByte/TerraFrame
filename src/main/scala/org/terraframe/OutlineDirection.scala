@@ -1,5 +1,42 @@
 package org.terraframe
 
+object OutlineDirection {
+  lazy val dirs = List(
+    CenterOutlineDirection,
+    TdownBothOutlineDirection,
+    TdownCwOutlineDirection,
+    CdownCcwOutlineDirection,
+    TdownOutlineDirection,
+    TupBothOutlineDirection,
+    TupCwOutlineDirection,
+    TupCcwOutlineDirection,
+    TupOutlineDirection,
+    LeftrightOutlineDirection,
+    TrightBothOutlineDirection,
+    TrightCwOutlineDirection,
+    TrightCcwOutlineDirection,
+    TrightOutlineDirection,
+    UpleftdiagOutlineDirection,
+    UpleftOutlineDirection,
+    DownleftdiagOutlineDirection,
+    DownleftOutlineDirection,
+    LeftOutlineDirection,
+    TleftBothOutlineDirection,
+    TleftCwOutlineDirection,
+    TleftCcwOutlineDirection,
+    TleftOutlineDirection,
+    UprightdiagOutlineDirection,
+    UprightOutlineDirection,
+    DownrightdiagOutlineDirection,
+    DownrightOutlineDirection,
+    RightOutlineDirection,
+    UpdownOutlineDirection,
+    UpOutlineDirection,
+    DownOutlineDirection,
+    SingleOutlineDirection
+  )
+}
+
 //TODO: same as dirs, is it needed anymore?
 sealed abstract class OutlineDirection(val id: Byte, val imageName: String)
 object CenterOutlineDirection        extends OutlineDirection(0, "center")

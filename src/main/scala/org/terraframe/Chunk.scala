@@ -10,7 +10,7 @@ case class Chunk(
     cx: Int,
     cy: Int,
     blocks: Array3D[BlockType],
-    blockds: Array3D[Byte],
+    blockds: Array3D[OutlineDirection],
     blockdns: Array2D[Byte],
     blockbgs: Array2D[Background],
     blockts: Array2D[Byte],
@@ -30,7 +30,7 @@ object Chunk {
 
   def apply(cx: Int, cy: Int, random: Random): Chunk = {
     val blocks: Array3D[BlockType]       = Array.ofDim(3, size, size)
-    val blockds: Array3D[Byte]     = Array.ofDim(3, size, size)
+    val blockds: Array3D[OutlineDirection]     = Array.ofDim(3, size, size)
     val blockdns: Array2D[Byte]    = Array.ofDim(size, size)
     val blockbgs: Array2D[Background]    = Array.ofDim(size, size)
     val blockts: Array2D[Byte]     = Array.ofDim(size, size)
@@ -64,8 +64,8 @@ object Chunk {
         drawn(y)(x) = false
         rdrawn(y)(x) = false
         ldrawn(y)(x) = false
-        blockds(0)(y)(x) = 0.toByte
-        blockds(2)(y)(x) = 0.toByte
+        blockds(0)(y)(x) = CenterOutlineDirection
+        blockds(2)(y)(x) = CenterOutlineDirection
       }
     }
     blockds(1) = generateOutlines(blocks(1))

@@ -134,14 +134,14 @@ object TerraFrame {
 
 //  val toolList = Array[Short](7, 8, 9, 10, 11, 12, 13, 14, 51, 52, 54, 55, 57, 58, 145, 146, 148, 149, 154, 155, 157, 158, 169, 170, 172, 173)
 
-  val dirs: Array[String] = Array("center", "tdown_both", "tdown_cw", "tdown_ccw",
-    "tdown", "tup_both", "tup_cw", "tup_ccw",
-    "tup", "leftright", "tright_both", "tright_cw",
-    "tright_ccw", "tright", "upleftdiag", "upleft",
-    "downleftdiag", "downleft", "left", "tleft_both",
-    "tleft_cw", "tleft_ccw", "tleft", "uprightdiag",
-    "upright", "downrightdiag", "downright", "right",
-    "updown", "up", "down", "single")
+//  val dirs: Array[String] = Array("center", "tdown_both", "tdown_cw", "tdown_ccw",
+//    "tdown", "tup_both", "tup_cw", "tup_ccw",
+//    "tup", "leftright", "tright_both", "tright_cw",
+//    "tright_ccw", "tright", "upleftdiag", "upleft",
+//    "downleftdiag", "downleft", "left", "tleft_both",
+//    "tleft_cw", "tleft_ccw", "tleft", "uprightdiag",
+//    "upright", "downrightdiag", "downright", "right",
+//    "updown", "up", "down", "single")
 
   val blocknames: Array[String] = Array("air", "dirt", "stone",
     "copper_ore", "iron_ore", "silver_ore", "gold_ore",
@@ -855,13 +855,13 @@ object TerraFrame {
   lazy val outlineImgs: Map[String, BufferedImage] = {
     val outlineNameList: Array[String] = Array("default", "wood", "none", "tree", "tree_root", "square", "wire")
 
-    val outlineImgsTemp = new jul.HashMap[String, BufferedImage](outlineNameList.length * dirs.length * 5)
+    val outlineImgsTemp = new jul.HashMap[String, BufferedImage](outlineNameList.length * OutlineDirection.dirs.length * 5)
 
     outlineNameList.foreach { outlineName =>
-      dirs.foreach { dir =>
+      OutlineDirection.dirs.foreach { dir =>
         (0 until 5).foreach { k =>
-          outlineImgsTemp.put("outlines/" + outlineName + "/" + dir + (k + 1) + ".png",
-            loadImage("outlines/" + outlineName + "/" + dir + (k + 1) + ".png").get)
+          outlineImgsTemp.put("outlines/" + outlineName + "/" + dir.imageName + (k + 1) + ".png",
+            loadImage("outlines/" + outlineName + "/" + dir.imageName + (k + 1) + ".png").get)
         }
       }
     }
@@ -1477,7 +1477,7 @@ class TerraFrame extends JApplet
   var newWorldName: TextField = _
 
   var blocks: Array3D[BlockType] = _
-  var blockds: Array3D[Byte] = _
+  var blockds: Array3D[OutlineDirection] = _
   var blockdns: Array2D[Byte] = _
   var blockbgs: Array2D[Background] = _
   var blockts: Array2D[Byte] = _
@@ -1776,14 +1776,14 @@ class TerraFrame extends JApplet
                                           if (blocks(l)(ty)(tx) =/= AirBlockType) {
                                             if (l === 2) {
                                               OUTLINES.get(blocks(l)(ty)(tx).id).foreach { outlineName =>
-                                                drawImage(fwg2, loadBlock(blocks(l)(ty)(tx), blockds(l)(ty)(tx), blockdns(ty)(tx), blockts(ty)(tx), blocknames, dirs, outlineName, tx, ty, l),
+                                                drawImage(fwg2, loadBlock(blocks(l)(ty)(tx), blockds(l)(ty)(tx), blockdns(ty)(tx), blockts(ty)(tx), blocknames, outlineName, tx, ty, l),
                                                   tx * BLOCKSIZE - twx * CHUNKSIZE, ty * BLOCKSIZE - twy * CHUNKSIZE, tx * BLOCKSIZE + BLOCKSIZE - twx * CHUNKSIZE, ty * BLOCKSIZE + BLOCKSIZE - twy * CHUNKSIZE,
                                                   0, 0, IMAGESIZE, IMAGESIZE)
                                               }
                                             }
                                             else {
                                               OUTLINES.get(blocks(l)(ty)(tx).id).foreach { outlineName =>
-                                                drawImage(wg2, loadBlock(blocks(l)(ty)(tx), blockds(l)(ty)(tx), blockdns(ty)(tx), blockts(ty)(tx), blocknames, dirs, outlineName, tx, ty, l),
+                                                drawImage(wg2, loadBlock(blocks(l)(ty)(tx), blockds(l)(ty)(tx), blockdns(ty)(tx), blockts(ty)(tx), blocknames, outlineName, tx, ty, l),
                                                   tx * BLOCKSIZE - twx * CHUNKSIZE, ty * BLOCKSIZE - twy * CHUNKSIZE, tx * BLOCKSIZE + BLOCKSIZE - twx * CHUNKSIZE, ty * BLOCKSIZE + BLOCKSIZE - twy * CHUNKSIZE,
                                                   0, 0, IMAGESIZE, IMAGESIZE)
                                               }
@@ -1835,14 +1835,14 @@ class TerraFrame extends JApplet
                                           if (blocks(l)(ty)(tx) =/= AirBlockType) {
                                             if (l === 2) {
                                               OUTLINES.get(blocks(l)(ty)(tx).id).foreach { outlineName =>
-                                                drawImage(fwg2, loadBlock(blocks(l)(ty)(tx), blockds(l)(ty)(tx), blockdns(ty)(tx), blockts(ty)(tx), blocknames, dirs, outlineName, tx, ty, l),
+                                                drawImage(fwg2, loadBlock(blocks(l)(ty)(tx), blockds(l)(ty)(tx), blockdns(ty)(tx), blockts(ty)(tx), blocknames, outlineName, tx, ty, l),
                                                   tx * BLOCKSIZE - twx * CHUNKSIZE, ty * BLOCKSIZE - twy * CHUNKSIZE, tx * BLOCKSIZE + BLOCKSIZE - twx * CHUNKSIZE, ty * BLOCKSIZE + BLOCKSIZE - twy * CHUNKSIZE,
                                                   0, 0, IMAGESIZE, IMAGESIZE)
                                               }
                                             }
                                             else {
                                               OUTLINES.get(blocks(l)(ty)(tx).id).foreach { outlineName =>
-                                                drawImage(wg2, loadBlock(blocks(l)(ty)(tx), blockds(l)(ty)(tx), blockdns(ty)(tx), blockts(ty)(tx), blocknames, dirs, outlineName, tx, ty, l),
+                                                drawImage(wg2, loadBlock(blocks(l)(ty)(tx), blockds(l)(ty)(tx), blockdns(ty)(tx), blockts(ty)(tx), blocknames, outlineName, tx, ty, l),
                                                   tx * BLOCKSIZE - twx * CHUNKSIZE, ty * BLOCKSIZE - twy * CHUNKSIZE, tx * BLOCKSIZE + BLOCKSIZE - twx * CHUNKSIZE, ty * BLOCKSIZE + BLOCKSIZE - twy * CHUNKSIZE,
                                                   0, 0, IMAGESIZE, IMAGESIZE)
                                               }
@@ -1895,7 +1895,7 @@ class TerraFrame extends JApplet
                                           if (blocks(l)(ty)(tx) =/= AirBlockType) {
                                             if (l === 2) {
                                               OUTLINES.get(blocks(l)(ty)(tx).id).foreach { outlineName =>
-                                                drawImage(fwg2, loadBlock(blocks(l)(ty)(tx), blockds(l)(ty)(tx), blockdns(ty)(tx), blockts(ty)(tx), blocknames, dirs, outlineName, tx, ty, l),
+                                                drawImage(fwg2, loadBlock(blocks(l)(ty)(tx), blockds(l)(ty)(tx), blockdns(ty)(tx), blockts(ty)(tx), blocknames, outlineName, tx, ty, l),
                                                   tx * BLOCKSIZE - twx * CHUNKSIZE, ty * BLOCKSIZE - twy * CHUNKSIZE, tx * BLOCKSIZE + BLOCKSIZE - twx * CHUNKSIZE, ty * BLOCKSIZE + BLOCKSIZE - twy * CHUNKSIZE,
                                                   0, 0, IMAGESIZE, IMAGESIZE)
                                               }
@@ -1903,7 +1903,7 @@ class TerraFrame extends JApplet
                                             }
                                             else {
                                               OUTLINES.get(blocks(l)(ty)(tx).id).foreach { outlineName =>
-                                                drawImage(wg2, loadBlock(blocks(l)(ty)(tx), blockds(l)(ty)(tx), blockdns(ty)(tx), blockts(ty)(tx), blocknames, dirs, outlineName, tx, ty, l),
+                                                drawImage(wg2, loadBlock(blocks(l)(ty)(tx), blockds(l)(ty)(tx), blockdns(ty)(tx), blockts(ty)(tx), blocknames, outlineName, tx, ty, l),
                                                   tx * BLOCKSIZE - twx * CHUNKSIZE, ty * BLOCKSIZE - twy * CHUNKSIZE, tx * BLOCKSIZE + BLOCKSIZE - twx * CHUNKSIZE, ty * BLOCKSIZE + BLOCKSIZE - twy * CHUNKSIZE,
                                                   0, 0, IMAGESIZE, IMAGESIZE)
                                               }
@@ -5921,10 +5921,7 @@ class TerraFrame extends JApplet
       ic, kworlds, icmatrix, version)
   }
 
-  def loadBlock(block: BlockType, dir: Byte, dirn: Byte, tnum: Byte,
-                blocknames: Array[String], dirs: Array[String], outlineName: String, x: Int, y: Int, lyr: Int): BufferedImage = {
-    val dir_is: Int = dir.toInt
-    val dir_s: String = dirs(dir_is)
+  def loadBlock(block: BlockType, dir: OutlineDirection, dirn: Byte, tnum: Byte, blocknames: Array[String], outlineName: String, x: Int, y: Int, lyr: Int): BufferedImage = {
     val dir_i: Int = dirn.toInt
     val bName: String = blocknames(block.id)
     val image: BufferedImage = config.createCompatibleImage(IMAGESIZE, IMAGESIZE, Transparency.TRANSLUCENT)
@@ -6049,7 +6046,7 @@ class TerraFrame extends JApplet
     }
 
 
-    outlineImgs.get("outlines/" + outlineName + "/" + dir_s + (dir_i + 1) + ".png").foreach { outline =>
+    outlineImgs.get("outlines/" + outlineName + "/" + dir.imageName + (dir_i + 1) + ".png").foreach { outline =>
       (0 until IMAGESIZE).foreach { fy =>
         (0 until IMAGESIZE).foreach { fx =>
           if (outline.getRGB(fx, fy) === -65281 || outline.getRGB(fx, fy) === -48897) {

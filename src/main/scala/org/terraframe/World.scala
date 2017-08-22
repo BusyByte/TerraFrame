@@ -11,7 +11,7 @@ object World {
   var coordlist: Array2D[Boolean]  = _
   var coordlist2: Array2D[Boolean] = _
 
-  def generateOutlines(blocks: Array2D[BlockType]): Array2D[Byte] = {
+  def generateOutlines(blocks: Array2D[BlockType]): Array2D[OutlineDirection] = {
     generate2(blocks, false)
   }
 
@@ -677,14 +677,14 @@ object World {
     }
    */
 
-  def generate2(blocks: Array2D[BlockType], msg: Boolean): Array2D[Byte] = {
+  def generate2(blocks: Array2D[BlockType], msg: Boolean): Array2D[OutlineDirection] = {
     var x: Int      = 0
     val width: Int  = blocks(0).length
     val height: Int = blocks.length
     if (msg) {
       println("-> Creating outlines...")
     }
-    val blockds: Array2D[Byte] = Array.ofDim(height, width)
+    val blockds: Array2D[OutlineDirection] = Array.ofDim(height, width)
     //val blockdns: Array2D[Byte] = Array.ofDim(height,width)
     var left, right, up, down, upleft, upright, downleft, downright: Boolean = false
     (0 until height).foreach { y =>
@@ -703,19 +703,19 @@ object World {
             if (right) {
               if (up) {
                 if (down) {
-                  blockds(y)(x) = CenterOutlineDirection.id
+                  blockds(y)(x) = CenterOutlineDirection
                 } else {
                   if (upleft) {
                     if (upright) {
-                      blockds(y)(x) = TdownBothOutlineDirection.id
+                      blockds(y)(x) = TdownBothOutlineDirection
                     } else {
-                      blockds(y)(x) = TdownCwOutlineDirection.id
+                      blockds(y)(x) = TdownCwOutlineDirection
                     }
                   } else {
                     if (upright) {
-                      blockds(y)(x) = CdownCcwOutlineDirection.id
+                      blockds(y)(x) = CdownCcwOutlineDirection
                     } else {
-                      blockds(y)(x) = TdownOutlineDirection.id
+                      blockds(y)(x) = TdownOutlineDirection
                     }
                   }
                 }
@@ -723,19 +723,19 @@ object World {
                 if (down) {
                   if (downright) {
                     if (downleft) {
-                      blockds(y)(x) = TupBothOutlineDirection.id
+                      blockds(y)(x) = TupBothOutlineDirection
                     } else {
-                      blockds(y)(x) = TupCwOutlineDirection.id
+                      blockds(y)(x) = TupCwOutlineDirection
                     }
                   } else {
                     if (downleft) {
-                      blockds(y)(x) = TupCcwOutlineDirection.id
+                      blockds(y)(x) = TupCcwOutlineDirection
                     } else {
-                      blockds(y)(x) = TupOutlineDirection.id
+                      blockds(y)(x) = TupOutlineDirection
                     }
                   }
                 } else {
-                  blockds(y)(x) = LeftrightOutlineDirection.id
+                  blockds(y)(x) = LeftrightOutlineDirection
                 }
               }
             } else {
@@ -743,33 +743,33 @@ object World {
                 if (down) {
                   if (downleft) {
                     if (upleft) {
-                      blockds(y)(x) = TrightBothOutlineDirection.id
+                      blockds(y)(x) = TrightBothOutlineDirection
                     } else {
-                      blockds(y)(x) = TrightCwOutlineDirection.id
+                      blockds(y)(x) = TrightCwOutlineDirection
                     }
                   } else {
                     if (upleft) {
-                      blockds(y)(x) = TrightCcwOutlineDirection.id
+                      blockds(y)(x) = TrightCcwOutlineDirection
                     } else {
-                      blockds(y)(x) = TrightOutlineDirection.id
+                      blockds(y)(x) = TrightOutlineDirection
                     }
                   }
                 } else {
                   if (upleft) {
-                    blockds(y)(x) = UpleftdiagOutlineDirection.id
+                    blockds(y)(x) = UpleftdiagOutlineDirection
                   } else {
-                    blockds(y)(x) = UpleftOutlineDirection.id
+                    blockds(y)(x) = UpleftOutlineDirection
                   }
                 }
               } else {
                 if (down) {
                   if (downleft) {
-                    blockds(y)(x) = DownleftdiagOutlineDirection.id
+                    blockds(y)(x) = DownleftdiagOutlineDirection
                   } else {
-                    blockds(y)(x) = DownleftOutlineDirection.id
+                    blockds(y)(x) = DownleftOutlineDirection
                   }
                 } else {
-                  blockds(y)(x) = LeftOutlineDirection.id
+                  blockds(y)(x) = LeftOutlineDirection
                 }
               }
             }
@@ -779,47 +779,47 @@ object World {
                 if (down) {
                   if (upright) {
                     if (downright) {
-                      blockds(y)(x) = TleftBothOutlineDirection.id
+                      blockds(y)(x) = TleftBothOutlineDirection
                     } else {
-                      blockds(y)(x) = TleftCwOutlineDirection.id
+                      blockds(y)(x) = TleftCwOutlineDirection
                     }
                   } else {
                     if (downright) {
-                      blockds(y)(x) = TleftCcwOutlineDirection.id
+                      blockds(y)(x) = TleftCcwOutlineDirection
                     } else {
-                      blockds(y)(x) = TleftOutlineDirection.id
+                      blockds(y)(x) = TleftOutlineDirection
                     }
                   }
                 } else {
                   if (upright) {
-                    blockds(y)(x) = UprightdiagOutlineDirection.id
+                    blockds(y)(x) = UprightdiagOutlineDirection
                   } else {
-                    blockds(y)(x) = UprightOutlineDirection.id
+                    blockds(y)(x) = UprightOutlineDirection
                   }
                 }
               } else {
                 if (down) {
                   if (downright) {
-                    blockds(y)(x) = DownrightdiagOutlineDirection.id
+                    blockds(y)(x) = DownrightdiagOutlineDirection
                   } else {
-                    blockds(y)(x) = DownrightOutlineDirection.id
+                    blockds(y)(x) = DownrightOutlineDirection
                   }
                 } else {
-                  blockds(y)(x) = RightOutlineDirection.id
+                  blockds(y)(x) = RightOutlineDirection
                 }
               }
             } else {
               if (up) {
                 if (down) {
-                  blockds(y)(x) = UpdownOutlineDirection.id
+                  blockds(y)(x) = UpdownOutlineDirection
                 } else {
-                  blockds(y)(x) = UpOutlineDirection.id
+                  blockds(y)(x) = UpOutlineDirection
                 }
               } else {
                 if (down) {
-                  blockds(y)(x) = DownOutlineDirection.id
+                  blockds(y)(x) = DownOutlineDirection
                 } else {
-                  blockds(y)(x) = SingleOutlineDirection.id
+                  blockds(y)(x) = SingleOutlineDirection
                 }
               }
             }
@@ -830,7 +830,7 @@ object World {
     blockds
   }
 
-  def generate2b(blocks: Array2D[BlockType], blockds: Array2D[Byte], xpos: Int, ypos: Int): Array2D[Byte] = {
+  def generate2b(blocks: Array2D[BlockType], blockds: Array2D[OutlineDirection], xpos: Int, ypos: Int): Array2D[OutlineDirection] = {
     var x: Int                                                               = 0
     val width: Int                                                           = blocks(0).length
     val height: Int                                                          = blocks.length
@@ -851,19 +851,19 @@ object World {
             if (right) {
               if (up) {
                 if (down) {
-                  blockds(y)(x) = CenterOutlineDirection.id
+                  blockds(y)(x) = CenterOutlineDirection
                 } else {
                   if (upleft) {
                     if (upright) {
-                      blockds(y)(x) = TdownBothOutlineDirection.id
+                      blockds(y)(x) = TdownBothOutlineDirection
                     } else {
-                      blockds(y)(x) = TdownCwOutlineDirection.id
+                      blockds(y)(x) = TdownCwOutlineDirection
                     }
                   } else {
                     if (upright) {
-                      blockds(y)(x) = CdownCcwOutlineDirection.id
+                      blockds(y)(x) = CdownCcwOutlineDirection
                     } else {
-                      blockds(y)(x) = TdownOutlineDirection.id
+                      blockds(y)(x) = TdownOutlineDirection
                     }
                   }
                 }
@@ -871,19 +871,19 @@ object World {
                 if (down) {
                   if (downright) {
                     if (downleft) {
-                      blockds(y)(x) = TupBothOutlineDirection.id
+                      blockds(y)(x) = TupBothOutlineDirection
                     } else {
-                      blockds(y)(x) = TupCwOutlineDirection.id
+                      blockds(y)(x) = TupCwOutlineDirection
                     }
                   } else {
                     if (downleft) {
-                      blockds(y)(x) = TupCcwOutlineDirection.id
+                      blockds(y)(x) = TupCcwOutlineDirection
                     } else {
-                      blockds(y)(x) = TupOutlineDirection.id
+                      blockds(y)(x) = TupOutlineDirection
                     }
                   }
                 } else {
-                  blockds(y)(x) = LeftrightOutlineDirection.id
+                  blockds(y)(x) = LeftrightOutlineDirection
                 }
               }
             } else {
@@ -891,33 +891,33 @@ object World {
                 if (down) {
                   if (downleft) {
                     if (upleft) {
-                      blockds(y)(x) = TrightBothOutlineDirection.id
+                      blockds(y)(x) = TrightBothOutlineDirection
                     } else {
-                      blockds(y)(x) = TrightCwOutlineDirection.id
+                      blockds(y)(x) = TrightCwOutlineDirection
                     }
                   } else {
                     if (upleft) {
-                      blockds(y)(x) = TrightCcwOutlineDirection.id
+                      blockds(y)(x) = TrightCcwOutlineDirection
                     } else {
-                      blockds(y)(x) = TrightOutlineDirection.id
+                      blockds(y)(x) = TrightOutlineDirection
                     }
                   }
                 } else {
                   if (upleft) {
-                    blockds(y)(x) = UpleftdiagOutlineDirection.id
+                    blockds(y)(x) = UpleftdiagOutlineDirection
                   } else {
-                    blockds(y)(x) = UpleftOutlineDirection.id
+                    blockds(y)(x) = UpleftOutlineDirection
                   }
                 }
               } else {
                 if (down) {
                   if (downleft) {
-                    blockds(y)(x) = DownleftdiagOutlineDirection.id
+                    blockds(y)(x) = DownleftdiagOutlineDirection
                   } else {
-                    blockds(y)(x) = DownleftOutlineDirection.id
+                    blockds(y)(x) = DownleftOutlineDirection
                   }
                 } else {
-                  blockds(y)(x) = LeftOutlineDirection.id
+                  blockds(y)(x) = LeftOutlineDirection
                 }
               }
             }
@@ -927,47 +927,47 @@ object World {
                 if (down) {
                   if (upright) {
                     if (downright) {
-                      blockds(y)(x) = TleftBothOutlineDirection.id
+                      blockds(y)(x) = TleftBothOutlineDirection
                     } else {
-                      blockds(y)(x) = TleftCwOutlineDirection.id
+                      blockds(y)(x) = TleftCwOutlineDirection
                     }
                   } else {
                     if (downright) {
-                      blockds(y)(x) = TleftCcwOutlineDirection.id
+                      blockds(y)(x) = TleftCcwOutlineDirection
                     } else {
-                      blockds(y)(x) = TleftOutlineDirection.id
+                      blockds(y)(x) = TleftOutlineDirection
                     }
                   }
                 } else {
                   if (upright) {
-                    blockds(y)(x) = UprightdiagOutlineDirection.id
+                    blockds(y)(x) = UprightdiagOutlineDirection
                   } else {
-                    blockds(y)(x) = UprightOutlineDirection.id
+                    blockds(y)(x) = UprightOutlineDirection
                   }
                 }
               } else {
                 if (down) {
                   if (downright) {
-                    blockds(y)(x) = DownrightdiagOutlineDirection.id
+                    blockds(y)(x) = DownrightdiagOutlineDirection
                   } else {
-                    blockds(y)(x) = DownrightOutlineDirection.id
+                    blockds(y)(x) = DownrightOutlineDirection
                   }
                 } else {
-                  blockds(y)(x) = RightOutlineDirection.id
+                  blockds(y)(x) = RightOutlineDirection
                 }
               }
             } else {
               if (up) {
                 if (down) {
-                  blockds(y)(x) = UpdownOutlineDirection.id
+                  blockds(y)(x) = UpdownOutlineDirection
                 } else {
-                  blockds(y)(x) = UpOutlineDirection.id
+                  blockds(y)(x) = UpOutlineDirection
                 }
               } else {
                 if (down) {
-                  blockds(y)(x) = DownOutlineDirection.id
+                  blockds(y)(x) = DownOutlineDirection
                 } else {
-                  blockds(y)(x) = SingleOutlineDirection.id
+                  blockds(y)(x) = SingleOutlineDirection
                 }
               }
             }
