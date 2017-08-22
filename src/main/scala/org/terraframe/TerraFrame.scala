@@ -1267,16 +1267,16 @@ object TerraFrame {
     ap.init()
   }
 
-  def hasOpenSpace(x: Int, y: Int, blocks: Array2D[Int]): Boolean = {
-    blocks(y - 1)(x - 1) === 0 || !blockcds(blocks(y - 1)(x - 1)) ||
-      blocks(y - 1)(x) === 0 || !blockcds(blocks(y - 1)(x)) ||
-      blocks(y - 1)(x + 1) === 0 || !blockcds(blocks(y - 1)(x + 1)) ||
-      blocks(y)(x - 1) === 0 || !blockcds(blocks(y)(x - 1)) ||
-      blocks(y)(x + 1) === 0 || !blockcds(blocks(y)(x + 1)) ||
-      blocks(y + 1)(x - 1) === 0 || !blockcds(blocks(y + 1)(x - 1)) ||
-      blocks(y + 1)(x) === 0 || !blockcds(blocks(y + 1)(x)) ||
-      blocks(y + 1)(x + 1) === 0 || !blockcds(blocks(y + 1)(x + 1))
-  }
+//  def hasOpenSpace(x: Int, y: Int, blocks: Array2D[Int]): Boolean = {
+//    blocks(y - 1)(x - 1) === 0 || !blockcds(blocks(y - 1)(x - 1)) ||
+//      blocks(y - 1)(x) === 0 || !blockcds(blocks(y - 1)(x)) ||
+//      blocks(y - 1)(x + 1) === 0 || !blockcds(blocks(y - 1)(x + 1)) ||
+//      blocks(y)(x - 1) === 0 || !blockcds(blocks(y)(x - 1)) ||
+//      blocks(y)(x + 1) === 0 || !blockcds(blocks(y)(x + 1)) ||
+//      blocks(y + 1)(x - 1) === 0 || !blockcds(blocks(y + 1)(x - 1)) ||
+//      blocks(y + 1)(x) === 0 || !blockcds(blocks(y + 1)(x)) ||
+//      blocks(y + 1)(x + 1) === 0 || !blockcds(blocks(y + 1)(x + 1))
+//  }
 
   def postError(e: Throwable): Unit = {
     val sb = new StringBuilder()
