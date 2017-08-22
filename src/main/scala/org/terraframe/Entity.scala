@@ -74,9 +74,25 @@ sealed trait Entity {
   def update(blocks: Array2D[BlockType], player: Player, u: Int, v: Int): Boolean
 }
 
+object AIEntity {
+  sealed trait ImageState
+  object StillLeft extends ImageState
+  object StillRight extends ImageState
+  object WalkRight1 extends ImageState
+  object WalkRight2 extends ImageState
+  object WalkLeft1 extends ImageState
+  object WalkLeft2 extends ImageState
+  object NormalRight extends ImageState
+  object NormalLeft extends ImageState
+  object FlapLeft extends ImageState
+  object FlapRight extends ImageState
+
+}
+
 case class AIEntity(var x: Double, var y: Double, var vx: Double, var vy: Double, strategy: EntityStrategy)
     extends Entity
     with Serializable {
+   import AIEntity._
 
   import TerraFrame.BLOCKSIZE
 
@@ -86,7 +102,7 @@ case class AIEntity(var x: Double, var y: Double, var vx: Double, var vy: Double
 
   var nohit: Boolean = false
 
-  var imgState: String                                   = _
+  var imgState: ImageState                                   = _
   var onGround, immune, grounded, onGroundDelay: Boolean = _
 
   var newMob: Option[Entity] = None
@@ -106,8 +122,8 @@ case class AIEntity(var x: Double, var y: Double, var vx: Double, var vy: Double
   val height: Int = image.getHeight() * 2
 
   imgState = strategy.ai match {
-    case BatAI => "normal right"
-    case _     => "still right"
+    case BatAI => NormalRight
+    case _     => StillRight
   }
 
   vx = strategy.ai match {
@@ -143,21 +159,21 @@ case class AIEntity(var x: Double, var y: Double, var vx: Double, var vy: Double
         }
         if (x > player.x) {
           vx = max(vx - 0.1, -1.2)
-          if (imgState === "still left" || imgState === "still right" ||
-              imgState === "walk right 1" || imgState === "walk right 2") { // TODO: sum type image state
+          if (imgState === StillLeft || imgState === StillRight ||
+              imgState === WalkRight1 || imgState === WalkRight2) {
             imgDelay = 10
-            imgState = "walk left 2"
+            imgState = WalkLeft2
             image = loadImage("sprites/monsters/" + strategy.imageName + "/left_walk.png").get
           }
           if (imgDelay <= 0) {
-            if (imgState === "walk left 1") {
+            if (imgState === WalkLeft1) {
               imgDelay = 10
-              imgState = "walk left 2"
+              imgState = WalkLeft2
               image = loadImage("sprites/monsters/" + strategy.imageName + "/left_walk.png").get
             } else {
-              if (imgState === "walk left 2") {
+              if (imgState === WalkLeft2) {
                 imgDelay = 10
-                imgState = "walk left 1"
+                imgState = WalkLeft1
                 image = loadImage("sprites/monsters/" + strategy.imageName + "/left_still.png").get
               }
             }
@@ -166,21 +182,21 @@ case class AIEntity(var x: Double, var y: Double, var vx: Double, var vy: Double
           }
         } else {
           vx = min(vx + 0.1, 1.2)
-          if (imgState === "still left" || imgState === "still right" ||
-              imgState === "walk left 1" || imgState === "walk left 2") {
+          if (imgState === StillLeft || imgState === StillRight ||
+              imgState === WalkLeft1 || imgState === WalkLeft2) {
             imgDelay = 10
-            imgState = "walk right 2"
+            imgState = WalkRight2
             image = loadImage("sprites/monsters/" + strategy.imageName + "/right_walk.png").get
           }
           if (imgDelay <= 0) {
-            if (imgState === "walk right 1") {
+            if (imgState === WalkRight1) {
               imgDelay = 10
-              imgState = "walk right 2"
+              imgState = WalkRight2
               image = loadImage("sprites/monsters/" + strategy.imageName + "/right_walk.png").get
             } else {
-              if (imgState === "walk right 2") {
+              if (imgState === WalkRight2) {
                 imgDelay = 10
-                imgState = "walk right 1"
+                imgState = WalkRight1
                 image = loadImage("sprites/monsters/" + strategy.imageName + "/right_still.png").get
               }
             }
@@ -189,12 +205,12 @@ case class AIEntity(var x: Double, var y: Double, var vx: Double, var vy: Double
           }
         }
         if (!grounded) {
-          if (imgState === "still left" || imgState === "walk left 1" ||
-              imgState === "walk left 2") {
+          if (imgState === StillLeft|| imgState === WalkLeft1 ||
+              imgState === WalkLeft2) {
             image = loadImage("sprites/monsters/" + strategy.imageName + "/left_jump.png").get
           }
-          if (imgState === "still right" || imgState === "walk right 1" ||
-              imgState === "walk right 2") {
+          if (imgState === StillRight || imgState === WalkRight1 ||
+              imgState === WalkRight2) {
             image = loadImage("sprites/monsters/" + strategy.imageName + "/right_jump.png").get
           }
         }
@@ -293,33 +309,33 @@ case class AIEntity(var x: Double, var y: Double, var vx: Double, var vy: Double
           vy = min(vy + 0.05, 2.0)
         }
         imgDelay -= 1
-        if (vx > 0 && imgState =/= "normal right") {
-          imgState = "normal right"
+        if (vx > 0 && imgState =/= NormalRight) {
+          imgState = NormalRight
           image = loadImage("sprites/monsters/" + strategy.imageName + "/normal_right.png").get
           imgDelay = 10
         }
-        if (vx < 0 && imgState =/= "normal left") {
-          imgState = "normal left"
+        if (vx < 0 && imgState =/= NormalLeft) {
+          imgState = NormalLeft
           image = loadImage("sprites/monsters/" + strategy.imageName + "/normal_left.png").get
           imgDelay = 10
         }
-        if (imgState === "normal left" && imgDelay <= 0) {
-          imgState = "flap left"
+        if (imgState === NormalLeft && imgDelay <= 0) {
+          imgState = FlapLeft
           image = loadImage("sprites/monsters/" + strategy.imageName + "/flap_left.png").get
           imgDelay = 10
         }
-        if (imgState === "normal right" && imgDelay <= 0) {
-          imgState = "flap right"
+        if (imgState === NormalRight && imgDelay <= 0) {
+          imgState = FlapRight
           image = loadImage("sprites/monsters/" + strategy.imageName + "/flap_right.png").get
           imgDelay = 10
         }
-        if (imgState === "flap left" && imgDelay <= 0) {
-          imgState = "normal left"
+        if (imgState === FlapLeft && imgDelay <= 0) {
+          imgState = NormalLeft
           image = loadImage("sprites/monsters/" + strategy.imageName + "/normal_left.png").get
           imgDelay = 10
         }
-        if (imgState === "flap right" && imgDelay <= 0) {
-          imgState = "normal right"
+        if (imgState === FlapRight && imgDelay <= 0) {
+          imgState = NormalRight
           image = loadImage("sprites/monsters/" + strategy.imageName + "/normal_right.png").get
           imgDelay = 10
         }

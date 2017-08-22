@@ -22,15 +22,16 @@ object Player {
   lazy val leftJumpImage: BufferedImage   = loadImage("sprites/player/left_jump.png").get
   lazy val rightJumpImage: BufferedImage  = loadImage("sprites/player/right_jump.png").get
   lazy val totalHP: Int                   = 50
+
+  sealed trait PlayerImageState
+  object StillLeft extends PlayerImageState
+  object StillRight extends PlayerImageState
+  object WalkRight1 extends PlayerImageState
+  object WalkRight2 extends PlayerImageState
+  object WalkLeft1 extends PlayerImageState
+  object WalkLeft2 extends PlayerImageState
 }
 
-sealed trait PlayerImageState
-object StillLeft  extends PlayerImageState
-object StillRight extends PlayerImageState
-object WalkRight1 extends PlayerImageState
-object WalkRight2 extends PlayerImageState
-object WalkLeft1  extends PlayerImageState
-object WalkLeft2  extends PlayerImageState
 
 case class Player(var x: Double, var y: Double) extends Serializable {
 

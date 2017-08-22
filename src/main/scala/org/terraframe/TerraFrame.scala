@@ -2443,7 +2443,7 @@ class TerraFrame extends JApplet
           icmatrix(iclayer)(icy)(icx) = Some(ItemCollection(icTemp.icType, icTemp.ids, icTemp.nums, icTemp.durs))
         }
         if (icTemp.icType === Workbench) {
-          if (player.imgState === StillRight || player.imgState === WalkRight1 || player.imgState === WalkRight2) {
+          if (player.imgState === Player.StillRight || player.imgState === Player.WalkRight1 || player.imgState === Player.WalkRight2) {
             (0 until 9).foreach { i =>
               UiItem.onImageItem(icTemp.ids(i)) { imgItm =>
                 entities += IdEntity((icx * BLOCKSIZE).toDouble, (icy * BLOCKSIZE).toDouble, 2, -2, imgItm, icTemp.nums(i), icTemp.durs(i), 75)
@@ -2451,7 +2451,7 @@ class TerraFrame extends JApplet
               }
             }
           }
-          if (player.imgState === StillLeft || player.imgState === WalkLeft1 || player.imgState === WalkLeft2) {
+          if (player.imgState === Player.StillLeft || player.imgState === Player.WalkLeft1 || player.imgState === Player.WalkLeft2) {
             (0 until 9).foreach { i =>
               UiItem.onImageItem(icTemp.ids(i)) { imgItm =>
                 entities += IdEntity((icx * BLOCKSIZE).toDouble, (icy * BLOCKSIZE).toDouble, -2, -2, imgItm, icTemp.nums(i), icTemp.durs(i), 75)
@@ -3564,7 +3564,7 @@ class TerraFrame extends JApplet
                   icmatrix(iclayer)(icy)(icx) = Some(ItemCollection(icTemp.icType, icTemp.ids, icTemp.nums, icTemp.durs))
                 }
                 if (icTemp.icType === Workbench) {
-                  if (player.imgState === StillRight || player.imgState === WalkRight1 || player.imgState === WalkRight2) {
+                  if (player.imgState === Player.StillRight || player.imgState === Player.WalkRight1 || player.imgState === Player.WalkRight2) {
                     (0 until 9).foreach { i =>
                       UiItem.onImageItem(icTemp.ids(i)) { imgItm =>
                         entities += new IdEntity((icx * BLOCKSIZE).toDouble, (icy * BLOCKSIZE).toDouble, 2, -2, imgItm, icTemp.nums(i), icTemp.durs(i), 75)
@@ -3572,7 +3572,7 @@ class TerraFrame extends JApplet
                       }
                     }
                   }
-                  if (player.imgState === StillLeft || player.imgState === WalkLeft1 || player.imgState === WalkLeft2) {
+                  if (player.imgState === Player.StillLeft || player.imgState === Player.WalkLeft1 || player.imgState === Player.WalkLeft2) {
                     (0 until 9).foreach { i =>
                       UiItem.onImageItem(icTemp.ids(i)) { imgItm =>
                         entities += new IdEntity((icx * BLOCKSIZE).toDouble, (icy * BLOCKSIZE).toDouble, -2, -2, imgItm, icTemp.nums(i), icTemp.durs(i), 75)
@@ -3892,10 +3892,10 @@ class TerraFrame extends JApplet
           (0 until 4).foreach { i =>
             cic.foreach { c =>
               UiItem.onImageItem(c.ids(i)) { imgItm =>
-                if (player.imgState === StillRight || player.imgState === WalkRight1 || player.imgState === WalkRight2) {
+                if (player.imgState === Player.StillRight || player.imgState === Player.WalkRight1 || player.imgState === Player.WalkRight2) {
                   entities += new IdEntity(player.x, player.y, 2, -2, imgItm, c.nums(i), c.durs(i), 75)
                 }
-                if (player.imgState === StillLeft || player.imgState === WalkLeft1 || player.imgState === WalkLeft2) {
+                if (player.imgState === Player.StillLeft || player.imgState === Player.WalkLeft1 || player.imgState === Player.WalkLeft2) {
                   entities += new IdEntity(player.x, player.y, -2, -2, imgItm, c.nums(i), c.durs(i), 75)
                 }
                 inventory.removeLocationIC(c, i, c.nums(i))
@@ -3912,7 +3912,7 @@ class TerraFrame extends JApplet
           icmatrix(iclayer)(icy)(icx) = Some(ItemCollection(icTemp.icType, icTemp.ids, icTemp.nums, icTemp.durs))
         }
         if (icTemp.icType === Workbench) {
-          if (player.imgState === StillRight || player.imgState === WalkRight1 || player.imgState === WalkRight2) {
+          if (player.imgState === Player.StillRight || player.imgState === Player.WalkRight1 || player.imgState === Player.WalkRight2) {
             (0 until 9).foreach { i =>
               UiItem.onImageItem(icTemp.ids(i)) { imgItm =>
                 entities += new IdEntity((icx * BLOCKSIZE).toDouble, (icy * BLOCKSIZE).toDouble, 2, -2, imgItm, icTemp.nums(i), icTemp.durs(i), 75)
@@ -3920,7 +3920,7 @@ class TerraFrame extends JApplet
               }
             }
           }
-          if (player.imgState === StillLeft || player.imgState === WalkLeft1 || player.imgState === WalkLeft2) {
+          if (player.imgState === Player.StillLeft || player.imgState === Player.WalkLeft1 || player.imgState === Player.WalkLeft2) {
             (0 until 9).foreach { i =>
               UiItem.onImageItem(icTemp.ids(i)) { imgItm =>
                 entities += new IdEntity((icx * BLOCKSIZE).toDouble, (icy * BLOCKSIZE).toDouble, -2, -2, imgItm, icTemp.nums(i), icTemp.durs(i), 75)
@@ -3939,10 +3939,10 @@ class TerraFrame extends JApplet
         ic = None
       }
       UiItem.onImageItem(moveItem) { mi =>
-        if (player.imgState === StillRight || player.imgState === WalkRight1 || player.imgState === WalkRight2) {
+        if (player.imgState === Player.StillRight || player.imgState === Player.WalkRight1 || player.imgState === Player.WalkRight2) {
           entities += new IdEntity(player.x, player.y, 2, -2, mi, moveNum, moveDur, 75)
         }
-        if (player.imgState === StillLeft || player.imgState === WalkLeft1 || player.imgState === WalkLeft2) {
+        if (player.imgState === Player.StillLeft || player.imgState === Player.WalkLeft1 || player.imgState === Player.WalkLeft2) {
           entities += new IdEntity(player.x, player.y, -2, -2, mi, moveNum, moveDur, 75)
         }
         moveItem = EmptyUiItem
@@ -3950,10 +3950,10 @@ class TerraFrame extends JApplet
       }
       (0 until 4).foreach { i =>
         UiItem.onImageItem(armor.ids(i)) { ai =>
-          if (player.imgState === StillRight || player.imgState === WalkRight1 || player.imgState === WalkRight2) {
+          if (player.imgState === Player.StillRight || player.imgState === Player.WalkRight1 || player.imgState === Player.WalkRight2) {
             entities += new IdEntity(player.x, player.y, 2, -2, ai, armor.nums(i), armor.durs(i), 75)
           }
-          if (player.imgState === StillLeft || player.imgState === WalkLeft1 || player.imgState === WalkLeft2) {
+          if (player.imgState === Player.StillLeft || player.imgState === Player.WalkLeft1 || player.imgState === Player.WalkLeft2) {
             entities += new IdEntity(player.x, player.y, -2, -2, ai, armor.nums(i), armor.durs(i), 75)
           }
           inventory.removeLocationIC(armor, i, armor.nums(i))
@@ -3971,7 +3971,7 @@ class TerraFrame extends JApplet
     if (showTool) {
       val points: List[Point] = tool.toList.flatMap { t =>
         player.imgState match {
-          case (StillRight | WalkRight1 | WalkRight2) =>
+          case (Player.StillRight | Player.WalkRight1 | Player.WalkRight2) =>
             List[Point](
               new Point((player.x + Player.width / 2 + 6).toInt, (player.y + Player.height / 2).toInt),
               new Point((player.x + Player.width / 2 + 6 + t.getWidth() * 2 * cos(toolAngle) + t.getHeight() * 2 * sin(toolAngle)).toInt,
@@ -3984,7 +3984,7 @@ class TerraFrame extends JApplet
                 (player.y + Player.height / 2 + t.getWidth() * 1.5 * sin(toolAngle) - t.getHeight() * 1.5 * cos(toolAngle)).toInt)
             )
 
-          case (StillLeft | WalkLeft1 | WalkLeft2) =>
+          case (Player.StillLeft | Player.WalkLeft1 | Player.WalkLeft2) =>
             List[Point](
               new Point((player.x + Player.width / 2 - 6).toInt, (player.y + Player.height / 2).toInt),
               new Point((player.x + Player.width / 2 - 6 + t.getWidth() * 2 * cos((Pi * 1.5) - toolAngle) + t.getHeight() * 2 * sin((Pi * 1.5) - toolAngle)).toInt,
@@ -5488,7 +5488,7 @@ class TerraFrame extends JApplet
 
         if (showTool) {
           tool.foreach { t =>
-            if (player.imgState === StillRight || player.imgState === WalkRight1 || player.imgState === WalkRight2) {
+            if (player.imgState === Player.StillRight || player.imgState === Player.WalkRight1 || player.imgState === Player.WalkRight2) {
               pg2.translate(getWidth / 2 + 6, getHeight / 2)
               pg2.rotate(toolAngle)
 
@@ -5499,7 +5499,7 @@ class TerraFrame extends JApplet
               pg2.rotate(-toolAngle)
               pg2.translate(-getWidth / 2 - 6, -getHeight / 2)
             }
-            if (player.imgState === StillLeft || player.imgState === WalkLeft1 || player.imgState === WalkLeft2) {
+            if (player.imgState === Player.StillLeft || player.imgState === Player.WalkLeft1 || player.imgState === Player.WalkLeft2) {
               pg2.translate(getWidth / 2 - 6, getHeight / 2)
               pg2.rotate((Pi * 1.5) - toolAngle)
 
@@ -6090,10 +6090,10 @@ class TerraFrame extends JApplet
             (0 until 4).foreach { i =>
               cic.foreach { c =>
                 UiItem.onImageItem(c.ids(i)) { imgItm =>
-                  if (player.imgState === StillRight || player.imgState === WalkRight1 || player.imgState === WalkRight2) {
+                  if (player.imgState === Player.StillRight || player.imgState === Player.WalkRight1 || player.imgState === Player.WalkRight2) {
                     entities += IdEntity(player.x, player.y, 2, -2, imgItm, c.nums(i), c.durs(i), 75)
                   }
-                  if (player.imgState === StillLeft || player.imgState === WalkLeft1 || player.imgState === WalkLeft2) {
+                  if (player.imgState === Player.StillLeft || player.imgState === Player.WalkLeft1 || player.imgState === Player.WalkLeft2) {
                     entities += IdEntity(player.x, player.y, -2, -2, imgItm, c.nums(i), c.durs(i), 75)
                   }
                   inventory.removeLocationIC(c, i, c.nums(i))
@@ -6110,7 +6110,7 @@ class TerraFrame extends JApplet
             icmatrix(iclayer)(icy)(icx) = Some(ItemCollection(icTemp.icType, icTemp.ids, icTemp.nums, icTemp.durs))
           }
           if (icTemp.icType === Workbench) {
-            if (player.imgState === StillRight || player.imgState === WalkRight1 || player.imgState === WalkRight2) {
+            if (player.imgState === Player.StillRight || player.imgState === Player.WalkRight1 || player.imgState === Player.WalkRight2) {
               (0 until 9).foreach { i =>
                 UiItem.onImageItem(icTemp.ids(i)) { imgItm =>
                   entities += IdEntity((icx * BLOCKSIZE).toDouble, (icy * BLOCKSIZE).toDouble, 2, -2, imgItm, icTemp.nums(i), icTemp.durs(i), 75)
@@ -6118,7 +6118,7 @@ class TerraFrame extends JApplet
                 }
               }
             }
-            if (player.imgState === StillLeft || player.imgState === WalkLeft1 || player.imgState === WalkLeft2) {
+            if (player.imgState === Player.StillLeft || player.imgState === Player.WalkLeft1 || player.imgState ===Player. WalkLeft2) {
               (0 until 9).foreach { i =>
                 UiItem.onImageItem(icTemp.ids(i)) { imgItm =>
                   entities += IdEntity((icx * BLOCKSIZE).toDouble, (icy * BLOCKSIZE).toDouble, -2, -2, imgItm, icTemp.nums(i), icTemp.durs(i), 75)
@@ -6137,10 +6137,10 @@ class TerraFrame extends JApplet
           ic = None
         }
         UiItem.onImageItem(moveItem ) { imgItm =>
-          if (player.imgState === StillRight || player.imgState === WalkRight1 || player.imgState === WalkRight2) {
+          if (player.imgState === Player.StillRight || player.imgState === Player.WalkRight1 || player.imgState === Player.WalkRight2) {
             entities += IdEntity(player.x, player.y, 2, -2, imgItm, moveNum, moveDur, 75)
           }
-          if (player.imgState === StillLeft || player.imgState === WalkLeft1 || player.imgState === WalkLeft2) {
+          if (player.imgState === Player.StillLeft || player.imgState === Player.WalkLeft1 || player.imgState === Player.WalkLeft2) {
             entities += IdEntity(player.x, player.y, -2, -2, imgItm, moveNum, moveDur, 75)
           }
           moveItem = EmptyUiItem
