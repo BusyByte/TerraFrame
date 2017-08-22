@@ -37,7 +37,6 @@ object OutlineDirection {
   )
 }
 
-//TODO: same as dirs, is it needed anymore?
 sealed abstract class OutlineDirection(val id: Byte, val imageName: String)
 object CenterOutlineDirection        extends OutlineDirection(0, "center")
 object TdownBothOutlineDirection     extends OutlineDirection(1, "tdown_both")
