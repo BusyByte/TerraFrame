@@ -268,19 +268,19 @@ object TerraFrame {
   val wirec: Array[Boolean] = Array(false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true)
   val skycolors: Array[Int] = Array(28800, 28980, 29160, 29340, 29520, 29700, 29880, 30060, 30240, 30420, 30600, 30780, 30960, 31140, 31320, 31500, 31680, 31860, 32040, 32220, 72000, 72180, 72360, 72540, 72720, 72900, 73080, 73260, 73440, 73620, 73800, 73980, 74160, 74340, 74520, 74700, 74880, 75060, 75240, 75420)
 
-  lazy val backgroundImgs: Map[Byte, BufferedImage] = {
-    val bgs: Array[String] = Array("solid/empty", "dirt_none/downleft", "dirt_none/downright", "dirt_none/left", "dirt_none/right", "dirt_none/up", "dirt_none/upleft", "dirt_none/upright",
-      "solid/dirt", "stone_dirt/downleft", "stone_dirt/downright", "stone_dirt/left", "stone_dirt/right", "stone_dirt/up", "stone_dirt/upleft", "stone_dirt/upright",
-      "solid/stone", "stone_none/down")
-
-    val backgroundImgsTemp = new jul.HashMap[Byte, BufferedImage](bgs.length)
-
-    (1 until bgs.length).foreach { i =>
-      backgroundImgsTemp.put(i.toByte, loadImage("backgrounds/" + bgs(i) + ".png").get)
-    }
-
-    backgroundImgsTemp.asScala.toMap
-  }
+//  lazy val backgroundImgs: Map[Byte, BufferedImage] = {
+//    val bgs: Array[String] = Array("solid/empty", "dirt_none/downleft", "dirt_none/downright", "dirt_none/left", "dirt_none/right", "dirt_none/up", "dirt_none/upleft", "dirt_none/upright",
+//      "solid/dirt", "stone_dirt/downleft", "stone_dirt/downright", "stone_dirt/left", "stone_dirt/right", "stone_dirt/up", "stone_dirt/upleft", "stone_dirt/upright",
+//      "solid/stone", "stone_none/down")
+//
+//    val backgroundImgsTemp = new jul.HashMap[Byte, BufferedImage](bgs.length)
+//
+//    (1 until bgs.length).foreach { i =>
+//      backgroundImgsTemp.put(i.toByte, loadImage("backgrounds/" + bgs(i) + ".png").get)
+//    }
+//
+//    backgroundImgsTemp.asScala.toMap
+//  }
 //  lazy val itemImgs: Map[Short, BufferedImage] = {
 //    val itemImgsTemp = new jul.HashMap[Short, BufferedImage](items.length)
 //
@@ -1479,7 +1479,7 @@ class TerraFrame extends JApplet
   var blocks: Array3D[BlockType] = _
   var blockds: Array3D[Byte] = _
   var blockdns: Array2D[Byte] = _
-  var blockbgs: Array2D[Byte] = _
+  var blockbgs: Array2D[Background] = _
   var blockts: Array2D[Byte] = _
   var lights: Array2D[Float] = _
   var power: Array3D[Float] = _
@@ -1607,7 +1607,7 @@ class TerraFrame extends JApplet
 
       repaint()
 
-      backgroundImgs.size
+      //backgroundImgs.size
 //TODO: figure out how to initialize all ImageUiItem images
       blockImgs.size
       outlineImgs.size
@@ -1767,10 +1767,10 @@ class TerraFrame extends JApplet
                                             }
                                           }
                                         }
-                                        if (blockbgs(ty)(tx) =/= 0) {
-                                          backgroundImgs.get(blockbgs(ty)(tx)).foreach(img =>
-                                            drawImage(wg2, img, tx * BLOCKSIZE - twx * CHUNKSIZE, ty * BLOCKSIZE - twy * CHUNKSIZE, tx * BLOCKSIZE + BLOCKSIZE - twx * CHUNKSIZE, ty * BLOCKSIZE + BLOCKSIZE - twy * CHUNKSIZE,
-                                              0, 0, IMAGESIZE, IMAGESIZE))
+                                        Background.onBackgroundImage(blockbgs(ty)(tx)) { img =>
+                                          drawImage(wg2, img.image, tx * BLOCKSIZE - twx * CHUNKSIZE, ty * BLOCKSIZE - twy * CHUNKSIZE, tx * BLOCKSIZE + BLOCKSIZE - twx * CHUNKSIZE, ty * BLOCKSIZE + BLOCKSIZE - twy * CHUNKSIZE,
+                                            0, 0, IMAGESIZE, IMAGESIZE)
+                                          ()
                                         }
                                         (0 until 3).foreach { l =>
                                           if (blocks(l)(ty)(tx) =/= AirBlockType) {
@@ -1825,10 +1825,11 @@ class TerraFrame extends JApplet
                                             }
                                           }
                                         }
-                                        if (blockbgs(ty)(tx) =/= 0) {
-                                          backgroundImgs.get(blockbgs(ty)(tx)).foreach(drawImage(wg2, _,
+                                        Background.onBackgroundImage(blockbgs(ty)(tx)) { img =>
+                                          drawImage(wg2, img.image,
                                             tx * BLOCKSIZE - twx * CHUNKSIZE, ty * BLOCKSIZE - twy * CHUNKSIZE, tx * BLOCKSIZE + BLOCKSIZE - twx * CHUNKSIZE, ty * BLOCKSIZE + BLOCKSIZE - twy * CHUNKSIZE,
-                                            0, 0, IMAGESIZE, IMAGESIZE))
+                                            0, 0, IMAGESIZE, IMAGESIZE)
+                                          ()
                                         }
                                         (0 until 3).foreach { l =>
                                           if (blocks(l)(ty)(tx) =/= AirBlockType) {
@@ -1883,11 +1884,13 @@ class TerraFrame extends JApplet
                                             }
                                           }
                                         }
-                                        if (blockbgs(ty)(tx) =/= 0) {
-                                          backgroundImgs.get(blockbgs(ty)(tx)).foreach(drawImage(wg2, _,
+                                        Background.onBackgroundImage(blockbgs(ty)(tx)) { img =>
+                                          drawImage(wg2, img.image,
                                             tx * BLOCKSIZE - twx * CHUNKSIZE, ty * BLOCKSIZE - twy * CHUNKSIZE, tx * BLOCKSIZE + BLOCKSIZE - twx * CHUNKSIZE, ty * BLOCKSIZE + BLOCKSIZE - twy * CHUNKSIZE,
-                                            0, 0, IMAGESIZE, IMAGESIZE))
+                                            0, 0, IMAGESIZE, IMAGESIZE)
+                                          ()
                                         }
+
                                         (0 until 3).foreach { l =>
                                           if (blocks(l)(ty)(tx) =/= AirBlockType) {
                                             if (l === 2) {
@@ -4134,7 +4137,7 @@ class TerraFrame extends JApplet
           else if (blocks(1)(y2 + v)(x2 + u) =/= AirBlockType) {
             frost -= 1
           }
-          if (blockbgs(y2 + v)(x2 + u) === 0) {
+          if (blockbgs(y2 + v)(x2 + u) === EmptyBackground) {
             cavern += 1
           }
           if (blocks(1)(y2 + v)(x2 + u) === DirtBlockType || blocks(1)(y2 + v)(x2 + u) === StoneBlockType) {

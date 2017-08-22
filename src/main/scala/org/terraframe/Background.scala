@@ -1,7 +1,19 @@
 package org.terraframe
 
-// TODO: same as backgroundImgs.bgs
+import org.terraframe.Images.loadImage
+
+
+object Background {
+  def onBackgroundImage(background: Background)(f: BackgroundImage => Unit): Unit = background match {
+    case bgi: BackgroundImage => f(bgi)
+    case _ => ()
+  }
+}
+
 sealed abstract class Background(val imageName: String, val id: Short)
+sealed abstract class BackgroundImage(imageName: String, id: Short) extends Background(imageName, id) {
+  lazy val image = loadImage("backgrounds/" + imageName + ".png").get
+}
 object EmptyBackground              extends Background("solid/empty", 0)
 object DirtNoneDownLeftBackground   extends Background("dirt_none/downleft", 1)
 object DirtNoneDownRightBackground  extends Background("dirt_none/downright", 2)

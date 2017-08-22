@@ -12,7 +12,7 @@ case class Chunk(
     blocks: Array3D[BlockType],
     blockds: Array3D[Byte],
     blockdns: Array2D[Byte],
-    blockbgs: Array2D[Byte],
+    blockbgs: Array2D[Background],
     blockts: Array2D[Byte],
     lights: Array2D[Float],
     power: Array3D[Float],
@@ -32,7 +32,7 @@ object Chunk {
     val blocks: Array3D[BlockType]       = Array.ofDim(3, size, size)
     val blockds: Array3D[Byte]     = Array.ofDim(3, size, size)
     val blockdns: Array2D[Byte]    = Array.ofDim(size, size)
-    val blockbgs: Array2D[Byte]    = Array.ofDim(size, size)
+    val blockbgs: Array2D[Background]    = Array.ofDim(size, size)
     val blockts: Array2D[Byte]     = Array.ofDim(size, size)
     val lights: Array2D[Float]     = Array.ofDim(size, size)
     val power: Array3D[Float]      = Array.ofDim(3, size, size)
@@ -56,7 +56,7 @@ object Chunk {
           power(l)(y)(x) = 0.toFloat
         }
         blockdns(y)(x) = random.nextInt(5).toByte
-        blockbgs(y)(x) = 0
+        blockbgs(y)(x) = EmptyBackground
         blockts(y)(x) = random.nextInt(8).toByte
         lights(y)(x) = 19.toFloat
         lsources(y)(x) = false

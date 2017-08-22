@@ -8,7 +8,7 @@ import scala.util.Random
 case class WorldContainer(blocks: Array3D[BlockType],
                           blockds: Array3D[Byte],
                           blockdns: Array2D[Byte],
-                          blockbgs: Array2D[Byte],
+                          blockbgs: Array2D[Background],
                           blockts: Array2D[Byte],
                           lights: Array2D[Float],
                           power: Array3D[Float],
