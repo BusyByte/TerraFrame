@@ -1199,37 +1199,6 @@ object TerraFrame {
     torchesbTemp.asScala.toMap
   }
 
-  lazy val GSUPPORT: Map[Int, Boolean] = { //TODO: BlockType is key
-    val gsupportTemp = new jul.HashMap[Int, Boolean](blocknames.length)
-
-    blocknames.indices.foreach { i =>
-      gsupportTemp.put(i, false)
-    }
-
-    gsupportTemp.put(15, true)
-    gsupportTemp.put(83, true)
-    gsupportTemp.put(20, true)
-    gsupportTemp.put(21, true)
-    gsupportTemp.put(22, true)
-    gsupportTemp.put(77, true)
-    gsupportTemp.put(78, true)
-    gsupportTemp.put(100, true)
-    gsupportTemp.put(105, true)
-    gsupportTemp.put(106, true)
-    gsupportTemp.put(131, true)
-    gsupportTemp.put(132, true)
-    gsupportTemp.put(133, true)
-    gsupportTemp.put(134, true)
-    gsupportTemp.put(135, true)
-    gsupportTemp.put(136, true)
-
-    (48 until 73).foreach { i =>
-      gsupportTemp.put(i, true)
-    }
-
-    gsupportTemp.asScala.toMap
-
-  }
   lazy val FSPEED: Map[Short, Double] = {
     val fspeedTemp = new jul.HashMap[Short, Double](blocknames.length)
 
@@ -1636,7 +1605,7 @@ class TerraFrame
       TORCHESL.size
       TORCHESR.size
       TORCHESB.size
-      GSUPPORT.size
+//      GSUPPORT.size
       FSPEED.size
       DDELAY.size
       sun.getWidth
@@ -4836,8 +4805,7 @@ class TerraFrame
           }
 
           uy -= 1
-          val notSupported = GSUPPORT.get(blocks(layer)(uy)(ux).id).fold(true)(b => !b)
-          if (uy === -1 || notSupported) {
+          if (uy === -1 || !BlockType.isGsupported(blocks(layer)(uy)(ux))) {
             addSunLighting(ux, uy)
             break
           }
