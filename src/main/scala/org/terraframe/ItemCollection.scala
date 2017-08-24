@@ -5,6 +5,21 @@ import java.io.Serializable
 
 import org.terraframe.Images.loadImage
 
+object ChestItemCollection {
+  def unapply(icType: ItemCollectionType): Option[ItemCollectionType] = icType match {
+    case WoodenChest    => Some(icType)
+    case StoneChest     => Some(icType)
+    case CopperChest    => Some(icType)
+    case IronChest      => Some(icType)
+    case SilverChest    => Some(icType)
+    case GoldChest      => Some(icType)
+    case ZincChest      => Some(icType)
+    case RhymestoneChest => Some(icType)
+    case ObduriteChest  => Some(icType)
+    case _ => None
+  }
+}
+
 sealed abstract class ItemCollectionType(val collectionSize: Int) {
   def image: BufferedImage
 }

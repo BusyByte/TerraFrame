@@ -5828,71 +5828,73 @@ class TerraFrame
           }
         }
         ic.foreach { icTemp =>
-          if (icTemp.icType === Workbench) {
-            (0 until 3).foreach { ux =>
-              (0 until 3).foreach { uy =>
-                if (mouseX >= ux * 40 + 6 && mouseX < ux * 40 + 46 &&
+
+          icTemp.icType match {
+            case Workbench =>
+
+              (0 until 3).foreach { ux =>
+                (0 until 3).foreach { uy =>
+                  if (mouseX >= ux * 40 + 6 && mouseX < ux * 40 + 46 &&
                     mouseY >= uy * 40 + inventory.image.getHeight() + 46 &&
                     mouseY < uy * 40 + inventory.image.getHeight() + 86 &&
                     icTemp.ids(uy * 3 + ux) =/= EmptyUiItem) {
-                  paintItem(icTemp.ids(uy * 3 + ux), icTemp.durs(uy * 3 + ux), mouseX, mouseY, pg2, mobFont)
+                    paintItem(icTemp.ids(uy * 3 + ux), icTemp.durs(uy * 3 + ux), mouseX, mouseY, pg2, mobFont)
+                  }
                 }
               }
-            }
-            if (mouseX >= 4 * 40 + 6 && mouseX < 4 * 40 + 46 &&
+              if (mouseX >= 4 * 40 + 6 && mouseX < 4 * 40 + 46 &&
                 mouseY >= 1 * 40 + inventory.image.getHeight() + 46 &&
                 mouseY < 1 * 40 + inventory.image.getHeight() + 86 &&
                 icTemp.ids(9) =/= EmptyUiItem) {
-              paintItem(icTemp.ids(9), icTemp.durs(9), mouseX, mouseY, pg2, mobFont)
-            }
-          }
-          if (icTemp.icType === WoodenChest || icTemp.icType === StoneChest ||
-              icTemp.icType === CopperChest || icTemp.icType === IronChest ||
-              icTemp.icType === SilverChest || icTemp.icType === GoldChest ||
-              icTemp.icType === ZincChest || icTemp.icType === RhymestoneChest ||
-              icTemp.icType === ObduriteChest) { //TODO: chest trait?
-            (0 until inventory.CX).foreach { ux =>
-              (0 until inventory.CY).foreach { uy =>
-                if (mouseX >= ux * 46 + 6 && mouseX < ux * 46 + 46 &&
+                paintItem(icTemp.ids(9), icTemp.durs(9), mouseX, mouseY, pg2, mobFont)
+              }
+
+            case ChestItemCollection(_) =>
+              (0 until inventory.CX).foreach { ux =>
+                (0 until inventory.CY).foreach { uy =>
+                  if (mouseX >= ux * 46 + 6 && mouseX < ux * 46 + 46 &&
                     mouseY >= uy * 46 + inventory.image.getHeight() + 46 &&
                     mouseY < uy * 46 + inventory.image.getHeight() + 86 &&
                     icTemp.ids(uy * inventory.CX + ux) =/= EmptyUiItem) {
-                  paintItem(
-                    icTemp.ids(uy * inventory.CX + ux),
-                    icTemp.durs(uy * inventory.CX + ux),
-                    mouseX,
-                    mouseY,
-                    pg2,
-                    mobFont)
+                    paintItem(
+                      icTemp.ids(uy * inventory.CX + ux),
+                      icTemp.durs(uy * inventory.CX + ux),
+                      mouseX,
+                      mouseY,
+                      pg2,
+                      mobFont)
+                  }
                 }
               }
-            }
-          }
-          if (icTemp.icType === Furnace) {
-            if (mouseX >= 6 && mouseX < 46 &&
+
+            case Furnace =>
+
+              if (mouseX >= 6 && mouseX < 46 &&
                 mouseY >= inventory.image.getHeight() + 46 && mouseY < inventory.image.getHeight() + 86 &&
                 icTemp.ids(0) =/= EmptyUiItem) {
 
-              paintItem(icTemp.ids(0), icTemp.durs(0), mouseX, mouseY, pg2, mobFont)
-            }
-            if (mouseX >= 6 && mouseX < 46 &&
+                paintItem(icTemp.ids(0), icTemp.durs(0), mouseX, mouseY, pg2, mobFont)
+              }
+              if (mouseX >= 6 && mouseX < 46 &&
                 mouseY >= inventory.image.getHeight() + 102 && mouseY < inventory.image.getHeight() + 142 &&
                 icTemp.ids(1) =/= EmptyUiItem) {
-              pg2.setFont(mobFont)
-              pg2.setColor(Color.WHITE)
+                pg2.setFont(mobFont)
+                pg2.setColor(Color.WHITE)
 
-              paintItem(icTemp.ids(1), icTemp.durs(1), mouseX, mouseY, pg2, mobFont)
-            }
-            if (mouseX >= 6 && mouseX < 46 &&
+                paintItem(icTemp.ids(1), icTemp.durs(1), mouseX, mouseY, pg2, mobFont)
+              }
+              if (mouseX >= 6 && mouseX < 46 &&
                 mouseY >= inventory.image.getHeight() + 142 && mouseY < inventory.image.getHeight() + 182 &&
                 icTemp.ids(2) =/= EmptyUiItem) {
-              paintItem(icTemp.ids(2), icTemp.durs(2), mouseX, mouseY, pg2, mobFont)
-            }
-            if (mouseX >= 62 && mouseX < 102 &&
+                paintItem(icTemp.ids(2), icTemp.durs(2), mouseX, mouseY, pg2, mobFont)
+              }
+              if (mouseX >= 62 && mouseX < 102 &&
                 mouseY >= inventory.image.getHeight() + 46 && mouseY < inventory.image.getHeight() + 86 &&
                 icTemp.ids(3) =/= EmptyUiItem) {
-              paintItem(icTemp.ids(3), icTemp.durs(3), mouseX, mouseY, pg2, mobFont)
-            }
+                paintItem(icTemp.ids(3), icTemp.durs(3), mouseX, mouseY, pg2, mobFont)
+              }
+
+            case _ =>
           }
         }
       }
