@@ -4732,19 +4732,118 @@ class TerraFrame
       }
       lazy val block   = blocks(lyr)(ay3)(ax3)
       lazy val blockId = block.id
-      if (block === ZythiumLampOnBlockType || (blockId >= ZythiumAmplifierRightBlockType.id && blockId <= ZythiumAmplifierUpOnBlockType.id || blockId >= ZythiumInverterRightBlockType.id && blockId <= ZythiumInverterUpOnBlockType.id || blockId >= ZythiumDelayer1DelayRightBlockType.id && blockId <= ZythiumDelayer8DelayUpOnBlockType.id) &&
-          !(blockId >= ZythiumAmplifierRightBlockType.id && blockId <= ZythiumAmplifierUpOnBlockType.id && ux < ax3 && block =/= ZythiumAmplifierRightBlockType && block =/= ZythiumAmplifierRightOnBlockType ||
-            blockId >= ZythiumAmplifierRightBlockType.id && blockId <= ZythiumAmplifierUpOnBlockType.id && uy < ay3 && block =/= ZythiumAmplifierDownBlockType && block =/= ZythiumAmplifierDownOnBlockType ||
-            blockId >= ZythiumAmplifierRightBlockType.id && blockId <= ZythiumAmplifierUpOnBlockType.id && ux > ax3 && block =/= ZythiumAmplifierLeftBlockType && block =/= ZythiumAmplifierLeftOnBlockType ||
-            blockId >= ZythiumAmplifierRightBlockType.id && blockId <= ZythiumAmplifierUpOnBlockType.id && uy > ay3 && block =/= ZythiumAmplifierUpBlockType && block =/= ZythiumAmplifierUpOnBlockType) &&
-          !(blockId >= ZythiumInverterRightBlockType.id && blockId <= ZythiumInverterUpOnBlockType.id && ux < ax3 && block =/= ZythiumInverterRightBlockType && block =/= ZythiumInverterRightOnBlockType ||
-            blockId >= ZythiumInverterRightBlockType.id && blockId <= ZythiumInverterUpOnBlockType.id && uy < ay3 && block =/= ZythiumInverterDownBlockType && block =/= ZythiumInverterDownOnBlockType ||
-            blockId >= ZythiumInverterRightBlockType.id && blockId <= ZythiumInverterUpOnBlockType.id && ux > ax3 && block =/= ZythiumInverterLeftBlockType && block =/= ZythiumInverterLeftOnBlockType ||
-            blockId >= ZythiumInverterRightBlockType.id && blockId <= ZythiumInverterUpOnBlockType.id && uy > ay3 && block =/= ZythiumInverterUpBlockType && block =/= ZythiumInverterUpOnBlockType) &&
-          !(blockId >= ZythiumDelayer1DelayRightBlockType.id && blockId <= ZythiumDelayer8DelayUpOnBlockType.id && ux < ax3 && block =/= ZythiumDelayer1DelayRightBlockType && block =/= ZythiumDelayer1DelayRightOnBlockType && block =/= ZythiumDelayer2DelayRightBlockType && block =/= ZythiumDelayer2DelayRightOnBlockType && block =/= ZythiumDelayer4DelayRightBlockType && block =/= ZythiumDelayer4DelayRightOnBlockType && block =/= ZythiumDelayer8DelayRightBlockType && block =/= ZythiumDelayer8DelayRightOnBlockType ||
-            blockId >= ZythiumDelayer1DelayRightBlockType.id && blockId <= ZythiumDelayer8DelayUpOnBlockType.id && uy < ay3 && block =/= ZythiumDelayer1DelayDownBlockType && block =/= ZythiumDelayer1DelayDownOnBlockType && block =/= ZythiumDelayer2DelayDownBlockType && block =/= ZythiumDelayer2DelayDownOnBlockType && block =/= ZythiumDelayer4DelayDownBlockType && block =/= ZythiumDelayer4DelayDownOnBlockType && block =/= ZythiumDelayer8DelayDownBlockType && block =/= ZythiumDelayer8DelayDownOnBlockType ||
-            blockId >= ZythiumDelayer1DelayRightBlockType.id && blockId <= ZythiumDelayer8DelayUpOnBlockType.id && ux > ax3 && block =/= ZythiumDelayer1DelayLeftBlockType && block =/= ZythiumDelayer1DelayLeftOnBlockType && block =/= ZythiumDelayer2DelayLeftBlockType && block =/= ZythiumDelayer2DelayLeftOnBlockType && block =/= ZythiumDelayer4DelayLeftBlockType && block =/= ZythiumDelayer4DelayLeftOnBlockType && block =/= ZythiumDelayer8DelayLeftBlockType && block =/= ZythiumDelayer8DelayLeftOnBlockType ||
-            blockId >= ZythiumDelayer1DelayRightBlockType.id && blockId <= ZythiumDelayer8DelayUpOnBlockType.id && uy > ay3 && block =/= ZythiumDelayer1DelayUpBlockType && block =/= ZythiumDelayer1DelayUpOnBlockType && block =/= ZythiumDelayer2DelayUpBlockType && block =/= ZythiumDelayer2DelayUpOnBlockType && block =/= ZythiumDelayer4DelayUpBlockType && block =/= ZythiumDelayer4DelayUpOnBlockType && block =/= ZythiumDelayer8DelayUpBlockType && block =/= ZythiumDelayer8DelayUpOnBlockType)) {
+      if (block === ZythiumLampOnBlockType ||
+        (
+          blockId >= ZythiumAmplifierRightBlockType.id &&
+          blockId <= ZythiumAmplifierUpOnBlockType.id
+          ||
+          blockId >= ZythiumInverterRightBlockType.id &&
+          blockId <= ZythiumInverterUpOnBlockType.id
+          ||
+          blockId >= ZythiumDelayer1DelayRightBlockType.id
+          && blockId <= ZythiumDelayer8DelayUpOnBlockType.id
+        )
+          &&
+          !(
+            blockId >= ZythiumAmplifierRightBlockType.id &&
+            blockId <= ZythiumAmplifierUpOnBlockType.id &&
+            ux < ax3 &&
+            block =/= ZythiumAmplifierRightBlockType &&
+            block =/= ZythiumAmplifierRightOnBlockType
+            ||
+            blockId >= ZythiumAmplifierRightBlockType.id &&
+            blockId <= ZythiumAmplifierUpOnBlockType.id &&
+            uy < ay3 &&
+            block =/= ZythiumAmplifierDownBlockType &&
+            block =/= ZythiumAmplifierDownOnBlockType
+            ||
+            blockId >= ZythiumAmplifierRightBlockType.id &&
+            blockId <= ZythiumAmplifierUpOnBlockType.id &&
+            ux > ax3 &&
+            block =/= ZythiumAmplifierLeftBlockType &&
+            block =/= ZythiumAmplifierLeftOnBlockType
+            ||
+            blockId >= ZythiumAmplifierRightBlockType.id &&
+            blockId <= ZythiumAmplifierUpOnBlockType.id &&
+            uy > ay3 &&
+            block =/= ZythiumAmplifierUpBlockType &&
+            block =/= ZythiumAmplifierUpOnBlockType
+            )
+          &&
+          !(
+            blockId >= ZythiumInverterRightBlockType.id &&
+            blockId <= ZythiumInverterUpOnBlockType.id &&
+            ux < ax3 &&
+            block =/= ZythiumInverterRightBlockType &&
+            block =/= ZythiumInverterRightOnBlockType
+            ||
+            blockId >= ZythiumInverterRightBlockType.id &&
+            blockId <= ZythiumInverterUpOnBlockType.id &&
+            uy < ay3 &&
+            block =/= ZythiumInverterDownBlockType &&
+            block =/= ZythiumInverterDownOnBlockType
+            ||
+            blockId >= ZythiumInverterRightBlockType.id &&
+            blockId <= ZythiumInverterUpOnBlockType.id &&
+            ux > ax3 &&
+            block =/= ZythiumInverterLeftBlockType &&
+            block =/= ZythiumInverterLeftOnBlockType
+            ||
+            blockId >= ZythiumInverterRightBlockType.id &&
+            blockId <= ZythiumInverterUpOnBlockType.id &&
+            uy > ay3 &&
+            block =/= ZythiumInverterUpBlockType &&
+            block =/= ZythiumInverterUpOnBlockType
+          )
+          &&
+          !(
+            blockId >= ZythiumDelayer1DelayRightBlockType.id &&
+            blockId <= ZythiumDelayer8DelayUpOnBlockType.id &&
+            ux < ax3 &&
+            block =/= ZythiumDelayer1DelayRightBlockType &&
+            block =/= ZythiumDelayer1DelayRightOnBlockType &&
+            block =/= ZythiumDelayer2DelayRightBlockType &&
+            block =/= ZythiumDelayer2DelayRightOnBlockType &&
+            block =/= ZythiumDelayer4DelayRightBlockType &&
+            block =/= ZythiumDelayer4DelayRightOnBlockType &&
+            block =/= ZythiumDelayer8DelayRightBlockType &&
+            block =/= ZythiumDelayer8DelayRightOnBlockType
+            ||
+            blockId >= ZythiumDelayer1DelayRightBlockType.id &&
+            blockId <= ZythiumDelayer8DelayUpOnBlockType.id &&
+            uy < ay3 &&
+            block =/= ZythiumDelayer1DelayDownBlockType &&
+            block =/= ZythiumDelayer1DelayDownOnBlockType &&
+            block =/= ZythiumDelayer2DelayDownBlockType &&
+            block =/= ZythiumDelayer2DelayDownOnBlockType &&
+            block =/= ZythiumDelayer4DelayDownBlockType &&
+            block =/= ZythiumDelayer4DelayDownOnBlockType &&
+            block =/= ZythiumDelayer8DelayDownBlockType &&
+            block =/= ZythiumDelayer8DelayDownOnBlockType
+            ||
+            blockId >= ZythiumDelayer1DelayRightBlockType.id &&
+            blockId <= ZythiumDelayer8DelayUpOnBlockType.id &&
+            ux > ax3 &&
+            block =/= ZythiumDelayer1DelayLeftBlockType &&
+            block =/= ZythiumDelayer1DelayLeftOnBlockType &&
+            block =/= ZythiumDelayer2DelayLeftBlockType &&
+            block =/= ZythiumDelayer2DelayLeftOnBlockType &&
+            block =/= ZythiumDelayer4DelayLeftBlockType &&
+            block =/= ZythiumDelayer4DelayLeftOnBlockType &&
+            block =/= ZythiumDelayer8DelayLeftBlockType &&
+            block =/= ZythiumDelayer8DelayLeftOnBlockType
+            ||
+            blockId >= ZythiumDelayer1DelayRightBlockType.id &&
+            blockId <= ZythiumDelayer8DelayUpOnBlockType.id &&
+            uy > ay3 &&
+            block =/= ZythiumDelayer1DelayUpBlockType &&
+            block =/= ZythiumDelayer1DelayUpOnBlockType &&
+            block =/= ZythiumDelayer2DelayUpBlockType &&
+            block =/= ZythiumDelayer2DelayUpOnBlockType &&
+            block =/= ZythiumDelayer4DelayUpBlockType &&
+            block =/= ZythiumDelayer4DelayUpOnBlockType &&
+            block =/= ZythiumDelayer8DelayUpBlockType &&
+            block =/= ZythiumDelayer8DelayUpOnBlockType)) {
         if (blockId >= ZythiumInverterRightOnBlockType.id && blockId <= ZythiumInverterUpOnBlockType.id) {
           blocks(lyr)(ay3)(ax3) = BlockType.lookupById(blockId - 4)
           println("Adding power for inverter at (" + ax3 + ", " + ay3 + ").")
