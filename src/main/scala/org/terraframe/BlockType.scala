@@ -180,154 +180,154 @@ object BlockType {
     blocksById.getOrElse(id, AirBlockType)
 
   def drop(block: BlockType): Option[UiItem] = block match {
-    case DirtBlockType                        => Some(DirtUiItem)
-    case StoneBlockType                       => Some(StoneUiItem)
-    case CopperOreBlockType                   => Some(CopperOreUiItem)
-    case IronOreBlockType                     => Some(IronOreUiItem)
-    case SilverOreBlockType                   => Some(SilverOreUiItem)
-    case GoldOreBlockType                     => Some(GoldOreUiItem)
-    case WoodBlockType                        => Some(WoodUiItem)
-    case WorkbenchBlockType                   => Some(WorkbenchUiItem)
-    case WoodenChestBlockType                 => Some(WoodenChestUiItem)
-    case StoneChestBlockType                  => Some(StoneChestUiItem)
-    case CopperChestBlockType                 => Some(CopperChestUiItem)
-    case IronChestBlockType                   => Some(IronChestUiItem)
-    case SilverChestBlockType                 => Some(SilverChestUiItem)
-    case GoldChestBlockType                   => Some(GoldChestUiItem)
-    case TreeBlockType                        => Some(WoodUiItem)
-    case FurnaceBlockType                     => Some(FurnaceUiItem)
-    case CoalBlockType                        => Some(CoalUiItem)
-    case LumenstoneBlockType                  => Some(LumenstoneUiItem)
-    case WoodenTorchBlockType                 => Some(WoodenTorchUiItem)
-    case CoalTorchBlockType                   => Some(CoalTorchUiItem)
-    case LumenstoneTorchBlockType             => Some(LumenstoneTorchUiItem)
-    case FurnaceOnBlockType                   => Some(FurnaceUiItem)
-    case WoodenTorchLeftWallBlockType         => Some(WoodenTorchUiItem)
-    case WoodenTorchRightWallBlockType        => Some(WoodenTorchUiItem)
-    case CoalTorchLeftWallBlockType           => Some(CoalTorchUiItem)
-    case CoalTorchRightWallBlockType          => Some(CoalTorchUiItem)
-    case LumenstoneTorchLeftWallBlockType     => Some(LumenstoneTorchUiItem)
-    case LumenstoneTorchRightWallBlockType    => Some(LumenstoneTorchUiItem)
-    case ZincOreBlockType                     => Some(ZincOreUiItem)
-    case RhymestoneOreBlockType               => Some(RhymestoneOreUiItem)
-    case ObduriteOreBlockType                 => Some(ObduriteOreUiItem)
-    case AluminumOreBlockType                 => Some(AluminumOreUiItem)
-    case LeadOreBlockType                     => Some(LeadOreUiItem)
-    case UraniumOreBlockType                  => Some(UraniumOreUiItem)
-    case ZythiumOreBlockType                  => Some(ZythiumOreUiItem)
-    case ZythiumOreOnBlockType                => Some(ZythiumOreUiItem)
-    case SiliconOreBlockType                  => Some(SiliconOreUiItem)
-    case IrradiumOreBlockType                 => Some(IrradiumOreUiItem)
-    case NullstoneBlockType                   => Some(NullstoneUiItem)
-    case MeltstoneBlockType                   => Some(MeltstoneUiItem)
-    case SkystoneBlockType                    => Some(SkystoneUiItem)
-    case MagnetiteOreBlockType                => Some(MagnetiteOreUiItem)
-    case SandBlockType                        => Some(SandUiItem)
-    case SnowBlockType                        => Some(SnowUiItem)
-    case SunflowerStage3BlockType             => Some(SunflowerUiItem)
-    case MoonflowerStage3BlockType            => Some(MoonflowerUiItem)
-    case DryweedStage3BlockType               => Some(DryweedUiItem)
-    case GreenleafStage3BlockType             => Some(GreenleafUiItem)
-    case FrostleafStage3BlockType             => Some(FrostleafUiItem)
-    case CaverootStage3BlockType              => Some(CaverootUiItem)
-    case SkyblossomStage3BlockType            => Some(SkyblossomUiItem)
-    case VoidRotStage3BlockType               => Some(VoidRotUiItem)
-    case GrassBlockType                       => Some(DirtUiItem)
-    case JungleGrassBlockType                 => Some(DirtUiItem)
-    case SwampGrassBlockType                  => Some(MudUiItem)
-    case MudBlockType                         => Some(MudUiItem)
-    case SandstoneBlockType                   => Some(SandstoneUiItem)
-    case MarshleafStage3BlockType             => Some(MarshleafUiItem)
-    case ZincChestBlockType                   => Some(ZincChestUiItem)
-    case RhymestoneChestBlockType             => Some(RhymestoneChestUiItem)
-    case ObduriteChestBlockType               => Some(ObduriteChestUiItem)
-    case TreeNoBarkBlockType                  => Some(WoodUiItem)
-    case CobblestoneBlockType                 => Some(CobblestoneUiItem)
-    case ChiseledStoneBlockType               => Some(ChiseledStoneUiItem)
-    case ChiseledCobblestoneBlockType         => Some(ChiseledCobblestoneUiItem)
-    case StoneBricksBlockType                 => Some(StoneBricksUiItem)
-    case ClayBlockType                        => Some(ClayUiItem)
-    case ClayBricksBlockType                  => Some(ClayBricksUiItem)
-    case VarnishedWoodBlockType               => Some(VarnishedWoodUiItem)
-    case DirtTransparentBlockType             => Some(DirtUiItem)
-    case MagnetiteOreTransparentBlockType     => Some(MagnetiteOreUiItem)
-    case GrasstransparentBlockType            => Some(DirtUiItem)
-    case ZythiumWireBlockType                 => Some(ZythiumWireUiItem)
-    case ZythiumWire1PowerBlockType           => Some(ZythiumWireUiItem)
-    case ZythiumWire2PowerBlockType           => Some(ZythiumWireUiItem)
-    case ZythiumWire3PowerBlockType           => Some(ZythiumWireUiItem)
-    case ZythiumWire4PowerBlockType           => Some(ZythiumWireUiItem)
-    case ZythiumWire5PowerBlockType           => Some(ZythiumWireUiItem)
-    case ZythiumTorchBlockType                => Some(ZythiumTorchUiItem)
-    case ZythiumTorchLeftWallBlockType        => Some(ZythiumTorchUiItem)
-    case ZythiumTorchRightWallBlockType       => Some(ZythiumTorchUiItem)
-    case ZythiumLampBlockType                 => Some(ZythiumTorchUiItem)
-    case ZythiumLampOnBlockType               => Some(ZythiumTorchUiItem)
-    case LeverBlockType                       => Some(ZythiumLampUiItem)
-    case LeverOnBlockType                     => Some(ZythiumLampUiItem)
-    case LeverLeftWallBlockType               => Some(ZythiumLampUiItem)
-    case LeverLeftWallOnBlockType             => Some(ZythiumLampUiItem)
-    case LeverLightWallBlockType              => Some(ZythiumLampUiItem)
-    case LeverRightWallOnBlockType            => Some(ZythiumLampUiItem)
-    case ZythiumAmplifierRightBlockType       => Some(ZythiumAmplifierUiItem)
-    case ZythiumAmplifierDownBlockType        => Some(ZythiumAmplifierUiItem)
-    case ZythiumAmplifierLeftBlockType        => Some(ZythiumAmplifierUiItem)
-    case ZythiumAmplifierUpBlockType          => Some(ZythiumAmplifierUiItem)
-    case ZythiumAmplifierRightOnBlockType     => Some(ZythiumAmplifierUiItem)
-    case ZythiumAmplifierDownOnBlockType      => Some(ZythiumAmplifierUiItem)
-    case ZythiumAmplifierLeftOnBlockType      => Some(ZythiumAmplifierUiItem)
-    case ZythiumAmplifierUpOnBlockType        => Some(ZythiumAmplifierUiItem)
-    case ZythiumInverterRightBlockType        => Some(ZythiumInverterUiItem)
-    case ZythiumInverterDownBlockType         => Some(ZythiumInverterUiItem)
-    case ZythiumInverterLeftBlockType         => Some(ZythiumInverterUiItem)
-    case ZythiumInverterUpBlockType           => Some(ZythiumInverterUiItem)
-    case ZythiumInverterRightOnBlockType      => Some(ZythiumInverterUiItem)
-    case ZythiumInverterDownOnBlockType       => Some(ZythiumInverterUiItem)
-    case ZythiumInverterLeftOnBlockType       => Some(ZythiumInverterUiItem)
-    case ZythiumInverterUpOnBlockType         => Some(ZythiumInverterUiItem)
-    case ButtonLeftBlockType                  => Some(ButtonUiItem)
-    case ButtonLeftOnBlockType                => Some(ButtonUiItem)
-    case ButtonRightBlockType                 => Some(ButtonUiItem)
-    case ButtonRightOnBlockType               => Some(ButtonUiItem)
-    case WoodenPressurePlateBlockType         => Some(WoodenPressurePlateUiItem)
-    case WoodenPressurePlateOnBlockType       => Some(WoodenPressurePlateUiItem)
-    case StonePressurePlateBlockType          => Some(StonePressurePlateUiItem)
-    case StonePressurePlateOnBlockType        => Some(StonePressurePlateUiItem)
-    case ZythiumPressurePlateBlockType        => Some(ZythiumPressurePlateUiItem)
-    case ZythiumPressurePlateOnBlockType      => Some(ZythiumPressurePlateUiItem)
-    case ZythiumDelayer1DelayRightBlockType   => Some(ZythiumDelayer1UiItem)
-    case ZythiumDelayer1DelayDownBlockType    => Some(ZythiumDelayer1UiItem)
-    case ZythiumDelayer1DelayLeftBlockType    => Some(ZythiumDelayer1UiItem)
-    case ZythiumDelayer1DelayUpBlockType      => Some(ZythiumDelayer1UiItem)
+    case DirtBlockType => Some(DirtUiItem)
+    case StoneBlockType => Some(StoneUiItem)
+    case CopperOreBlockType => Some(CopperOreUiItem)
+    case IronOreBlockType => Some(IronOreUiItem)
+    case SilverOreBlockType => Some(SilverOreUiItem)
+    case GoldOreBlockType => Some(GoldOreUiItem)
+    case WoodBlockType => Some(WoodUiItem)
+    case WorkbenchBlockType => Some(WorkbenchUiItem)
+    case WoodenChestBlockType => Some(WoodenChestUiItem)
+    case StoneChestBlockType => Some(StoneChestUiItem)
+    case CopperChestBlockType => Some(CopperChestUiItem)
+    case IronChestBlockType => Some(IronChestUiItem)
+    case SilverChestBlockType => Some(SilverChestUiItem)
+    case GoldChestBlockType => Some(GoldChestUiItem)
+    case TreeBlockType => Some(WoodUiItem)
+    case FurnaceBlockType => Some(FurnaceUiItem)
+    case CoalBlockType => Some(CoalUiItem)
+    case LumenstoneBlockType => Some(LumenstoneUiItem)
+    case WoodenTorchBlockType => Some(WoodenTorchUiItem)
+    case CoalTorchBlockType => Some(CoalTorchUiItem)
+    case LumenstoneTorchBlockType => Some(LumenstoneTorchUiItem)
+    case FurnaceOnBlockType => Some(FurnaceUiItem)
+    case WoodenTorchLeftWallBlockType => Some(WoodenTorchUiItem)
+    case WoodenTorchRightWallBlockType => Some(WoodenTorchUiItem)
+    case CoalTorchLeftWallBlockType => Some(CoalTorchUiItem)
+    case CoalTorchRightWallBlockType => Some(CoalTorchUiItem)
+    case LumenstoneTorchLeftWallBlockType => Some(LumenstoneTorchUiItem)
+    case LumenstoneTorchRightWallBlockType => Some(LumenstoneTorchUiItem)
+    case ZincOreBlockType => Some(ZincOreUiItem)
+    case RhymestoneOreBlockType => Some(RhymestoneOreUiItem)
+    case ObduriteOreBlockType => Some(ObduriteOreUiItem)
+    case AluminumOreBlockType => Some(AluminumOreUiItem)
+    case LeadOreBlockType => Some(LeadOreUiItem)
+    case UraniumOreBlockType => Some(UraniumOreUiItem)
+    case ZythiumOreBlockType => Some(ZythiumOreUiItem)
+    case ZythiumOreOnBlockType => Some(ZythiumOreUiItem)
+    case SiliconOreBlockType => Some(SiliconOreUiItem)
+    case IrradiumOreBlockType => Some(IrradiumOreUiItem)
+    case NullstoneBlockType => Some(NullstoneUiItem)
+    case MeltstoneBlockType => Some(MeltstoneUiItem)
+    case SkystoneBlockType => Some(SkystoneUiItem)
+    case MagnetiteOreBlockType => Some(MagnetiteOreUiItem)
+    case SandBlockType => Some(SandUiItem)
+    case SnowBlockType => Some(SnowUiItem)
+    case SunflowerStage3BlockType => Some(SunflowerUiItem)
+    case MoonflowerStage3BlockType => Some(MoonflowerUiItem)
+    case DryweedStage3BlockType => Some(DryweedUiItem)
+    case GreenleafStage3BlockType => Some(GreenleafUiItem)
+    case FrostleafStage3BlockType => Some(FrostleafUiItem)
+    case CaverootStage3BlockType => Some(CaverootUiItem)
+    case SkyblossomStage3BlockType => Some(SkyblossomUiItem)
+    case VoidRotStage3BlockType => Some(VoidRotUiItem)
+    case GrassBlockType => Some(DirtUiItem)
+    case JungleGrassBlockType => Some(DirtUiItem)
+    case SwampGrassBlockType => Some(MudUiItem)
+    case MudBlockType => Some(MudUiItem)
+    case SandstoneBlockType => Some(SandstoneUiItem)
+    case MarshleafStage3BlockType => Some(MarshleafUiItem)
+    case ZincChestBlockType => Some(ZincChestUiItem)
+    case RhymestoneChestBlockType => Some(RhymestoneChestUiItem)
+    case ObduriteChestBlockType => Some(ObduriteChestUiItem)
+    case TreeNoBarkBlockType => Some(WoodUiItem)
+    case CobblestoneBlockType => Some(CobblestoneUiItem)
+    case ChiseledStoneBlockType => Some(ChiseledStoneUiItem)
+    case ChiseledCobblestoneBlockType => Some(ChiseledCobblestoneUiItem)
+    case StoneBricksBlockType => Some(StoneBricksUiItem)
+    case ClayBlockType => Some(ClayUiItem)
+    case ClayBricksBlockType => Some(ClayBricksUiItem)
+    case VarnishedWoodBlockType => Some(VarnishedWoodUiItem)
+    case DirtTransparentBlockType => Some(DirtUiItem)
+    case MagnetiteOreTransparentBlockType => Some(MagnetiteOreUiItem)
+    case GrasstransparentBlockType => Some(DirtUiItem)
+    case ZythiumWireBlockType => Some(ZythiumWireUiItem)
+    case ZythiumWire1PowerBlockType => Some(ZythiumWireUiItem)
+    case ZythiumWire2PowerBlockType => Some(ZythiumWireUiItem)
+    case ZythiumWire3PowerBlockType => Some(ZythiumWireUiItem)
+    case ZythiumWire4PowerBlockType => Some(ZythiumWireUiItem)
+    case ZythiumWire5PowerBlockType => Some(ZythiumWireUiItem)
+    case ZythiumTorchBlockType => Some(ZythiumTorchUiItem)
+    case ZythiumTorchLeftWallBlockType => Some(ZythiumTorchUiItem)
+    case ZythiumTorchRightWallBlockType => Some(ZythiumTorchUiItem)
+    case ZythiumLampBlockType => Some(ZythiumTorchUiItem)
+    case ZythiumLampOnBlockType => Some(ZythiumTorchUiItem)
+    case LeverBlockType => Some(ZythiumLampUiItem)
+    case LeverOnBlockType => Some(ZythiumLampUiItem)
+    case LeverLeftWallBlockType => Some(ZythiumLampUiItem)
+    case LeverLeftWallOnBlockType => Some(ZythiumLampUiItem)
+    case LeverLightWallBlockType => Some(ZythiumLampUiItem)
+    case LeverRightWallOnBlockType => Some(ZythiumLampUiItem)
+    case ZythiumAmplifierRightBlockType => Some(ZythiumAmplifierUiItem)
+    case ZythiumAmplifierDownBlockType => Some(ZythiumAmplifierUiItem)
+    case ZythiumAmplifierLeftBlockType => Some(ZythiumAmplifierUiItem)
+    case ZythiumAmplifierUpBlockType => Some(ZythiumAmplifierUiItem)
+    case ZythiumAmplifierRightOnBlockType => Some(ZythiumAmplifierUiItem)
+    case ZythiumAmplifierDownOnBlockType => Some(ZythiumAmplifierUiItem)
+    case ZythiumAmplifierLeftOnBlockType => Some(ZythiumAmplifierUiItem)
+    case ZythiumAmplifierUpOnBlockType => Some(ZythiumAmplifierUiItem)
+    case ZythiumInverterRightBlockType => Some(ZythiumInverterUiItem)
+    case ZythiumInverterDownBlockType => Some(ZythiumInverterUiItem)
+    case ZythiumInverterLeftBlockType => Some(ZythiumInverterUiItem)
+    case ZythiumInverterUpBlockType => Some(ZythiumInverterUiItem)
+    case ZythiumInverterRightOnBlockType => Some(ZythiumInverterUiItem)
+    case ZythiumInverterDownOnBlockType => Some(ZythiumInverterUiItem)
+    case ZythiumInverterLeftOnBlockType => Some(ZythiumInverterUiItem)
+    case ZythiumInverterUpOnBlockType => Some(ZythiumInverterUiItem)
+    case ButtonLeftBlockType => Some(ButtonUiItem)
+    case ButtonLeftOnBlockType => Some(ButtonUiItem)
+    case ButtonRightBlockType => Some(ButtonUiItem)
+    case ButtonRightOnBlockType => Some(ButtonUiItem)
+    case WoodenPressurePlateBlockType => Some(WoodenPressurePlateUiItem)
+    case WoodenPressurePlateOnBlockType => Some(WoodenPressurePlateUiItem)
+    case StonePressurePlateBlockType => Some(StonePressurePlateUiItem)
+    case StonePressurePlateOnBlockType => Some(StonePressurePlateUiItem)
+    case ZythiumPressurePlateBlockType => Some(ZythiumPressurePlateUiItem)
+    case ZythiumPressurePlateOnBlockType => Some(ZythiumPressurePlateUiItem)
+    case ZythiumDelayer1DelayRightBlockType => Some(ZythiumDelayer1UiItem)
+    case ZythiumDelayer1DelayDownBlockType => Some(ZythiumDelayer1UiItem)
+    case ZythiumDelayer1DelayLeftBlockType => Some(ZythiumDelayer1UiItem)
+    case ZythiumDelayer1DelayUpBlockType => Some(ZythiumDelayer1UiItem)
     case ZythiumDelayer1DelayRightOnBlockType => Some(ZythiumDelayer1UiItem)
-    case ZythiumDelayer1DelayDownOnBlockType  => Some(ZythiumDelayer1UiItem)
-    case ZythiumDelayer1DelayLeftOnBlockType  => Some(ZythiumDelayer1UiItem)
-    case ZythiumDelayer1DelayUpOnBlockType    => Some(ZythiumDelayer1UiItem)
-    case ZythiumDelayer2DelayRightBlockType   => Some(ZythiumDelayer2UiItem)
-    case ZythiumDelayer2DelayDownBlockType    => Some(ZythiumDelayer2UiItem)
-    case ZythiumDelayer2DelayLeftBlockType    => Some(ZythiumDelayer2UiItem)
-    case ZythiumDelayer2DelayUpBlockType      => Some(ZythiumDelayer2UiItem)
+    case ZythiumDelayer1DelayDownOnBlockType => Some(ZythiumDelayer1UiItem)
+    case ZythiumDelayer1DelayLeftOnBlockType => Some(ZythiumDelayer1UiItem)
+    case ZythiumDelayer1DelayUpOnBlockType => Some(ZythiumDelayer1UiItem)
+    case ZythiumDelayer2DelayRightBlockType => Some(ZythiumDelayer2UiItem)
+    case ZythiumDelayer2DelayDownBlockType => Some(ZythiumDelayer2UiItem)
+    case ZythiumDelayer2DelayLeftBlockType => Some(ZythiumDelayer2UiItem)
+    case ZythiumDelayer2DelayUpBlockType => Some(ZythiumDelayer2UiItem)
     case ZythiumDelayer2DelayRightOnBlockType => Some(ZythiumDelayer2UiItem)
-    case ZythiumDelayer2DelayDownOnBlockType  => Some(ZythiumDelayer2UiItem)
-    case ZythiumDelayer2DelayLeftOnBlockType  => Some(ZythiumDelayer2UiItem)
-    case ZythiumDelayer2DelayUpOnBlockType    => Some(ZythiumDelayer2UiItem)
-    case ZythiumDelayer4DelayRightBlockType   => Some(ZythiumDelayer4UiItem)
-    case ZythiumDelayer4DelayDownBlockType    => Some(ZythiumDelayer4UiItem)
-    case ZythiumDelayer4DelayLeftBlockType    => Some(ZythiumDelayer4UiItem)
-    case ZythiumDelayer4DelayUpBlockType      => Some(ZythiumDelayer4UiItem)
+    case ZythiumDelayer2DelayDownOnBlockType => Some(ZythiumDelayer2UiItem)
+    case ZythiumDelayer2DelayLeftOnBlockType => Some(ZythiumDelayer2UiItem)
+    case ZythiumDelayer2DelayUpOnBlockType => Some(ZythiumDelayer2UiItem)
+    case ZythiumDelayer4DelayRightBlockType => Some(ZythiumDelayer4UiItem)
+    case ZythiumDelayer4DelayDownBlockType => Some(ZythiumDelayer4UiItem)
+    case ZythiumDelayer4DelayLeftBlockType => Some(ZythiumDelayer4UiItem)
+    case ZythiumDelayer4DelayUpBlockType => Some(ZythiumDelayer4UiItem)
     case ZythiumDelayer4DelayRightOnBlockType => Some(ZythiumDelayer4UiItem)
-    case ZythiumDelayer4DelayDownOnBlockType  => Some(ZythiumDelayer4UiItem)
-    case ZythiumDelayer4DelayLeftOnBlockType  => Some(ZythiumDelayer4UiItem)
-    case ZythiumDelayer4DelayUpOnBlockType    => Some(ZythiumDelayer4UiItem)
-    case ZythiumDelayer8DelayRightBlockType   => Some(ZythiumDelayer8UiItem)
-    case ZythiumDelayer8DelayDownBlockType    => Some(ZythiumDelayer8UiItem)
-    case ZythiumDelayer8DelayLeftBlockType    => Some(ZythiumDelayer8UiItem)
-    case ZythiumDelayer8DelayUpBlockType      => Some(ZythiumDelayer8UiItem)
+    case ZythiumDelayer4DelayDownOnBlockType => Some(ZythiumDelayer4UiItem)
+    case ZythiumDelayer4DelayLeftOnBlockType => Some(ZythiumDelayer4UiItem)
+    case ZythiumDelayer4DelayUpOnBlockType => Some(ZythiumDelayer4UiItem)
+    case ZythiumDelayer8DelayRightBlockType => Some(ZythiumDelayer8UiItem)
+    case ZythiumDelayer8DelayDownBlockType => Some(ZythiumDelayer8UiItem)
+    case ZythiumDelayer8DelayLeftBlockType => Some(ZythiumDelayer8UiItem)
+    case ZythiumDelayer8DelayUpBlockType => Some(ZythiumDelayer8UiItem)
     case ZythiumDelayer8DelayRightOnBlockType => Some(ZythiumDelayer8UiItem)
-    case ZythiumDelayer8DelayDownOnBlockType  => Some(ZythiumDelayer8UiItem)
-    case ZythiumDelayer8DelayLeftOnBlockType  => Some(ZythiumDelayer8UiItem)
-    case ZythiumDelayer8DelayUpOnBlockType    => Some(ZythiumDelayer8UiItem)
-    case _                                    => None
+    case ZythiumDelayer8DelayDownOnBlockType => Some(ZythiumDelayer8UiItem)
+    case ZythiumDelayer8DelayLeftOnBlockType => Some(ZythiumDelayer8UiItem)
+    case ZythiumDelayer8DelayUpOnBlockType => Some(ZythiumDelayer8UiItem)
+    case _ => None
   }
 
   lazy val blockTools: Map[BlockType, Set[UiItem]] = {
@@ -421,173 +421,173 @@ object BlockType {
     )
 
     List[(BlockType, Set[UiItem])](
-      AirBlockType                         -> Set[UiItem](),
-      DirtBlockType                        -> l1ToolSet,
-      StoneBlockType                       -> l1ToolSet,
-      CopperOreBlockType                   -> l1ToolSet,
-      IronOreBlockType                     -> l1ToolSet,
-      SilverOreBlockType                   -> l1ToolSet,
-      GoldOreBlockType                     -> l1ToolSet,
-      WoodBlockType                        -> l2ToolSet,
-      WorkbenchBlockType                   -> l2ToolSet,
-      WoodenChestBlockType                 -> l2ToolSet,
-      StoneChestBlockType                  -> l1ToolSet,
-      CopperChestBlockType                 -> l1ToolSet,
-      IronChestBlockType                   -> l1ToolSet,
-      SilverChestBlockType                 -> l1ToolSet,
-      GoldChestBlockType                   -> l1ToolSet,
-      TreeBlockType                        -> l2ToolSet,
-      FurnaceBlockType                     -> l1ToolSet,
-      CoalBlockType                        -> l1ToolSet,
-      LumenstoneBlockType                  -> l1ToolSet,
-      WoodenTorchBlockType                 -> l3ToolSet,
-      CoalTorchBlockType                   -> l3ToolSet,
-      LumenstoneTorchBlockType             -> l3ToolSet,
-      FurnaceOnBlockType                   -> l1ToolSet,
-      WoodenTorchLeftWallBlockType         -> l3ToolSet,
-      WoodenTorchRightWallBlockType        -> l3ToolSet,
-      CoalTorchLeftWallBlockType           -> l3ToolSet,
-      CoalTorchRightWallBlockType          -> l3ToolSet,
-      LumenstoneTorchLeftWallBlockType     -> l3ToolSet,
-      LumenstoneTorchRightWallBlockType    -> l1ToolSet,
-      ZincOreBlockType                     -> l1ToolSet,
-      RhymestoneOreBlockType               -> l1ToolSet,
-      ObduriteOreBlockType                 -> l1ToolSet,
-      AluminumOreBlockType                 -> l1ToolSet,
-      LeadOreBlockType                     -> l1ToolSet,
-      UraniumOreBlockType                  -> l1ToolSet,
-      ZythiumOreBlockType                  -> l1ToolSet,
-      ZythiumOreOnBlockType                -> l1ToolSet,
-      SiliconOreBlockType                  -> l1ToolSet,
-      IrradiumOreBlockType                 -> l1ToolSet,
-      NullstoneBlockType                   -> l1ToolSet,
-      MeltstoneBlockType                   -> l1ToolSet,
-      SkystoneBlockType                    -> l1ToolSet,
-      MagnetiteOreBlockType                -> l1ToolSet,
-      SandBlockType                        -> l1ToolSet,
-      SnowBlockType                        -> l1ToolSet,
-      GlassBlockType                       -> l3ToolSet,
-      SunflowerStage1BlockType             -> l3ToolSet,
-      SunflowerStage2BlockType             -> l3ToolSet,
-      SunflowerStage3BlockType             -> l3ToolSet,
-      MoonflowerStage1BlockType            -> l3ToolSet,
-      MoonflowerStage2BlockType            -> l3ToolSet,
-      MoonflowerStage3BlockType            -> l3ToolSet,
-      DryweedStage1BlockType               -> l3ToolSet,
-      DryweedStage2BlockType               -> l3ToolSet,
-      DryweedStage3BlockType               -> l3ToolSet,
-      GreenleafStage1BlockType             -> l3ToolSet,
-      GreenleafStage2BlockType             -> l3ToolSet,
-      GreenleafStage3BlockType             -> l3ToolSet,
-      FrostleafStage1BlockType             -> l3ToolSet,
-      FrostleafStage2BlockType             -> l3ToolSet,
-      FrostleafStage3BlockType             -> l3ToolSet,
-      CaverootStage1BlockType              -> l3ToolSet,
-      CaverootStage2BlockType              -> l3ToolSet,
-      CaverootStage3BlockType              -> l3ToolSet,
-      SkyblossomStage1BlockType            -> l3ToolSet,
-      SkyblossomStage2BlockType            -> l3ToolSet,
-      SkyblossomStage3BlockType            -> l3ToolSet,
-      VoidRotStage1BlockType               -> l3ToolSet,
-      VoidRotStage2BlockType               -> l3ToolSet,
-      VoidRotStage3BlockType               -> l1ToolSet,
-      GrassBlockType                       -> l1ToolSet,
-      JungleGrassBlockType                 -> l1ToolSet,
-      SwampGrassBlockType                  -> l1ToolSet,
-      MudBlockType                         -> l1ToolSet,
-      SandstoneBlockType                   -> l1ToolSet,
-      MarshleafStage1BlockType             -> l3ToolSet,
-      MarshleafStage2BlockType             -> l3ToolSet,
-      MarshleafStage3BlockType             -> l5ToolSet,
-      ZincChestBlockType                   -> l1ToolSet,
-      RhymestoneChestBlockType             -> l1ToolSet,
-      ObduriteChestBlockType               -> l1ToolSet,
-      TreeNoBarkBlockType                  -> l2ToolSet,
-      CobblestoneBlockType                 -> l1ToolSet,
-      ChiseledStoneBlockType               -> l1ToolSet,
-      ChiseledCobblestoneBlockType         -> l1ToolSet,
-      StoneBricksBlockType                 -> l1ToolSet,
-      ClayBlockType                        -> l1ToolSet,
-      ClayBricksBlockType                  -> l1ToolSet,
-      VarnishedWoodBlockType               -> l2ToolSet,
-      DirtTransparentBlockType             -> l1ToolSet,
-      MagnetiteOreTransparentBlockType     -> l1ToolSet,
-      GrasstransparentBlockType            -> l4ToolSet,
-      ZythiumWireBlockType                 -> l3ToolSet,
-      ZythiumWire1PowerBlockType           -> l3ToolSet,
-      ZythiumWire2PowerBlockType           -> l3ToolSet,
-      ZythiumWire3PowerBlockType           -> l3ToolSet,
-      ZythiumWire4PowerBlockType           -> l3ToolSet,
-      ZythiumWire5PowerBlockType           -> l3ToolSet,
-      ZythiumTorchBlockType                -> l3ToolSet,
-      ZythiumTorchLeftWallBlockType        -> l3ToolSet,
-      ZythiumTorchRightWallBlockType       -> l3ToolSet,
-      ZythiumLampBlockType                 -> l1ToolSet,
-      ZythiumLampOnBlockType               -> l1ToolSet,
-      LeverBlockType                       -> l1ToolSet,
-      LeverOnBlockType                     -> l1ToolSet,
-      LeverLeftWallBlockType               -> l1ToolSet,
-      LeverLeftWallOnBlockType             -> l1ToolSet,
-      LeverLightWallBlockType              -> l1ToolSet,
-      LeverRightWallOnBlockType            -> l1ToolSet,
-      ZythiumAmplifierRightBlockType       -> l1ToolSet,
-      ZythiumAmplifierDownBlockType        -> l1ToolSet,
-      ZythiumAmplifierLeftBlockType        -> l1ToolSet,
-      ZythiumAmplifierUpBlockType          -> l1ToolSet,
-      ZythiumAmplifierRightOnBlockType     -> l1ToolSet,
-      ZythiumAmplifierDownOnBlockType      -> l1ToolSet,
-      ZythiumAmplifierLeftOnBlockType      -> l1ToolSet,
-      ZythiumAmplifierUpOnBlockType        -> l1ToolSet,
-      ZythiumInverterRightBlockType        -> l1ToolSet,
-      ZythiumInverterDownBlockType         -> l1ToolSet,
-      ZythiumInverterLeftBlockType         -> l1ToolSet,
-      ZythiumInverterUpBlockType           -> l1ToolSet,
-      ZythiumInverterRightOnBlockType      -> l1ToolSet,
-      ZythiumInverterDownOnBlockType       -> l1ToolSet,
-      ZythiumInverterLeftOnBlockType       -> l1ToolSet,
-      ZythiumInverterUpOnBlockType         -> l1ToolSet,
-      ButtonLeftBlockType                  -> l1ToolSet,
-      ButtonLeftOnBlockType                -> l1ToolSet,
-      ButtonRightBlockType                 -> l1ToolSet,
-      ButtonRightOnBlockType               -> l1ToolSet,
-      WoodenPressurePlateBlockType         -> l2ToolSet,
-      WoodenPressurePlateOnBlockType       -> l2ToolSet,
-      StonePressurePlateBlockType          -> l1ToolSet,
-      StonePressurePlateOnBlockType        -> l1ToolSet,
-      ZythiumPressurePlateBlockType        -> l1ToolSet,
-      ZythiumPressurePlateOnBlockType      -> l1ToolSet,
-      ZythiumDelayer1DelayRightBlockType   -> l1ToolSet,
-      ZythiumDelayer1DelayDownBlockType    -> l1ToolSet,
-      ZythiumDelayer1DelayLeftBlockType    -> l1ToolSet,
-      ZythiumDelayer1DelayUpBlockType      -> l1ToolSet,
+      AirBlockType -> Set[UiItem](),
+      DirtBlockType -> l1ToolSet,
+      StoneBlockType -> l1ToolSet,
+      CopperOreBlockType -> l1ToolSet,
+      IronOreBlockType -> l1ToolSet,
+      SilverOreBlockType -> l1ToolSet,
+      GoldOreBlockType -> l1ToolSet,
+      WoodBlockType -> l2ToolSet,
+      WorkbenchBlockType -> l2ToolSet,
+      WoodenChestBlockType -> l2ToolSet,
+      StoneChestBlockType -> l1ToolSet,
+      CopperChestBlockType -> l1ToolSet,
+      IronChestBlockType -> l1ToolSet,
+      SilverChestBlockType -> l1ToolSet,
+      GoldChestBlockType -> l1ToolSet,
+      TreeBlockType -> l2ToolSet,
+      FurnaceBlockType -> l1ToolSet,
+      CoalBlockType -> l1ToolSet,
+      LumenstoneBlockType -> l1ToolSet,
+      WoodenTorchBlockType -> l3ToolSet,
+      CoalTorchBlockType -> l3ToolSet,
+      LumenstoneTorchBlockType -> l3ToolSet,
+      FurnaceOnBlockType -> l1ToolSet,
+      WoodenTorchLeftWallBlockType -> l3ToolSet,
+      WoodenTorchRightWallBlockType -> l3ToolSet,
+      CoalTorchLeftWallBlockType -> l3ToolSet,
+      CoalTorchRightWallBlockType -> l3ToolSet,
+      LumenstoneTorchLeftWallBlockType -> l3ToolSet,
+      LumenstoneTorchRightWallBlockType -> l1ToolSet,
+      ZincOreBlockType -> l1ToolSet,
+      RhymestoneOreBlockType -> l1ToolSet,
+      ObduriteOreBlockType -> l1ToolSet,
+      AluminumOreBlockType -> l1ToolSet,
+      LeadOreBlockType -> l1ToolSet,
+      UraniumOreBlockType -> l1ToolSet,
+      ZythiumOreBlockType -> l1ToolSet,
+      ZythiumOreOnBlockType -> l1ToolSet,
+      SiliconOreBlockType -> l1ToolSet,
+      IrradiumOreBlockType -> l1ToolSet,
+      NullstoneBlockType -> l1ToolSet,
+      MeltstoneBlockType -> l1ToolSet,
+      SkystoneBlockType -> l1ToolSet,
+      MagnetiteOreBlockType -> l1ToolSet,
+      SandBlockType -> l1ToolSet,
+      SnowBlockType -> l1ToolSet,
+      GlassBlockType -> l3ToolSet,
+      SunflowerStage1BlockType -> l3ToolSet,
+      SunflowerStage2BlockType -> l3ToolSet,
+      SunflowerStage3BlockType -> l3ToolSet,
+      MoonflowerStage1BlockType -> l3ToolSet,
+      MoonflowerStage2BlockType -> l3ToolSet,
+      MoonflowerStage3BlockType -> l3ToolSet,
+      DryweedStage1BlockType -> l3ToolSet,
+      DryweedStage2BlockType -> l3ToolSet,
+      DryweedStage3BlockType -> l3ToolSet,
+      GreenleafStage1BlockType -> l3ToolSet,
+      GreenleafStage2BlockType -> l3ToolSet,
+      GreenleafStage3BlockType -> l3ToolSet,
+      FrostleafStage1BlockType -> l3ToolSet,
+      FrostleafStage2BlockType -> l3ToolSet,
+      FrostleafStage3BlockType -> l3ToolSet,
+      CaverootStage1BlockType -> l3ToolSet,
+      CaverootStage2BlockType -> l3ToolSet,
+      CaverootStage3BlockType -> l3ToolSet,
+      SkyblossomStage1BlockType -> l3ToolSet,
+      SkyblossomStage2BlockType -> l3ToolSet,
+      SkyblossomStage3BlockType -> l3ToolSet,
+      VoidRotStage1BlockType -> l3ToolSet,
+      VoidRotStage2BlockType -> l3ToolSet,
+      VoidRotStage3BlockType -> l1ToolSet,
+      GrassBlockType -> l1ToolSet,
+      JungleGrassBlockType -> l1ToolSet,
+      SwampGrassBlockType -> l1ToolSet,
+      MudBlockType -> l1ToolSet,
+      SandstoneBlockType -> l1ToolSet,
+      MarshleafStage1BlockType -> l3ToolSet,
+      MarshleafStage2BlockType -> l3ToolSet,
+      MarshleafStage3BlockType -> l5ToolSet,
+      ZincChestBlockType -> l1ToolSet,
+      RhymestoneChestBlockType -> l1ToolSet,
+      ObduriteChestBlockType -> l1ToolSet,
+      TreeNoBarkBlockType -> l2ToolSet,
+      CobblestoneBlockType -> l1ToolSet,
+      ChiseledStoneBlockType -> l1ToolSet,
+      ChiseledCobblestoneBlockType -> l1ToolSet,
+      StoneBricksBlockType -> l1ToolSet,
+      ClayBlockType -> l1ToolSet,
+      ClayBricksBlockType -> l1ToolSet,
+      VarnishedWoodBlockType -> l2ToolSet,
+      DirtTransparentBlockType -> l1ToolSet,
+      MagnetiteOreTransparentBlockType -> l1ToolSet,
+      GrasstransparentBlockType -> l4ToolSet,
+      ZythiumWireBlockType -> l3ToolSet,
+      ZythiumWire1PowerBlockType -> l3ToolSet,
+      ZythiumWire2PowerBlockType -> l3ToolSet,
+      ZythiumWire3PowerBlockType -> l3ToolSet,
+      ZythiumWire4PowerBlockType -> l3ToolSet,
+      ZythiumWire5PowerBlockType -> l3ToolSet,
+      ZythiumTorchBlockType -> l3ToolSet,
+      ZythiumTorchLeftWallBlockType -> l3ToolSet,
+      ZythiumTorchRightWallBlockType -> l3ToolSet,
+      ZythiumLampBlockType -> l1ToolSet,
+      ZythiumLampOnBlockType -> l1ToolSet,
+      LeverBlockType -> l1ToolSet,
+      LeverOnBlockType -> l1ToolSet,
+      LeverLeftWallBlockType -> l1ToolSet,
+      LeverLeftWallOnBlockType -> l1ToolSet,
+      LeverLightWallBlockType -> l1ToolSet,
+      LeverRightWallOnBlockType -> l1ToolSet,
+      ZythiumAmplifierRightBlockType -> l1ToolSet,
+      ZythiumAmplifierDownBlockType -> l1ToolSet,
+      ZythiumAmplifierLeftBlockType -> l1ToolSet,
+      ZythiumAmplifierUpBlockType -> l1ToolSet,
+      ZythiumAmplifierRightOnBlockType -> l1ToolSet,
+      ZythiumAmplifierDownOnBlockType -> l1ToolSet,
+      ZythiumAmplifierLeftOnBlockType -> l1ToolSet,
+      ZythiumAmplifierUpOnBlockType -> l1ToolSet,
+      ZythiumInverterRightBlockType -> l1ToolSet,
+      ZythiumInverterDownBlockType -> l1ToolSet,
+      ZythiumInverterLeftBlockType -> l1ToolSet,
+      ZythiumInverterUpBlockType -> l1ToolSet,
+      ZythiumInverterRightOnBlockType -> l1ToolSet,
+      ZythiumInverterDownOnBlockType -> l1ToolSet,
+      ZythiumInverterLeftOnBlockType -> l1ToolSet,
+      ZythiumInverterUpOnBlockType -> l1ToolSet,
+      ButtonLeftBlockType -> l1ToolSet,
+      ButtonLeftOnBlockType -> l1ToolSet,
+      ButtonRightBlockType -> l1ToolSet,
+      ButtonRightOnBlockType -> l1ToolSet,
+      WoodenPressurePlateBlockType -> l2ToolSet,
+      WoodenPressurePlateOnBlockType -> l2ToolSet,
+      StonePressurePlateBlockType -> l1ToolSet,
+      StonePressurePlateOnBlockType -> l1ToolSet,
+      ZythiumPressurePlateBlockType -> l1ToolSet,
+      ZythiumPressurePlateOnBlockType -> l1ToolSet,
+      ZythiumDelayer1DelayRightBlockType -> l1ToolSet,
+      ZythiumDelayer1DelayDownBlockType -> l1ToolSet,
+      ZythiumDelayer1DelayLeftBlockType -> l1ToolSet,
+      ZythiumDelayer1DelayUpBlockType -> l1ToolSet,
       ZythiumDelayer1DelayRightOnBlockType -> l1ToolSet,
-      ZythiumDelayer1DelayDownOnBlockType  -> l1ToolSet,
-      ZythiumDelayer1DelayLeftOnBlockType  -> l1ToolSet,
-      ZythiumDelayer1DelayUpOnBlockType    -> l1ToolSet,
-      ZythiumDelayer2DelayRightBlockType   -> l1ToolSet,
-      ZythiumDelayer2DelayDownBlockType    -> l1ToolSet,
-      ZythiumDelayer2DelayLeftBlockType    -> l1ToolSet,
-      ZythiumDelayer2DelayUpBlockType      -> l1ToolSet,
+      ZythiumDelayer1DelayDownOnBlockType -> l1ToolSet,
+      ZythiumDelayer1DelayLeftOnBlockType -> l1ToolSet,
+      ZythiumDelayer1DelayUpOnBlockType -> l1ToolSet,
+      ZythiumDelayer2DelayRightBlockType -> l1ToolSet,
+      ZythiumDelayer2DelayDownBlockType -> l1ToolSet,
+      ZythiumDelayer2DelayLeftBlockType -> l1ToolSet,
+      ZythiumDelayer2DelayUpBlockType -> l1ToolSet,
       ZythiumDelayer2DelayRightOnBlockType -> l1ToolSet,
-      ZythiumDelayer2DelayDownOnBlockType  -> l1ToolSet,
-      ZythiumDelayer2DelayLeftOnBlockType  -> l1ToolSet,
-      ZythiumDelayer2DelayUpOnBlockType    -> l1ToolSet,
-      ZythiumDelayer4DelayRightBlockType   -> l1ToolSet,
-      ZythiumDelayer4DelayDownBlockType    -> l1ToolSet,
-      ZythiumDelayer4DelayLeftBlockType    -> l1ToolSet,
-      ZythiumDelayer4DelayUpBlockType      -> l1ToolSet,
+      ZythiumDelayer2DelayDownOnBlockType -> l1ToolSet,
+      ZythiumDelayer2DelayLeftOnBlockType -> l1ToolSet,
+      ZythiumDelayer2DelayUpOnBlockType -> l1ToolSet,
+      ZythiumDelayer4DelayRightBlockType -> l1ToolSet,
+      ZythiumDelayer4DelayDownBlockType -> l1ToolSet,
+      ZythiumDelayer4DelayLeftBlockType -> l1ToolSet,
+      ZythiumDelayer4DelayUpBlockType -> l1ToolSet,
       ZythiumDelayer4DelayRightOnBlockType -> l1ToolSet,
-      ZythiumDelayer4DelayDownOnBlockType  -> l1ToolSet,
-      ZythiumDelayer4DelayLeftOnBlockType  -> l1ToolSet,
-      ZythiumDelayer4DelayUpOnBlockType    -> l1ToolSet,
-      ZythiumDelayer8DelayRightBlockType   -> l1ToolSet,
-      ZythiumDelayer8DelayDownBlockType    -> l1ToolSet,
-      ZythiumDelayer8DelayLeftBlockType    -> l1ToolSet,
-      ZythiumDelayer8DelayUpBlockType      -> l1ToolSet,
+      ZythiumDelayer4DelayDownOnBlockType -> l1ToolSet,
+      ZythiumDelayer4DelayLeftOnBlockType -> l1ToolSet,
+      ZythiumDelayer4DelayUpOnBlockType -> l1ToolSet,
+      ZythiumDelayer8DelayRightBlockType -> l1ToolSet,
+      ZythiumDelayer8DelayDownBlockType -> l1ToolSet,
+      ZythiumDelayer8DelayLeftBlockType -> l1ToolSet,
+      ZythiumDelayer8DelayUpBlockType -> l1ToolSet,
       ZythiumDelayer8DelayRightOnBlockType -> l1ToolSet,
-      ZythiumDelayer8DelayDownOnBlockType  -> l1ToolSet,
-      ZythiumDelayer8DelayLeftOnBlockType  -> l1ToolSet,
-      ZythiumDelayer8DelayUpOnBlockType    -> l1ToolSet
+      ZythiumDelayer8DelayDownOnBlockType -> l1ToolSet,
+      ZythiumDelayer8DelayLeftOnBlockType -> l1ToolSet,
+      ZythiumDelayer8DelayUpOnBlockType -> l1ToolSet
     ).toMap
   }
 
@@ -596,51 +596,89 @@ object BlockType {
   }
 
   def isGsupported(block: BlockType): Boolean = block match {
-    case TreeBlockType                   => true
-    case TreeNoBarkBlockType             => true
-    case WoodenTorchBlockType            => true
-    case CoalTorchBlockType              => true
-    case LumenstoneTorchBlockType        => true
-    case MarshleafStage1BlockType        => true
-    case MarshleafStage2BlockType        => true
-    case ZythiumTorchBlockType           => true
-    case LeverBlockType                  => true
-    case LeverOnBlockType                => true
-    case WoodenPressurePlateBlockType    => true
-    case WoodenPressurePlateOnBlockType  => true
-    case StonePressurePlateBlockType     => true
-    case StonePressurePlateOnBlockType   => true
-    case ZythiumPressurePlateBlockType   => true
+    case TreeBlockType => true
+    case TreeNoBarkBlockType => true
+    case WoodenTorchBlockType => true
+    case CoalTorchBlockType => true
+    case LumenstoneTorchBlockType => true
+    case MarshleafStage1BlockType => true
+    case MarshleafStage2BlockType => true
+    case ZythiumTorchBlockType => true
+    case LeverBlockType => true
+    case LeverOnBlockType => true
+    case WoodenPressurePlateBlockType => true
+    case WoodenPressurePlateOnBlockType => true
+    case StonePressurePlateBlockType => true
+    case StonePressurePlateOnBlockType => true
+    case ZythiumPressurePlateBlockType => true
     case ZythiumPressurePlateOnBlockType => true
-    case SunflowerStage1BlockType        => true
-    case SunflowerStage2BlockType        => true
-    case SunflowerStage3BlockType        => true
-    case MoonflowerStage1BlockType       => true
-    case MoonflowerStage2BlockType       => true
-    case MoonflowerStage3BlockType       => true
-    case DryweedStage1BlockType          => true
-    case DryweedStage2BlockType          => true
-    case DryweedStage3BlockType          => true
-    case GreenleafStage1BlockType        => true
-    case GreenleafStage2BlockType        => true
-    case GreenleafStage3BlockType        => true
-    case FrostleafStage1BlockType        => true
-    case FrostleafStage2BlockType        => true
-    case FrostleafStage3BlockType        => true
-    case CaverootStage1BlockType         => true
-    case CaverootStage2BlockType         => true
-    case CaverootStage3BlockType         => true
-    case SkyblossomStage1BlockType       => true
-    case SkyblossomStage2BlockType       => true
-    case SkyblossomStage3BlockType       => true
-    case VoidRotStage1BlockType          => true
-    case VoidRotStage2BlockType          => true
-    case VoidRotStage3BlockType          => true
-    case GrassBlockType                  => true
-    case _                               => false
+    case SunflowerStage1BlockType => true
+    case SunflowerStage2BlockType => true
+    case SunflowerStage3BlockType => true
+    case MoonflowerStage1BlockType => true
+    case MoonflowerStage2BlockType => true
+    case MoonflowerStage3BlockType => true
+    case DryweedStage1BlockType => true
+    case DryweedStage2BlockType => true
+    case DryweedStage3BlockType => true
+    case GreenleafStage1BlockType => true
+    case GreenleafStage2BlockType => true
+    case GreenleafStage3BlockType => true
+    case FrostleafStage1BlockType => true
+    case FrostleafStage2BlockType => true
+    case FrostleafStage3BlockType => true
+    case CaverootStage1BlockType => true
+    case CaverootStage2BlockType => true
+    case CaverootStage3BlockType => true
+    case SkyblossomStage1BlockType => true
+    case SkyblossomStage2BlockType => true
+    case SkyblossomStage3BlockType => true
+    case VoidRotStage1BlockType => true
+    case VoidRotStage2BlockType => true
+    case VoidRotStage3BlockType => true
+    case GrassBlockType => true
+    case _ => false
 
   }
 
+  def powers(block: BlockType): Boolean = block match {
+    case ZythiumTorchBlockType => true
+    case ZythiumTorchLeftWallBlockType => true
+    case ZythiumTorchRightWallBlockType => true
+    case LeverOnBlockType => true
+    case LeverLeftWallOnBlockType => true
+    case LeverRightWallOnBlockType => true
+    case ZythiumAmplifierRightOnBlockType => true
+    case ZythiumAmplifierDownOnBlockType => true
+    case ZythiumAmplifierLeftOnBlockType => true
+    case ZythiumAmplifierUpOnBlockType => true
+    case ZythiumInverterRightBlockType => true
+    case ZythiumInverterDownBlockType => true
+    case ZythiumInverterLeftBlockType => true
+    case ZythiumInverterUpBlockType => true
+    case ButtonLeftOnBlockType => true
+    case ButtonRightOnBlockType => true
+    case WoodenPressurePlateOnBlockType => true
+    case StonePressurePlateOnBlockType => true
+    case ZythiumPressurePlateOnBlockType => true
+    case ZythiumDelayer1DelayRightOnBlockType => true
+    case ZythiumDelayer1DelayDownOnBlockType => true
+    case ZythiumDelayer1DelayLeftOnBlockType => true
+    case ZythiumDelayer1DelayUpOnBlockType => true
+    case ZythiumDelayer2DelayRightOnBlockType => true
+    case ZythiumDelayer2DelayDownOnBlockType => true
+    case ZythiumDelayer2DelayLeftOnBlockType => true
+    case ZythiumDelayer2DelayUpOnBlockType => true
+    case ZythiumDelayer4DelayRightOnBlockType => true
+    case ZythiumDelayer4DelayDownOnBlockType => true
+    case ZythiumDelayer4DelayLeftOnBlockType => true
+    case ZythiumDelayer4DelayUpOnBlockType => true
+    case ZythiumDelayer8DelayRightOnBlockType => true
+    case ZythiumDelayer8DelayDownOnBlockType => true
+    case ZythiumDelayer8DelayLeftOnBlockType => true
+    case ZythiumDelayer8DelayUpOnBlockType => true
+    case _ => false
+  }
 }
 
 sealed abstract class BlockType(val id: Int)

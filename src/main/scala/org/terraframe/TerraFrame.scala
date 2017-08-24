@@ -57,7 +57,6 @@ object TerraFrame {
   var random = new Random
 
   val BRIGHTEST: Int = 21
-  val PMAX: Int      = 10
 
   val DEBUG_INSTAMINE: Boolean              = false
   val DEBUG_ACCEL: Double                   = 1
@@ -81,76 +80,6 @@ object TerraFrame {
   var WORLDHEIGHT: Int = HEIGHT / CHUNKBLOCKS + 1
 
   val SUNLIGHTSPEED: Int = 14
-
-//  val items: Array[String] = Array("air", "blocks/dirt", "blocks/stone", "ores/copper_ore",
-//    "ores/iron_ore", "ores/silver_ore", "ores/gold_ore", "tools/copper_pick",
-//    "tools/iron_pick", "tools/silver_pick", "tools/gold_pick", "tools/copper_axe",
-//    "tools/iron_axe", "tools/silver_axe", "tools/gold_axe", "blocks/wood",
-//    "tools/copper_sword", "tools/iron_sword", "tools/silver_sword", "tools/gold_sword",
-//    "machines/workbench",
-//    "machines/wooden_chest", "machines/stone_chest",
-//    "machines/copper_chest", "machines/iron_chest", "machines/silver_chest", "machines/gold_chest",
-//    "machines/furnace",
-//    "ores/coal", "ingots/copper_ingot", "ingots/iron_ingot", "ingots/silver_ingot", "ingots/gold_ingot",
-//    "tools/stone_lighter", "ores/lumenstone",
-//    "torches/wooden_torch", "torches/coal_torch", "torches/lumenstone_torch",
-//    "ores/zinc_ore", "ores/rhymestone_ore", "ores/obdurite_ore",
-//    "ores/aluminum_ore", "ores/lead_ore", "ores/uranium_ore",
-//    "ores/zythium_ore", "ores/silicon_ore",
-//    "ores/irradium_ore", "ores/nullstone", "ores/meltstone", "ores/skystone",
-//    "ores/magnetite_ore",
-//    "tools/zinc_pick", "tools/zinc_axe", "tools/zinc_sword",
-//    "tools/rhymestone_pick", "tools/rhymestone_axe", "tools/rhymestone_sword",
-//    "tools/obdurite_pick", "tools/obdurite_axe", "tools/obdurite_sword",
-//    "ingots/zinc_ingot", "ingots/rhymestone_ingot", "ingots/obdurite_ingot",
-//    "ingots/aluminum_ingot", "ingots/lead_ingot", "ingots/uranium_bar", "ingots/refined_uranium",
-//    "ingots/zythium_bar", "ingots/silicon_bar",
-//    "ingots/irradium_ingot", "ingots/nullstone_bar", "ingots/meltstone_bar", "ingots/skystone_bar",
-//    "ingots/magnetite_ingot",
-//    "blocks/sand", "blocks/snow", "blocks/glass",
-//    "seeds/sunflower_seeds", "herbs/sunflower", "seeds/moonflower_seeds", "herbs/moonflower",
-//    "seeds/dryweed_seeds", "herbs/dryweed", "seeds/greenleaf_seeds", "herbs/greenleaf",
-//    "seeds/frostleaf_seeds", "herbs/frostleaf", "seeds/caveroot_seeds", "herbs/caveroot",
-//    "seeds/skyblossom_seeds", "herbs/skyblossom", "seeds/void_rot_seeds", "herbs/void_rot",
-//    "blocks/mud", "blocks/sandstone",
-//    "seeds/marshleaf_seeds", "herbs/marshleaf",
-//    "goo/blue_goo", "goo/green_goo", "goo/red_goo", "goo/yellow_goo", "goo/black_goo", "goo/white_goo",
-//    "goo/astral_shard", "goo/rotten_chunk",
-//    "armor/copper_helmet", "armor/copper_chestplate", "armor/copper_leggings", "armor/copper_greaves",
-//    "armor/iron_helmet", "armor/iron_chestplate", "armor/iron_leggings", "armor/iron_greaves",
-//    "armor/silver_helmet", "armor/silver_chestplate", "armor/silver_leggings", "armor/silver_greaves",
-//    "armor/gold_helmet", "armor/gold_chestplate", "armor/gold_leggings", "armor/gold_greaves",
-//    "armor/zinc_helmet", "armor/zinc_chestplate", "armor/zinc_leggings", "armor/zinc_greaves",
-//    "armor/rhymestone_helmet", "armor/rhymestone_chestplate", "armor/rhymestone_leggings", "armor/rhymestone_greaves",
-//    "armor/obdurite_helmet", "armor/obdurite_chestplate", "armor/obdurite_leggings", "armor/obdurite_greaves",
-//    "armor/aluminum_helmet", "armor/aluminum_chestplate", "armor/aluminum_leggings", "armor/aluminum_greaves",
-//    "armor/lead_helmet", "armor/lead_chestplate", "armor/lead_leggings", "armor/lead_greaves",
-//    "armor/zythium_helmet", "armor/zythium_chestplate", "armor/zythium_leggings", "armor/zythium_greaves",
-//    "tools/aluminum_pick", "tools/aluminum_axe", "tools/aluminum_sword",
-//    "tools/lead_pick", "tools/lead_axe", "tools/lead_sword",
-//    "machines/zinc_chest", "machines/rhymestone_chest", "machines/obdurite_chest",
-//    "tools/wooden_pick", "tools/wooden_axe", "tools/wooden_sword",
-//    "tools/stone_pick", "tools/stone_axe", "tools/stone_sword",
-//    "goo/bark", "blocks/cobblestone",
-//    "blocks/chiseled_stone", "blocks/chiseled_cobblestone", "blocks/stone_bricks",
-//    "blocks/clay", "blocks/clay_bricks", "potions/varnish", "blocks/varnished_wood",
-//    "tools/magnetite_pick", "tools/magnetite_axe", "tools/magnetite_sword",
-//    "tools/irradium_pick", "tools/irradium_axe", "tools/irradium_sword",
-//    "wires/zythium_wire", "torches/zythium_torch", "blocks/zythium_lamp", "misc/lever",
-//    "dust/charcoal", "wires/zythium_amplifier", "wires/zythium_inverter", "misc/button",
-//    "misc/wooden_pressure_plate", "misc/stone_pressure_plate", "misc/zythium_pressure_plate",
-//    "wires/zythium_delayer_1", "wires/zythium_delayer_2", "wires/zythium_delayer_4", "wires/zythium_delayer_8", "tools/wrench")
-
-//  val toolList = Array[Short](7, 8, 9, 10, 11, 12, 13, 14, 51, 52, 54, 55, 57, 58, 145, 146, 148, 149, 154, 155, 157, 158, 169, 170, 172, 173)
-
-//  val dirs: Array[String] = Array("center", "tdown_both", "tdown_cw", "tdown_ccw",
-//    "tdown", "tup_both", "tup_cw", "tup_ccw",
-//    "tup", "leftright", "tright_both", "tright_cw",
-//    "tright_ccw", "tright", "upleftdiag", "upleft",
-//    "downleftdiag", "downleft", "left", "tleft_both",
-//    "tleft_cw", "tleft_ccw", "tleft", "uprightdiag",
-//    "upright", "downrightdiag", "downright", "right",
-//    "updown", "up", "down", "single")
 
   val blocknames: Array[String] = Array(
     "air",
@@ -324,65 +253,6 @@ object TerraFrame {
     "zythium_delayer_8_up_on"
   )
 
-//  val ui_items: Array[String] = Array("Air", "Dirt", "Stone",
-//    "Copper Ore", "Iron Ore", "Silver Ore", "Gold Ore",
-//    "Copper Pick", "Iron Pick", "Silver Pick", "Gold Pick",
-//    "Copper Axe", "Iron Axe", "Silver Axe", "Gold Axe",
-//    "Wood", "Copper Sword", "Iron Sword", "Silver Sword", "Gold Sword",
-//    "Workbench",
-//    "Wooden Chest", "Stone Chest",
-//    "Copper Chest", "Iron Chest", "Silver Chest", "Gold Chest",
-//    "Furnace", "Coal",
-//    "Copper Ingot", "Iron Ingot", "Silver Ingot", "Gold Ingot",
-//    "Stone Lighter", "Lumenstone",
-//    "Wooden Torch", "Coal Torch", "Lumenstone Torch",
-//    "Zinc Ore", "Rhymestone Ore", "Obdurite Ore",
-//    "Aluminum Ore", "Lead Ore", "Uranium Ore",
-//    "Zythium Ore", "Silicon Ore",
-//    "Irradium Ore", "Nullstone", "Meltstone", "Skystone",
-//    "Magnetite Ore",
-//    "Zinc Pick", "Zinc Axe", "Zinc Sword",
-//    "Rhymestone Pick", "Rhymestone Axe", "Rhymestone Sword",
-//    "Obdurite Pick", "Obdurite Axe", "Obdurite Sword",
-//    "Zinc Ingot", "Rhymestone Ingot", "Obdurite Ingot",
-//    "Aluminum Ingot", "Lead Ingot", "Uranium Bar", "Refined Uranium",
-//    "Zythium Bar", "Silicon Bar",
-//    "Irradium Ingot", "Nullstone Bar", "Meltstone Bar", "Skystone Bar",
-//    "Magnetite Ingot",
-//    "Sand", "Snow", "Glass",
-//    "Sunflower Seeds", "Sunflower", "Moonflower Seeds", "Moonflower",
-//    "Dryweed Seeds", "Dryweed", "Greenleaf Seeds", "Greenleaf",
-//    "Frostleaf Seeds", "Frostleaf", "Caveroot Seeds", "Caveroot",
-//    "Skyblossom Seeds", "Skyblossom", "Void Rot Seeds", "Void Rot",
-//    "Mud", "Sandstone",
-//    "Marshleaf Seeds", "Marshleaf",
-//    "Blue Goo", "Green Goo", "Red Goo", "Yellow Goo", "Black Goo", "White Goo",
-//    "Astral Shard", "Rotten Chunk",
-//    "Copper Helmet", "Copper Chestplate", "Copper Leggings", "Copper Greaves",
-//    "Iron Helmet", "Iron Chestplate", "Iron Leggings", "Iron Greaves",
-//    "Silver Helmet", "Silver Chestplate", "Silver Leggings", "Silver Greaves",
-//    "Gold Helmet", "Gold Chestplate", "Gold Leggings", "Gold Greaves",
-//    "Zinc Helmet", "Zinc Chestplate", "Zinc Leggings", "Zinc Greaves",
-//    "Rhymestone Helmet", "Rhymestone Chestplate", "Rhymestone Leggings", "Rhymestone Greaves",
-//    "Obdurite Helmet", "Obdurite Chestplate", "Obdurite Leggings", "Obdurite Greaves",
-//    "Aluminum Helmet", "Aluminum Chestplate", "Aluminum Leggings", "Aluminum Greaves",
-//    "Lead Helmet", "Lead Chestplate", "Lead Leggings", "Lead Greaves",
-//    "Zythium Helmet", "Zythium Chestplate", "Zythium Leggings", "Zythium Greaves",
-//    "Aluminum Pick", "Aluminum Axe", "Aluminum Sword",
-//    "Lead Pick", "Lead Axe", "Lead Sword",
-//    "Zinc Chest", "Rhymestone Chest", "Obdurite Chest",
-//    "Wooden Pick", "Wooden Axe", "Wooden Sword",
-//    "Stone Pick", "Stone Axe", "Stone Sword",
-//    "Bark", "Cobblestone",
-//    "Chiseled Stone", "Chiseled Cobblestone", "Stone Bricks",
-//    "Clay", "Clay Bricks", "Varnish", "Varnished Wood",
-//    "Magnetite Pick", "Magnetite Axe", "Magnetite Sword",
-//    "Irradium Pick", "Irradium Axe", "Irradium Sword",
-//    "Zythium Wire", "Zythium Torch", "Zythium Lamp", "Lever",
-//    "Charcoal", "Zythium Amplifier", "Zythium Inverter", "Button",
-//    "Wooden Pressure Plate", "Stone Pressure Plate", "Zythium Pressure Plate",
-//    "Zythium Delayer", "Zythium Delayer", "Zythium Delayer", "Zythium Delayer", "Wrench")
-
   var version: String = "0.3_01"
 
   val blockcds: Array[Boolean] = Array(false, true, true, true, true, true, true, true, false, false, false, false,
@@ -418,17 +288,6 @@ object TerraFrame {
     false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
     false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
     false, false, false, false, false)
-  val powers: Array[Boolean] = Array(false, false, false, false, false, false, false, false, false, false, false, false,
-    false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-    false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-    false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-    false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-    false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-    false, false, false, false, false, false, false, false, true, true, true, false, false, false, true, false, true,
-    false, true, false, false, false, false, true, true, true, true, true, true, true, true, false, false, false, false,
-    false, true, false, true, false, true, false, true, false, true, false, false, false, false, true, true, true, true,
-    false, false, false, false, true, true, true, true, false, false, false, false, true, true, true, true, false,
-    false, false, false, true, true, true, true)
   val conducts: Array[Double] = Array(-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
     -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
     -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
@@ -457,37 +316,11 @@ object TerraFrame {
     true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true,
     true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true,
     true)
+
   val skycolors: Array[Int] = Array(28800, 28980, 29160, 29340, 29520, 29700, 29880, 30060, 30240, 30420, 30600, 30780,
     30960, 31140, 31320, 31500, 31680, 31860, 32040, 32220, 72000, 72180, 72360, 72540, 72720, 72900, 73080, 73260,
     73440, 73620, 73800, 73980, 74160, 74340, 74520, 74700, 74880, 75060, 75240, 75420)
 
-//  lazy val backgroundImgs: Map[Byte, BufferedImage] = {
-//    val bgs: Array[String] = Array("solid/empty", "dirt_none/downleft", "dirt_none/downright", "dirt_none/left", "dirt_none/right", "dirt_none/up", "dirt_none/upleft", "dirt_none/upright",
-//      "solid/dirt", "stone_dirt/downleft", "stone_dirt/downright", "stone_dirt/left", "stone_dirt/right", "stone_dirt/up", "stone_dirt/upleft", "stone_dirt/upright",
-//      "solid/stone", "stone_none/down")
-//
-//    val backgroundImgsTemp = new jul.HashMap[Byte, BufferedImage](bgs.length)
-//
-//    (1 until bgs.length).foreach { i =>
-//      backgroundImgsTemp.put(i.toByte, loadImage("backgrounds/" + bgs(i) + ".png").get)
-//    }
-//
-//    backgroundImgsTemp.asScala.toMap
-//  }
-//  lazy val itemImgs: Map[Short, BufferedImage] = {
-//    val itemImgsTemp = new jul.HashMap[Short, BufferedImage](items.length)
-//
-//    (1 until items.length).foreach { i =>
-//      loadImage("items/" + items(i) + ".png").fold {
-//        println("(ERROR) Could not load item graphic '" + items(i) + "'.")
-//      } { img =>
-//        itemImgsTemp.put(i.toShort, img)
-//        ()
-//      }
-//    }
-//
-//    itemImgsTemp.asScala.toMap
-//  }
 
   val font: Font      = new Font("Chalkboard", Font.BOLD, 12)
   val mobFont: Font   = new Font("Chalkboard", Font.BOLD, 16)
@@ -495,117 +328,6 @@ object TerraFrame {
   val menuFont: Font  = new Font("Chalkboard", Font.PLAIN, 30)
   val worldFont: Font = new Font("Andale Mono", Font.BOLD, 16)
   val CYANISH: Color  = new Color(75, 163, 243)
-
-//  lazy val TOOLSPEED: Map[Short, Double] = {
-//    val toolSpeedTemp = new jul.HashMap[Short, Double](items.length)
-//
-//    (1 until items.length).foreach { i =>
-//      toolSpeedTemp.put(i.toShort, 0.175)
-//    }
-//
-//    toolSpeedTemp.put(154.toShort, 0.100) // wood:   P100 S100
-//    toolSpeedTemp.put(155.toShort, 0.100)
-//    toolSpeedTemp.put(156.toShort, 0.100)
-//    toolSpeedTemp.put(157.toShort, 0.110) // stone:  P110 S105
-//    toolSpeedTemp.put(158.toShort, 0.110)
-//    toolSpeedTemp.put(159.toShort, 0.105)
-//    toolSpeedTemp.put(7.toShort, 0.120) // copper: P120 S110
-//    toolSpeedTemp.put(11.toShort, 0.120)
-//    toolSpeedTemp.put(16.toShort, 0.110)
-//    toolSpeedTemp.put(8.toShort, 0.130) // iron:   P130 S115
-//    toolSpeedTemp.put(12.toShort, 0.130)
-//    toolSpeedTemp.put(17.toShort, 0.115)
-//    toolSpeedTemp.put(9.toShort, 0.140) // silver: P140 S120
-//    toolSpeedTemp.put(13.toShort, 0.140)
-//    toolSpeedTemp.put(18.toShort, 0.120)
-//    toolSpeedTemp.put(10.toShort, 0.150) // gold:   P150 S125
-//    toolSpeedTemp.put(14.toShort, 0.150)
-//    toolSpeedTemp.put(19.toShort, 0.125)
-//    toolSpeedTemp.put(51.toShort, 0.160) // zinc:   P160 S130
-//    toolSpeedTemp.put(52.toShort, 0.160)
-//    toolSpeedTemp.put(53.toShort, 0.130)
-//    toolSpeedTemp.put(54.toShort, 0.170) // rhyme:  P170 S135
-//    toolSpeedTemp.put(55.toShort, 0.170)
-//    toolSpeedTemp.put(56.toShort, 0.135)
-//    toolSpeedTemp.put(57.toShort, 0.180) // obdur:  P180 S140
-//    toolSpeedTemp.put(58.toShort, 0.180)
-//    toolSpeedTemp.put(59.toShort, 0.140)
-//    toolSpeedTemp.put(145.toShort, 0.350) // alumin: P250 S175
-//    toolSpeedTemp.put(146.toShort, 0.350)
-//    toolSpeedTemp.put(147.toShort, 0.245)
-//    toolSpeedTemp.put(148.toShort, 0.130) // lead:   P130 S115
-//    toolSpeedTemp.put(149.toShort, 0.130)
-//    toolSpeedTemp.put(150.toShort, 0.115)
-//    toolSpeedTemp.put(169.toShort, 0.250) // magne:  P350 S245
-//    toolSpeedTemp.put(170.toShort, 0.250)
-//    toolSpeedTemp.put(171.toShort, 0.175)
-//    toolSpeedTemp.put(172.toShort, 0.350) // irrad:  P350 S245
-//    toolSpeedTemp.put(173.toShort, 0.350)
-//    toolSpeedTemp.put(174.toShort, 0.245)
-//
-//    toolSpeedTemp.put(33.toShort, 0.125) // stone lighter
-//
-//    toolSpeedTemp.asScala.toMap
-//  }
-//  lazy val TOOLDAMAGE: Map[Short, Int] =  {
-//    val toolDamageTemp = new jul.HashMap[Short, Int](items.length)
-//
-//    items.indices.foreach { i =>
-//      toolDamageTemp.put(i.toShort, 1)
-//    }
-//
-//    toolDamageTemp.put(7.toShort, 2)
-//    toolDamageTemp.put(8.toShort, 3)
-//    toolDamageTemp.put(9.toShort, 3)
-//    toolDamageTemp.put(10.toShort, 4)
-//    toolDamageTemp.put(11.toShort, 3)
-//    toolDamageTemp.put(12.toShort, 4)
-//    toolDamageTemp.put(13.toShort, 5)
-//    toolDamageTemp.put(14.toShort, 6)
-//    toolDamageTemp.put(16.toShort, 5)
-//    toolDamageTemp.put(17.toShort, 8)
-//    toolDamageTemp.put(18.toShort, 13)
-//    toolDamageTemp.put(19.toShort, 18)
-//    toolDamageTemp.put(51.toShort, 6)
-//    toolDamageTemp.put(52.toShort, 9)
-//    toolDamageTemp.put(53.toShort, 24)
-//    toolDamageTemp.put(54.toShort, 8)
-//    toolDamageTemp.put(55.toShort, 11)
-//    toolDamageTemp.put(56.toShort, 30)
-//    toolDamageTemp.put(57.toShort, 10)
-//    toolDamageTemp.put(58.toShort, 15)
-//    toolDamageTemp.put(59.toShort, 38)
-//    toolDamageTemp.put(145.toShort, 7)
-//    toolDamageTemp.put(146.toShort, 10)
-//    toolDamageTemp.put(147.toShort, 27)
-//    toolDamageTemp.put(148.toShort, 4)
-//    toolDamageTemp.put(149.toShort, 5)
-//    toolDamageTemp.put(150.toShort, 9)
-//    toolDamageTemp.put(154.toShort, 1)
-//    toolDamageTemp.put(155.toShort, 1)
-//    toolDamageTemp.put(156.toShort, 3)
-//    toolDamageTemp.put(157.toShort, 1)
-//    toolDamageTemp.put(158.toShort, 2)
-//    toolDamageTemp.put(159.toShort, 4)
-//    toolDamageTemp.put(57.toShort, 20)
-//    toolDamageTemp.put(58.toShort, 30)
-//    toolDamageTemp.put(59.toShort, 75)
-//
-//    toolDamageTemp.asScala.toMap
-//  }
-
-//
-//  lazy val ITEMBLOCKS: Map[Short, Int] = {
-//    val itemblocks: Array[Int] = Array(0, 1, 2, 3, 4, 5, 6, 0, 0, 0, 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 8, 9, 10, 11, 12, 13, 14, 17, 18, 0, 0, 0, 0, 0, 19, 20, 21, 22, 31, 32, 33, 34, 35, 36, 37, 39, 40, 41, 42, 43, 44, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 45 /*72*/ , 46, 47, 48, 0, 51, 0, 54, 0, 57, 0, 60, 0, 63, 0, 66, 0, 69, 0, 75, 76, 77, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 80, 81, 82, 0, 0, 0, 0, 0, 0, 0, 84, 85, 86, 87, 88, 89, 0, 90, 0, 0, 0, 0, 0, 0, 94, 100, 103, 105, 0, 111, 119, 127, 131, 133, 135, 137, 145, 153, 161, 0)
-//
-//    val itemBlocksTemp = new jul.HashMap[Short, Int](items.length)
-//
-//    (1 until items.length).foreach { i =>
-//      itemBlocksTemp.put(i.toShort, itemblocks(i))
-//    }
-//
-//    itemBlocksTemp.asScala.toMap
-//  }
 
   lazy val OUTLINES: Map[Int, String] = {
     val outlinesTemp = new jul.HashMap[Int, String](blocknames.length)
@@ -703,15 +425,7 @@ object TerraFrame {
 
     outlinesTemp.asScala.toMap
   }
-//  lazy val UIBLOCKS: Map[String, String] = {
-//    val uiBlocksTemp = new jul.HashMap[String, String](items.length)
-//
-//    (1 until items.length).foreach { i =>
-//      uiBlocksTemp.put(items(i), ui_items(i))
-//    }
-//
-//    uiBlocksTemp.asScala.toMap
-//  }
+
   val UIENTITIES: Map[String, String] = {
     val uiEntitiesTemp = new jul.HashMap[String, String](15)
 
@@ -740,17 +454,6 @@ object TerraFrame {
 
     blockCdTemp.asScala.toMap
   }
-//  lazy val MAXSTACKS: Map[Short, Short] = {
-//    val maxStacksTemp = new jul.HashMap[Short, Short](items.length)
-//
-//    val stacks: Array[Short] = Array[Short](100, 100, 100, 100, 100, 100, 100, 1, 1, 1, 1, 1, 1, 1, 1, 100, 1, 1, 1, 1, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 1, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 1, 1, 1, 1, 1, 1, 1, 1, 1, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 100, 100, 100, 1, 1, 1, 1, 1, 1, 100, 100, 100, 100, 100, 100, 100, 100, 100, 1, 1, 1, 1, 1, 1, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 1)
-//
-//    items.indices.foreach { i =>
-//      maxStacksTemp.put(i.toShort, stacks(i))
-//    }
-//
-//    maxStacksTemp.asScala.toMap
-//  }
 
   lazy val SKYLIGHTS: Map[Int, Int] = {
     val skyLightsTemp = new jul.HashMap[Int, Int](30)
@@ -951,141 +654,7 @@ object TerraFrame {
 
     grassDirtTemp.asScala.toMap
   }
-//  lazy val ARMOR: Map[Short, Int] = {
-//    val armorTemp = new jul.HashMap[Short, Int](items.length)
-//
-//    items.indices.foreach { i =>
-//      armorTemp.put(i.toShort, 0)
-//    }
-//
-//    armorTemp.put(105.toShort, 1)
-//    armorTemp.put(106.toShort, 2)
-//    armorTemp.put(107.toShort, 1)
-//    armorTemp.put(108.toShort, 1)
-//    armorTemp.put(109.toShort, 1)
-//    armorTemp.put(110.toShort, 3)
-//    armorTemp.put(111.toShort, 2)
-//    armorTemp.put(112.toShort, 1)
-//    armorTemp.put(113.toShort, 2)
-//    armorTemp.put(114.toShort, 4)
-//    armorTemp.put(115.toShort, 3)
-//    armorTemp.put(116.toShort, 1)
-//    armorTemp.put(117.toShort, 3)
-//    armorTemp.put(118.toShort, 6)
-//    armorTemp.put(119.toShort, 5)
-//    armorTemp.put(120.toShort, 2)
-//    armorTemp.put(121.toShort, 4)
-//    armorTemp.put(122.toShort, 7)
-//    armorTemp.put(123.toShort, 6)
-//    armorTemp.put(124.toShort, 3)
-//    armorTemp.put(125.toShort, 5)
-//    armorTemp.put(126.toShort, 9)
-//    armorTemp.put(127.toShort, 7)
-//    armorTemp.put(128.toShort, 4)
-//    armorTemp.put(129.toShort, 7)
-//    armorTemp.put(130.toShort, 12)
-//    armorTemp.put(131.toShort, 10)
-//    armorTemp.put(132.toShort, 6)
-//    armorTemp.put(133.toShort, 4)
-//    armorTemp.put(134.toShort, 7)
-//    armorTemp.put(135.toShort, 6)
-//    armorTemp.put(136.toShort, 3)
-//    armorTemp.put(137.toShort, 2)
-//    armorTemp.put(138.toShort, 4)
-//    armorTemp.put(139.toShort, 3)
-//    armorTemp.put(140.toShort, 1)
-//    armorTemp.put(141.toShort, 10)
-//    armorTemp.put(142.toShort, 18)
-//    armorTemp.put(143.toShort, 14)
-//    armorTemp.put(144.toShort, 8)
-//
-//    armorTemp.asScala.toMap
-//  }
-  /* lazy val TOOLDURS: Map[Short, Short] = {
-    val toolDursTemp = new jul.HashMap[Short, Short](80)
 
-    toolDursTemp.put(7.toShort, 400.toShort) // copper: P0200 A0200 S0125
-    toolDursTemp.put(8.toShort, 500.toShort) // iron:   P0250 A0250 S0150
-    toolDursTemp.put(9.toShort, 600.toShort) // silver: P0300 A0300 S0200
-    toolDursTemp.put(10.toShort, 800.toShort) // gold:   P0400 A0400 S0300
-    toolDursTemp.put(11.toShort, 400.toShort)
-    toolDursTemp.put(12.toShort, 500.toShort)
-    toolDursTemp.put(13.toShort, 600.toShort)
-    toolDursTemp.put(14.toShort, 800.toShort)
-    toolDursTemp.put(16.toShort, 250.toShort)
-    toolDursTemp.put(17.toShort, 300.toShort)
-    toolDursTemp.put(18.toShort, 400.toShort)
-    toolDursTemp.put(19.toShort, 600.toShort)
-    toolDursTemp.put(33.toShort, 100.toShort)
-    toolDursTemp.put(51.toShort, 1100.toShort) // zinc:   P0550 A0550 S0475
-    toolDursTemp.put(52.toShort, 1100.toShort)
-    toolDursTemp.put(53.toShort, 950.toShort)
-    toolDursTemp.put(54.toShort, 1350.toShort) // rhyme:  P0675 A0675 S0625
-    toolDursTemp.put(55.toShort, 1350.toShort)
-    toolDursTemp.put(56.toShort, 1250.toShort)
-    toolDursTemp.put(57.toShort, 1600.toShort) // obdur:  P0800 A0800 S0800
-    toolDursTemp.put(58.toShort, 1600.toShort)
-    toolDursTemp.put(59.toShort, 1600.toShort)
-    toolDursTemp.put(145.toShort, 200.toShort) // alumin: P0100 A0100 S0050
-    toolDursTemp.put(146.toShort, 200.toShort)
-    toolDursTemp.put(147.toShort, 100.toShort)
-    toolDursTemp.put(148.toShort, 2400.toShort) // lead:   P1200 A1200 S0800
-    toolDursTemp.put(149.toShort, 2400.toShort)
-    toolDursTemp.put(150.toShort, 1600.toShort)
-    toolDursTemp.put(154.toShort, 200.toShort) // wood:   P0100 A0100 S0050
-    toolDursTemp.put(155.toShort, 200.toShort)
-    toolDursTemp.put(156.toShort, 100.toShort)
-    toolDursTemp.put(157.toShort, 300.toShort) // stone:  P0150 A0150 S0075
-    toolDursTemp.put(158.toShort, 300.toShort)
-    toolDursTemp.put(159.toShort, 150.toShort)
-    toolDursTemp.put(169.toShort, 1200.toShort) // magne:  P0600 A0600 S0600
-    toolDursTemp.put(170.toShort, 1200.toShort)
-    toolDursTemp.put(171.toShort, 1200.toShort)
-    toolDursTemp.put(172.toShort, 4000.toShort) // irrad:  P2000 A2000 S2000
-    toolDursTemp.put(173.toShort, 4000.toShort)
-    toolDursTemp.put(174.toShort, 4000.toShort)
-    toolDursTemp.put(190.toShort, 400.toShort)
-
-    toolDursTemp.put(105.toShort, 200.toShort) // copper: 0300
-    toolDursTemp.put(106.toShort, 200.toShort) // copper: 0300
-    toolDursTemp.put(107.toShort, 200.toShort) // copper: 0300
-    toolDursTemp.put(108.toShort, 200.toShort) // copper: 0300
-    toolDursTemp.put(109.toShort, 200.toShort) // iron:   0400
-    toolDursTemp.put(110.toShort, 200.toShort) // iron:   0400
-    toolDursTemp.put(111.toShort, 200.toShort) // iron:   0400
-    toolDursTemp.put(112.toShort, 200.toShort) // iron:   0400
-    toolDursTemp.put(113.toShort, 200.toShort) // silver: 0550
-    toolDursTemp.put(114.toShort, 200.toShort) // silver: 0550
-    toolDursTemp.put(115.toShort, 200.toShort) // silver: 0550
-    toolDursTemp.put(116.toShort, 200.toShort) // silver: 0550
-    toolDursTemp.put(117.toShort, 200.toShort) // gold:   0700
-    toolDursTemp.put(118.toShort, 200.toShort) // gold:   0700
-    toolDursTemp.put(119.toShort, 200.toShort) // gold:   0700
-    toolDursTemp.put(120.toShort, 200.toShort) // gold:   0700
-    toolDursTemp.put(121.toShort, 200.toShort) // zinc:   0875
-    toolDursTemp.put(122.toShort, 200.toShort) // zinc:   0875
-    toolDursTemp.put(123.toShort, 200.toShort) // zinc:   0875
-    toolDursTemp.put(124.toShort, 200.toShort) // zinc:   0875
-    toolDursTemp.put(125.toShort, 200.toShort) // rhyme:  1000
-    toolDursTemp.put(126.toShort, 200.toShort) // rhyme:  1000
-    toolDursTemp.put(127.toShort, 200.toShort) // rhyme:  1000
-    toolDursTemp.put(128.toShort, 200.toShort) // rhyme:  1000
-    toolDursTemp.put(129.toShort, 200.toShort) // obdur:  1400
-    toolDursTemp.put(130.toShort, 200.toShort) // obdur:  1400
-    toolDursTemp.put(131.toShort, 200.toShort) // obdur:  1400
-    toolDursTemp.put(132.toShort, 200.toShort) // obdur:  1400
-    toolDursTemp.put(133.toShort, 200.toShort) // alumin: 0150
-    toolDursTemp.put(134.toShort, 200.toShort) // alumin: 0150
-    toolDursTemp.put(135.toShort, 200.toShort) // alumin: 0150
-    toolDursTemp.put(136.toShort, 200.toShort) // alumin: 0150
-    toolDursTemp.put(137.toShort, 200.toShort) // lead:   2000
-    toolDursTemp.put(138.toShort, 200.toShort) // lead:   2000
-    toolDursTemp.put(139.toShort, 200.toShort) // lead:   2000
-    toolDursTemp.put(140.toShort, 200.toShort) // lead:   2000
-
-    toolDursTemp.asScala.toMap
-
-  }*/
   lazy val FUELS: Map[Short, Double] = { // TODO: Move to UiItem
     val fuelsTemp = new jul.HashMap[Short, Double](50)
 
@@ -1246,17 +815,6 @@ object TerraFrame {
     ap.init()
   }
 
-//  def hasOpenSpace(x: Int, y: Int, blocks: Array2D[Int]): Boolean = {
-//    blocks(y - 1)(x - 1) === 0 || !blockcds(blocks(y - 1)(x - 1)) ||
-//      blocks(y - 1)(x) === 0 || !blockcds(blocks(y - 1)(x)) ||
-//      blocks(y - 1)(x + 1) === 0 || !blockcds(blocks(y - 1)(x + 1)) ||
-//      blocks(y)(x - 1) === 0 || !blockcds(blocks(y)(x - 1)) ||
-//      blocks(y)(x + 1) === 0 || !blockcds(blocks(y)(x + 1)) ||
-//      blocks(y + 1)(x - 1) === 0 || !blockcds(blocks(y + 1)(x - 1)) ||
-//      blocks(y + 1)(x) === 0 || !blockcds(blocks(y + 1)(x)) ||
-//      blocks(y + 1)(x + 1) === 0 || !blockcds(blocks(y + 1)(x + 1))
-//  }
-
   def postError(e: Throwable): Unit = {
     val sb = new StringBuilder()
     sb.append("Exception in thread " + e.getClass.getName)
@@ -1291,6 +849,7 @@ object TerraFrame {
   lazy val clouds: Array[BufferedImage] = Array(loadImage("environment/cloud1.png").get)
   lazy val wcnct_px: BufferedImage      = loadImage("misc/wcnct.png").get
 
+  //TODO: FR[IN][12] should be on concept smelting recipe or something
   lazy val FRI1: List[UiItem] = {
     val fri1Temp = new jul.ArrayList[UiItem](180)
 
@@ -1442,6 +1001,7 @@ class TerraFrame
   import TerraFrame._
   import GraphicsHelper._
   import Biome._
+  import BlockType._
 
   var cic: Option[ItemCollection]   = None
   var screen: Option[BufferedImage] = None
@@ -1522,7 +1082,6 @@ class TerraFrame
 
   var cloud: BufferedImage = _
 
-  var thread: Thread                      = _
   var createWorldTimer: javax.swing.Timer = _
 
   val userInput = UserInput()
@@ -1548,14 +1107,10 @@ class TerraFrame
   var reallyAddPower: Boolean        = false
   var reallyRemovePower: Boolean     = false
 
-  var resunlight: Int = WIDTH
-
   var ic: Option[ItemCollection] = None
 
   var worlds, fworlds: Array2D[Option[BufferedImage]] = _
   var kworlds: Array2D[Boolean]                       = _
-
-  var world: BufferedImage = _
 
   var icmatrix: Array3D[Option[ItemCollection]] = _
 
@@ -3499,7 +3054,7 @@ class TerraFrame
                     if (receives(blocks(layer)(uy)(ux).id)) { // TODO: encode receives into BlockType
                       addAdjacentTilesToPQueue(ux, uy)
                     }
-                    if (powers(blocks(layer)(uy)(ux).id)) { //TODO: encode powers into BlockType
+                    if (powers(blocks(layer)(uy)(ux))) {
                       addBlockPower(ux, uy)
                     }
                     if (ltrans(blocks(layer)(uy)(ux).id)) { //TODO: encode ltrans into BlockType
@@ -4639,7 +4194,7 @@ class TerraFrame
       if (blockTemp.id >= ZythiumWireBlockType.id && blockTemp.id <= ZythiumWire5PowerBlockType.id) {
         redoBlockPower(ux, uy, layer)
       }
-      if (powers(blockTemp.id)) {
+      if (powers(blockTemp)) {
         removeBlockPower(ux, uy, layer)
       }
       if (ltrans(blockTemp.id)) {
@@ -4719,7 +4274,7 @@ class TerraFrame
               if (blockTemp.id >= ZythiumWireBlockType.id && blockTemp.id <= ZythiumWire5PowerBlockType.id) {
                 redoBlockPower(ux, uy, layer)
               }
-              if (powers(blockTemp.id)) {
+              if (powers(blockTemp)) {
                 removeBlockPower(ux, uy, layer)
               }
               drawn(uy)(ux - 1) = false
@@ -4752,7 +4307,7 @@ class TerraFrame
               if (blockTemp.id >= ZythiumWireBlockType.id && blockTemp.id <= ZythiumWire5PowerBlockType.id) {
                 redoBlockPower(ux, uy, layer)
               }
-              if (powers(blockTemp.id)) {
+              if (powers(blockTemp)) {
                 removeBlockPower(ux, uy, layer)
               }
               drawn(uy)(ux + 1) = false
@@ -4881,7 +4436,7 @@ class TerraFrame
           if (blockTemp.id >= ZythiumWireBlockType.id && blockTemp.id <= ZythiumWire5PowerBlockType.id) {
             redoBlockPower(ux, uy, layer)
           }
-          if (powers(blockTemp.id)) {
+          if (powers(blockTemp)) {
             removeBlockPower(ux, uy, layer)
           }
           if (ltrans(blockTemp.id)) {
@@ -4975,7 +4530,7 @@ class TerraFrame
   }
 
   def addBlockPower(ux: Int, uy: Int): Unit = {
-    if (powers(blocks(1)(uy)(ux).id)) {
+    if (powers(blocks(1)(uy)(ux))) {
       if (blocks(1)(uy)(ux).id >= ZythiumDelayer1DelayRightBlockType.id && blocks(1)(uy)(ux).id <= ZythiumDelayer8DelayUpOnBlockType.id) {
         println("Whaaat?")
         updatex += ux
@@ -4996,7 +4551,7 @@ class TerraFrame
         addTileToPQueue(ux, uy)
       }
     }
-    if (powers(blocks(0)(uy)(ux).id)) {
+    if (powers(blocks(0)(uy)(ux))) {
       if (blocks(0)(uy)(ux).id >= ZythiumDelayer1DelayRightBlockType.id && blocks(0)(uy)(ux).id <= ZythiumDelayer8DelayUpOnBlockType.id) {
         println("Whaaat?")
         updatex += ux
@@ -5017,7 +4572,7 @@ class TerraFrame
         addTileToPQueue(ux, uy)
       }
     }
-    if (powers(blocks(2)(uy)(ux).id)) {
+    if (powers(blocks(2)(uy)(ux))) {
       if (blocks(2)(uy)(ux).id >= ZythiumDelayer1DelayRightBlockType.id && blocks(2)(uy)(ux).id <= ZythiumDelayer8DelayUpOnBlockType.id) {
         println("Whaaat?")
         updatex += ux
@@ -5132,13 +4687,13 @@ class TerraFrame
               if (lyr === 0) {
                 if (receives(blocks(1)(ay3)(ax3).id)) {
                   rbpRecur(ax3, ay3, 1)
-                  if (powers(blocks(1)(ay3)(ax3).id)) {
+                  if (powers(blocks(1)(ay3)(ax3))) {
                     addTileToPQueue(ax3, ay3)
                   }
                 }
                 if (receives(blocks(2)(ay3)(ax3).id)) {
                   rbpRecur(ax3, ay3, 2)
-                  if (powers(blocks(2)(ay3)(ax3).id)) {
+                  if (powers(blocks(2)(ay3)(ax3))) {
                     addTileToPQueue(ax3, ay3)
                   }
                 }
@@ -5146,13 +4701,13 @@ class TerraFrame
               if (lyr === 1) {
                 if (receives(blocks(0)(ay3)(ax3).id)) {
                   rbpRecur(ax3, ay3, 0)
-                  if (powers(blocks(0)(ay3)(ax3).id)) {
+                  if (powers(blocks(0)(ay3)(ax3))) {
                     addTileToPQueue(ax3, ay3)
                   }
                 }
                 if (receives(blocks(2)(ay3)(ax3).id)) {
                   rbpRecur(ax3, ay3, 2)
-                  if (powers(blocks(2)(ay3)(ax3).id)) {
+                  if (powers(blocks(2)(ay3)(ax3))) {
                     addTileToPQueue(ax3, ay3)
                   }
                 }
@@ -5160,13 +4715,13 @@ class TerraFrame
               if (lyr === 2) {
                 if (receives(blocks(0)(ay3)(ax3).id)) {
                   rbpRecur(ax3, ay3, 0)
-                  if (powers(blocks(0)(ay3)(ax3).id)) {
+                  if (powers(blocks(0)(ay3)(ax3))) {
                     addTileToPQueue(ax3, ay3)
                   }
                 }
                 if (receives(blocks(1)(ay3)(ax3).id)) {
                   rbpRecur(ax3, ay3, 1)
-                  if (powers(blocks(1)(ay3)(ax3).id)) {
+                  if (powers(blocks(1)(ay3)(ax3))) {
                     addTileToPQueue(ax3, ay3)
                   }
                 }
@@ -5275,13 +4830,13 @@ class TerraFrame
                   if (lyr === 0) {
                     if (receives(blocks(1)(ay3)(ax3).id)) {
                       rbpRecur(ax3, ay3, 1)
-                      if (powers(blocks(1)(ay3)(ax3).id)) {
+                      if (powers(blocks(1)(ay3)(ax3))) {
                         addTileToPQueue(ax3, ay3)
                       }
                     }
                     if (receives(blocks(2)(ay3)(ax3).id)) {
                       rbpRecur(ax3, ay3, 2)
-                      if (powers(blocks(2)(ay3)(ax3).id)) {
+                      if (powers(blocks(2)(ay3)(ax3))) {
                         addTileToPQueue(ax3, ay3)
                       }
                     }
@@ -5289,13 +4844,13 @@ class TerraFrame
                   if (lyr === 1) {
                     if (receives(blocks(0)(ay3)(ax3).id)) {
                       rbpRecur(ax3, ay3, 0)
-                      if (powers(blocks(0)(ay3)(ax3).id)) {
+                      if (powers(blocks(0)(ay3)(ax3))) {
                         addTileToPQueue(ax3, ay3)
                       }
                     }
                     if (receives(blocks(2)(ay3)(ax3).id)) {
                       rbpRecur(ax3, ay3, 2)
-                      if (powers(blocks(2)(ay3)(ax3).id)) {
+                      if (powers(blocks(2)(ay3)(ax3))) {
                         addTileToPQueue(ax3, ay3)
                       }
                     }
@@ -5303,13 +4858,13 @@ class TerraFrame
                   if (lyr === 2) {
                     if (receives(blocks(0)(ay3)(ax3).id)) {
                       rbpRecur(ax3, ay3, 0)
-                      if (powers(blocks(0)(ay3)(ax3).id)) {
+                      if (powers(blocks(0)(ay3)(ax3))) {
                         addTileToPQueue(ax3, ay3)
                       }
                     }
                     if (receives(blocks(1)(ay3)(ax3).id)) {
                       rbpRecur(ax3, ay3, 1)
-                      if (powers(blocks(1)(ay3)(ax3).id)) {
+                      if (powers(blocks(1)(ay3)(ax3))) {
                         addTileToPQueue(ax3, ay3)
                       }
                     }
@@ -5395,7 +4950,7 @@ class TerraFrame
   }
 
   def redoBlockPower(ux: Int, uy: Int, lyr: Int): Unit = {
-    if (powers(blocks(lyr)(uy)(ux).id) || blocks(lyr)(uy)(ux).id >= ZythiumWireBlockType.id && blocks(lyr)(uy)(ux).id <= ZythiumWire5PowerBlockType.id) {
+    if (powers(blocks(lyr)(uy)(ux)) || blocks(lyr)(uy)(ux).id >= ZythiumWireBlockType.id && blocks(lyr)(uy)(ux).id <= ZythiumWire5PowerBlockType.id) {
       addAdjacentTilesToPQueue(ux, uy)
     } else {
       removeBlockPower(ux, uy, lyr)
@@ -5613,7 +5168,7 @@ class TerraFrame
         x = pqx(0)
         y = pqy(0)
         (0 until 3).foreach { l =>
-          if (powers(blocks(l)(y)(x).id)) {
+          if (powers(blocks(l)(y)(x))) {
             if (!(blocks(l)(y)(x).id >= ZythiumDelayer1DelayRightBlockType.id && blocks(l)(y)(x).id <= ZythiumDelayer8DelayUpOnBlockType.id)) {
               addTileToPQueue(x, y)
               power(l)(y)(x) = 5.toFloat
@@ -6139,11 +5694,11 @@ class TerraFrame
         pg2.drawString("Health: " + player.hp + "/" + Player.totalHP, getWidth - 125, 20)
         pg2.drawString("Armor: " + player.sumArmor(), getWidth - 125, 40)
         if (DEBUG_STATS) {
-          pg2.drawString("(" + (player.ix / 16) + ", " + (player.iy / 16) + ")", getWidth - 125, 60)
+          pg2.drawString("(" + (player.ix / BLOCKSIZE) + ", " + (player.iy / BLOCKSIZE) + ")", getWidth - 125, 60)
           if (player.iy >= 0 && player.iy < HEIGHT * BLOCKSIZE) {
             pg2.drawString(
-              checkBiome(player.ix / 16 + u, player.iy / 16 + v, u, v, blocks, blockbgs).name + " " + lights(
-                player.iy / 16 + v)(player.ix / 16 + u),
+              checkBiome(player.ix / BLOCKSIZE + u, player.iy / BLOCKSIZE + v, u, v, blocks, blockbgs).name + " " + lights(
+                player.iy / BLOCKSIZE + v)(player.ix / BLOCKSIZE + u),
               getWidth - 125,
               80)
           }
@@ -6357,7 +5912,6 @@ class TerraFrame
     random = wc.random
     WORLDWIDTH = wc.WORLDWIDTH
     WORLDHEIGHT = wc.WORLDHEIGHT
-    resunlight = wc.resunlight
     kworlds = wc.kworlds
     ic = wc.ic
     icmatrix = wc.icmatrix
@@ -6454,7 +6008,6 @@ class TerraFrame
       random,
       WORLDWIDTH,
       WORLDHEIGHT,
-      resunlight,
       ic,
       kworlds,
       icmatrix,
@@ -6944,33 +6497,5 @@ class TerraFrame
   def mouseWheelMoved(e: MouseWheelEvent): Unit = {
     //
   }
-
-  def update(): Unit = {
-    //
-  }
-
-  /*    def pmsg(msg: String): Unit = {
-        pg2 = (Graphics2D) screen.createGraphics()
-        if (logo_white =/= null && msg =/= null && loadTextPos =/= 0) {
-            pg2.drawImage(logo_white,
-                getWidth()/2-logo_white.getWidth()/2, 50, getWidth()/2+logo_white.getWidth()/2, logo_white.getHeight()+50,
-                0, 0, logo_white.getWidth(), logo_white.getHeight(),
-                null)
-            pg2.setFont(loadFont)
-            pg2.setColor(Color.GREEN)
-            pg2.drawString(msg, getWidth()/2-200, 100+loadTextPos*13)
-            if (msg.equals("Created by Radon Rosborough.")) {
-                loadTextPos += 2
-            }
-            else {
-                loadTextPos += 1
-            }
-        }
-        else {
-            pg2.clearRect(0, 0, getWidth(), getHeight())
-            loadTextPos = 1
-        }
-    }
- */
 
 }
