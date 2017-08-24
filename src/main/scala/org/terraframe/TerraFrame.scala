@@ -1441,6 +1441,7 @@ class TerraFrame
 
   import TerraFrame._
   import GraphicsHelper._
+  import Biome._
 
   var cic: Option[ItemCollection]   = None
   var screen: Option[BufferedImage] = None
@@ -2715,25 +2716,35 @@ class TerraFrame
               case SunflowerStage2BlockType if timeOfDay >= 75913 || timeOfDay < 28883  => t = SunflowerStage3BlockType
               case MoonflowerStage1BlockType if timeOfDay >= 32302 && timeOfDay < 72093 => t = MoonflowerStage2BlockType
               case MoonflowerStage2BlockType if timeOfDay >= 32302 && timeOfDay < 72093 => t = MoonflowerStage3BlockType
-              case DryweedStage1BlockType if checkBiome(x, y) === "desert"              => t = DryweedStage2BlockType
-              case DryweedStage2BlockType if checkBiome(x, y) === "desert"              => t = DryweedStage3BlockType
-              case GreenleafStage1BlockType if checkBiome(x, y) === "jungle"            => t = GreenleafStage2BlockType
-              case GreenleafStage2BlockType if checkBiome(x, y) === "jungle"            => t = GreenleafStage3BlockType
-              case FrostleafStage1BlockType if checkBiome(x, y) === "frost"             => t = FrostleafStage2BlockType
-              case FrostleafStage2BlockType if checkBiome(x, y) === "frost"             => t = FrostleafStage3BlockType
-              case CaverootStage1BlockType if checkBiome(x, y) === "cavern" || y >= 0 /*stonelayer(x)*/ =>
+              case DryweedStage1BlockType if checkBiome(x, y, u, v, blocks, blockbgs) === DesertBiome =>
+                t = DryweedStage2BlockType
+              case DryweedStage2BlockType if checkBiome(x, y, u, v, blocks, blockbgs) === DesertBiome =>
+                t = DryweedStage3BlockType
+              case GreenleafStage1BlockType if checkBiome(x, y, u, v, blocks, blockbgs) === JungleBiome =>
+                t = GreenleafStage2BlockType
+              case GreenleafStage2BlockType if checkBiome(x, y, u, v, blocks, blockbgs) === JungleBiome =>
+                t = GreenleafStage3BlockType
+              case FrostleafStage1BlockType if checkBiome(x, y, u, v, blocks, blockbgs) === FrostBiome =>
+                t = FrostleafStage2BlockType
+              case FrostleafStage2BlockType if checkBiome(x, y, u, v, blocks, blockbgs) === FrostBiome =>
+                t = FrostleafStage3BlockType
+              case CaverootStage1BlockType
+                  if checkBiome(x, y, u, v, blocks, blockbgs) === CavernBiome || y >= 0 /*stonelayer(x)*/ =>
                 t = CaverootStage2BlockType
-              case CaverootStage2BlockType if checkBiome(x, y) === "cavern" || y >= 0 /*stonelayer(x)*/ =>
+              case CaverootStage2BlockType
+                  if checkBiome(x, y, u, v, blocks, blockbgs) === CavernBiome || y >= 0 /*stonelayer(x)*/ =>
                 t = CaverootStage3BlockType
               case SkyblossomStage1BlockType if y <= HEIGHT * 0.08 && random.nextInt(3) === 0 || y <= HEIGHT * 0.04 =>
                 t = SkyblossomStage2BlockType
               case SkyblossomStage2BlockType if y <= HEIGHT * 0.08 && random.nextInt(3) === 0 || y <= HEIGHT * 0.04 =>
                 t = SkyblossomStage3BlockType
-              case VoidRotStage1BlockType if y >= HEIGHT * 0.98             => t = VoidRotStage2BlockType
-              case VoidRotStage2BlockType if y >= HEIGHT * 0.98             => t = VoidRotStage3BlockType
-              case MarshleafStage1BlockType if checkBiome(x, y) === "swamp" => t = MarshleafStage2BlockType
-              case MarshleafStage2BlockType if checkBiome(x, y) === "swamp" => t = MarshleafStage3BlockType
-              case _                                                        =>
+              case VoidRotStage1BlockType if y >= HEIGHT * 0.98 => t = VoidRotStage2BlockType
+              case VoidRotStage2BlockType if y >= HEIGHT * 0.98 => t = VoidRotStage3BlockType
+              case MarshleafStage1BlockType if checkBiome(x, y, u, v, blocks, blockbgs) === SwampBiome =>
+                t = MarshleafStage2BlockType
+              case MarshleafStage2BlockType if checkBiome(x, y, u, v, blocks, blockbgs) === SwampBiome =>
+                t = MarshleafStage3BlockType
+              case _ =>
             }
             if (t =/= AirBlockType) {
               blocks(l)(y)(x) = t
@@ -2871,7 +2882,7 @@ class TerraFrame
                     xpos2 > 0 && xpos2 < WIDTH - 1 && ypos2 > 0 && ypos2 < HEIGHT - 1 && blocks(1)(ypos2)(xpos2) =/= AirBlockType && blockcds(
                       blocks(1)(ypos2)(xpos2).id))) {
                   mobSpawn = None
-                  if (checkBiome(xpos, ypos) =/= "underground") {
+                  if (checkBiome(xpos, ypos, u, v, blocks, blockbgs) =/= CavernBiome) {
                     if ((day =/= 0 || DEBUG_HOSTILE > 1) && (timeOfDay >= 75913 || timeOfDay < 28883)) {
                       if (random.nextInt(350) === 0) {
                         rnum = random.nextInt(100)
@@ -2923,12 +2934,12 @@ class TerraFrame
                       }
                     }
                   }
-                  if (mobSpawn.isDefined && checkBiome(xpos, ypos) === "desert") { //TODO: need sum type
+                  if (mobSpawn.isDefined && checkBiome(xpos, ypos, u, v, blocks, blockbgs) === DesertBiome) {
                     if (random.nextInt(3) === 0) { // 33% of all spawns in desert
                       mobSpawn = Some(Sandbot)
                     }
                   }
-                  if (mobSpawn.isDefined && checkBiome(xpos, ypos) === "frost") {
+                  if (mobSpawn.isDefined && checkBiome(xpos, ypos, u, v, blocks, blockbgs) === FrostBiome) {
                     if (random.nextInt(3) === 0) { // 33% of all spawns in frost
                       mobSpawn = Some(Snowman)
                     }
@@ -4429,62 +4440,6 @@ class TerraFrame
     (blocks(0)(y)(x) === AirBlockType || BLOCKLIGHTS.get(blocks(0)(y)(x).id).fold(true)(_ === 0)) &&
     (blocks(1)(y)(x) === AirBlockType || BLOCKLIGHTS.get(blocks(1)(y)(x).id).fold(true)(_ === 0)) &&
     (blocks(2)(y)(x) === AirBlockType || BLOCKLIGHTS.get(blocks(2)(y)(x).id).fold(true)(_ === 0))
-  }
-
-  def checkBiome(x: Int, y: Int): String = {
-    var desert: Int = 0
-    var frost: Int  = 0
-    var swamp: Int  = 0
-    var jungle: Int = 0
-    var cavern: Int = 0
-    (x - 15 until x + 16).foreach { x2 =>
-      (y - 15 until y + 16).foreach { y2 =>
-        if (x2 + u >= 0 && x2 + u < WIDTH && y2 + v >= 0 && y2 + v < HEIGHT) {
-          if (blocks(1)(y2 + v)(x2 + u) === SandBlockType || blocks(1)(y2 + v)(x2 + u) === SandstoneBlockType) {
-            desert += 1
-          } else if (blocks(1)(y2 + v)(x2 + u) =/= AirBlockType) {
-            desert -= 1
-          }
-          if (blocks(1)(y2 + v)(x2 + u) === DirtBlockType || blocks(1)(y2 + v)(x2 + u) === GrassBlockType || blocks(1)(
-                y2 + v)(x2 + u) === JungleGrassBlockType) {
-            jungle += 1
-          } else if (blocks(1)(y2 + v)(x2 + u) =/= AirBlockType) {
-            jungle -= 1
-          }
-          if (blocks(1)(y2 + v)(x2 + u) === SwampGrassBlockType || blocks(1)(y2 + v)(x2 + u) === MudBlockType) {
-            swamp += 1
-          } else if (blocks(1)(y2 + v)(x2 + u) =/= AirBlockType) {
-            swamp -= 1
-          }
-          if (blocks(1)(y2 + v)(x2 + u) === SnowBlockType) {
-            frost += 1
-          } else if (blocks(1)(y2 + v)(x2 + u) =/= AirBlockType) {
-            frost -= 1
-          }
-          if (blockbgs(y2 + v)(x2 + u) === EmptyBackground) {
-            cavern += 1
-          }
-          if (blocks(1)(y2 + v)(x2 + u) === DirtBlockType || blocks(1)(y2 + v)(x2 + u) === StoneBlockType) {
-            cavern += 1
-          } else {
-            cavern -= 1
-          }
-        }
-      }
-    }
-    if (desert > 0) {
-      "desert"
-    } else if (jungle > 0) {
-      "jungle"
-    } else if (swamp > 0) {
-      "swamp"
-    } else if (frost > 0) {
-      "frost"
-    } else if (cavern > 0) {
-      "cavern"
-    } else {
-      "other"
-    }
   }
 
   def breakCurrentBlock(): Unit = {
@@ -6187,7 +6142,8 @@ class TerraFrame
           pg2.drawString("(" + (player.ix / 16) + ", " + (player.iy / 16) + ")", getWidth - 125, 60)
           if (player.iy >= 0 && player.iy < HEIGHT * BLOCKSIZE) {
             pg2.drawString(
-              checkBiome(player.ix / 16 + u, player.iy / 16 + v) + " " + lights(player.iy / 16 + v)(player.ix / 16 + u),
+              checkBiome(player.ix / 16 + u, player.iy / 16 + v, u, v, blocks, blockbgs) + " " + lights(
+                player.iy / 16 + v)(player.ix / 16 + u),
               getWidth - 125,
               80)
           }
