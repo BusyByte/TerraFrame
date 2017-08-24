@@ -3,14 +3,13 @@ import TypeSafeComparisons._
 import TerraFrame.{WIDTH, HEIGHT}
 
 
-sealed trait Biome
-object DesertBiome extends Biome
-object JungleBiome extends Biome
-object SwampBiome extends Biome
-object FrostBiome extends Biome
-object CavernBiome extends Biome
-object OtherBiome extends Biome
-
+sealed abstract class Biome(val name: String)
+object DesertBiome extends Biome("desert")
+object JungleBiome extends Biome("jungle")
+object SwampBiome extends Biome("swamp")
+object FrostBiome extends Biome("frost")
+object CavernBiome extends Biome("cavern")
+object OtherBiome extends Biome("other")
 
 object Biome {
   def checkBiome(x: Int, y: Int, u: Int, v: Int, blocks: Array3D[BlockType], blockbgs: Array2D[Background]): Biome = {

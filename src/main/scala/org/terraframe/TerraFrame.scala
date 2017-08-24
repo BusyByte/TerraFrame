@@ -6142,7 +6142,7 @@ class TerraFrame
           pg2.drawString("(" + (player.ix / 16) + ", " + (player.iy / 16) + ")", getWidth - 125, 60)
           if (player.iy >= 0 && player.iy < HEIGHT * BLOCKSIZE) {
             pg2.drawString(
-              checkBiome(player.ix / 16 + u, player.iy / 16 + v, u, v, blocks, blockbgs) + " " + lights(
+              checkBiome(player.ix / 16 + u, player.iy / 16 + v, u, v, blocks, blockbgs).name + " " + lights(
                 player.iy / 16 + v)(player.ix / 16 + u),
               getWidth - 125,
               80)
