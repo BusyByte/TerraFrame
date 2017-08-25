@@ -1,6 +1,8 @@
 package org.terraframe
 
+import java.awt.{Color, Font, Graphics2D}
 import java.awt.image.BufferedImage
+import TypeSafeComparisons._
 
 import org.terraframe.Images.loadImage
 
@@ -63,11 +65,22 @@ object UiItem {
     case _ => AirBlockType
   }
 
-
   def damage(item: UiItem): Int = item match {
     case w: WeaponUiItem => w.damage
     case t: ToolUiItem   => t.damage
     case _               => 0
+  }
+
+  def renderOverlayText(item: UiItem, dur: Short, mouseX: Int, mouseY: Int, g: Graphics2D, f: Font): Unit = {
+    val toolDur = UiItem.toolDurability(item)
+    g.setFont(f)
+    g.setColor(Color.WHITE)
+
+    if (toolDur === 0) {
+      g.drawString(item.name, mouseX, mouseY)
+    } else {
+      g.drawString(item.name + " (" + (dur.toDouble / toolDur * 100).toInt + "%)", mouseX, mouseY)
+    }
   }
 }
 

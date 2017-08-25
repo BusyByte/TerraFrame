@@ -1005,7 +1005,7 @@ class TerraFrame
 
   var cic: Option[ItemCollection]   = None
   var screen: Option[BufferedImage] = None
-  var bg: Color                     = _
+  var backgroundColor: Color                     = _
 
   val cl: Array2D[Int] = Array(Array(-1, 0), Array(1, 0), Array(0, -1), Array(0, 1))
 
@@ -1116,12 +1116,12 @@ class TerraFrame
 
   var tool: Option[BufferedImage] = None
 
-  var wg2, fwg2, pg2: Graphics2D = _
+  var wg2, fwg2: Graphics2D = _
 
   override def init(): Unit = {
     try {
       setLayout(new BorderLayout())
-      bg = Color.BLACK
+      backgroundColor = Color.BLACK
 
       addKeyListener(this)
       addMouseListener(this)
@@ -1171,7 +1171,7 @@ class TerraFrame
       FRI2.size
       FRN2.size
 
-      bg = CYANISH
+      backgroundColor = CYANISH
       state = TitleScreen
 
       repaint()
@@ -1789,10 +1789,10 @@ class TerraFrame
                         mouseY >= 117 + i * 35 && mouseY <= 152 + i * 35) { // load world
                       currentWorld = worldNames(i)
                       state = LoadingWorld
-                      bg = Color.BLACK
+                      backgroundColor = Color.BLACK
                       if (loadWorld(worldFiles(i))) {
                         menuTimer.stop()
-                        bg = CYANISH
+                        backgroundColor = CYANISH
                         state = InGame
                         ready = true
                         timer.start()
@@ -1815,7 +1815,7 @@ class TerraFrame
                     }
                     if (doGenerateWorld) {
                       menuTimer.stop()
-                      bg = Color.BLACK
+                      backgroundColor = Color.BLACK
                       state = GeneratingWorld
                       currentWorld = newWorldName.text
                       repaint()
@@ -1823,7 +1823,7 @@ class TerraFrame
                         def actionPerformed(ae: ActionEvent): Unit = {
                           try {
                             createNewWorld()
-                            bg = CYANISH
+                            backgroundColor = CYANISH
                             state = InGame
                             ready = true
                             timer.start()
@@ -2076,10 +2076,10 @@ class TerraFrame
       }
     }
     if (player.y / 16 > HEIGHT * 0.55) {
-      bg = Color.BLACK
+      backgroundColor = Color.BLACK
     } else {
       SKYCOLORS.get(currentSkyLight).foreach { s =>
-        bg = s
+        backgroundColor = s
       }
     }
 
@@ -5409,521 +5409,23 @@ class TerraFrame
 
   override def paint(g: Graphics): Unit = {
     screen.foreach { screenTemp =>
-      pg2 = screenTemp.createGraphics()
-      pg2.setColor(bg)
-      pg2.fillRect(0, 0, getWidth, getHeight)
-      if (state === InGame) {
-        /*            if (SKYLIGHTS.get(timeOfDay.toInt) =/= null) {
-                  sunlightlevel = SKYLIGHTS.get(timeOfDay.toInt)
-                  resunlight = 0
-              }
-              if (resunlight < WIDTH) {
-                  (resunlight until min(resunlight+SUNLIGHTSPEED,WIDTH)).foreach { ux =>
-                      removeSunLighting(ux, 0)
-                      addSunLighting(ux, 0)
-                  }
-                  resunlight += SUNLIGHTSPEED
-              }
-         */
-        if (player.y / 16 < HEIGHT * 0.5) {
-          pg2.translate((getWidth / 2).toDouble, getHeight * 0.85)
-          pg2.rotate((timeOfDay - 70200) / 86400 * Pi * 2)
+      val screenGraphics: Graphics2D = screenTemp.createGraphics()
+      screenGraphics.setColor(backgroundColor)
+      screenGraphics.fillRect(0, 0, getWidth, getHeight)
 
-          drawImage(
-            pg2,
-            sun,
-            (-getWidth * 0.65).toInt,
-            0,
-            (-getWidth * 0.65 + sun.getWidth() * 2).toInt,
-            sun.getHeight() * 2,
-            0,
-            0,
-            sun.getWidth(),
-            sun.getHeight())
-
-          pg2.rotate(Pi)
-
-          drawImage(
-            pg2,
-            moon,
-            (-getWidth * 0.65).toInt,
-            0,
-            (-getWidth * 0.65 + moon.getWidth() * 2).toInt,
-            moon.getHeight() * 2,
-            0,
-            0,
-            moon.getWidth(),
-            moon.getHeight())
-
-          pg2.rotate(-(timeOfDay - 70200) / 86400 * Pi * 2 - Pi)
-          pg2.translate((-getWidth / 2).toDouble, -getHeight * 0.85)
-
-          cloudsx.indices.foreach { i =>
-            cloud = clouds(cloudsn(i))
-            drawImage(
-              pg2,
-              clouds(cloudsn(i)),
-              cloudsx(i).toInt,
-              cloudsy(i).toInt,
-              (cloudsx(i) + cloud.getWidth() * 2).toInt,
-              (cloudsy(i) + cloud.getHeight() * 2).toInt,
-              0,
-              0,
-              cloud.getWidth(),
-              cloud.getHeight()
-            )
-          }
-        }
-
-        (0 until 2).foreach { pwy =>
-          (0 until 2).foreach { pwx =>
-            val pwxc: Int = pwx + ou
-            val pwyc: Int = pwy + ov
-            worlds(pwy)(pwx).foreach { w =>
-              if (((player.ix + getWidth / 2 + Player.width >= pwxc * CHUNKSIZE &&
-                  player.ix + getWidth / 2 + Player.width <= pwxc * CHUNKSIZE + CHUNKSIZE) ||
-                  (player.ix - getWidth / 2 + Player.width + BLOCKSIZE >= pwxc * CHUNKSIZE &&
-                  player.ix - getWidth / 2 + Player.width - BLOCKSIZE <= pwxc * CHUNKSIZE + CHUNKSIZE)) &&
-                  ((player.iy + getHeight / 2 + Player.height >= pwyc * CHUNKSIZE &&
-                  player.iy + getHeight / 2 + Player.height <= pwyc * CHUNKSIZE + CHUNKSIZE) ||
-                  (player.iy - getHeight / 2 + Player.height >= pwyc * CHUNKSIZE &&
-                  player.iy - getHeight / 2 + Player.height <= pwyc * CHUNKSIZE + CHUNKSIZE))) {
-                drawImage(
-                  pg2,
-                  w,
-                  pwxc * CHUNKSIZE - player.ix + getWidth / 2 - Player.width / 2,
-                  pwyc * CHUNKSIZE - player.iy + getHeight / 2 - Player.height / 2,
-                  pwxc * CHUNKSIZE - player.ix + getWidth / 2 - Player.width / 2 + CHUNKSIZE,
-                  pwyc * CHUNKSIZE - player.iy + getHeight / 2 - Player.height / 2 + CHUNKSIZE,
-                  0,
-                  0,
-                  CHUNKSIZE,
-                  CHUNKSIZE
-                )
-              }
-            }
-          }
-        }
-
-        drawImage(
-          pg2,
-          player.image,
-          getWidth / 2 - Player.width / 2,
-          getHeight / 2 - Player.height / 2,
-          getWidth / 2 + Player.width / 2,
-          getHeight / 2 + Player.height / 2,
-          0,
-          0,
-          player.image.getWidth(),
-          player.image.getHeight()
-        )
-
-        entities.foreach { entity =>
-          drawImage(
-            pg2,
-            entity.image,
-            entity.ix - player.ix + getWidth / 2 - Player.width / 2,
-            entity.iy - player.iy + getHeight / 2 - Player.height / 2,
-            entity.ix - player.ix + getWidth / 2 - Player.width / 2 + entity.width,
-            entity.iy - player.iy + getHeight / 2 - Player.height / 2 + entity.height,
-            0,
-            0,
-            entity.image.getWidth(),
-            entity.image.getHeight()
-          )
-          drawImage(
-            pg2,
-            entity.image,
-            entity.ix - player.ix + getWidth / 2 - Player.width / 2 - WIDTH * BLOCKSIZE,
-            entity.iy - player.iy + getHeight / 2 - Player.height / 2,
-            entity.ix - player.ix + getWidth / 2 - Player.width / 2 + entity.width - WIDTH * BLOCKSIZE,
-            entity.iy - player.iy + getHeight / 2 - Player.height / 2 + entity.height,
-            0,
-            0,
-            entity.image.getWidth(),
-            entity.image.getHeight()
-          )
-          drawImage(
-            pg2,
-            entity.image,
-            entity.ix - player.ix + getWidth / 2 - Player.width / 2 + WIDTH * BLOCKSIZE,
-            entity.iy - player.iy + getHeight / 2 - Player.height / 2,
-            entity.ix - player.ix + getWidth() / 2 - Player.width / 2 + entity.width + WIDTH * BLOCKSIZE,
-            entity.iy - player.iy + getHeight() / 2 - Player.height / 2 + entity.height,
-            0,
-            0,
-            entity.image.getWidth(),
-            entity.image.getHeight()
-          )
-        }
-
-        if (showTool) {
-          tool.foreach { t =>
-            if (player.imgState === Player.StillRight || player.imgState === Player.WalkRight1 || player.imgState === Player.WalkRight2) {
-              pg2.translate(getWidth / 2 + 6, getHeight / 2)
-              pg2.rotate(toolAngle)
-
-              drawImage(pg2, t, 0, -t.getHeight() * 2, t.getWidth() * 2, 0, 0, 0, t.getWidth(), t.getHeight())
-
-              pg2.rotate(-toolAngle)
-              pg2.translate(-getWidth / 2 - 6, -getHeight / 2)
-            }
-            if (player.imgState === Player.StillLeft || player.imgState === Player.WalkLeft1 || player.imgState === Player.WalkLeft2) {
-              pg2.translate(getWidth / 2 - 6, getHeight / 2)
-              pg2.rotate((Pi * 1.5) - toolAngle)
-
-              drawImage(pg2, t, 0, -t.getHeight() * 2, t.getWidth() * 2, 0, 0, 0, t.getWidth(), t.getHeight())
-
-              pg2.rotate(-((Pi * 1.5) - toolAngle))
-              pg2.translate(-getWidth / 2 + 6, -getHeight / 2)
-            }
-          }
-
-        }
-
-        (0 until 2).foreach { pwy =>
-          (0 until 2).foreach { pwx =>
-            val pwxc: Int = pwx + ou
-            val pwyc: Int = pwy + ov
-            fworlds(pwy)(pwx).foreach { fw =>
-              if (((player.ix + getWidth / 2 + Player.width >= pwxc * CHUNKSIZE &&
-                  player.ix + getWidth / 2 + Player.width <= pwxc * CHUNKSIZE + CHUNKSIZE) ||
-                  (player.ix - getWidth / 2 + Player.width + BLOCKSIZE >= pwxc * CHUNKSIZE &&
-                  player.ix - getWidth / 2 + Player.width - BLOCKSIZE <= pwxc * CHUNKSIZE + CHUNKSIZE)) &&
-                  ((player.iy + getHeight / 2 + Player.height >= pwyc * CHUNKSIZE &&
-                  player.iy + getHeight / 2 + Player.height <= pwyc * CHUNKSIZE + CHUNKSIZE) ||
-                  (player.iy - getHeight / 2 + Player.height >= pwyc * CHUNKSIZE &&
-                  player.iy - getHeight / 2 + Player.height <= pwyc * CHUNKSIZE + CHUNKSIZE))) {
-                drawImage(
-                  pg2,
-                  fw,
-                  pwxc * CHUNKSIZE - player.ix + getWidth / 2 - Player.width / 2,
-                  pwyc * CHUNKSIZE - player.iy + getHeight / 2 - Player.height / 2,
-                  pwxc * CHUNKSIZE - player.ix + getWidth / 2 - Player.width / 2 + CHUNKSIZE,
-                  pwyc * CHUNKSIZE - player.iy + getHeight / 2 - Player.height / 2 + CHUNKSIZE,
-                  0,
-                  0,
-                  CHUNKSIZE,
-                  CHUNKSIZE
-                )
-              }
-            }
-          }
-        }
-
-        if (showInv) {
-          drawImage(
-            pg2,
-            inventory.image,
-            0,
-            0,
-            inventory.image.getWidth(),
-            inventory.image.getHeight(),
-            0,
-            0,
-            inventory.image.getWidth(),
-            inventory.image.getHeight())
-          drawImage(
-            pg2,
-            armor.icType.image,
-            inventory.image.getWidth() + 6,
-            6,
-            inventory.image.getWidth() + 6 + armor.icType.image.getWidth(),
-            6 + armor.icType.image.getHeight(),
-            0,
-            0,
-            armor.icType.image.getWidth(),
-            armor.icType.image.getHeight()
-          )
-          cic.foreach { c =>
-            drawImage(
-              pg2,
-              c.icType.image,
-              inventory.image.getWidth() + 75,
-              52,
-              inventory.image.getWidth() + 75 + c.icType.image.getWidth(),
-              52 + c.icType.image.getHeight(),
-              0,
-              0,
-              c.icType.image.getWidth(),
-              c.icType.image.getHeight()
-            )
-          }
-        } else {
-          drawImage(
-            pg2,
-            inventory.image,
-            0,
-            0,
-            inventory.image.getWidth(),
-            inventory.image.getHeight() / 4,
-            0,
-            0,
-            inventory.image.getWidth(),
-            inventory.image.getHeight() / 4)
-        }
-
-        ic.foreach { icTemp =>
-          drawImage(
-            pg2,
-            icTemp.icType.image,
-            6,
-            inventory.image.getHeight() + 46,
-            6 + icTemp.icType.image.getWidth(),
-            inventory.image.getHeight() + 46 + icTemp.icType.image.getHeight(),
-            0,
-            0,
-            icTemp.icType.image.getWidth(),
-            icTemp.icType.image.getHeight()
-          )
-        }
-
-        if (layer === 0) {
-          layerImg = loadImage("interface/layersB.png").get //TODO: why are we loading images in the paint method?
-        }
-        if (layer === 1) {
-          layerImg = loadImage("interface/layersN.png").get
-        }
-        if (layer === 2) {
-
-          layerImg = loadImage("interface/layersF.png").get
-        }
-
-        drawImage(
-          pg2,
-          layerImg,
-          inventory.image.getWidth() + 58,
-          6,
-          inventory.image.getWidth() + 58 + layerImg.getWidth(),
-          6 + layerImg.getHeight(),
-          0,
-          0,
-          layerImg.getWidth(),
-          layerImg.getHeight()
-        )
-
-        if (showInv) {
-          drawImage(
-            pg2,
-            save_exit,
-            getWidth - save_exit.getWidth() - 24,
-            getHeight - save_exit.getHeight() - 24,
-            getWidth - 24,
-            getHeight - 24,
-            0,
-            0,
-            save_exit.getWidth(),
-            save_exit.getHeight()
-          )
-        }
-        val (mouseX, mouseY)    = userInput.currentMousePosition
-        val mouseXWorldPosition = mouseX + player.ix - getWidth() / 2 + Player.width / 2
-        val mouseYWorldPosition = mouseY + player.iy - getHeight() / 2 + Player.height / 2
-
-        UiItem.onImageItem(moveItem) { mi =>
-          val image = mi.image
-          width = image.getWidth
-          height = image.getHeight
-          drawImage(
-            pg2,
-            image,
-            mouseX + 12 + ((24 - 12.toDouble / mh.max(width, height, 12) * width * 2) / 2).toInt,
-            mouseY + 12 + ((24 - 12.toDouble / mh.max(width, height, 12) * height * 2) / 2).toInt,
-            mouseX + 36 - ((24 - 12.toDouble / mh.max(width, height, 12) * width * 2) / 2).toInt,
-            mouseY + 36 - ((24 - 12.toDouble / mh.max(width, height, 12) * height * 2) / 2).toInt,
-            0,
-            0,
-            width,
-            height
-          )
-
-          if (moveNum > 1) {
-            pg2.setFont(font)
-            pg2.setColor(Color.WHITE)
-            pg2.drawString(moveNum + " ", mouseX + 13, mouseY + 38)
-          }
-        }
-        import scala.util.control.Breaks._
-        breakable {
-          entities
-            .collect {
-              case e @ AIEntity(_, _, _, _, strat) => (e, UIENTITIES.get(strat.imageName))
-            }
-            .collect {
-              case (e, Some(entityName)) => (e, entityName)
-            }
-            .foreach { p =>
-              val entity     = p._1
-              val entityName = p._2
-              if (entity.rect.contains(new Point(mouseXWorldPosition, mouseYWorldPosition))) {
-                pg2.setFont(mobFont)
-                pg2.setColor(Color.WHITE)
-                pg2.drawString(entityName + " (" + entity.hp + "/" + entity.strategy.thp + ")", mouseX, mouseY)
-                break
-              }
-            }
-        }
-        if (showInv) {
-          ymax = 4
-        } else {
-          ymax = 1
-        }
-        //TODO: move somewhere better like UiItem maybe?
-        def paintItem(item: UiItem, dur: Short, mouseX: Int, mouseY: Int, g: Graphics2D, f: Font): Unit = {
-          val toolDur = UiItem.toolDurability(item)
-          g.setFont(f)
-          g.setColor(Color.WHITE)
-
-          if (toolDur === 0) {
-            g.drawString(item.name, mouseX, mouseY)
-          } else {
-            g.drawString(item.name + " (" + (dur.toDouble / toolDur * 100).toInt + "%)", mouseX, mouseY)
-          }
-        }
-        (0 until 10).foreach { ux =>
-          (0 until ymax).foreach { uy =>
-            if (mouseX >= ux * 46 + 6 && mouseX <= ux * 46 + 46 &&
-                mouseY >= uy * 46 + 6 && mouseY <= uy * 46 + 46 && inventory.ids(uy * 10 + ux) =/= EmptyUiItem) {
-              paintItem(inventory.ids(uy * 10 + ux), inventory.durs(uy * 10 + ux), mouseX, mouseY, pg2, mobFont)
-            }
-          }
-        }
-        pg2.setFont(mobFont)
-        pg2.setColor(Color.WHITE)
-        pg2.drawString("Health: " + player.hp + "/" + Player.totalHP, getWidth - 125, 20)
-        pg2.drawString("Armor: " + player.sumArmor(), getWidth - 125, 40)
-        if (DEBUG_STATS) {
-          pg2.drawString("(" + (player.ix / BLOCKSIZE) + ", " + (player.iy / BLOCKSIZE) + ")", getWidth - 125, 60)
-          if (player.iy >= 0 && player.iy < HEIGHT * BLOCKSIZE) {
-            pg2.drawString(
-              checkBiome(player.ix / BLOCKSIZE + u, player.iy / BLOCKSIZE + v, u, v, blocks, blockbgs).name + " " + lights(
-                player.iy / BLOCKSIZE + v)(player.ix / BLOCKSIZE + u),
-              getWidth - 125,
-              80)
-          }
-        }
-        if (showInv) {
-          cic.foreach { c =>
-            (0 until 2).foreach { ux =>
-              (0 until 2).foreach { uy =>
-                if (mouseX >= inventory.image.getWidth() + ux * 40 + 75 &&
-                    mouseX < inventory.image.getWidth() + ux * 40 + 115 &&
-                    mouseY >= uy * 40 + 52 && mouseY < uy * 40 + 92 && c.ids(uy * 2 + ux) =/= EmptyUiItem) {
-                  paintItem(c.ids(uy * 2 + ux), c.durs(uy * 2 + ux), mouseX, mouseY, pg2, mobFont)
-                }
-              }
-            }
-            if (mouseX >= inventory.image.getWidth() + 3 * 40 + 75 &&
-                mouseX < inventory.image.getWidth() + 3 * 40 + 115 &&
-                mouseY >= 20 + 52 && mouseY < 20 + 92 && c.ids(4) =/= EmptyUiItem) {
-              paintItem(c.ids(4), c.durs(4), mouseX, mouseY, pg2, mobFont)
-            }
-          }
-          (0 until 4).foreach { uy =>
-            if (mouseX >= inventory.image.getWidth() + 6 && mouseX < inventory.image.getWidth() + 6 + armor.icType.image
-                  .getWidth() &&
-                mouseY >= 6 + uy * 46 && mouseY < 6 + uy * 46 + 46 && armor.ids(uy) =/= EmptyUiItem) {
-              paintItem(armor.ids(uy), armor.durs(uy), mouseX, mouseY, pg2, mobFont)
-            }
-          }
-        }
-        ic.foreach { icTemp =>
-
-          icTemp.icType match {
-            case Workbench =>
-
-              (0 until 3).foreach { ux =>
-                (0 until 3).foreach { uy =>
-                  if (mouseX >= ux * 40 + 6 && mouseX < ux * 40 + 46 &&
-                    mouseY >= uy * 40 + inventory.image.getHeight() + 46 &&
-                    mouseY < uy * 40 + inventory.image.getHeight() + 86 &&
-                    icTemp.ids(uy * 3 + ux) =/= EmptyUiItem) {
-                    paintItem(icTemp.ids(uy * 3 + ux), icTemp.durs(uy * 3 + ux), mouseX, mouseY, pg2, mobFont)
-                  }
-                }
-              }
-              if (mouseX >= 4 * 40 + 6 && mouseX < 4 * 40 + 46 &&
-                mouseY >= 1 * 40 + inventory.image.getHeight() + 46 &&
-                mouseY < 1 * 40 + inventory.image.getHeight() + 86 &&
-                icTemp.ids(9) =/= EmptyUiItem) {
-                paintItem(icTemp.ids(9), icTemp.durs(9), mouseX, mouseY, pg2, mobFont)
-              }
-
-            case ChestItemCollection(_) =>
-              (0 until inventory.CX).foreach { ux =>
-                (0 until inventory.CY).foreach { uy =>
-                  if (mouseX >= ux * 46 + 6 && mouseX < ux * 46 + 46 &&
-                    mouseY >= uy * 46 + inventory.image.getHeight() + 46 &&
-                    mouseY < uy * 46 + inventory.image.getHeight() + 86 &&
-                    icTemp.ids(uy * inventory.CX + ux) =/= EmptyUiItem) {
-                    paintItem(
-                      icTemp.ids(uy * inventory.CX + ux),
-                      icTemp.durs(uy * inventory.CX + ux),
-                      mouseX,
-                      mouseY,
-                      pg2,
-                      mobFont)
-                  }
-                }
-              }
-
-            case Furnace =>
-
-              if (mouseX >= 6 && mouseX < 46 &&
-                mouseY >= inventory.image.getHeight() + 46 && mouseY < inventory.image.getHeight() + 86 &&
-                icTemp.ids(0) =/= EmptyUiItem) {
-
-                paintItem(icTemp.ids(0), icTemp.durs(0), mouseX, mouseY, pg2, mobFont)
-              }
-              if (mouseX >= 6 && mouseX < 46 &&
-                mouseY >= inventory.image.getHeight() + 102 && mouseY < inventory.image.getHeight() + 142 &&
-                icTemp.ids(1) =/= EmptyUiItem) {
-                pg2.setFont(mobFont)
-                pg2.setColor(Color.WHITE)
-
-                paintItem(icTemp.ids(1), icTemp.durs(1), mouseX, mouseY, pg2, mobFont)
-              }
-              if (mouseX >= 6 && mouseX < 46 &&
-                mouseY >= inventory.image.getHeight() + 142 && mouseY < inventory.image.getHeight() + 182 &&
-                icTemp.ids(2) =/= EmptyUiItem) {
-                paintItem(icTemp.ids(2), icTemp.durs(2), mouseX, mouseY, pg2, mobFont)
-              }
-              if (mouseX >= 62 && mouseX < 102 &&
-                mouseY >= inventory.image.getHeight() + 46 && mouseY < inventory.image.getHeight() + 86 &&
-                icTemp.ids(3) =/= EmptyUiItem) {
-                paintItem(icTemp.ids(3), icTemp.durs(3), mouseX, mouseY, pg2, mobFont)
-              }
-
-            case _ =>
-          }
-        }
+      import GameStateRendering.Implicits._
+      val renderer = state match {
+        case InGame => GameStateRendering.renderer[InGame.type]
+        case LoadingGraphics => GameStateRendering.renderer[LoadingGraphics.type]
+        case GeneratingWorld => GameStateRendering.renderer[GeneratingWorld.type]
+        case LoadingWorld => GameStateRendering.renderer[LoadingWorld.type]
+        case NewWorld => GameStateRendering.renderer[NewWorld.type]
+        case SelectWorld => GameStateRendering.renderer[SelectWorld.type]
+        case TitleScreen => GameStateRendering.renderer[TitleScreen.type]
       }
-      if (state === LoadingGraphics) {
-        pg2.setFont(loadFont)
-        pg2.setColor(Color.GREEN)
-        pg2.drawString("Loading graphics... Please wait.", getWidth() / 2 - 200, getHeight() / 2 - 5)
-      }
-      if (state === TitleScreen) {
-        drawImage(pg2, title_screen, 0, 0, getWidth(), getHeight(), 0, 0, getWidth(), getHeight())
-      }
-      if (state === SelectWorld) {
-        drawImage(pg2, select_world, 0, 0, getWidth(), getHeight(), 0, 0, getWidth(), getHeight())
-        worldNames.indices.foreach { i =>
-          pg2.setFont(worldFont)
-          pg2.setColor(Color.BLACK)
-          pg2.drawString(worldNames(i), 180, 140 + i * 35)
-          pg2.fillRect(166, 150 + i * 35, 470, 3)
-        }
-      }
-      if (state === NewWorld) {
-        drawImage(pg2, new_world, 0, 0, getWidth(), getHeight(), 0, 0, getWidth(), getHeight())
-        drawImage(pg2, newWorldName.image, 200, 240, 600, 270, 0, 0, 400, 30)
-      }
-      if (state === GeneratingWorld) {
-        pg2.setFont(loadFont)
-        pg2.setColor(Color.GREEN)
-        pg2.drawString("Generating new world... Please wait.", getWidth() / 2 - 200, getHeight() / 2 - 5)
-      }
+
+      renderer.render(screenGraphics, this)
+
       drawImage(g, screenTemp, 0, 0, getWidth(), getHeight(), 0, 0, getWidth(), getHeight())
       ()
     }
