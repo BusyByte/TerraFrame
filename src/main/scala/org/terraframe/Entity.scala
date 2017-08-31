@@ -604,17 +604,15 @@ case class AIEntity(var x: Double, var y: Double, var vx: Double, var vy: Double
     hp <= 0
   }
 
-  def drops(): List[ImageUiItem] = {
-    val random: Random = TerraFrame.random
+  def drops(random: Random): List[ImageUiItem] = {
     strategy.drops.generateDrops(random)
-
   }
 
 
 
   def reloadImage(): Unit = {
     if (strategy.ai === BubbleAI || strategy.ai === ShootingStarAI) {
-      image = loadImage("sprites/monsters/" + strategy.imageName + "/normal.png").get
+      image = loadImage("sprites/monsters/" + strategy.imageName + "/normal.png").get // TODO: could move image to strategy
     }
     if (strategy.ai === ZombieAI) {
       image = loadImage("sprites/monsters/" + strategy.imageName + "/right_still.png").get

@@ -3901,7 +3901,7 @@ class TerraFrame
           val entityTemp = p._1
           val indexTemp  = p._2
           if (entityTemp.hit(UiItem.damage(inventory.tool()), player)) {
-            val dropList = entityTemp.drops()
+            val dropList = entityTemp.drops(random)
             dropList.foreach { dropId =>
               entities += new IdEntity(
                 entityTemp.x,
