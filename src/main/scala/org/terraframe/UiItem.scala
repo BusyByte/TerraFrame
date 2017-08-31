@@ -47,7 +47,7 @@ object UiItem {
   def onImageItem(item: UiItem)(f: (ImageUiItem) => Unit): Unit = item match {
     case imageUiItem: ImageUiItem => f(imageUiItem)
     case _ =>
-  }//TODO: can we type more things as ImageUiItem?
+  }
 
   def speed(item: UiItem): Double = item match {
     case t: ToolUiItem => t.speed
@@ -4612,7 +4612,6 @@ object BlockDurability {
   }
 }
 
-//TODO items, ui_items, id
 abstract class UiItem(val imageName: String, val name: String, val id: Short) {
   @inline def maxStacks: Short = UiMaxStacks.itemMaxStacks
 }

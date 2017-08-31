@@ -1,15 +1,14 @@
 package org.terraframe
 
-import java.awt._
+
+import java.awt.Rectangle
 import java.awt.image._
 import java.io.Serializable
 
 import Images.loadImage
 
-import scala.collection.mutable.ArrayBuffer
 import scala.math._
 import scala.util.Random
-
 import TypeSafeComparisons._
 
 sealed trait AI
@@ -27,38 +26,157 @@ sealed abstract class EntityStrategy(
     val thp: Int,
     val ap: Int,
     val atk: Int,
-    val ai: AI
+    val ai: AI,
+    val drops: Drops
 )
+import Drops._
+case object BlueBubble extends EntityStrategy("blue_bubble", 18, 0, 2, BubbleAI, BlueBubbleDrops)
 
-object BlueBubble extends EntityStrategy("blue_bubble", 18, 0, 2, BubbleAI)
+case object GreenBubble extends EntityStrategy("green_bubble", 25, 0, 4, BubbleAI, GreenBubbleDrops)
 
-object GreenBubble extends EntityStrategy("green_bubble", 25, 0, 4, BubbleAI)
+case object RedBubble extends EntityStrategy("red_bubble", 40, 0, 6, BubbleAI, RedBubbleDrops)
 
-object RedBubble extends EntityStrategy("red_bubble", 40, 0, 6, BubbleAI)
+case object YellowBubble extends EntityStrategy("yellow_bubble", 65, 1, 9, BubbleAI, YellowBubbleDrops)
 
-object YellowBubble extends EntityStrategy("yellow_bubble", 65, 1, 9, BubbleAI)
+case object BlackBubble extends EntityStrategy("black_bubble", 100, 3, 14, BubbleAI, BlackBubbleDrops)
 
-object BlackBubble extends EntityStrategy("black_bubble", 100, 3, 14, BubbleAI)
+case object WhiteBubble extends EntityStrategy("white_bubble", 70, 2, 11, FastBubbleAI, WhiteBubbleDrops)
 
-object WhiteBubble extends EntityStrategy("white_bubble", 70, 2, 11, FastBubbleAI)
+case object Zombie extends EntityStrategy("zombie", 35, 0, 5, ZombieAI, ZombieDrops)
 
-object Zombie extends EntityStrategy("zombie", 35, 0, 5, ZombieAI)
+case object ArmoredZombie extends EntityStrategy("armored_zombie", 45, 2, 7, ZombieAI, ArmoredZombieDrops)
 
-object ArmoredZombie extends EntityStrategy("armored_zombie", 45, 2, 7, ZombieAI)
+case object ShootingStar extends EntityStrategy("shooting_star", 25, 0, 5, ShootingStarAI, ShootingStarDrops)
 
-object ShootingStar extends EntityStrategy("shooting_star", 25, 0, 5, ShootingStarAI)
+case object Sandbot extends EntityStrategy("sandbot", 50, 2, 3, SandbotAI, SandbotDrops)
 
-object Sandbot extends EntityStrategy("sandbot", 50, 2, 3, SandbotAI)
+case object SandbotBullet extends EntityStrategy("sandbot_bullet", 1, 0, 7, BulletAI, SandbotBulletDrops)
 
-object SandbotBullet extends EntityStrategy("sandbot_bullet", 1, 0, 7, BulletAI)
+case object Snowman extends EntityStrategy("snowman", 40, 0, 6, ZombieAI, SnowmanDrops)
 
-object Snowman extends EntityStrategy("snowman", 40, 0, 6, ZombieAI)
+case object Bat extends EntityStrategy("bat", 15, 0, 5, BatAI, BatDrops)
 
-object Bat extends EntityStrategy("bat", 15, 0, 5, BatAI)
+case object Bee extends EntityStrategy("bee", 1, 0, 5, BeeAI, BeeDrops)
 
-object Bee extends EntityStrategy("bee", 1, 0, 5, BeeAI)
+case object Skeleton extends EntityStrategy("skeleton", 50, 1, 7, ZombieAI, SkeletonDrops)
 
-object Skeleton extends EntityStrategy("skeleton", 50, 1, 7, ZombieAI)
+
+trait Drops {
+  def generateDrops(random: Random): List[ImageUiItem]
+}
+object Drops {
+  def addWithOneInNChance(random: Random, n: Int, imageUiItem: ImageUiItem): List[ImageUiItem] = {
+    if(random.nextInt(n) === 0) {
+      List(imageUiItem)
+    } else {
+      List.empty
+    }
+  }
+
+  def fillRandomN(random: Random, n: Int, imageUiItem: ImageUiItem): List[ImageUiItem] = {
+    List.fill(random.nextInt(n))(imageUiItem)
+  }
+
+
+  object BlueBubbleDrops extends Drops {
+    override def generateDrops(random: Random): List[ImageUiItem] = {
+      fillRandomN(random, 3, BlueGooUiItem)
+    }
+  }
+
+   object GreenBubbleDrops extends Drops {
+    override def generateDrops(random: Random): List[ImageUiItem] = {
+      fillRandomN(random, 3, GreenGooUiItem)
+    }
+  }
+
+   object RedBubbleDrops extends Drops {
+    override def generateDrops(random: Random): List[ImageUiItem] = {
+      fillRandomN(random, 3, RedGooUiItem)
+    }
+  }
+
+   object YellowBubbleDrops extends Drops {
+    override def generateDrops(random: Random): List[ImageUiItem] = {
+      fillRandomN(random, 3, YellowGooUiItem)
+    }
+  }
+
+   object BlackBubbleDrops extends Drops {
+    override def generateDrops(random: Random): List[ImageUiItem] = {
+      fillRandomN(random, 3, BlackGooUiItem)
+    }
+  }
+
+   object WhiteBubbleDrops extends Drops {
+    override def generateDrops(random: Random): List[ImageUiItem] = {
+      fillRandomN(random, 3, WhiteGooUiItem)
+    }
+  }
+
+   object ShootingStarDrops extends Drops {
+    override def generateDrops(random: Random): List[ImageUiItem] = {
+      fillRandomN(random, 2, AstralShardUiItem)
+    }
+  }
+
+   object ZombieDrops extends Drops {
+    override def generateDrops(random: Random): List[ImageUiItem] = {
+      fillRandomN(random, 3, RottenChunkUiItem)
+    }
+  }
+
+   object ArmoredZombieDrops extends Drops {
+    override def generateDrops(random: Random): List[ImageUiItem] = {
+      fillRandomN(random, 3, RottenChunkUiItem) ++
+      addWithOneInNChance(random, 15, IronHelmetUiItem) ++
+      addWithOneInNChance(random, 15, IronChestplateUiItem)
+      addWithOneInNChance(random, 15, IronLeggingsUiItem)
+      addWithOneInNChance(random, 15, IronGreavesUiItem)
+    }
+  }
+
+
+   object SandbotDrops extends Drops {
+    override def generateDrops(random: Random): List[ImageUiItem] = {
+      fillRandomN(random, 3, SandUiItem) ++
+      addWithOneInNChance(random, 2, ZythiumOreUiItem) ++
+      addWithOneInNChance(random, 6,SiliconOreUiItem)
+
+    }
+  }
+
+   object SnowmanDrops extends Drops {
+    override def generateDrops(random: Random): List[ImageUiItem] = {
+      fillRandomN(random, 3, SnowUiItem)
+    }
+  }
+
+   object BatDrops extends Drops {
+    override def generateDrops(random: Random): List[ImageUiItem] = {
+      List.empty //TODO: figure out what this drops
+    }
+  }
+
+   object BeeDrops extends Drops {
+    override def generateDrops(random: Random): List[ImageUiItem] = {
+      List.empty //TODO: figure out what this drops
+    }
+  }
+
+   object SkeletonDrops extends Drops {
+    override def generateDrops(random: Random): List[ImageUiItem] = {
+      List.empty //TODO: figure out what this drops
+    }
+  }
+
+   object SandbotBulletDrops extends Drops {
+    override def generateDrops(random: Random): List[ImageUiItem] = {
+      List.empty //TODO: figure out what this drops
+    }
+  }
+
+}
 
 sealed trait Entity {
   def image: BufferedImage
@@ -486,82 +604,13 @@ case class AIEntity(var x: Double, var y: Double, var vx: Double, var vy: Double
     hp <= 0
   }
 
-  def drops(): ArrayBuffer[ImageUiItem] = {
-    val dropList       = ArrayBuffer.empty[ImageUiItem]
+  def drops(): List[ImageUiItem] = {
     val random: Random = TerraFrame.random
+    strategy.drops.generateDrops(random)
 
-    // TODO: type-classes could be used here and no need for mutability
-    strategy match {
-      case BlueBubble =>
-        (0 until random.nextInt(3)).foreach { _ =>
-          dropList += BlueGooUiItem
-        }
-      case GreenBubble =>
-        (0 until random.nextInt(3)).foreach { _ =>
-          dropList += GreenGooUiItem
-        }
-      case RedBubble =>
-        (0 until random.nextInt(3)).foreach { _ =>
-          dropList += RedGooUiItem
-        }
-      case YellowBubble =>
-        (0 until random.nextInt(3)).foreach { _ =>
-          dropList += YellowGooUiItem
-        }
-      case BlackBubble =>
-        (0 until random.nextInt(3)).foreach { _ =>
-          dropList += BlackGooUiItem
-        }
-      case WhiteBubble =>
-        (0 until random.nextInt(3)).foreach { _ =>
-          dropList += WhiteGooUiItem
-        }
-      case ShootingStar =>
-        (0 until random.nextInt(2)).foreach { _ =>
-          dropList += AstralShardUiItem
-        }
-      case Zombie =>
-        (0 until random.nextInt(3)).foreach { _ =>
-          dropList += RottenChunkUiItem
-        }
-      case ArmoredZombie =>
-        (0 until random.nextInt(3)).foreach { _ =>
-          dropList += RottenChunkUiItem
-        }
-        if (random.nextInt(15) === 0) {
-          dropList += IronHelmetUiItem
-        }
-        if (random.nextInt(15) === 0) {
-          dropList += IronChestplateUiItem
-        }
-        if (random.nextInt(15) === 0) {
-          dropList += IronLeggingsUiItem
-        }
-        if (random.nextInt(15) === 0) {
-          dropList += IronGreavesUiItem
-        }
-      case Sandbot =>
-        (0 until random.nextInt(3)).foreach { _ =>
-          dropList += SandUiItem
-        }
-        if (random.nextInt(2) === 0) {
-          dropList += ZythiumOreUiItem
-        }
-        if (random.nextInt(6) === 0) {
-          dropList += SiliconOreUiItem
-        }
-      case Snowman =>
-        (0 until random.nextInt(3)).foreach { _ =>
-          dropList += SnowUiItem
-        }
-      case Bat           => //TODO: figure out what this drops
-      case Bee           => //TODO: figure out what this drops
-      case Skeleton      => //TODO: figure out what this drops
-      case SandbotBullet => //TODO: figure out what this drops
-    }
-
-    dropList
   }
+
+
 
   def reloadImage(): Unit = {
     if (strategy.ai === BubbleAI || strategy.ai === ShootingStarAI) {
