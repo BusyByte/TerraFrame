@@ -12,7 +12,8 @@ object Images {
     try {
       Option(ImageIO.read(url))
     } catch {
-      case NonFatal(_) =>
+      case NonFatal(e) =>
+        println(e)
         None
     }
   }

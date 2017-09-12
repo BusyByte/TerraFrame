@@ -991,8 +991,8 @@ object TerraFrame {
 }
 
 class TerraFrame
-    extends JApplet
-    with ChangeListener
+    extends JPanel
+      with ChangeListener
     with KeyListener
     with MouseListener
     with MouseMotionListener
@@ -1118,7 +1118,7 @@ class TerraFrame
 
   var wg2, fwg2: Graphics2D = _
 
-  override def init(): Unit = {
+  def init(): Unit = {
     try {
       setLayout(new BorderLayout())
       backgroundColor = Color.BLACK
@@ -1201,10 +1201,10 @@ class TerraFrame
                         }
                         (0 until 2).foreach { twy =>
                           import scala.util.control.Breaks._
-                          breakable {
-                            (0 until 2).foreach { twx =>
+                          (0 until 2).foreach { twx =>
+                            breakable {
                               chunkTemp.toList.zipWithIndex.reverse.foreach { p =>
-                                val c     = p._1
+                                val c = p._1
                                 val index = p._2
                                 if (c.cx === twx && c.cy === twy) {
                                   chunkMatrix(twy)(twx) = Some(c)
@@ -1212,19 +1212,23 @@ class TerraFrame
                                   break
                                 }
                               }
-                              if (chunkMatrix(twy)(twx).isEmpty) {
-                                temporarySaveFile(twy)(twx).fold {
-                                  chunkMatrix(twy)(twx) = Some(Chunk(twx + ou, twy + ov, random))
-                                } { c =>
-                                  chunkMatrix(twy)(twx) = Some(c)
-                                }
+                            }
+                            if (chunkMatrix(twy)(twx).isEmpty) {
+                              temporarySaveFile(twy)(twx).fold {
+                                println("no save file")
+                                chunkMatrix(twy)(twx) = Some(Chunk(twx + ou, twy + ov, random))
+                              } { c =>
+                                println("using save file")
+                                chunkMatrix(twy)(twx) = Some(c)
                               }
                             }
                           }
                         }
                         chunkTemp.foreach { chunk =>
-                          temporarySaveFile(twy)(twx) = Some(chunk) //TODO: this line seems fishy
+                          temporarySaveFile(1)(1) = Some(chunk) // TODO: not sure about this
                         }
+
+
                         (0 until 2).foreach { twy =>
                           (0 until 2).foreach { twx =>
                             chunkMatrix(twy)(twx).foreach { cMatrix =>

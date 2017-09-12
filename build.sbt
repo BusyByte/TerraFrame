@@ -5,6 +5,8 @@ lazy val commonSettings = Seq(
 )
 
 lazy val librarySettings = Seq(
+  "com.chuusai" %% "shapeless" % "2.3.2",
+  "com.beachape" %% "enumeratum" % "1.5.12",
   "org.specs2"     %% "specs2-core"       % "3.8.6"  % Test,
   "org.specs2"     %% "specs2-scalacheck" % "3.8.6"  % Test,
   "org.scalacheck" %% "scalacheck"        % "1.13.4" % Test
