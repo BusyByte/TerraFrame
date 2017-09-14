@@ -1,6 +1,6 @@
 package org.terraframe
 
-import java.awt.{Color, Graphics2D, Point}
+import java.awt.{ Color, Graphics2D, Point }
 
 import GraphicsHelper._
 import TypeSafeComparisons._
@@ -8,11 +8,11 @@ import Images.loadImage
 import TerraFrame._
 import Biome._
 import org.terraframe.{ MathHelper => mh }
+import Layer._
 
 trait GameStateRendering[T] {
   def render(screenGraphics: Graphics2D, terraFrame: TerraFrame): Unit
 }
-
 
 object GameStateRendering {
 
@@ -21,23 +21,27 @@ object GameStateRendering {
   }
 
   object Implicits {
-    implicit lazy val inGameRendering: GameStateRendering[InGame.type] = InGameRendering
+    implicit lazy val inGameRendering: GameStateRendering[InGame.type]                   = InGameRendering
     implicit lazy val loadingGraphicsRendering: GameStateRendering[LoadingGraphics.type] = LoadingGraphicsRendering
-    implicit lazy val titleScreenRendering: GameStateRendering[TitleScreen.type] = TitleScreenRendering
-    implicit lazy val selectWorldRendering: GameStateRendering[SelectWorld.type] = SelectWorldRendering
-    implicit lazy val newWorldRendering: GameStateRendering[NewWorld.type] = NewWorldRendering
+    implicit lazy val titleScreenRendering: GameStateRendering[TitleScreen.type]         = TitleScreenRendering
+    implicit lazy val selectWorldRendering: GameStateRendering[SelectWorld.type]         = SelectWorldRendering
+    implicit lazy val newWorldRendering: GameStateRendering[NewWorld.type]               = NewWorldRendering
     implicit lazy val generatingWorldRendering: GameStateRendering[GeneratingWorld.type] = GeneratingWorldRendering
-    implicit lazy val loadingWorldRendering: GameStateRendering[LoadingWorld.type] = LoadingWorldRendering
+    implicit lazy val loadingWorldRendering: GameStateRendering[LoadingWorld.type]       = LoadingWorldRendering
   }
 }
 
-
 object InGameRendering extends GameStateRendering[InGame.type] {
+
+  lazy val layersBImage = loadImage("interface/layersB.png").get
+  lazy val layersNImage = loadImage("interface/layersN.png").get
+  lazy val layersFImage = loadImage("interface/layersF.png").get
+
   override def render(screenGraphics: Graphics2D, terraFrame: TerraFrame): Unit = {
 
     import terraFrame._
     import math.Pi
-      /*            if (SKYLIGHTS.get(timeOfDay.toInt) =/= null) {
+    /*            if (SKYLIGHTS.get(timeOfDay.toInt) =/= null) {
                 sunlightlevel = SKYLIGHTS.get(timeOfDay.toInt)
                 resunlight = 0
             }
@@ -48,7 +52,7 @@ object InGameRendering extends GameStateRendering[InGame.type] {
                 }
                 resunlight += SUNLIGHTSPEED
             }
-       */
+     */
     if (player.y / 16 < HEIGHT * 0.5) {
       screenGraphics.translate((getWidth / 2).toDouble, getHeight * 0.85)
       screenGraphics.rotate((timeOfDay - 70200) / 86400 * Pi * 2)
@@ -105,13 +109,13 @@ object InGameRendering extends GameStateRendering[InGame.type] {
         val pwyc: Int = pwy + ov
         worlds(pwy)(pwx).foreach { w =>
           if (((player.ix + getWidth / 2 + Player.width >= pwxc * CHUNKSIZE &&
-            player.ix + getWidth / 2 + Player.width <= pwxc * CHUNKSIZE + CHUNKSIZE) ||
-            (player.ix - getWidth / 2 + Player.width + BLOCKSIZE >= pwxc * CHUNKSIZE &&
+              player.ix + getWidth / 2 + Player.width <= pwxc * CHUNKSIZE + CHUNKSIZE) ||
+              (player.ix - getWidth / 2 + Player.width + BLOCKSIZE >= pwxc * CHUNKSIZE &&
               player.ix - getWidth / 2 + Player.width - BLOCKSIZE <= pwxc * CHUNKSIZE + CHUNKSIZE)) &&
-            ((player.iy + getHeight / 2 + Player.height >= pwyc * CHUNKSIZE &&
+              ((player.iy + getHeight / 2 + Player.height >= pwyc * CHUNKSIZE &&
               player.iy + getHeight / 2 + Player.height <= pwyc * CHUNKSIZE + CHUNKSIZE) ||
               (player.iy - getHeight / 2 + Player.height >= pwyc * CHUNKSIZE &&
-                player.iy - getHeight / 2 + Player.height <= pwyc * CHUNKSIZE + CHUNKSIZE))) {
+              player.iy - getHeight / 2 + Player.height <= pwyc * CHUNKSIZE + CHUNKSIZE))) {
             drawImage(
               screenGraphics,
               w,
@@ -211,13 +215,13 @@ object InGameRendering extends GameStateRendering[InGame.type] {
         val pwyc: Int = pwy + ov
         fworlds(pwy)(pwx).foreach { fw =>
           if (((player.ix + getWidth / 2 + Player.width >= pwxc * CHUNKSIZE &&
-            player.ix + getWidth / 2 + Player.width <= pwxc * CHUNKSIZE + CHUNKSIZE) ||
-            (player.ix - getWidth / 2 + Player.width + BLOCKSIZE >= pwxc * CHUNKSIZE &&
+              player.ix + getWidth / 2 + Player.width <= pwxc * CHUNKSIZE + CHUNKSIZE) ||
+              (player.ix - getWidth / 2 + Player.width + BLOCKSIZE >= pwxc * CHUNKSIZE &&
               player.ix - getWidth / 2 + Player.width - BLOCKSIZE <= pwxc * CHUNKSIZE + CHUNKSIZE)) &&
-            ((player.iy + getHeight / 2 + Player.height >= pwyc * CHUNKSIZE &&
+              ((player.iy + getHeight / 2 + Player.height >= pwyc * CHUNKSIZE &&
               player.iy + getHeight / 2 + Player.height <= pwyc * CHUNKSIZE + CHUNKSIZE) ||
               (player.iy - getHeight / 2 + Player.height >= pwyc * CHUNKSIZE &&
-                player.iy - getHeight / 2 + Player.height <= pwyc * CHUNKSIZE + CHUNKSIZE))) {
+              player.iy - getHeight / 2 + Player.height <= pwyc * CHUNKSIZE + CHUNKSIZE))) {
             drawImage(
               screenGraphics,
               fw,
@@ -284,7 +288,8 @@ object InGameRendering extends GameStateRendering[InGame.type] {
         0,
         0,
         inventory.image.getWidth(),
-        inventory.image.getHeight() / 4)
+        inventory.image.getHeight() / 4
+      )
     }
 
     ic.foreach { icTemp =>
@@ -302,15 +307,10 @@ object InGameRendering extends GameStateRendering[InGame.type] {
       )
     }
 
-    if (layer === 0) {
-      layerImg = loadImage("interface/layersB.png").get //TODO: why are we loading images in the paint method?
-    }
-    if (layer === 1) {
-      layerImg = loadImage("interface/layersN.png").get
-    }
-    if (layer === 2) {
-
-      layerImg = loadImage("interface/layersF.png").get
+    layerImg = layer match {
+      case Layer0 => layersBImage
+      case Layer1 => layersNImage
+      case Layer2 => layersFImage
     }
 
     drawImage(
@@ -345,8 +345,8 @@ object InGameRendering extends GameStateRendering[InGame.type] {
     val mouseYWorldPosition = mouseY + player.iy - getHeight() / 2 + Player.height / 2
 
     UiItem.onImageItem(moveItem) { mi =>
-      val image = mi.image
-      val width = image.getWidth
+      val image  = mi.image
+      val width  = image.getWidth
       val height = image.getHeight
       drawImage(
         screenGraphics,
@@ -395,8 +395,14 @@ object InGameRendering extends GameStateRendering[InGame.type] {
     (0 until 10).foreach { ux =>
       (0 until ymax).foreach { uy =>
         if (mouseX >= ux * 46 + 6 && mouseX <= ux * 46 + 46 &&
-          mouseY >= uy * 46 + 6 && mouseY <= uy * 46 + 46 && inventory.ids(uy * 10 + ux) =/= EmptyUiItem) {
-          UiItem.renderOverlayText(inventory.ids(uy * 10 + ux), inventory.durs(uy * 10 + ux), mouseX, mouseY, screenGraphics, mobFont)
+            mouseY >= uy * 46 + 6 && mouseY <= uy * 46 + 46 && inventory.ids(uy * 10 + ux) =/= EmptyUiItem) {
+          UiItem.renderOverlayText(
+            inventory.ids(uy * 10 + ux),
+            inventory.durs(uy * 10 + ux),
+            mouseX,
+            mouseY,
+            screenGraphics,
+            mobFont)
         }
       }
     }
@@ -405,13 +411,17 @@ object InGameRendering extends GameStateRendering[InGame.type] {
     screenGraphics.drawString("Health: " + player.hp + "/" + Player.totalHP, getWidth - 125, 20)
     screenGraphics.drawString("Armor: " + player.sumArmor(), getWidth - 125, 40)
     if (DEBUG_STATS) {
-      screenGraphics.drawString("(" + (player.ix / BLOCKSIZE) + ", " + (player.iy / BLOCKSIZE) + ")", getWidth - 125, 60)
+      screenGraphics.drawString(
+        "(" + (player.ix / BLOCKSIZE) + ", " + (player.iy / BLOCKSIZE) + ")",
+        getWidth - 125,
+        60)
       if (player.iy >= 0 && player.iy < HEIGHT * BLOCKSIZE) {
         screenGraphics.drawString(
           checkBiome(player.ix / BLOCKSIZE + u, player.iy / BLOCKSIZE + v, u, v, blocks, blockbgs).name + " " + lights(
             player.iy / BLOCKSIZE + v)(player.ix / BLOCKSIZE + u),
           getWidth - 125,
-          80)
+          80
+        )
       }
     }
     if (showInv) {
@@ -419,45 +429,49 @@ object InGameRendering extends GameStateRendering[InGame.type] {
         (0 until 2).foreach { ux =>
           (0 until 2).foreach { uy =>
             if (mouseX >= inventory.image.getWidth() + ux * 40 + 75 &&
-              mouseX < inventory.image.getWidth() + ux * 40 + 115 &&
-              mouseY >= uy * 40 + 52 && mouseY < uy * 40 + 92 && c.ids(uy * 2 + ux) =/= EmptyUiItem) {
+                mouseX < inventory.image.getWidth() + ux * 40 + 115 &&
+                mouseY >= uy * 40 + 52 && mouseY < uy * 40 + 92 && c.ids(uy * 2 + ux) =/= EmptyUiItem) {
               UiItem.renderOverlayText(c.ids(uy * 2 + ux), c.durs(uy * 2 + ux), mouseX, mouseY, screenGraphics, mobFont)
             }
           }
         }
         if (mouseX >= inventory.image.getWidth() + 3 * 40 + 75 &&
-          mouseX < inventory.image.getWidth() + 3 * 40 + 115 &&
-          mouseY >= 20 + 52 && mouseY < 20 + 92 && c.ids(4) =/= EmptyUiItem) {
+            mouseX < inventory.image.getWidth() + 3 * 40 + 115 &&
+            mouseY >= 20 + 52 && mouseY < 20 + 92 && c.ids(4) =/= EmptyUiItem) {
           UiItem.renderOverlayText(c.ids(4), c.durs(4), mouseX, mouseY, screenGraphics, mobFont)
         }
       }
       (0 until 4).foreach { uy =>
         if (mouseX >= inventory.image.getWidth() + 6 && mouseX < inventory.image.getWidth() + 6 + armor.icType.image
-          .getWidth() &&
-          mouseY >= 6 + uy * 46 && mouseY < 6 + uy * 46 + 46 && armor.ids(uy) =/= EmptyUiItem) {
+              .getWidth() &&
+            mouseY >= 6 + uy * 46 && mouseY < 6 + uy * 46 + 46 && armor.ids(uy) =/= EmptyUiItem) {
           UiItem.renderOverlayText(armor.ids(uy), armor.durs(uy), mouseX, mouseY, screenGraphics, mobFont)
         }
       }
     }
     ic.foreach { icTemp =>
-
       icTemp.icType match {
         case Workbench =>
-
           (0 until 3).foreach { ux =>
             (0 until 3).foreach { uy =>
               if (mouseX >= ux * 40 + 6 && mouseX < ux * 40 + 46 &&
-                mouseY >= uy * 40 + inventory.image.getHeight() + 46 &&
-                mouseY < uy * 40 + inventory.image.getHeight() + 86 &&
-                icTemp.ids(uy * 3 + ux) =/= EmptyUiItem) {
-                UiItem.renderOverlayText(icTemp.ids(uy * 3 + ux), icTemp.durs(uy * 3 + ux), mouseX, mouseY, screenGraphics, mobFont)
+                  mouseY >= uy * 40 + inventory.image.getHeight() + 46 &&
+                  mouseY < uy * 40 + inventory.image.getHeight() + 86 &&
+                  icTemp.ids(uy * 3 + ux) =/= EmptyUiItem) {
+                UiItem.renderOverlayText(
+                  icTemp.ids(uy * 3 + ux),
+                  icTemp.durs(uy * 3 + ux),
+                  mouseX,
+                  mouseY,
+                  screenGraphics,
+                  mobFont)
               }
             }
           }
           if (mouseX >= 4 * 40 + 6 && mouseX < 4 * 40 + 46 &&
-            mouseY >= 1 * 40 + inventory.image.getHeight() + 46 &&
-            mouseY < 1 * 40 + inventory.image.getHeight() + 86 &&
-            icTemp.ids(9) =/= EmptyUiItem) {
+              mouseY >= 1 * 40 + inventory.image.getHeight() + 46 &&
+              mouseY < 1 * 40 + inventory.image.getHeight() + 86 &&
+              icTemp.ids(9) =/= EmptyUiItem) {
             UiItem.renderOverlayText(icTemp.ids(9), icTemp.durs(9), mouseX, mouseY, screenGraphics, mobFont)
           }
 
@@ -465,9 +479,9 @@ object InGameRendering extends GameStateRendering[InGame.type] {
           (0 until inventory.CX).foreach { ux =>
             (0 until inventory.CY).foreach { uy =>
               if (mouseX >= ux * 46 + 6 && mouseX < ux * 46 + 46 &&
-                mouseY >= uy * 46 + inventory.image.getHeight() + 46 &&
-                mouseY < uy * 46 + inventory.image.getHeight() + 86 &&
-                icTemp.ids(uy * inventory.CX + ux) =/= EmptyUiItem) {
+                  mouseY >= uy * 46 + inventory.image.getHeight() + 46 &&
+                  mouseY < uy * 46 + inventory.image.getHeight() + 86 &&
+                  icTemp.ids(uy * inventory.CX + ux) =/= EmptyUiItem) {
                 UiItem.renderOverlayText(
                   icTemp.ids(uy * inventory.CX + ux),
                   icTemp.durs(uy * inventory.CX + ux),
@@ -480,29 +494,28 @@ object InGameRendering extends GameStateRendering[InGame.type] {
           }
 
         case Furnace =>
-
           if (mouseX >= 6 && mouseX < 46 &&
-            mouseY >= inventory.image.getHeight() + 46 && mouseY < inventory.image.getHeight() + 86 &&
-            icTemp.ids(0) =/= EmptyUiItem) {
+              mouseY >= inventory.image.getHeight() + 46 && mouseY < inventory.image.getHeight() + 86 &&
+              icTemp.ids(0) =/= EmptyUiItem) {
 
             UiItem.renderOverlayText(icTemp.ids(0), icTemp.durs(0), mouseX, mouseY, screenGraphics, mobFont)
           }
           if (mouseX >= 6 && mouseX < 46 &&
-            mouseY >= inventory.image.getHeight() + 102 && mouseY < inventory.image.getHeight() + 142 &&
-            icTemp.ids(1) =/= EmptyUiItem) {
+              mouseY >= inventory.image.getHeight() + 102 && mouseY < inventory.image.getHeight() + 142 &&
+              icTemp.ids(1) =/= EmptyUiItem) {
             screenGraphics.setFont(mobFont)
             screenGraphics.setColor(Color.WHITE)
 
             UiItem.renderOverlayText(icTemp.ids(1), icTemp.durs(1), mouseX, mouseY, screenGraphics, mobFont)
           }
           if (mouseX >= 6 && mouseX < 46 &&
-            mouseY >= inventory.image.getHeight() + 142 && mouseY < inventory.image.getHeight() + 182 &&
-            icTemp.ids(2) =/= EmptyUiItem) {
+              mouseY >= inventory.image.getHeight() + 142 && mouseY < inventory.image.getHeight() + 182 &&
+              icTemp.ids(2) =/= EmptyUiItem) {
             UiItem.renderOverlayText(icTemp.ids(2), icTemp.durs(2), mouseX, mouseY, screenGraphics, mobFont)
           }
           if (mouseX >= 62 && mouseX < 102 &&
-            mouseY >= inventory.image.getHeight() + 46 && mouseY < inventory.image.getHeight() + 86 &&
-            icTemp.ids(3) =/= EmptyUiItem) {
+              mouseY >= inventory.image.getHeight() + 46 && mouseY < inventory.image.getHeight() + 86 &&
+              icTemp.ids(3) =/= EmptyUiItem) {
             UiItem.renderOverlayText(icTemp.ids(3), icTemp.durs(3), mouseX, mouseY, screenGraphics, mobFont)
           }
 
@@ -530,7 +543,6 @@ object TitleScreenRendering extends GameStateRendering[TitleScreen.type] {
     ()
   }
 }
-
 
 object SelectWorldRendering extends GameStateRendering[SelectWorld.type] {
   def render(screenGraphics: Graphics2D, terraFrame: TerraFrame): Unit = {

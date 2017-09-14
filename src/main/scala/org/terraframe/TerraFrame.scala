@@ -39,6 +39,7 @@ import scala.util.Random
 import scala.util.control.NonFatal
 import org.terraframe.{ MathHelper => mh }
 import TypeSafeComparisons._
+import Layer._
 
 object TerraFrame {
   val config: GraphicsConfiguration =
@@ -320,7 +321,6 @@ object TerraFrame {
   val skycolors: Array[Int] = Array(28800, 28980, 29160, 29340, 29520, 29700, 29880, 30060, 30240, 30420, 30600, 30780,
     30960, 31140, 31320, 31500, 31680, 31860, 32040, 32220, 72000, 72180, 72360, 72540, 72720, 72900, 73080, 73260,
     73440, 73620, 73800, 73980, 74160, 74340, 74520, 74700, 74880, 75060, 75240, 75420)
-
 
   val font: Font      = new Font("Chalkboard", Font.BOLD, 12)
   val mobFont: Font   = new Font("Chalkboard", Font.BOLD, 16)
@@ -992,7 +992,7 @@ object TerraFrame {
 
 class TerraFrame
     extends JPanel
-      with ChangeListener
+    with ChangeListener
     with KeyListener
     with MouseListener
     with MouseMotionListener
@@ -1005,7 +1005,7 @@ class TerraFrame
 
   var cic: Option[ItemCollection]   = None
   var screen: Option[BufferedImage] = None
-  var backgroundColor: Color                     = _
+  var backgroundColor: Color        = _
 
   val cl: Array2D[Int] = Array(Array(-1, 0), Array(1, 0), Array(0, -1), Array(0, 1))
 
@@ -1027,7 +1027,8 @@ class TerraFrame
   var zqn: Array2D[Byte]                                                 = _
   var pzqn: Array3D[Byte]                                                = _
   var arbprd: Array3D[Boolean]                                           = _
-  var updatex, updatey, updatet, updatel: mutable.ArrayBuffer[Int]       = _
+  var updatex, updatey, updatet: mutable.ArrayBuffer[Int]                = _
+  var updatel: mutable.ArrayBuffer[Layer]                                = _
   var wcnct: Array2D[Boolean]                                            = _
   var drawn, ldrawn, rdrawn: Array2D[Boolean]                            = _
   var player: Player                                                     = _
@@ -1043,8 +1044,8 @@ class TerraFrame
 
   var rgnc1: Int              = 0
   var rgnc2: Int              = 0
-  var layer: Int              = 1
-  var iclayer: Int            = _
+  var layer: Layer            = Layer1
+  var iclayer: Layer          = _
   var layerTemp: Int          = _
   var blockTemp: BlockType    = _
   var layerImg: BufferedImage = _
@@ -1204,7 +1205,7 @@ class TerraFrame
                           (0 until 2).foreach { twx =>
                             breakable {
                               chunkTemp.toList.zipWithIndex.reverse.foreach { p =>
-                                val c = p._1
+                                val c     = p._1
                                 val index = p._2
                                 if (c.cx === twx && c.cy === twy) {
                                   chunkMatrix(twy)(twx) = Some(c)
@@ -1225,9 +1226,8 @@ class TerraFrame
                           }
                         }
                         chunkTemp.foreach { chunk =>
-                          temporarySaveFile(1)(1) = Some(chunk) // TODO: not sure about this
+                          temporarySaveFile(1)(1) = Some(chunk) // TODO: not sure about what this does, used to be twy, twx
                         }
-
 
                         (0 until 2).foreach { twy =>
                           (0 until 2).foreach { twx =>
@@ -2046,7 +2046,7 @@ class TerraFrame
     updatex = mutable.ArrayBuffer.empty[Int]
     updatey = mutable.ArrayBuffer.empty[Int]
     updatet = mutable.ArrayBuffer.empty[Int]
-    updatel = mutable.ArrayBuffer.empty[Int]
+    updatel = mutable.ArrayBuffer.empty[Layer]
 
     (0 until WIDTH).foreach { x =>
       //            addSunLighting(x, 0)
@@ -2165,7 +2165,7 @@ class TerraFrame
 
                 icTemp.F_ON = false
                 removeBlockLighting(icx, icy)
-                blocks(iclayer)(icy)(icx) = FurnaceBlockType
+                blocks(iclayer.num)(icy)(icx) = FurnaceBlockType
                 rdrawn(icy)(icx) = false
 
               } { _ =>
@@ -2216,7 +2216,7 @@ class TerraFrame
         if (icTemp.icType =/= Workbench) {
           machinesx += icx
           machinesy += icy
-          icmatrix(iclayer)(icy)(icx) = Some(ItemCollection(icTemp.icType, icTemp.ids, icTemp.nums, icTemp.durs))
+          icmatrix(iclayer.num)(icy)(icx) = Some(ItemCollection(icTemp.icType, icTemp.ids, icTemp.nums, icTemp.durs))
         }
         if (icTemp.icType === Workbench) {
           if (player.imgState === Player.StillRight || player.imgState === Player.WalkRight1 || player.imgState === Player.WalkRight2) {
@@ -2253,7 +2253,7 @@ class TerraFrame
           }
         }
         if (icTemp.icType === Furnace) {
-          icmatrix(iclayer)(icy)(icx).foreach { icMatrixTemp =>
+          icmatrix(iclayer.num)(icy)(icx).foreach { icMatrixTemp =>
             icMatrixTemp.FUELP = icTemp.FUELP
             icMatrixTemp.SMELTP = icTemp.SMELTP
             icMatrixTemp.F_ON = icTemp.F_ON
@@ -2363,57 +2363,57 @@ class TerraFrame
     (updatex.length - 1 until (-1, -1)).foreach { i =>
       updatet.update(i, updatet(i) - 1)
       if (updatet(i) <= 0) {
-        if (blocks(updatel(i))(updatey(i))(updatex(i)) === ButtonLeftOnBlockType) {
-          blockTemp = blocks(updatel(i))(updatey(i))(updatex(i))
+        if (blocks(updatel(i).num)(updatey(i))(updatex(i)) === ButtonLeftOnBlockType) {
+          blockTemp = blocks(updatel(i).num)(updatey(i))(updatex(i))
           removeBlockPower(updatex(i), updatey(i), updatel(i))
-          blocks(updatel(i))(updatey(i))(updatex(i)) = ButtonLeftBlockType
+          blocks(updatel(i).num)(updatey(i))(updatex(i)) = ButtonLeftBlockType
           rdrawn(updatey(i))(updatex(i)) = false
-        } else if (blocks(updatel(i))(updatey(i))(updatex(i)) === ButtonRightOnBlockType) {
-          blockTemp = blocks(updatel(i))(updatey(i))(updatex(i))
+        } else if (blocks(updatel(i).num)(updatey(i))(updatex(i)) === ButtonRightOnBlockType) {
+          blockTemp = blocks(updatel(i).num)(updatey(i))(updatex(i))
           removeBlockPower(updatex(i), updatey(i), updatel(i))
-          blocks(updatel(i))(updatey(i))(updatex(i)) = ButtonRightBlockType
+          blocks(updatel(i).num)(updatey(i))(updatex(i)) = ButtonRightBlockType
           rdrawn(updatey(i))(updatex(i)) = false
-        } else if (blocks(updatel(i))(updatey(i))(updatex(i)) === WoodenPressurePlateOnBlockType) {
-          blockTemp = blocks(updatel(i))(updatey(i))(updatex(i))
+        } else if (blocks(updatel(i).num)(updatey(i))(updatex(i)) === WoodenPressurePlateOnBlockType) {
+          blockTemp = blocks(updatel(i).num)(updatey(i))(updatex(i))
           removeBlockPower(updatex(i), updatey(i), updatel(i))
-          blocks(updatel(i))(updatey(i))(updatex(i)) = WoodenPressurePlateBlockType
+          blocks(updatel(i).num)(updatey(i))(updatex(i)) = WoodenPressurePlateBlockType
           rdrawn(updatey(i))(updatex(i)) = false
-        } else if (blocks(updatel(i))(updatey(i))(updatex(i)) === StonePressurePlateOnBlockType) {
-          blockTemp = blocks(updatel(i))(updatey(i))(updatex(i))
+        } else if (blocks(updatel(i).num)(updatey(i))(updatex(i)) === StonePressurePlateOnBlockType) {
+          blockTemp = blocks(updatel(i).num)(updatey(i))(updatex(i))
           removeBlockPower(updatex(i), updatey(i), updatel(i))
-          blocks(updatel(i))(updatey(i))(updatex(i)) = StonePressurePlateBlockType
+          blocks(updatel(i).num)(updatey(i))(updatex(i)) = StonePressurePlateBlockType
           rdrawn(updatey(i))(updatex(i)) = false
-        } else if (blocks(updatel(i))(updatey(i))(updatex(i)) === ZythiumPressurePlateOnBlockType) {
-          blockTemp = blocks(updatel(i))(updatey(i))(updatex(i))
+        } else if (blocks(updatel(i).num)(updatey(i))(updatex(i)) === ZythiumPressurePlateOnBlockType) {
+          blockTemp = blocks(updatel(i).num)(updatey(i))(updatex(i))
           removeBlockPower(updatex(i), updatey(i), updatel(i))
-          blocks(updatel(i))(updatey(i))(updatex(i)) = ZythiumPressurePlateBlockType
+          blocks(updatel(i).num)(updatey(i))(updatex(i)) = ZythiumPressurePlateBlockType
           rdrawn(updatey(i))(updatex(i)) = false
-        } else if (blocks(updatel(i))(updatey(i))(updatex(i)).id >= ZythiumDelayer1DelayRightOnBlockType.id && blocks(
-                     updatel(i))(updatey(i))(updatex(i)).id <= ZythiumDelayer1DelayUpOnBlockType.id || blocks(
-                     updatel(i))(updatey(i))(updatex(i)).id >= ZythiumDelayer2DelayRightOnBlockType.id && blocks(
-                     updatel(i))(updatey(i))(updatex(i)).id <= ZythiumDelayer2DelayUpOnBlockType.id ||
-                   blocks(updatel(i))(updatey(i))(updatex(i)).id >= ZythiumDelayer4DelayRightOnBlockType.id && blocks(
-                     updatel(i))(updatey(i))(updatex(i)).id <= ZythiumDelayer4DelayUpOnBlockType.id || blocks(
-                     updatel(i))(updatey(i))(updatex(i)).id >= ZythiumDelayer8DelayRightOnBlockType.id && blocks(
-                     updatel(i))(updatey(i))(updatex(i)).id <= ZythiumDelayer8DelayUpOnBlockType.id) {
+        } else if (blocks(updatel(i).num)(updatey(i))(updatex(i)).id >= ZythiumDelayer1DelayRightOnBlockType.id && blocks(
+                     updatel(i).num)(updatey(i))(updatex(i)).id <= ZythiumDelayer1DelayUpOnBlockType.id || blocks(
+                     updatel(i).num)(updatey(i))(updatex(i)).id >= ZythiumDelayer2DelayRightOnBlockType.id && blocks(
+                     updatel(i).num)(updatey(i))(updatex(i)).id <= ZythiumDelayer2DelayUpOnBlockType.id ||
+                   blocks(updatel(i).num)(updatey(i))(updatex(i)).id >= ZythiumDelayer4DelayRightOnBlockType.id && blocks(
+                     updatel(i).num)(updatey(i))(updatex(i)).id <= ZythiumDelayer4DelayUpOnBlockType.id || blocks(
+                     updatel(i).num)(updatey(i))(updatex(i)).id >= ZythiumDelayer8DelayRightOnBlockType.id && blocks(
+                     updatel(i).num)(updatey(i))(updatex(i)).id <= ZythiumDelayer8DelayUpOnBlockType.id) {
           println("(DEBUG2R)")
-          blockTemp = blocks(updatel(i))(updatey(i))(updatex(i))
+          blockTemp = blocks(updatel(i).num)(updatey(i))(updatex(i))
           removeBlockPower(updatex(i), updatey(i), updatel(i), false)
-          blocks(updatel(i))(updatey(i))(updatex(i)) =
-            BlockType.lookupById(blocks(updatel(i))(updatey(i))(updatex(i)).id - 4)
+          blocks(updatel(i).num)(updatey(i))(updatex(i)) =
+            BlockType.lookupById(blocks(updatel(i).num)(updatey(i))(updatex(i)).id - 4)
           rdrawn(updatey(i))(updatex(i)) = false
-        } else if (blocks(updatel(i))(updatey(i))(updatex(i)).id >= ZythiumDelayer1DelayRightBlockType.id && blocks(
-                     updatel(i))(updatey(i))(updatex(i)).id <= ZythiumDelayer1DelayUpBlockType.id || blocks(updatel(i))(
-                     updatey(i))(updatex(i)).id >= ZythiumDelayer2DelayRightBlockType.id && blocks(updatel(i))(
-                     updatey(i))(updatex(i)).id <= ZythiumDelayer2DelayUpBlockType.id ||
-                   blocks(updatel(i))(updatey(i))(updatex(i)).id >= ZythiumDelayer4DelayRightBlockType.id && blocks(
-                     updatel(i))(updatey(i))(updatex(i)).id <= ZythiumDelayer4DelayUpBlockType.id || blocks(updatel(i))(
-                     updatey(i))(updatex(i)).id >= ZythiumDelayer8DelayRightBlockType.id && blocks(updatel(i))(
-                     updatey(i))(updatex(i)).id <= ZythiumDelayer8DelayUpBlockType.id) {
+        } else if (blocks(updatel(i).num)(updatey(i))(updatex(i)).id >= ZythiumDelayer1DelayRightBlockType.id && blocks(
+                     updatel(i).num)(updatey(i))(updatex(i)).id <= ZythiumDelayer1DelayUpBlockType.id || blocks(
+                     updatel(i).num)(updatey(i))(updatex(i)).id >= ZythiumDelayer2DelayRightBlockType.id && blocks(
+                     updatel(i).num)(updatey(i))(updatex(i)).id <= ZythiumDelayer2DelayUpBlockType.id ||
+                   blocks(updatel(i).num)(updatey(i))(updatex(i)).id >= ZythiumDelayer4DelayRightBlockType.id && blocks(
+                     updatel(i).num)(updatey(i))(updatex(i)).id <= ZythiumDelayer4DelayUpBlockType.id || blocks(
+                     updatel(i).num)(updatey(i))(updatex(i)).id >= ZythiumDelayer8DelayRightBlockType.id && blocks(
+                     updatel(i).num)(updatey(i))(updatex(i)).id <= ZythiumDelayer8DelayUpBlockType.id) {
           println("(DEBUG2A)")
-          blocks(updatel(i))(updatey(i))(updatex(i)) =
-            BlockType.lookupById(blocks(updatel(i))(updatey(i))(updatex(i)).id + 4)
-          power(updatel(i))(updatey(i))(updatex(i)) = 5.toFloat
+          blocks(updatel(i).num)(updatey(i))(updatex(i)) =
+            BlockType.lookupById(blocks(updatel(i).num)(updatey(i))(updatex(i)).id + 4)
+          power(updatel(i).num)(updatey(i))(updatex(i)) = 5.toFloat
           addBlockLighting(updatex(i), updatey(i))
           addTileToPQueue(updatex(i), updatey(i))
           rdrawn(updatey(i))(updatex(i)) = false
@@ -2928,8 +2928,9 @@ class TerraFrame
             ucx = ux - CHUNKBLOCKS * (ux / CHUNKBLOCKS)
             ucy = uy - CHUNKBLOCKS * (uy / CHUNKBLOCKS)
             if (UiItem.isTool(inventory.tool())) {
-              if (layer < blocks.length && uy < blocks(layer).length && ux < blocks(layer)(uy).length && blocks(layer)(
-                    uy)(ux) =/= AirBlockType && BlockType.blockContainsTool(blocks(layer)(uy)(ux), inventory.tool())) {
+              if (layer.num < blocks.length && uy < blocks(layer.num).length && ux < blocks(layer.num)(uy).length && blocks(
+                    layer.num)(uy)(ux) =/= AirBlockType && BlockType
+                    .blockContainsTool(blocks(layer.num)(uy)(ux), inventory.tool())) {
                 blockdns(uy)(ux) = random.nextInt(5).toByte
                 drawn(uy)(ux) = false
                 if (ux === mx && uy === my && inventory.tool() === miningTool) {
@@ -2952,13 +2953,13 @@ class TerraFrame
                 }
               }
             } else if (inventory.tool() === StoneLighterUiItem) {
-              if (blocks(layer)(uy)(ux) === FurnaceBlockType || blocks(layer)(uy)(ux) === FurnaceOnBlockType) {
-                icmatrix(layer)(uy)(ux).fold {
+              if (blocks(layer.num)(uy)(ux) === FurnaceBlockType || blocks(layer.num)(uy)(ux) === FurnaceOnBlockType) {
+                icmatrix(layer.num)(uy)(ux).fold {
                   ic.foreach { icTemp =>
                     if (icTemp.icType === Furnace) {
                       inventory.durs(inventory.selection) = (inventory.durs(inventory.selection) - 1).toShort
                       icTemp.F_ON = true
-                      blocks(layer)(icy)(icx) = FurnaceOnBlockType
+                      blocks(layer.num)(icy)(icx) = FurnaceOnBlockType
                       addBlockLighting(ux, uy)
                       rdrawn(icy)(icx) = false
                       if (inventory.durs(inventory.selection) <= 0) {
@@ -2970,7 +2971,7 @@ class TerraFrame
                   if (icMatrixTemp.icType === Furnace) {
                     inventory.durs(inventory.selection) = (inventory.durs(inventory.selection) - 1).toShort
                     icMatrixTemp.F_ON = true
-                    blocks(layer)(uy)(ux) = FurnaceOnBlockType
+                    blocks(layer.num)(uy)(ux) = FurnaceOnBlockType
                     addBlockLighting(ux, uy)
                     if (inventory.durs(inventory.selection) <= 0) {
                       inventory.removeLocation(inventory.selection, inventory.nums(inventory.selection))
@@ -2980,16 +2981,17 @@ class TerraFrame
                 }
               }
             } else if (inventory.tool() === WrenchUiItem) {
-              if (blocks(layer)(uy)(ux).id >= ZythiumDelayer1DelayRightBlockType.id && blocks(layer)(uy)(ux).id <= ZythiumDelayer4DelayUpOnBlockType.id) { // TODO need a better logic method than comparing ids
+              if (blocks(layer.num)(uy)(ux).id >= ZythiumDelayer1DelayRightBlockType.id && blocks(layer.num)(uy)(ux).id <= ZythiumDelayer4DelayUpOnBlockType.id) { // TODO need a better logic method than comparing ids
                 inventory.durs(inventory.selection) = (inventory.durs(inventory.selection) - 1).toShort
-                blocks(layer)(uy)(ux) = BlockType.lookupById(blocks(layer)(uy)(ux).id + 8)
+                blocks(layer.num)(uy)(ux) = BlockType.lookupById(blocks(layer.num)(uy)(ux).id + 8)
                 rdrawn(uy)(ux) = false
                 if (inventory.durs(inventory.selection) <= 0) {
                   inventory.removeLocation(inventory.selection, inventory.nums(inventory.selection))
                 }
-              } else if (blocks(layer)(uy)(ux).id >= ZythiumDelayer8DelayRightBlockType.id && blocks(layer)(uy)(ux).id <= ZythiumDelayer8DelayUpOnBlockType.id) {
+              } else if (blocks(layer.num)(uy)(ux).id >= ZythiumDelayer8DelayRightBlockType.id && blocks(layer.num)(uy)(
+                           ux).id <= ZythiumDelayer8DelayUpOnBlockType.id) {
                 inventory.durs(inventory.selection) = (inventory.durs(inventory.selection) - 1).toShort
-                blocks(layer)(uy)(ux) = BlockType.lookupById(blocks(layer)(uy)(ux).id - 24)
+                blocks(layer.num)(uy)(ux) = BlockType.lookupById(blocks(layer.num)(uy)(ux).id - 24)
                 rdrawn(uy)(ux) = false
                 if (inventory.durs(inventory.selection) <= 0) {
                   inventory.removeLocation(inventory.selection, inventory.nums(inventory.selection))
@@ -2997,48 +2999,48 @@ class TerraFrame
               }
             } else if (inventory.tool() =/= EmptyUiItem) {
               blockTemp = UiItem.blockForTool(inventory.tool())
-              if (layer < blocks.length &&
-                  uy < blocks(layer).length &&
-                  ux < blocks(layer)(uy).length &&
-                  uy >= 1 && (blocks(layer)(uy)(ux) === AirBlockType) &&
-                  (layer === 0 && (blocks(layer)(uy)(ux - 1) =/= AirBlockType || blocks(layer)(uy)(ux + 1) =/= AirBlockType ||
-                  blocks(layer)(uy - 1)(ux) =/= AirBlockType || blocks(layer)(uy + 1)(ux) =/= AirBlockType ||
-                  blocks(layer + 1)(uy)(ux) =/= AirBlockType) ||
-                  layer === 1 && (blocks(layer)(uy)(ux - 1) =/= AirBlockType || blocks(layer)(uy)(ux + 1) =/= AirBlockType ||
-                  blocks(layer)(uy - 1)(ux) =/= AirBlockType || blocks(layer)(uy + 1)(ux) =/= AirBlockType ||
-                  blocks(layer - 1)(uy)(ux) =/= AirBlockType || blocks(layer + 1)(uy)(ux) =/= AirBlockType) ||
-                  layer === 2 && (blocks(layer)(uy)(ux - 1) =/= AirBlockType || blocks(layer)(uy)(ux + 1) =/= AirBlockType ||
-                  blocks(layer)(uy - 1)(ux) =/= AirBlockType || blocks(layer)(uy + 1)(ux) =/= AirBlockType ||
-                  blocks(layer - 1)(uy)(ux) =/= AirBlockType)) &&
-                  !(blockTemp === SunflowerStage1BlockType && (blocks(layer)(uy + 1)(ux) =/= DirtBlockType && blocks(
-                    layer)(uy + 1)(ux) =/= GrassBlockType && blocks(layer)(uy + 1)(ux) =/= JungleGrassBlockType) || // sunflower
-                    blockTemp === MoonflowerStage1BlockType && (blocks(layer)(uy + 1)(ux) =/= DirtBlockType && blocks(
-                      layer)(uy + 1)(ux) =/= GrassBlockType && blocks(layer)(uy + 1)(ux) =/= JungleGrassBlockType) || // moonflower
-                    blockTemp === DryweedStage1BlockType && (blocks(layer)(uy + 1)(ux) =/= SandBlockType) ||          // dryweed
-                    blockTemp === GreenleafStage1BlockType && (blocks(layer)(uy + 1)(ux) =/= JungleGrassBlockType) || // greenleaf
-                    blockTemp === FrostleafStage1BlockType && (blocks(layer)(uy + 1)(ux) =/= SnowBlockType) ||        // frostleaf
-                    blockTemp === CaverootStage1BlockType && (blocks(layer)(uy + 1)(ux) =/= StoneBlockType) ||        // caveroot
-                    blockTemp === SkyblossomStage1BlockType && (blocks(layer)(uy + 1)(ux) =/= DirtBlockType && blocks(
-                      layer)(uy + 1)(ux) =/= GrassBlockType && blocks(layer)(uy + 1)(ux) =/= JungleGrassBlockType) || // skyblossom
-                    blockTemp === VoidRotStage1BlockType && (blocks(layer)(uy + 1)(ux) =/= StoneBlockType))) { // void_rot
+              if (layer.num < blocks.length &&
+                  uy < blocks(layer.num).length &&
+                  ux < blocks(layer.num)(uy).length &&
+                  uy >= 1 && (blocks(layer.num)(uy)(ux) === AirBlockType) &&
+                  (layer.num === 0 && (blocks(layer.num)(uy)(ux - 1) =/= AirBlockType || blocks(layer.num)(uy)(ux + 1) =/= AirBlockType ||
+                  blocks(layer.num)(uy - 1)(ux) =/= AirBlockType || blocks(layer.num)(uy + 1)(ux) =/= AirBlockType ||
+                  blocks(layer.num + 1)(uy)(ux) =/= AirBlockType) ||
+                  layer.num === 1 && (blocks(layer.num)(uy)(ux - 1) =/= AirBlockType || blocks(layer.num)(uy)(ux + 1) =/= AirBlockType ||
+                  blocks(layer.num)(uy - 1)(ux) =/= AirBlockType || blocks(layer.num)(uy + 1)(ux) =/= AirBlockType ||
+                  blocks(layer.num - 1)(uy)(ux) =/= AirBlockType || blocks(layer.num + 1)(uy)(ux) =/= AirBlockType) ||
+                  layer.num === 2 && (blocks(layer.num)(uy)(ux - 1) =/= AirBlockType || blocks(layer.num)(uy)(ux + 1) =/= AirBlockType ||
+                  blocks(layer.num)(uy - 1)(ux) =/= AirBlockType || blocks(layer.num)(uy + 1)(ux) =/= AirBlockType ||
+                  blocks(layer.num - 1)(uy)(ux) =/= AirBlockType)) &&
+                  !(blockTemp === SunflowerStage1BlockType && (blocks(layer.num)(uy + 1)(ux) =/= DirtBlockType && blocks(
+                    layer.num)(uy + 1)(ux) =/= GrassBlockType && blocks(layer.num)(uy + 1)(ux) =/= JungleGrassBlockType) || // sunflower
+                    blockTemp === MoonflowerStage1BlockType && (blocks(layer.num)(uy + 1)(ux) =/= DirtBlockType && blocks(
+                      layer.num)(uy + 1)(ux) =/= GrassBlockType && blocks(layer.num)(uy + 1)(ux) =/= JungleGrassBlockType) || // moonflower
+                    blockTemp === DryweedStage1BlockType && (blocks(layer.num)(uy + 1)(ux) =/= SandBlockType) ||              // dryweed
+                    blockTemp === GreenleafStage1BlockType && (blocks(layer.num)(uy + 1)(ux) =/= JungleGrassBlockType) ||     // greenleaf
+                    blockTemp === FrostleafStage1BlockType && (blocks(layer.num)(uy + 1)(ux) =/= SnowBlockType) ||            // frostleaf
+                    blockTemp === CaverootStage1BlockType && (blocks(layer.num)(uy + 1)(ux) =/= StoneBlockType) ||            // caveroot
+                    blockTemp === SkyblossomStage1BlockType && (blocks(layer.num)(uy + 1)(ux) =/= DirtBlockType && blocks(
+                      layer.num)(uy + 1)(ux) =/= GrassBlockType && blocks(layer.num)(uy + 1)(ux) =/= JungleGrassBlockType) || // skyblossom
+                    blockTemp === VoidRotStage1BlockType && (blocks(layer.num)(uy + 1)(ux) =/= StoneBlockType))) { // void_rot
                 if (TORCHESL
                       .get(blockTemp)
-                      .isEmpty || uy < HEIGHT - 1 && (solid(blocks(layer)(uy + 1)(ux).id) && blockTemp =/= ButtonLeftBlockType || solid(
-                      blocks(layer)(uy)(ux + 1).id) || solid(blocks(layer)(uy)(ux - 1).id))) {
+                      .isEmpty || uy < HEIGHT - 1 && (solid(blocks(layer.num)(uy + 1)(ux).id) && blockTemp =/= ButtonLeftBlockType || solid(
+                      blocks(layer.num)(uy)(ux + 1).id) || solid(blocks(layer.num)(uy)(ux - 1).id))) {
                   if (TORCHESL.get(blockTemp).isDefined) {
-                    if (solid(blocks(layer)(uy + 1)(ux).id) && blockTemp =/= ButtonLeftBlockType) {
+                    if (solid(blocks(layer.num)(uy + 1)(ux).id) && blockTemp =/= ButtonLeftBlockType) {
                       blockTemp = blockTemp
-                    } else if (solid(blocks(layer)(uy)(ux - 1).id)) { //TODO: encode solid into BlockType
+                    } else if (solid(blocks(layer.num)(uy)(ux - 1).id)) { //TODO: encode solid into BlockType
                       TORCHESL.get(blockTemp).foreach { t => //TODO encode torchesl into BlockType
                         blockTemp = t
                       }
-                    } else if (solid(blocks(layer)(uy)(ux + 1).id)) {
+                    } else if (solid(blocks(layer.num)(uy)(ux + 1).id)) {
                       TORCHESR.get(blockTemp).foreach { t =>
                         blockTemp = t
                       }
                     }
                   }
-                  if (layer === 1 && !DEBUG_GPLACE && blockcds(blockTemp.id)) { //TODO: encode blockcs into BlockType
+                  if (layer.num === 1 && !DEBUG_GPLACE && blockcds(blockTemp.id)) { //TODO: encode blockcs into BlockType
                     entities
                       .collect {
                         case e: AIEntity => e
@@ -3054,14 +3056,14 @@ class TerraFrame
                     }
                   }
                   if (blockTemp =/= AirBlockType) {
-                    blocks(layer)(uy)(ux) = blockTemp
-                    if (receives(blocks(layer)(uy)(ux).id)) { // TODO: encode receives into BlockType
+                    blocks(layer.num)(uy)(ux) = blockTemp
+                    if (receives(blocks(layer.num)(uy)(ux).id)) { // TODO: encode receives into BlockType
                       addAdjacentTilesToPQueue(ux, uy)
                     }
-                    if (powers(blocks(layer)(uy)(ux))) {
+                    if (powers(blocks(layer.num)(uy)(ux))) {
                       addBlockPower(ux, uy)
                     }
-                    if (ltrans(blocks(layer)(uy)(ux).id)) { //TODO: encode ltrans into BlockType
+                    if (ltrans(blocks(layer.num)(uy)(ux).id)) { //TODO: encode ltrans into BlockType
                       removeSunLighting(ux, uy)
                       redoBlockLighting(ux, uy)
                     }
@@ -3069,7 +3071,7 @@ class TerraFrame
                   }
                   if (blockTemp =/= AirBlockType) {
                     inventory.removeLocation(inventory.selection, 1.toShort)
-                    blockds(layer) = World.generate2b(blocks(layer), blockds(layer), ux, uy)
+                    blockds(layer.num) = World.generate2b(blocks(layer.num), blockds(layer.num), ux, uy)
                     (uy - 1 until uy + 2).foreach { uly =>
                       (ux - 1 until ux + 2).foreach { ulx =>
                         blockdns(uly)(ulx) = random.nextInt(5).toByte
@@ -3349,15 +3351,15 @@ class TerraFrame
                 2)) <= 160) {
             ucx = ux - CHUNKBLOCKS * (ux / CHUNKBLOCKS)
             ucy = uy - CHUNKBLOCKS * (uy / CHUNKBLOCKS)
-            if (layer < blocks.length && uy < blocks(layer).length && ux < blocks(layer)(uy).length && blocks(layer)(
-                  uy)(ux).id >= WorkbenchBlockType.id && blocks(layer)(uy)(ux).id <= GoldChestBlockType.id || blocks(
-                  layer)(uy)(ux) === FurnaceBlockType || blocks(layer)(uy)(ux) === FurnaceOnBlockType || blocks(layer)(
-                  uy)(ux).id >= ZincChestBlockType.id && blocks(layer)(uy)(ux).id <= ObduriteChestBlockType.id) {
+            if (layer.num < blocks.length && uy < blocks(layer.num).length && ux < blocks(layer.num)(uy).length && blocks(
+                  layer.num)(uy)(ux).id >= WorkbenchBlockType.id && blocks(layer.num)(uy)(ux).id <= GoldChestBlockType.id || blocks(
+                  layer.num)(uy)(ux) === FurnaceBlockType || blocks(layer.num)(uy)(ux) === FurnaceOnBlockType || blocks(
+                  layer.num)(uy)(ux).id >= ZincChestBlockType.id && blocks(layer.num)(uy)(ux).id <= ObduriteChestBlockType.id) {
               ic.foreach { icTemp =>
                 if (icTemp.icType =/= Workbench) {
                   machinesx += icx
                   machinesy += icy
-                  icmatrix(iclayer)(icy)(icx) =
+                  icmatrix(iclayer.num)(icy)(icx) =
                     Some(ItemCollection(icTemp.icType, icTemp.ids, icTemp.nums, icTemp.durs))
                 }
                 if (icTemp.icType === Workbench) {
@@ -3395,7 +3397,7 @@ class TerraFrame
                   }
                 }
                 if (icTemp.icType === Furnace) {
-                  icmatrix(iclayer)(icy)(icx).foreach { icMatrixTemp =>
+                  icmatrix(iclayer.num)(icy)(icx).foreach { icMatrixTemp =>
                     icMatrixTemp.FUELP = icTemp.FUELP
                     icMatrixTemp.SMELTP = icTemp.SMELTP
                     icMatrixTemp.F_ON = icTemp.F_ON
@@ -3552,7 +3554,7 @@ class TerraFrame
                 }
               }
             }
-            if (blocks(layer)(uy)(ux) === TreeBlockType) {
+            if (blocks(layer.num)(uy)(ux) === TreeBlockType) {
               if (random.nextInt(2) === 0) {
                 entities += new IdEntity(
                   (ux * BLOCKSIZE).toDouble,
@@ -3562,60 +3564,60 @@ class TerraFrame
                   BarkUiItem,
                   1.toShort)
               }
-              blocks(layer)(uy)(ux) = TreeNoBarkBlockType
+              blocks(layer.num)(uy)(ux) = TreeNoBarkBlockType
             }
             if (mouseClicked2) {
               mouseNoLongerClicked2 = true
-              blockTemp = blocks(layer)(uy)(ux)
-              if (blocks(layer)(uy)(ux) === LeverBlockType || blocks(layer)(uy)(ux) === LeverLeftWallBlockType || blocks(
-                    layer)(uy)(ux) === LeverLightWallBlockType) {
-                blocks(layer)(uy)(ux) = BlockType.lookupById(blocks(layer)(uy)(ux).id + 1)
+              blockTemp = blocks(layer.num)(uy)(ux)
+              if (blocks(layer.num)(uy)(ux) === LeverBlockType || blocks(layer.num)(uy)(ux) === LeverLeftWallBlockType || blocks(
+                    layer.num)(uy)(ux) === LeverLightWallBlockType) {
+                blocks(layer.num)(uy)(ux) = BlockType.lookupById(blocks(layer.num)(uy)(ux).id + 1)
                 addBlockPower(ux, uy)
                 rdrawn(uy)(ux) = false
-              } else if (blocks(layer)(uy)(ux) === LeverOnBlockType || blocks(layer)(uy)(ux) === LeverLeftWallOnBlockType || blocks(
-                           layer)(uy)(ux) === LeverRightWallOnBlockType) {
+              } else if (blocks(layer.num)(uy)(ux) === LeverOnBlockType || blocks(layer.num)(uy)(ux) === LeverLeftWallOnBlockType || blocks(
+                           layer.num)(uy)(ux) === LeverRightWallOnBlockType) {
                 removeBlockPower(ux, uy, layer)
                 if (wcnct(uy)(ux)) {
-                  (0 until 3).foreach { l =>
+                  Layer.values.foreach { l =>
                     if (l =/= layer) {
                       rbpRecur(ux, uy, l)
                     }
                   }
                 }
-                blocks(layer)(uy)(ux) = BlockType.lookupById(blocks(layer)(uy)(ux).id - 1)
+                blocks(layer.num)(uy)(ux) = BlockType.lookupById(blocks(layer.num)(uy)(ux).id - 1)
                 rdrawn(uy)(ux) = false
               }
-              if (blocks(layer)(uy)(ux).id >= ZythiumWireBlockType.id && blocks(layer)(uy)(ux).id <= ZythiumWire5PowerBlockType.id) {
+              if (blocks(layer.num)(uy)(ux).id >= ZythiumWireBlockType.id && blocks(layer.num)(uy)(ux).id <= ZythiumWire5PowerBlockType.id) {
                 wcnct(uy)(ux) = !wcnct(uy)(ux)
                 rdrawn(uy)(ux) = false
                 redoBlockPower(ux, uy, layer)
               }
-              if (blocks(layer)(uy)(ux).id >= ZythiumAmplifierRightBlockType.id && blocks(layer)(uy)(ux).id <= ZythiumAmplifierUpOnBlockType.id) {
+              if (blocks(layer.num)(uy)(ux).id >= ZythiumAmplifierRightBlockType.id && blocks(layer.num)(uy)(ux).id <= ZythiumAmplifierUpOnBlockType.id) {
                 removeBlockPower(ux, uy, layer)
-                if (blocks(layer)(uy)(ux).id >= ZythiumAmplifierRightBlockType.id && blocks(layer)(uy)(ux).id <= ZythiumAmplifierLeftBlockType.id || blocks(
-                      layer)(uy)(ux).id >= ZythiumAmplifierRightOnBlockType.id && blocks(layer)(uy)(ux).id <= ZythiumAmplifierLeftOnBlockType.id) {
-                  blocks(layer)(uy)(ux) = BlockType.lookupById(blocks(layer)(uy)(ux).id + 1)
+                if (blocks(layer.num)(uy)(ux).id >= ZythiumAmplifierRightBlockType.id && blocks(layer.num)(uy)(ux).id <= ZythiumAmplifierLeftBlockType.id || blocks(
+                      layer.num)(uy)(ux).id >= ZythiumAmplifierRightOnBlockType.id && blocks(layer.num)(uy)(ux).id <= ZythiumAmplifierLeftOnBlockType.id) {
+                  blocks(layer.num)(uy)(ux) = BlockType.lookupById(blocks(layer.num)(uy)(ux).id + 1)
                 } else {
-                  blocks(layer)(uy)(ux) = BlockType.lookupById(blocks(layer)(uy)(ux).id - 3)
+                  blocks(layer.num)(uy)(ux) = BlockType.lookupById(blocks(layer.num)(uy)(ux).id - 3)
                 }
-                blockds(layer) = World.generate2b(blocks(layer), blockds(layer), ux, uy)
+                blockds(layer.num) = World.generate2b(blocks(layer.num), blockds(layer.num), ux, uy)
                 rdrawn(uy)(ux) = false
                 addAdjacentTilesToPQueueConditionally(ux, uy)
               }
-              if (blocks(layer)(uy)(ux).id >= ZythiumInverterRightBlockType.id && blocks(layer)(uy)(ux).id <= ZythiumInverterUpOnBlockType.id) {
+              if (blocks(layer.num)(uy)(ux).id >= ZythiumInverterRightBlockType.id && blocks(layer.num)(uy)(ux).id <= ZythiumInverterUpOnBlockType.id) {
                 removeBlockPower(ux, uy, layer)
-                if (blocks(layer)(uy)(ux).id >= ZythiumInverterRightBlockType.id && blocks(layer)(uy)(ux).id <= ZythiumInverterLeftBlockType.id || blocks(
-                      layer)(uy)(ux).id >= ZythiumInverterRightOnBlockType.id && blocks(layer)(uy)(ux).id <= ZythiumInverterLeftOnBlockType.id) {
-                  blocks(layer)(uy)(ux) = BlockType.lookupById(blocks(layer)(uy)(ux).id + 1)
+                if (blocks(layer.num)(uy)(ux).id >= ZythiumInverterRightBlockType.id && blocks(layer.num)(uy)(ux).id <= ZythiumInverterLeftBlockType.id || blocks(
+                      layer.num)(uy)(ux).id >= ZythiumInverterRightOnBlockType.id && blocks(layer.num)(uy)(ux).id <= ZythiumInverterLeftOnBlockType.id) {
+                  blocks(layer.num)(uy)(ux) = BlockType.lookupById(blocks(layer.num)(uy)(ux).id + 1)
                 } else {
-                  blocks(layer)(uy)(ux) = BlockType.lookupById(blocks(layer)(uy)(ux).id - 3)
+                  blocks(layer.num)(uy)(ux) = BlockType.lookupById(blocks(layer.num)(uy)(ux).id - 3)
                 }
-                blockds(layer) = World.generate2b(blocks(layer), blockds(layer), ux, uy)
+                blockds(layer.num) = World.generate2b(blocks(layer.num), blockds(layer.num), ux, uy)
                 rdrawn(uy)(ux) = false
                 addAdjacentTilesToPQueueConditionally(ux, uy)
               }
-              if (blocks(layer)(uy)(ux) === ButtonLeftBlockType || blocks(layer)(uy)(ux) === ButtonRightBlockType) {
-                blocks(layer)(uy)(ux) = BlockType.lookupById(blocks(layer)(uy)(ux).id + 1)
+              if (blocks(layer.num)(uy)(ux) === ButtonLeftBlockType || blocks(layer.num)(uy)(ux) === ButtonRightBlockType) {
+                blocks(layer.num)(uy)(ux) = BlockType.lookupById(blocks(layer.num)(uy)(ux).id + 1)
                 addBlockPower(ux, uy)
                 rdrawn(uy)(ux) = false
                 println("Srsly?") //TODO: should not use print in tight loops, should use asychronous logging
@@ -3624,20 +3626,20 @@ class TerraFrame
                 updatet += 50
                 updatel += layer
               }
-              if (blocks(layer)(uy)(ux).id >= ZythiumDelayer1DelayRightBlockType.id && blocks(layer)(uy)(ux).id <= ZythiumDelayer8DelayUpOnBlockType.id) {
-                if (blocks(layer)(uy)(ux).id >= ZythiumDelayer1DelayRightBlockType.id && blocks(layer)(uy)(ux).id <= ZythiumDelayer1DelayLeftBlockType.id || blocks(
-                      layer)(uy)(ux).id >= ZythiumDelayer1DelayRightOnBlockType.id && blocks(layer)(uy)(ux).id <= ZythiumDelayer1DelayLeftOnBlockType.id ||
-                    blocks(layer)(uy)(ux).id >= ZythiumDelayer2DelayRightBlockType.id && blocks(layer)(uy)(ux).id <= ZythiumDelayer2DelayLeftBlockType.id || blocks(
-                      layer)(uy)(ux).id >= ZythiumDelayer2DelayRightOnBlockType.id && blocks(layer)(uy)(ux).id <= ZythiumDelayer2DelayLeftOnBlockType.id ||
-                    blocks(layer)(uy)(ux).id >= ZythiumDelayer4DelayRightBlockType.id && blocks(layer)(uy)(ux).id <= ZythiumDelayer4DelayLeftBlockType.id || blocks(
-                      layer)(uy)(ux).id >= ZythiumDelayer4DelayRightOnBlockType.id && blocks(layer)(uy)(ux).id <= ZythiumDelayer4DelayLeftOnBlockType.id ||
-                    blocks(layer)(uy)(ux).id >= ZythiumDelayer8DelayRightBlockType.id && blocks(layer)(uy)(ux).id <= ZythiumDelayer8DelayLeftBlockType.id || blocks(
-                      layer)(uy)(ux).id >= ZythiumDelayer8DelayRightOnBlockType.id && blocks(layer)(uy)(ux).id <= ZythiumDelayer8DelayLeftOnBlockType.id) {
-                  blocks(layer)(uy)(ux) = BlockType.lookupById(blocks(layer)(uy)(ux).id + 1)
+              if (blocks(layer.num)(uy)(ux).id >= ZythiumDelayer1DelayRightBlockType.id && blocks(layer.num)(uy)(ux).id <= ZythiumDelayer8DelayUpOnBlockType.id) {
+                if (blocks(layer.num)(uy)(ux).id >= ZythiumDelayer1DelayRightBlockType.id && blocks(layer.num)(uy)(ux).id <= ZythiumDelayer1DelayLeftBlockType.id || blocks(
+                      layer.num)(uy)(ux).id >= ZythiumDelayer1DelayRightOnBlockType.id && blocks(layer.num)(uy)(ux).id <= ZythiumDelayer1DelayLeftOnBlockType.id ||
+                    blocks(layer.num)(uy)(ux).id >= ZythiumDelayer2DelayRightBlockType.id && blocks(layer.num)(uy)(ux).id <= ZythiumDelayer2DelayLeftBlockType.id || blocks(
+                      layer.num)(uy)(ux).id >= ZythiumDelayer2DelayRightOnBlockType.id && blocks(layer.num)(uy)(ux).id <= ZythiumDelayer2DelayLeftOnBlockType.id ||
+                    blocks(layer.num)(uy)(ux).id >= ZythiumDelayer4DelayRightBlockType.id && blocks(layer.num)(uy)(ux).id <= ZythiumDelayer4DelayLeftBlockType.id || blocks(
+                      layer.num)(uy)(ux).id >= ZythiumDelayer4DelayRightOnBlockType.id && blocks(layer.num)(uy)(ux).id <= ZythiumDelayer4DelayLeftOnBlockType.id ||
+                    blocks(layer.num)(uy)(ux).id >= ZythiumDelayer8DelayRightBlockType.id && blocks(layer.num)(uy)(ux).id <= ZythiumDelayer8DelayLeftBlockType.id || blocks(
+                      layer.num)(uy)(ux).id >= ZythiumDelayer8DelayRightOnBlockType.id && blocks(layer.num)(uy)(ux).id <= ZythiumDelayer8DelayLeftOnBlockType.id) {
+                  blocks(layer.num)(uy)(ux) = BlockType.lookupById(blocks(layer.num)(uy)(ux).id + 1)
                 } else {
-                  blocks(layer)(uy)(ux) = BlockType.lookupById(blocks(layer)(uy)(ux).id - 3)
+                  blocks(layer.num)(uy)(ux) = BlockType.lookupById(blocks(layer.num)(uy)(ux).id - 3)
                 }
-                blockds(layer) = World.generate2b(blocks(layer), blockds(layer), ux, uy)
+                blockds(layer.num) = World.generate2b(blocks(layer.num), blockds(layer.num), ux, uy)
                 rdrawn(uy)(ux) = false
                 redoBlockPower(ux, uy, layer)
               }
@@ -3750,7 +3752,7 @@ class TerraFrame
         if (icTemp.icType =/= Workbench) {
           machinesx += icx
           machinesy += icy
-          icmatrix(iclayer)(icy)(icx) = Some(ItemCollection(icTemp.icType, icTemp.ids, icTemp.nums, icTemp.durs))
+          icmatrix(iclayer.num)(icy)(icx) = Some(ItemCollection(icTemp.icType, icTemp.ids, icTemp.nums, icTemp.durs))
         }
         if (icTemp.icType === Workbench) {
           if (player.imgState === Player.StillRight || player.imgState === Player.WalkRight1 || player.imgState === Player.WalkRight2) {
@@ -3787,7 +3789,7 @@ class TerraFrame
           }
         }
         if (icTemp.icType === Furnace) {
-          icmatrix(iclayer)(icy)(icx).foreach { icMatrixTemp =>
+          icmatrix(iclayer.num)(icy)(icx).foreach { icMatrixTemp =>
             icMatrixTemp.FUELP = icTemp.FUELP
             icMatrixTemp.SMELTP = icTemp.SMELTP
             icMatrixTemp.F_ON = icTemp.F_ON
@@ -3957,18 +3959,19 @@ class TerraFrame
 
       (bx1 to bx2).foreach { x =>
         (by1 to by2).foreach { y =>
-          if (blocks(layer)(y)(x).id >= WoodenPressurePlateBlockType.id && blocks(layer)(y)(x).id <= ZythiumPressurePlateOnBlockType.id && (i === -1 || blocks(
-                layer)(y)(x).id <= StonePressurePlateOnBlockType.id && (x =/= -1 && isNamedEntity || blocks(layer)(y)(x).id <= WoodenPressurePlateOnBlockType.id))) {
-            if (blocks(layer)(y)(x) === WoodenPressurePlateBlockType || blocks(layer)(y)(x) === StonePressurePlateBlockType || blocks(
-                  layer)(y)(x) === ZythiumPressurePlateBlockType) {
-              blocks(layer)(y)(x) = BlockType.lookupById(blocks(layer)(y)(x).id + 1)
+          if (blocks(layer.num)(y)(x).id >= WoodenPressurePlateBlockType.id && blocks(layer.num)(y)(x).id <= ZythiumPressurePlateOnBlockType.id && (i === -1 || blocks(
+                layer.num)(y)(x).id <= StonePressurePlateOnBlockType.id && (x =/= -1 && isNamedEntity || blocks(
+                layer.num)(y)(x).id <= WoodenPressurePlateOnBlockType.id))) {
+            if (blocks(layer.num)(y)(x) === WoodenPressurePlateBlockType || blocks(layer.num)(y)(x) === StonePressurePlateBlockType || blocks(
+                  layer.num)(y)(x) === ZythiumPressurePlateBlockType) {
+              blocks(layer.num)(y)(x) = BlockType.lookupById(blocks(layer.num)(y)(x).id + 1)
               rdrawn(y)(x) = false
               addBlockPower(x, y)
               println("Srsly?")
               updatex += x
               updatey += y
               updatet += 0
-              updatel += 0
+              updatel += Layer0
             }
           }
         }
@@ -4002,7 +4005,7 @@ class TerraFrame
   }
 
   def breakCurrentBlock(): Unit = {
-    if (DEBUG_INSTAMINE || mining >= UiItem.blockDurabilityForTool(inventory.tool(), blocks(layer)(uy)(ux))) {
+    if (DEBUG_INSTAMINE || mining >= UiItem.blockDurabilityForTool(inventory.tool(), blocks(layer.num)(uy)(ux))) {
       if (blocks(0)(uy)(ux) === TreeRootBlockType) {
         blocks(0)(uy)(ux) = AirBlockType
         (uy - 1 until uy + 2).foreach { uly =>
@@ -4029,9 +4032,9 @@ class TerraFrame
           }
         }
       }
-      if (blocks(layer)(uy)(ux).id >= WorkbenchBlockType.id && blocks(layer)(uy)(ux).id <= GoldChestBlockType.id || blocks(layer)(
-            uy)(ux) === FurnaceBlockType || blocks(layer)(uy)(ux) === FurnaceOnBlockType || blocks(layer)(uy)(ux).id >= ZincChestBlockType.id && blocks(
-            layer)(uy)(ux).id <= ObduriteChestBlockType.id) {
+      if (blocks(layer.num)(uy)(ux).id >= WorkbenchBlockType.id && blocks(layer.num)(uy)(ux).id <= GoldChestBlockType.id || blocks(
+            layer.num)(uy)(ux) === FurnaceBlockType || blocks(layer.num)(uy)(ux) === FurnaceOnBlockType || blocks(
+            layer.num)(uy)(ux).id >= ZincChestBlockType.id && blocks(layer.num)(uy)(ux).id <= ObduriteChestBlockType.id) {
         ic.foreach { icTemp =>
           icTemp.ids.indices.foreach { i =>
             UiItem.onImageItem(icTemp.ids(i)) { idsI =>
@@ -4049,7 +4052,7 @@ class TerraFrame
             }
           }
         }
-        icmatrix(layer)(uy)(ux).foreach { icMatrixTemp =>
+        icmatrix(layer.num)(uy)(ux).foreach { icMatrixTemp =>
           icMatrixTemp.ids.indices.foreach { i =>
             UiItem.onImageItem(icMatrixTemp.ids(i)) { icmi =>
               if (!(icMatrixTemp.icType === Furnace && i === 1)) {
@@ -4065,7 +4068,7 @@ class TerraFrame
               ()
             }
           }
-          icmatrix(layer)(uy)(ux) = None
+          icmatrix(layer.num)(uy)(ux) = None
         }
         ic = None
         import scala.util.control.Breaks._
@@ -4079,9 +4082,9 @@ class TerraFrame
           }
         }
       }
-      BlockType.drop(blocks(layer)(uy)(ux)).foreach { blockdrops =>
+      BlockType.drop(blocks(layer.num)(uy)(ux)).foreach { blockdrops =>
         UiItem.onImageItem(blockdrops) { imgItm =>
-          if (blocks(layer)(uy)(ux) =/= AirBlockType) {
+          if (blocks(layer.num)(uy)(ux) =/= AirBlockType) {
             entities += new IdEntity(
               (ux * BLOCKSIZE).toDouble,
               (uy * BLOCKSIZE).toDouble,
@@ -4095,7 +4098,7 @@ class TerraFrame
       }
 
       var tempUiItem: UiItem = EmptyUiItem
-      blocks(layer)(uy)(ux) match {
+      blocks(layer.num)(uy)(ux) match {
         case SunflowerStage1BlockType =>
           tempUiItem = SunflowerSeedsUiItem
           n = random.nextInt(4) - 2
@@ -4193,8 +4196,8 @@ class TerraFrame
         }
       }
       removeBlockLighting(ux, uy)
-      blockTemp = blocks(layer)(uy)(ux)
-      blocks(layer)(uy)(ux) = AirBlockType
+      blockTemp = blocks(layer.num)(uy)(ux)
+      blocks(layer.num)(uy)(ux) = AirBlockType
       if (blockTemp.id >= ZythiumWireBlockType.id && blockTemp.id <= ZythiumWire5PowerBlockType.id) {
         redoBlockPower(ux, uy, layer)
       }
@@ -4206,7 +4209,7 @@ class TerraFrame
         redoBlockLighting(ux, uy)
       }
       addSunLighting(ux, uy)
-      blockds(layer) = World.generate2b(blocks(layer), blockds(layer), ux, uy)
+      blockds(layer.num) = World.generate2b(blocks(layer.num), blockds(layer.num), ux, uy)
       (uy - 1 until uy + 2).foreach { uly =>
         (ux - 1 until ux + 2).foreach { ulx =>
           blockdns(uly)(ulx) = random.nextInt(5).toByte
@@ -4253,11 +4256,11 @@ class TerraFrame
       import scala.util.control.Breaks._
       breakable {
         while (true) {
-          BlockType.drop(blocks(layer)(uy)(ux - 1)).foreach { blockdrop =>
+          BlockType.drop(blocks(layer.num)(uy)(ux - 1)).foreach { blockdrop =>
             val itemblock = UiItem.blockForTool(blockdrop)
             val isTorch = (for {
               torch <- TORCHESR.get(itemblock)
-            } yield torch === blocks(layer)(uy)(ux - 1)).getOrElse(false)
+            } yield torch === blocks(layer.num)(uy)(ux - 1)).getOrElse(false)
             if (isTorch || blockdrop === LeverUiItem || blockdrop === ButtonUiItem) {
               UiItem.onImageItem(blockdrop) { imgItm =>
                 entities += new IdEntity(
@@ -4270,11 +4273,11 @@ class TerraFrame
                 ()
               }
               removeBlockLighting(ux - 1, uy)
-              if (layer === 1) {
+              if (layer === Layer1) {
                 addSunLighting(ux - 1, uy)
               }
-              blockTemp = blocks(layer)(uy)(ux - 1)
-              blocks(layer)(uy)(ux - 1) = AirBlockType
+              blockTemp = blocks(layer.num)(uy)(ux - 1)
+              blocks(layer.num)(uy)(ux - 1) = AirBlockType
               if (blockTemp.id >= ZythiumWireBlockType.id && blockTemp.id <= ZythiumWire5PowerBlockType.id) {
                 redoBlockPower(ux, uy, layer)
               }
@@ -4285,11 +4288,11 @@ class TerraFrame
             }
           }
 
-          BlockType.drop(blocks(layer)(uy)(ux + 1)).foreach { blockdrop =>
+          BlockType.drop(blocks(layer.num)(uy)(ux + 1)).foreach { blockdrop =>
             val itemblock = UiItem.blockForTool(blockdrop)
             val isTorch = (for {
               torch <- TORCHESR.get(itemblock)
-            } yield torch === blocks(layer)(uy)(ux + 1)).getOrElse(false)
+            } yield torch === blocks(layer.num)(uy)(ux + 1)).getOrElse(false)
 
             if (isTorch || blockdrop === LeverUiItem || blockdrop === ButtonUiItem) {
               UiItem.onImageItem(blockdrop) { imgItm =>
@@ -4303,11 +4306,11 @@ class TerraFrame
                 ()
               }
               removeBlockLighting(ux + 1, uy)
-              if (layer === 1) {
+              if (layer === Layer1) {
                 addSunLighting(ux + 1, uy)
               }
-              blockTemp = blocks(layer)(uy)(ux + 1)
-              blocks(layer)(uy)(ux + 1) = AirBlockType
+              blockTemp = blocks(layer.num)(uy)(ux + 1)
+              blocks(layer.num)(uy)(ux + 1) = AirBlockType
               if (blockTemp.id >= ZythiumWireBlockType.id && blockTemp.id <= ZythiumWire5PowerBlockType.id) {
                 redoBlockPower(ux, uy, layer)
               }
@@ -4319,11 +4322,11 @@ class TerraFrame
           }
 
           uy -= 1
-          if (uy === -1 || !BlockType.isGsupported(blocks(layer)(uy)(ux))) {
+          if (uy === -1 || !BlockType.isGsupported(blocks(layer.num)(uy)(ux))) {
             addSunLighting(ux, uy)
             break
           }
-          BlockType.drop(blocks(layer)(uy)(ux)).foreach { blockdrop =>
+          BlockType.drop(blocks(layer.num)(uy)(ux)).foreach { blockdrop =>
             UiItem.onImageItem(blockdrop) { imgItm =>
               entities += new IdEntity(
                 (ux * BLOCKSIZE).toDouble,
@@ -4337,7 +4340,7 @@ class TerraFrame
           }
 
           var tempUiItem: UiItem = EmptyUiItem
-          blocks(layer)(uy)(ux) match {
+          blocks(layer.num)(uy)(ux) match {
             case SunflowerStage1BlockType =>
               tempUiItem = SunflowerSeedsUiItem
               n = random.nextInt(4) - 2
@@ -4435,8 +4438,8 @@ class TerraFrame
             }
           }
           removeBlockLighting(ux, uy)
-          blockTemp = blocks(layer)(uy)(ux)
-          blocks(layer)(uy)(ux) = AirBlockType
+          blockTemp = blocks(layer.num)(uy)(ux)
+          blocks(layer.num)(uy)(ux) = AirBlockType
           if (blockTemp.id >= ZythiumWireBlockType.id && blockTemp.id <= ZythiumWire5PowerBlockType.id) {
             redoBlockPower(ux, uy, layer)
           }
@@ -4448,7 +4451,7 @@ class TerraFrame
             redoBlockLighting(ux, uy)
           }
           addSunLighting(ux, uy)
-          blockds(layer) = World.generate2b(blocks(layer), blockds(layer), ux, uy)
+          blockds(layer.num) = World.generate2b(blocks(layer.num), blockds(layer.num), ux, uy)
           (uy - 1 until uy + 2).foreach { uly =>
             (ux - 1 until ux + 2).foreach { ulx =>
               blockdns(uly)(ulx) = random.nextInt(5).toByte
@@ -4540,7 +4543,7 @@ class TerraFrame
         updatex += ux
         updatey += uy
         DDELAY.get(blocks(1)(uy)(ux).id).foreach(updatet.+=)
-        updatel += 1
+        updatel += Layer1
       } else {
         addTileToPZQueue(ux, uy)
         power(1)(uy)(ux) = 5.toFloat
@@ -4561,7 +4564,7 @@ class TerraFrame
         updatex += ux
         updatey += uy
         DDELAY.get(blocks(0)(uy)(ux).id).foreach(updatet.+=)
-        updatel += 0
+        updatel += Layer0
       } else {
         addTileToPZQueue(ux, uy)
         power(0)(uy)(ux) = 5.toFloat
@@ -4582,7 +4585,7 @@ class TerraFrame
         updatex += ux
         updatey += uy
         DDELAY.get(blocks(2)(uy)(ux).id).foreach(updatet.+=)
-        updatel += 2
+        updatel += Layer2
         ()
       } else {
         addTileToPZQueue(ux, uy)
@@ -4604,7 +4607,7 @@ class TerraFrame
     removeBlockLighting(ux, uy, layer)
   }
 
-  def removeBlockLighting(ux: Int, uy: Int, layer: Int): Unit = {
+  def removeBlockLighting(ux: Int, uy: Int, layer: Layer): Unit = {
     n = findNonLayeredBlockLightSource(ux, uy)
     if (n =/= 0) {
       lsources(uy)(ux) = isNonLayeredBlockLightSource(ux, uy, layer)
@@ -4628,8 +4631,8 @@ class TerraFrame
     }
   }
 
-  def rbpRecur(ux: Int, uy: Int, lyr: Int): Unit = {
-    arbprd(lyr)(uy)(ux) = true
+  def rbpRecur(ux: Int, uy: Int, lyr: Layer): Unit = {
+    arbprd(lyr.num)(uy)(ux) = true
     println("(rbpR) " + ux + " " + uy)
     addTileToPZQueue(ux, uy)
     val remember: Array[Boolean] = Array(false, false, false, false)
@@ -4637,11 +4640,11 @@ class TerraFrame
     (0 until 4).foreach { ir =>
       ax3 = ux + cl(ir)(0)
       ay3 = uy + cl(ir)(1)
-      lazy val block   = blocks(lyr)(ay3)(ax3)
+      lazy val block   = blocks(lyr.num)(ay3)(ax3)
       lazy val blockId = block.id
-      if (ay3 >= 0 && ay3 < HEIGHT && power(lyr)(ay3)(ax3) =/= 0) {
-        if (power(lyr)(ay3)(ax3) =/= 0 && !(power(lyr)(ay3)(ax3) === power(lyr)(uy)(ux) - conducts(
-              blocks(lyr)(uy)(ux).id).toFloat) &&
+      if (ay3 >= 0 && ay3 < HEIGHT && power(lyr.num)(ay3)(ax3) =/= 0) {
+        if (power(lyr.num)(ay3)(ax3) =/= 0 && !(power(lyr.num)(ay3)(ax3) === power(lyr.num)(uy)(ux) - conducts(
+              blocks(lyr.num)(uy)(ux).id).toFloat) &&
             (!(blockId >= ZythiumAmplifierRightBlockType.id && blockId <= ZythiumAmplifierUpOnBlockType.id || blockId >= ZythiumInverterRightBlockType.id && blockId <= ZythiumInverterUpOnBlockType.id) ||
             !(blockId >= ZythiumAmplifierRightBlockType.id && blockId <= ZythiumAmplifierUpOnBlockType.id && ux > ax3 && block =/= ZythiumAmplifierRightBlockType && block =/= ZythiumAmplifierRightOnBlockType ||
               blockId >= ZythiumAmplifierRightBlockType.id && blockId <= ZythiumAmplifierUpOnBlockType.id && uy > ay3 && block =/= ZythiumAmplifierDownBlockType && block =/= ZythiumAmplifierDownOnBlockType ||
@@ -4665,14 +4668,14 @@ class TerraFrame
       println("[liek srsly man?] " + ir)
       ax3 = ux + cl(ir)(0)
       ay3 = uy + cl(ir)(1)
-      println("(rpbRecur2) " + ax3 + " " + ay3 + " " + power(lyr)(ay3)(ax3))
-      lazy val userBlock   = blocks(lyr)(uy)(ux)
+      println("(rpbRecur2) " + ax3 + " " + ay3 + " " + power(lyr.num)(ay3)(ax3))
+      lazy val userBlock   = blocks(lyr.num)(uy)(ux)
       lazy val userBlockId = userBlock.id
-      if (ay3 >= 0 && ay3 < HEIGHT && power(lyr)(ay3)(ax3) =/= 0) {
-        println("(rbpRecur) " + power(lyr)(ay3)(ax3) + " " + power(lyr)(uy)(ux) + " " + conducts(userBlockId))
-        if ((power(lyr)(ay3)(ax3) === power(lyr)(uy)(ux) - conducts(userBlockId).toFloat) &&
-            (!(blocks(lyr)(ay3)(ax3).id >= ZythiumAmplifierRightBlockType.id && blocks(lyr)(ay3)(ax3).id <= ZythiumAmplifierUpOnBlockType.id || blocks(
-              lyr)(ay3)(ax3).id >= ZythiumInverterRightBlockType.id && blocks(lyr)(ay3)(ax3).id <= ZythiumInverterUpOnBlockType.id) ||
+      if (ay3 >= 0 && ay3 < HEIGHT && power(lyr.num)(ay3)(ax3) =/= 0) {
+        println("(rbpRecur) " + power(lyr.num)(ay3)(ax3) + " " + power(lyr.num)(uy)(ux) + " " + conducts(userBlockId))
+        if ((power(lyr.num)(ay3)(ax3) === power(lyr.num)(uy)(ux) - conducts(userBlockId).toFloat) &&
+            (!(blocks(lyr.num)(ay3)(ax3).id >= ZythiumAmplifierRightBlockType.id && blocks(lyr.num)(ay3)(ax3).id <= ZythiumAmplifierUpOnBlockType.id || blocks(
+              lyr.num)(ay3)(ax3).id >= ZythiumInverterRightBlockType.id && blocks(lyr.num)(ay3)(ax3).id <= ZythiumInverterUpOnBlockType.id) ||
             !(userBlockId >= ZythiumAmplifierRightBlockType.id && userBlockId <= ZythiumAmplifierUpOnBlockType.id && ux < ax3 && userBlock =/= ZythiumAmplifierRightBlockType && userBlock =/= ZythiumAmplifierRightOnBlockType ||
               userBlockId >= ZythiumAmplifierRightBlockType.id && userBlockId <= ZythiumAmplifierUpOnBlockType.id && uy < ay3 && userBlock =/= ZythiumAmplifierDownBlockType && userBlock =/= ZythiumAmplifierDownOnBlockType ||
               userBlockId >= ZythiumAmplifierRightBlockType.id && userBlockId <= ZythiumAmplifierUpOnBlockType.id && ux > ax3 && userBlock =/= ZythiumAmplifierLeftBlockType && userBlock =/= ZythiumAmplifierLeftOnBlockType ||
@@ -4685,46 +4688,46 @@ class TerraFrame
               userBlockId >= ZythiumDelayer1DelayRightBlockType.id && userBlockId <= ZythiumDelayer8DelayUpOnBlockType.id && uy < ay3 && userBlock =/= ZythiumDelayer1DelayDownBlockType && userBlock =/= ZythiumDelayer1DelayDownOnBlockType && userBlock =/= ZythiumDelayer2DelayDownBlockType && userBlock =/= ZythiumDelayer2DelayDownOnBlockType && userBlock =/= ZythiumDelayer4DelayDownBlockType && userBlock =/= ZythiumDelayer4DelayDownOnBlockType && userBlock =/= ZythiumDelayer8DelayDownBlockType && userBlock =/= ZythiumDelayer8DelayDownOnBlockType ||
               userBlockId >= ZythiumDelayer1DelayRightBlockType.id && userBlockId <= ZythiumDelayer8DelayUpOnBlockType.id && ux > ax3 && userBlock =/= ZythiumDelayer1DelayLeftBlockType && userBlock =/= ZythiumDelayer1DelayLeftOnBlockType && userBlock =/= ZythiumDelayer2DelayLeftBlockType && userBlock =/= ZythiumDelayer2DelayLeftOnBlockType && userBlock =/= ZythiumDelayer4DelayLeftBlockType && userBlock =/= ZythiumDelayer4DelayLeftOnBlockType && userBlock =/= ZythiumDelayer8DelayLeftBlockType && userBlock =/= ZythiumDelayer8DelayLeftOnBlockType ||
               userBlockId >= ZythiumDelayer1DelayRightBlockType.id && userBlockId <= ZythiumDelayer8DelayUpOnBlockType.id && uy > ay3 && userBlock =/= ZythiumDelayer1DelayUpBlockType && userBlock =/= ZythiumDelayer1DelayUpOnBlockType && userBlock =/= ZythiumDelayer2DelayUpBlockType && userBlock =/= ZythiumDelayer2DelayUpOnBlockType && userBlock =/= ZythiumDelayer4DelayUpBlockType && userBlock =/= ZythiumDelayer4DelayUpOnBlockType && userBlock =/= ZythiumDelayer8DelayUpBlockType && userBlock =/= ZythiumDelayer8DelayUpOnBlockType))) {
-          if (!arbprd(lyr)(ay3)(ax3)) {
+          if (!arbprd(lyr.num)(ay3)(ax3)) {
             rbpRecur(ax3, ay3, lyr)
-            if (conducts(blocks(lyr)(ay3)(ax3).id) >= 0 && wcnct(ay3)(ax3)) {
-              if (lyr === 0) {
+            if (conducts(blocks(lyr.num)(ay3)(ax3).id) >= 0 && wcnct(ay3)(ax3)) {
+              if (lyr === Layer0) {
                 if (receives(blocks(1)(ay3)(ax3).id)) {
-                  rbpRecur(ax3, ay3, 1)
+                  rbpRecur(ax3, ay3, Layer1)
                   if (powers(blocks(1)(ay3)(ax3))) {
                     addTileToPQueue(ax3, ay3)
                   }
                 }
                 if (receives(blocks(2)(ay3)(ax3).id)) {
-                  rbpRecur(ax3, ay3, 2)
+                  rbpRecur(ax3, ay3, Layer2)
                   if (powers(blocks(2)(ay3)(ax3))) {
                     addTileToPQueue(ax3, ay3)
                   }
                 }
               }
-              if (lyr === 1) {
+              if (lyr === Layer1) {
                 if (receives(blocks(0)(ay3)(ax3).id)) {
-                  rbpRecur(ax3, ay3, 0)
+                  rbpRecur(ax3, ay3, Layer0)
                   if (powers(blocks(0)(ay3)(ax3))) {
                     addTileToPQueue(ax3, ay3)
                   }
                 }
                 if (receives(blocks(2)(ay3)(ax3).id)) {
-                  rbpRecur(ax3, ay3, 2)
+                  rbpRecur(ax3, ay3, Layer2)
                   if (powers(blocks(2)(ay3)(ax3))) {
                     addTileToPQueue(ax3, ay3)
                   }
                 }
               }
-              if (lyr === 2) {
+              if (lyr === Layer2) {
                 if (receives(blocks(0)(ay3)(ax3).id)) {
-                  rbpRecur(ax3, ay3, 0)
+                  rbpRecur(ax3, ay3, Layer0)
                   if (powers(blocks(0)(ay3)(ax3))) {
                     addTileToPQueue(ax3, ay3)
                   }
                 }
-                if (receives(blocks(1)(ay3)(ax3).id)) {
-                  rbpRecur(ax3, ay3, 1)
+                if (receives(blocks(1)(ay3)(ax3).id)) {//TODO: looks like first index to blocks could be replayed with LayerX
+                  rbpRecur(ax3, ay3, Layer1)
                   if (powers(blocks(1)(ay3)(ax3))) {
                     addTileToPQueue(ax3, ay3)
                   }
@@ -4734,74 +4737,73 @@ class TerraFrame
           }
         }
       }
-      lazy val block   = blocks(lyr)(ay3)(ax3)
+      lazy val block   = blocks(lyr.num)(ay3)(ax3)
       lazy val blockId = block.id
       if (block === ZythiumLampOnBlockType ||
-        (
-          blockId >= ZythiumAmplifierRightBlockType.id &&
-          blockId <= ZythiumAmplifierUpOnBlockType.id
-          ||
-          blockId >= ZythiumInverterRightBlockType.id &&
-          blockId <= ZythiumInverterUpOnBlockType.id
-          ||
-          blockId >= ZythiumDelayer1DelayRightBlockType.id
-          && blockId <= ZythiumDelayer8DelayUpOnBlockType.id
-        )
-          &&
-          !(
+          (
             blockId >= ZythiumAmplifierRightBlockType.id &&
-            blockId <= ZythiumAmplifierUpOnBlockType.id &&
-            ux < ax3 &&
-            block =/= ZythiumAmplifierRightBlockType &&
-            block =/= ZythiumAmplifierRightOnBlockType
-            ||
-            blockId >= ZythiumAmplifierRightBlockType.id &&
-            blockId <= ZythiumAmplifierUpOnBlockType.id &&
-            uy < ay3 &&
-            block =/= ZythiumAmplifierDownBlockType &&
-            block =/= ZythiumAmplifierDownOnBlockType
-            ||
-            blockId >= ZythiumAmplifierRightBlockType.id &&
-            blockId <= ZythiumAmplifierUpOnBlockType.id &&
-            ux > ax3 &&
-            block =/= ZythiumAmplifierLeftBlockType &&
-            block =/= ZythiumAmplifierLeftOnBlockType
-            ||
-            blockId >= ZythiumAmplifierRightBlockType.id &&
-            blockId <= ZythiumAmplifierUpOnBlockType.id &&
-            uy > ay3 &&
-            block =/= ZythiumAmplifierUpBlockType &&
-            block =/= ZythiumAmplifierUpOnBlockType
-            )
-          &&
-          !(
-            blockId >= ZythiumInverterRightBlockType.id &&
-            blockId <= ZythiumInverterUpOnBlockType.id &&
-            ux < ax3 &&
-            block =/= ZythiumInverterRightBlockType &&
-            block =/= ZythiumInverterRightOnBlockType
+            blockId <= ZythiumAmplifierUpOnBlockType.id
             ||
             blockId >= ZythiumInverterRightBlockType.id &&
-            blockId <= ZythiumInverterUpOnBlockType.id &&
-            uy < ay3 &&
-            block =/= ZythiumInverterDownBlockType &&
-            block =/= ZythiumInverterDownOnBlockType
+            blockId <= ZythiumInverterUpOnBlockType.id
             ||
-            blockId >= ZythiumInverterRightBlockType.id &&
-            blockId <= ZythiumInverterUpOnBlockType.id &&
-            ux > ax3 &&
-            block =/= ZythiumInverterLeftBlockType &&
-            block =/= ZythiumInverterLeftOnBlockType
-            ||
-            blockId >= ZythiumInverterRightBlockType.id &&
-            blockId <= ZythiumInverterUpOnBlockType.id &&
-            uy > ay3 &&
-            block =/= ZythiumInverterUpBlockType &&
-            block =/= ZythiumInverterUpOnBlockType
+            blockId >= ZythiumDelayer1DelayRightBlockType.id
+            && blockId <= ZythiumDelayer8DelayUpOnBlockType.id
           )
           &&
           !(
-            blockId >= ZythiumDelayer1DelayRightBlockType.id &&
+            blockId >= ZythiumAmplifierRightBlockType.id &&
+              blockId <= ZythiumAmplifierUpOnBlockType.id &&
+              ux < ax3 &&
+              block =/= ZythiumAmplifierRightBlockType &&
+              block =/= ZythiumAmplifierRightOnBlockType
+              ||
+                blockId >= ZythiumAmplifierRightBlockType.id &&
+                  blockId <= ZythiumAmplifierUpOnBlockType.id &&
+                  uy < ay3 &&
+                  block =/= ZythiumAmplifierDownBlockType &&
+                  block =/= ZythiumAmplifierDownOnBlockType
+              ||
+                blockId >= ZythiumAmplifierRightBlockType.id &&
+                  blockId <= ZythiumAmplifierUpOnBlockType.id &&
+                  ux > ax3 &&
+                  block =/= ZythiumAmplifierLeftBlockType &&
+                  block =/= ZythiumAmplifierLeftOnBlockType
+              ||
+                blockId >= ZythiumAmplifierRightBlockType.id &&
+                  blockId <= ZythiumAmplifierUpOnBlockType.id &&
+                  uy > ay3 &&
+                  block =/= ZythiumAmplifierUpBlockType &&
+                  block =/= ZythiumAmplifierUpOnBlockType
+          )
+          &&
+          !(
+            blockId >= ZythiumInverterRightBlockType.id &&
+              blockId <= ZythiumInverterUpOnBlockType.id &&
+              ux < ax3 &&
+              block =/= ZythiumInverterRightBlockType &&
+              block =/= ZythiumInverterRightOnBlockType
+              ||
+                blockId >= ZythiumInverterRightBlockType.id &&
+                  blockId <= ZythiumInverterUpOnBlockType.id &&
+                  uy < ay3 &&
+                  block =/= ZythiumInverterDownBlockType &&
+                  block =/= ZythiumInverterDownOnBlockType
+              ||
+                blockId >= ZythiumInverterRightBlockType.id &&
+                  blockId <= ZythiumInverterUpOnBlockType.id &&
+                  ux > ax3 &&
+                  block =/= ZythiumInverterLeftBlockType &&
+                  block =/= ZythiumInverterLeftOnBlockType
+              ||
+                blockId >= ZythiumInverterRightBlockType.id &&
+                  blockId <= ZythiumInverterUpOnBlockType.id &&
+                  uy > ay3 &&
+                  block =/= ZythiumInverterUpBlockType &&
+                  block =/= ZythiumInverterUpOnBlockType
+          )
+          &&
+          !(blockId >= ZythiumDelayer1DelayRightBlockType.id &&
             blockId <= ZythiumDelayer8DelayUpOnBlockType.id &&
             ux < ax3 &&
             block =/= ZythiumDelayer1DelayRightBlockType &&
@@ -4813,43 +4815,43 @@ class TerraFrame
             block =/= ZythiumDelayer8DelayRightBlockType &&
             block =/= ZythiumDelayer8DelayRightOnBlockType
             ||
-            blockId >= ZythiumDelayer1DelayRightBlockType.id &&
-            blockId <= ZythiumDelayer8DelayUpOnBlockType.id &&
-            uy < ay3 &&
-            block =/= ZythiumDelayer1DelayDownBlockType &&
-            block =/= ZythiumDelayer1DelayDownOnBlockType &&
-            block =/= ZythiumDelayer2DelayDownBlockType &&
-            block =/= ZythiumDelayer2DelayDownOnBlockType &&
-            block =/= ZythiumDelayer4DelayDownBlockType &&
-            block =/= ZythiumDelayer4DelayDownOnBlockType &&
-            block =/= ZythiumDelayer8DelayDownBlockType &&
-            block =/= ZythiumDelayer8DelayDownOnBlockType
+              blockId >= ZythiumDelayer1DelayRightBlockType.id &&
+                blockId <= ZythiumDelayer8DelayUpOnBlockType.id &&
+                uy < ay3 &&
+                block =/= ZythiumDelayer1DelayDownBlockType &&
+                block =/= ZythiumDelayer1DelayDownOnBlockType &&
+                block =/= ZythiumDelayer2DelayDownBlockType &&
+                block =/= ZythiumDelayer2DelayDownOnBlockType &&
+                block =/= ZythiumDelayer4DelayDownBlockType &&
+                block =/= ZythiumDelayer4DelayDownOnBlockType &&
+                block =/= ZythiumDelayer8DelayDownBlockType &&
+                block =/= ZythiumDelayer8DelayDownOnBlockType
             ||
-            blockId >= ZythiumDelayer1DelayRightBlockType.id &&
-            blockId <= ZythiumDelayer8DelayUpOnBlockType.id &&
-            ux > ax3 &&
-            block =/= ZythiumDelayer1DelayLeftBlockType &&
-            block =/= ZythiumDelayer1DelayLeftOnBlockType &&
-            block =/= ZythiumDelayer2DelayLeftBlockType &&
-            block =/= ZythiumDelayer2DelayLeftOnBlockType &&
-            block =/= ZythiumDelayer4DelayLeftBlockType &&
-            block =/= ZythiumDelayer4DelayLeftOnBlockType &&
-            block =/= ZythiumDelayer8DelayLeftBlockType &&
-            block =/= ZythiumDelayer8DelayLeftOnBlockType
+              blockId >= ZythiumDelayer1DelayRightBlockType.id &&
+                blockId <= ZythiumDelayer8DelayUpOnBlockType.id &&
+                ux > ax3 &&
+                block =/= ZythiumDelayer1DelayLeftBlockType &&
+                block =/= ZythiumDelayer1DelayLeftOnBlockType &&
+                block =/= ZythiumDelayer2DelayLeftBlockType &&
+                block =/= ZythiumDelayer2DelayLeftOnBlockType &&
+                block =/= ZythiumDelayer4DelayLeftBlockType &&
+                block =/= ZythiumDelayer4DelayLeftOnBlockType &&
+                block =/= ZythiumDelayer8DelayLeftBlockType &&
+                block =/= ZythiumDelayer8DelayLeftOnBlockType
             ||
-            blockId >= ZythiumDelayer1DelayRightBlockType.id &&
-            blockId <= ZythiumDelayer8DelayUpOnBlockType.id &&
-            uy > ay3 &&
-            block =/= ZythiumDelayer1DelayUpBlockType &&
-            block =/= ZythiumDelayer1DelayUpOnBlockType &&
-            block =/= ZythiumDelayer2DelayUpBlockType &&
-            block =/= ZythiumDelayer2DelayUpOnBlockType &&
-            block =/= ZythiumDelayer4DelayUpBlockType &&
-            block =/= ZythiumDelayer4DelayUpOnBlockType &&
-            block =/= ZythiumDelayer8DelayUpBlockType &&
-            block =/= ZythiumDelayer8DelayUpOnBlockType)) {
+              blockId >= ZythiumDelayer1DelayRightBlockType.id &&
+                blockId <= ZythiumDelayer8DelayUpOnBlockType.id &&
+                uy > ay3 &&
+                block =/= ZythiumDelayer1DelayUpBlockType &&
+                block =/= ZythiumDelayer1DelayUpOnBlockType &&
+                block =/= ZythiumDelayer2DelayUpBlockType &&
+                block =/= ZythiumDelayer2DelayUpOnBlockType &&
+                block =/= ZythiumDelayer4DelayUpBlockType &&
+                block =/= ZythiumDelayer4DelayUpOnBlockType &&
+                block =/= ZythiumDelayer8DelayUpBlockType &&
+                block =/= ZythiumDelayer8DelayUpOnBlockType)) {
         if (blockId >= ZythiumInverterRightOnBlockType.id && blockId <= ZythiumInverterUpOnBlockType.id) {
-          blocks(lyr)(ay3)(ax3) = BlockType.lookupById(blockId - 4)
+          blocks(lyr.num)(ay3)(ax3) = BlockType.lookupById(blockId - 4)
           println("Adding power for inverter at (" + ax3 + ", " + ay3 + ").")
           addBlockPower(ax3, ay3)
           addBlockLighting(ax3, ay3)
@@ -4860,32 +4862,32 @@ class TerraFrame
     }
     (0 until 4).foreach { ir =>
       if (remember(ir) && uy + cl(ir)(1) >= 0 && uy + cl(ir)(1) < HEIGHT) {
-        power(lyr)(uy + cl(ir)(1))(ux + cl(ir)(0)) = 5.toFloat
+        power(lyr.num)(uy + cl(ir)(1))(ux + cl(ir)(0)) = 5.toFloat
       }
     }
-    power(lyr)(uy)(ux) = 0.toFloat
-    arbprd(lyr)(uy)(ux) = false
+    power(lyr.num)(uy)(ux) = 0.toFloat
+    arbprd(lyr.num)(uy)(ux) = false
   }
 
-  def removeBlockPower(ux: Int, uy: Int, lyr: Int): Unit = {
+  def removeBlockPower(ux: Int, uy: Int, lyr: Layer): Unit = {
     removeBlockPower(ux, uy, lyr, true)
   }
 
-  def removeBlockPower(ux: Int, uy: Int, lyr: Int, turnOffDelayer: Boolean): Unit = {
-    arbprd(lyr)(uy)(ux) = true
-    println("[rbp ] " + ux + " " + uy + " " + lyr + " " + turnOffDelayer)
-    if (!((blocks(lyr)(uy)(ux).id >= ZythiumDelayer1DelayRightOnBlockType.id && blocks(lyr)(uy)(ux).id <= ZythiumDelayer1DelayUpOnBlockType.id || blocks(
-          lyr)(uy)(ux).id >= ZythiumDelayer2DelayRightOnBlockType.id && blocks(lyr)(uy)(ux).id <= ZythiumDelayer2DelayUpOnBlockType.id || blocks(
-          lyr)(uy)(ux).id >= ZythiumDelayer4DelayRightOnBlockType.id && blocks(lyr)(uy)(ux).id <= ZythiumDelayer4DelayUpOnBlockType.id || blocks(
-          lyr)(uy)(ux).id >= ZythiumDelayer8DelayRightOnBlockType.id && blocks(lyr)(uy)(ux).id <= ZythiumDelayer8DelayUpOnBlockType.id) && turnOffDelayer)) {
+  def removeBlockPower(ux: Int, uy: Int, lyr: Layer, turnOffDelayer: Boolean): Unit = {
+    arbprd(lyr.num)(uy)(ux) = true
+    println("[rbp ] " + ux + " " + uy + " " + lyr.num + " " + turnOffDelayer)
+    if (!((blocks(lyr.num)(uy)(ux).id >= ZythiumDelayer1DelayRightOnBlockType.id && blocks(lyr.num)(uy)(ux).id <= ZythiumDelayer1DelayUpOnBlockType.id || blocks(
+          lyr.num)(uy)(ux).id >= ZythiumDelayer2DelayRightOnBlockType.id && blocks(lyr.num)(uy)(ux).id <= ZythiumDelayer2DelayUpOnBlockType.id || blocks(
+          lyr.num)(uy)(ux).id >= ZythiumDelayer4DelayRightOnBlockType.id && blocks(lyr.num)(uy)(ux).id <= ZythiumDelayer4DelayUpOnBlockType.id || blocks(
+          lyr.num)(uy)(ux).id >= ZythiumDelayer8DelayRightOnBlockType.id && blocks(lyr.num)(uy)(ux).id <= ZythiumDelayer8DelayUpOnBlockType.id) && turnOffDelayer)) {
       var ax3, ay3: Int = 0
       (0 until 4).foreach { ir =>
         ax3 = ux + cl(ir)(0)
         ay3 = uy + cl(ir)(1)
-        lazy val block   = blocks(lyr)(ay3)(ax3)
+        lazy val block   = blocks(lyr.num)(ay3)(ax3)
         lazy val blockId = block.id
-        if (ay3 >= 0 && ay3 < HEIGHT && power(lyr)(ay3)(ax3) =/= 0) {
-          if (!(power(lyr)(ay3)(ax3) === power(lyr)(uy)(ux) - conducts(blocks(lyr)(uy)(ux).id).toFloat) &&
+        if (ay3 >= 0 && ay3 < HEIGHT && power(lyr.num)(ay3)(ax3) =/= 0) {
+          if (!(power(lyr.num)(ay3)(ax3) === power(lyr.num)(uy)(ux) - conducts(blocks(lyr.num)(uy)(ux).id).toFloat) &&
               (!(blockId >= ZythiumAmplifierRightBlockType.id && blockId <= ZythiumAmplifierUpOnBlockType.id || blockId >= ZythiumInverterRightBlockType.id && blockId <= ZythiumInverterUpOnBlockType.id) ||
               !(blockId >= ZythiumAmplifierRightBlockType.id && blockId <= ZythiumAmplifierUpOnBlockType.id && ux > ax3 && block =/= ZythiumAmplifierRightBlockType && block =/= ZythiumAmplifierRightOnBlockType ||
                 blockId >= ZythiumAmplifierRightBlockType.id && blockId <= ZythiumAmplifierUpOnBlockType.id && uy > ay3 && block =/= ZythiumAmplifierDownBlockType && block =/= ZythiumAmplifierDownOnBlockType ||
@@ -4907,14 +4909,14 @@ class TerraFrame
       (0 until 4).foreach { ir =>
         ax3 = ux + cl(ir)(0)
         ay3 = uy + cl(ir)(1)
-        lazy val userBlock   = blocks(lyr)(uy)(ux)
+        lazy val userBlock   = blocks(lyr.num)(uy)(ux)
         lazy val userBlockId = userBlock.id
-        println(blocks(lyr)(ay3)(ax3) + " " + power(lyr)(ay3)(ax3))
-        if (ay3 >= 0 && ay3 < HEIGHT && power(lyr)(ay3)(ax3) =/= 0) {
-          println(power(lyr)(uy)(ux) + " " + power(lyr)(ay3)(ax3) + " " + conducts(userBlockId))
-          if (power(lyr)(ay3)(ax3) === power(lyr)(uy)(ux) - conducts(userBlockId).toFloat) {
-            if (!(blocks(lyr)(ay3)(ax3).id >= ZythiumAmplifierRightBlockType.id && blocks(lyr)(ay3)(ax3).id <= ZythiumAmplifierUpOnBlockType.id || blocks(
-                  lyr)(ay3)(ax3).id >= ZythiumInverterRightBlockType.id && blocks(lyr)(ay3)(ax3).id <= ZythiumInverterUpOnBlockType.id) ||
+        println(blocks(lyr.num)(ay3)(ax3) + " " + power(lyr.num)(ay3)(ax3))
+        if (ay3 >= 0 && ay3 < HEIGHT && power(lyr.num)(ay3)(ax3) =/= 0) {
+          println(power(lyr.num)(uy)(ux) + " " + power(lyr.num)(ay3)(ax3) + " " + conducts(userBlockId))
+          if (power(lyr.num)(ay3)(ax3) === power(lyr.num)(uy)(ux) - conducts(userBlockId).toFloat) {
+            if (!(blocks(lyr.num)(ay3)(ax3).id >= ZythiumAmplifierRightBlockType.id && blocks(lyr.num)(ay3)(ax3).id <= ZythiumAmplifierUpOnBlockType.id || blocks(
+                  lyr.num)(ay3)(ax3).id >= ZythiumInverterRightBlockType.id && blocks(lyr.num)(ay3)(ax3).id <= ZythiumInverterUpOnBlockType.id) ||
                 !(userBlockId >= ZythiumAmplifierRightBlockType.id && userBlockId <= ZythiumAmplifierUpOnBlockType.id && ux < ax3 && userBlock =/= ZythiumAmplifierRightBlockType && userBlock =/= ZythiumAmplifierRightOnBlockType ||
                   userBlockId >= ZythiumAmplifierRightBlockType.id && userBlockId <= ZythiumAmplifierUpOnBlockType.id && uy < ay3 && userBlock =/= ZythiumAmplifierDownBlockType && userBlock =/= ZythiumAmplifierDownOnBlockType ||
                   userBlockId >= ZythiumAmplifierRightBlockType.id && userBlockId <= ZythiumAmplifierUpOnBlockType.id && ux > ax3 && userBlock =/= ZythiumAmplifierLeftBlockType && userBlock =/= ZythiumAmplifierLeftOnBlockType ||
@@ -4927,46 +4929,46 @@ class TerraFrame
                   userBlockId >= ZythiumDelayer1DelayRightBlockType.id && userBlockId <= ZythiumDelayer8DelayUpOnBlockType.id && uy < ay3 && userBlock =/= ZythiumDelayer1DelayDownBlockType && userBlock =/= ZythiumDelayer1DelayDownOnBlockType && userBlock =/= ZythiumDelayer2DelayDownBlockType && userBlock =/= ZythiumDelayer2DelayDownOnBlockType && userBlock =/= ZythiumDelayer4DelayDownBlockType && userBlock =/= ZythiumDelayer4DelayDownOnBlockType && userBlock =/= ZythiumDelayer8DelayDownBlockType && userBlock =/= ZythiumDelayer8DelayDownOnBlockType ||
                   userBlockId >= ZythiumDelayer1DelayRightBlockType.id && userBlockId <= ZythiumDelayer8DelayUpOnBlockType.id && ux > ax3 && userBlock =/= ZythiumDelayer1DelayLeftBlockType && userBlock =/= ZythiumDelayer1DelayLeftOnBlockType && userBlock =/= ZythiumDelayer2DelayLeftBlockType && userBlock =/= ZythiumDelayer2DelayLeftOnBlockType && userBlock =/= ZythiumDelayer4DelayLeftBlockType && userBlock =/= ZythiumDelayer4DelayLeftOnBlockType && userBlock =/= ZythiumDelayer8DelayLeftBlockType && userBlock =/= ZythiumDelayer8DelayLeftOnBlockType ||
                   userBlockId >= ZythiumDelayer1DelayRightBlockType.id && userBlockId <= ZythiumDelayer8DelayUpOnBlockType.id && uy > ay3 && userBlock =/= ZythiumDelayer1DelayUpBlockType && userBlock =/= ZythiumDelayer1DelayUpOnBlockType && userBlock =/= ZythiumDelayer2DelayUpBlockType && userBlock =/= ZythiumDelayer2DelayUpOnBlockType && userBlock =/= ZythiumDelayer4DelayUpBlockType && userBlock =/= ZythiumDelayer4DelayUpOnBlockType && userBlock =/= ZythiumDelayer8DelayUpBlockType && userBlock =/= ZythiumDelayer8DelayUpOnBlockType)) {
-              if (!arbprd(lyr)(ay3)(ax3)) {
+              if (!arbprd(lyr.num)(ay3)(ax3)) {
                 rbpRecur(ax3, ay3, lyr)
-                if (conducts(blocks(lyr)(ay3)(ax3).id) >= 0 && wcnct(ay3)(ax3)) {
-                  if (lyr === 0) {
+                if (conducts(blocks(lyr.num)(ay3)(ax3).id) >= 0 && wcnct(ay3)(ax3)) {
+                  if (lyr === Layer0) {
                     if (receives(blocks(1)(ay3)(ax3).id)) {
-                      rbpRecur(ax3, ay3, 1)
+                      rbpRecur(ax3, ay3, Layer1)
                       if (powers(blocks(1)(ay3)(ax3))) {
                         addTileToPQueue(ax3, ay3)
                       }
                     }
                     if (receives(blocks(2)(ay3)(ax3).id)) {
-                      rbpRecur(ax3, ay3, 2)
+                      rbpRecur(ax3, ay3, Layer2)
                       if (powers(blocks(2)(ay3)(ax3))) {
                         addTileToPQueue(ax3, ay3)
                       }
                     }
                   }
-                  if (lyr === 1) {
+                  if (lyr === Layer1) {
                     if (receives(blocks(0)(ay3)(ax3).id)) {
-                      rbpRecur(ax3, ay3, 0)
+                      rbpRecur(ax3, ay3, Layer0)
                       if (powers(blocks(0)(ay3)(ax3))) {
                         addTileToPQueue(ax3, ay3)
                       }
                     }
                     if (receives(blocks(2)(ay3)(ax3).id)) {
-                      rbpRecur(ax3, ay3, 2)
+                      rbpRecur(ax3, ay3, Layer2)
                       if (powers(blocks(2)(ay3)(ax3))) {
                         addTileToPQueue(ax3, ay3)
                       }
                     }
                   }
-                  if (lyr === 2) {
+                  if (lyr === Layer2) {
                     if (receives(blocks(0)(ay3)(ax3).id)) {
-                      rbpRecur(ax3, ay3, 0)
+                      rbpRecur(ax3, ay3, Layer0)
                       if (powers(blocks(0)(ay3)(ax3))) {
                         addTileToPQueue(ax3, ay3)
                       }
                     }
                     if (receives(blocks(1)(ay3)(ax3).id)) {
-                      rbpRecur(ax3, ay3, 1)
+                      rbpRecur(ax3, ay3, Layer1)
                       if (powers(blocks(1)(ay3)(ax3))) {
                         addTileToPQueue(ax3, ay3)
                       }
@@ -4977,7 +4979,7 @@ class TerraFrame
             }
           }
         }
-        lazy val block   = blocks(lyr)(ay3)(ax3)
+        lazy val block   = blocks(lyr.num)(ay3)(ax3)
         lazy val blockId = block.id
         if (block === ZythiumLampOnBlockType || (blockId >= ZythiumAmplifierRightBlockType.id && blockId <= ZythiumAmplifierUpOnBlockType.id || blockId >= ZythiumInverterRightBlockType.id && blockId <= ZythiumInverterUpOnBlockType.id || blockId >= ZythiumDelayer1DelayRightBlockType.id && blockId <= ZythiumDelayer8DelayUpOnBlockType.id) &&
             !(blockId >= ZythiumAmplifierRightBlockType.id && blockId <= ZythiumAmplifierUpOnBlockType.id && ux < ax3 && block =/= ZythiumAmplifierRightBlockType && block =/= ZythiumAmplifierRightOnBlockType ||
@@ -4993,43 +4995,43 @@ class TerraFrame
               blockId >= ZythiumDelayer1DelayRightBlockType.id && blockId <= ZythiumDelayer8DelayUpOnBlockType.id && ux > ax3 && block =/= ZythiumDelayer1DelayLeftBlockType && block =/= ZythiumDelayer1DelayLeftOnBlockType && block =/= ZythiumDelayer2DelayLeftBlockType && block =/= ZythiumDelayer2DelayLeftOnBlockType && block =/= ZythiumDelayer4DelayLeftBlockType && block =/= ZythiumDelayer4DelayLeftOnBlockType && block =/= ZythiumDelayer8DelayLeftBlockType && block =/= ZythiumDelayer8DelayLeftOnBlockType ||
               blockId >= ZythiumDelayer1DelayRightBlockType.id && blockId <= ZythiumDelayer8DelayUpOnBlockType.id && uy > ay3 && block =/= ZythiumDelayer1DelayUpBlockType && block =/= ZythiumDelayer1DelayUpOnBlockType && block =/= ZythiumDelayer2DelayUpBlockType && block =/= ZythiumDelayer2DelayUpOnBlockType && block =/= ZythiumDelayer4DelayUpBlockType && block =/= ZythiumDelayer4DelayUpOnBlockType && block =/= ZythiumDelayer8DelayUpBlockType && block =/= ZythiumDelayer8DelayUpOnBlockType)) {
           if (blockId >= ZythiumInverterRightOnBlockType.id && blockId <= ZythiumInverterUpOnBlockType.id) {
-            blocks(lyr)(ay3)(ax3) = BlockType.lookupById(blockId - 4)
+            blocks(lyr.num)(ay3)(ax3) = BlockType.lookupById(blockId - 4)
             println("Adding power for inverter at (" + ax3 + ", " + ay3 + ").")
             addBlockPower(ax3, ay3)
             addBlockLighting(ax3, ay3)
             rdrawn(ay3)(ax3) = false
           }
-          arbprd(lyr)(uy)(ux) = false
+          arbprd(lyr.num)(uy)(ux) = false
           removeBlockPower(ax3, ay3, lyr)
         }
       }
     }
-    if (blocks(lyr)(uy)(ux) === ZythiumLampOnBlockType) {
+    if (blocks(lyr.num)(uy)(ux) === ZythiumLampOnBlockType) {
       removeBlockLighting(ux, uy)
-      blocks(lyr)(uy)(ux) = ZythiumLampBlockType
+      blocks(lyr.num)(uy)(ux) = ZythiumLampBlockType
       rdrawn(uy)(ux) = false
     }
-    if (blocks(lyr)(uy)(ux).id >= ZythiumAmplifierRightOnBlockType.id && blocks(lyr)(uy)(ux).id <= ZythiumAmplifierUpOnBlockType.id) {
-      blockTemp = blocks(lyr)(uy)(ux)
-      blocks(lyr)(uy)(ux) = BlockType.lookupById(blocks(lyr)(uy)(ux).id - 4)
+    if (blocks(lyr.num)(uy)(ux).id >= ZythiumAmplifierRightOnBlockType.id && blocks(lyr.num)(uy)(ux).id <= ZythiumAmplifierUpOnBlockType.id) {
+      blockTemp = blocks(lyr.num)(uy)(ux)
+      blocks(lyr.num)(uy)(ux) = BlockType.lookupById(blocks(lyr.num)(uy)(ux).id - 4)
       removeBlockPower(ux, uy, lyr)
       removeBlockLighting(ux, uy)
       rdrawn(uy)(ux) = false
     }
-    if (turnOffDelayer && blocks(lyr)(uy)(ux).id >= ZythiumDelayer1DelayRightBlockType.id && blocks(lyr)(uy)(ux).id <= ZythiumDelayer8DelayUpOnBlockType.id) {
+    if (turnOffDelayer && blocks(lyr.num)(uy)(ux).id >= ZythiumDelayer1DelayRightBlockType.id && blocks(lyr.num)(uy)(ux).id <= ZythiumDelayer8DelayUpOnBlockType.id) {
       println("???")
       updatex += ux
       updatey += uy
-      DDELAY.get(blocks(lyr)(uy)(ux).id).foreach(updatet.+=)
+      DDELAY.get(blocks(lyr.num)(uy)(ux).id).foreach(updatet.+=)
       updatel += lyr
     }
-    if (!((blocks(lyr)(uy)(ux).id >= ZythiumDelayer1DelayRightOnBlockType.id && blocks(lyr)(uy)(ux).id <= ZythiumDelayer1DelayUpOnBlockType.id || blocks(
-          lyr)(uy)(ux).id >= ZythiumDelayer2DelayRightOnBlockType.id && blocks(lyr)(uy)(ux).id <= ZythiumDelayer2DelayUpOnBlockType.id || blocks(
-          lyr)(uy)(ux).id >= ZythiumDelayer4DelayRightOnBlockType.id && blocks(lyr)(uy)(ux).id <= ZythiumDelayer4DelayUpOnBlockType.id || blocks(
-          lyr)(uy)(ux).id >= ZythiumDelayer8DelayRightOnBlockType.id && blocks(lyr)(uy)(ux).id <= ZythiumDelayer8DelayUpOnBlockType.id) && turnOffDelayer)) {
-      power(lyr)(uy)(ux) = 0.toFloat
+    if (!((blocks(lyr.num)(uy)(ux).id >= ZythiumDelayer1DelayRightOnBlockType.id && blocks(lyr.num)(uy)(ux).id <= ZythiumDelayer1DelayUpOnBlockType.id || blocks(
+          lyr.num)(uy)(ux).id >= ZythiumDelayer2DelayRightOnBlockType.id && blocks(lyr.num)(uy)(ux).id <= ZythiumDelayer2DelayUpOnBlockType.id || blocks(
+          lyr.num)(uy)(ux).id >= ZythiumDelayer4DelayRightOnBlockType.id && blocks(lyr.num)(uy)(ux).id <= ZythiumDelayer4DelayUpOnBlockType.id || blocks(
+          lyr.num)(uy)(ux).id >= ZythiumDelayer8DelayRightOnBlockType.id && blocks(lyr.num)(uy)(ux).id <= ZythiumDelayer8DelayUpOnBlockType.id) && turnOffDelayer)) {
+      power(lyr.num)(uy)(ux) = 0.toFloat
     }
-    arbprd(lyr)(uy)(ux) = false
+    arbprd(lyr.num)(uy)(ux) = false
   }
 
   def redoBlockLighting(ux: Int, uy: Int): Unit = {
@@ -5052,8 +5054,9 @@ class TerraFrame
     }
   }
 
-  def redoBlockPower(ux: Int, uy: Int, lyr: Int): Unit = {
-    if (powers(blocks(lyr)(uy)(ux)) || blocks(lyr)(uy)(ux).id >= ZythiumWireBlockType.id && blocks(lyr)(uy)(ux).id <= ZythiumWire5PowerBlockType.id) {
+  def redoBlockPower(ux: Int, uy: Int, lyr: Layer): Unit = {
+    if (powers(blocks(lyr.num)(uy)(ux)) || blocks(lyr.num)(uy)(ux).id >= ZythiumWireBlockType.id && blocks(lyr.num)(uy)(
+          ux).id <= ZythiumWire5PowerBlockType.id) {
       addAdjacentTilesToPQueue(ux, uy)
     } else {
       removeBlockPower(ux, uy, lyr)
@@ -5137,10 +5140,10 @@ class TerraFrame
     isNonLayeredBlockLightSource(ux, uy, layer)
   }
 
-  def isNonLayeredBlockLightSource(ux: Int, uy: Int, layer: Int): Boolean = {
-    layer =/= 0 && blocks(0)(uy)(ux) =/= AirBlockType && BLOCKLIGHTS.get(blocks(0)(uy)(ux).id).exists(_ =/= 0) ||
-    layer =/= 1 && blocks(1)(uy)(ux) =/= AirBlockType && BLOCKLIGHTS.get(blocks(1)(uy)(ux).id).exists(_ =/= 0) ||
-    layer =/= 2 && blocks(2)(uy)(ux) =/= AirBlockType && BLOCKLIGHTS.get(blocks(2)(uy)(ux).id).exists(_ =/= 0)
+  def isNonLayeredBlockLightSource(ux: Int, uy: Int, layer: Layer): Boolean = {
+    layer =/= Layer0 && blocks(0)(uy)(ux) =/= AirBlockType && BLOCKLIGHTS.get(blocks(0)(uy)(ux).id).exists(_ =/= 0) ||
+    layer =/= Layer1 && blocks(1)(uy)(ux) =/= AirBlockType && BLOCKLIGHTS.get(blocks(1)(uy)(ux).id).exists(_ =/= 0) ||
+    layer =/= Layer2 && blocks(2)(uy)(ux) =/= AirBlockType && BLOCKLIGHTS.get(blocks(2)(uy)(ux).id).exists(_ =/= 0)
   }
 
   def findBlockLightSource(ux: Int, uy: Int): Int = {
@@ -5282,12 +5285,12 @@ class TerraFrame
           x2 = x + cl(i)(0)
           y2 = y + cl(i)(1)
           if (y2 >= 0 && y2 < HEIGHT) {
-            (0 until 3).foreach { l =>
-              lazy val block2   = blocks(l)(y2)(x2)
-              lazy val blockId2 = blocks(l)(y2)(x2).id
-              lazy val block    = blocks(l)(y)(x)
+            Layer.values.foreach { l =>
+              lazy val block2   = blocks(l.num)(y2)(x2)
+              lazy val blockId2 = blocks(l.num)(y2)(x2).id
+              lazy val block    = blocks(l.num)(y)(x)
               lazy val blockId  = block.id
-              if (power(l)(y)(x) > 0) {
+              if (power(l.num)(y)(x) > 0) {
                 if (conducts(blockId) >= 0 && receives(blockId2) && !(blockId2 >= ZythiumAmplifierRightBlockType.id && blockId2 <= ZythiumAmplifierUpOnBlockType.id && x < x2 && block2 =/= ZythiumAmplifierRightBlockType && block2 =/= ZythiumAmplifierRightOnBlockType ||
                       blockId2 >= ZythiumAmplifierRightBlockType.id && blockId2 <= ZythiumAmplifierUpOnBlockType.id && y < y2 && block2 =/= ZythiumAmplifierDownBlockType && block2 =/= ZythiumAmplifierDownOnBlockType ||
                       blockId2 >= ZythiumAmplifierRightBlockType.id && blockId2 <= ZythiumAmplifierUpOnBlockType.id && x > x2 && block2 =/= ZythiumAmplifierLeftBlockType && block2 =/= ZythiumAmplifierLeftOnBlockType ||
@@ -5312,7 +5315,7 @@ class TerraFrame
                       blockId >= ZythiumDelayer1DelayRightBlockType.id && blockId <= ZythiumDelayer8DelayUpOnBlockType.id && y < y2 && block =/= ZythiumDelayer1DelayDownBlockType && block =/= ZythiumDelayer1DelayDownOnBlockType && block =/= ZythiumDelayer2DelayDownBlockType && block =/= ZythiumDelayer2DelayDownOnBlockType && block =/= ZythiumDelayer4DelayDownBlockType && block =/= ZythiumDelayer4DelayDownOnBlockType && block =/= ZythiumDelayer8DelayDownBlockType && block =/= ZythiumDelayer8DelayDownOnBlockType ||
                       blockId >= ZythiumDelayer1DelayRightBlockType.id && blockId <= ZythiumDelayer8DelayUpOnBlockType.id && x > x2 && block =/= ZythiumDelayer1DelayLeftBlockType && block =/= ZythiumDelayer1DelayLeftOnBlockType && block =/= ZythiumDelayer2DelayLeftBlockType && block =/= ZythiumDelayer2DelayLeftOnBlockType && block =/= ZythiumDelayer4DelayLeftBlockType && block =/= ZythiumDelayer4DelayLeftOnBlockType && block =/= ZythiumDelayer8DelayLeftBlockType && block =/= ZythiumDelayer8DelayLeftOnBlockType ||
                       blockId >= ZythiumDelayer1DelayRightBlockType.id && blockId <= ZythiumDelayer8DelayUpOnBlockType.id && y > y2 && block =/= ZythiumDelayer1DelayUpBlockType && block =/= ZythiumDelayer1DelayUpOnBlockType && block =/= ZythiumDelayer2DelayUpBlockType && block =/= ZythiumDelayer2DelayUpOnBlockType && block =/= ZythiumDelayer4DelayUpBlockType && block =/= ZythiumDelayer4DelayUpOnBlockType && block =/= ZythiumDelayer8DelayUpBlockType && block =/= ZythiumDelayer8DelayUpOnBlockType)) {
-                  if (power(l)(y2)(x2) <= power(l)(y)(x) - conducts(blockId)) {
+                  if (power(l.num)(y2)(x2) <= power(l.num)(y)(x) - conducts(blockId)) {
                     addTileToPZQueue(x2, y2)
                     if (blockId2 >= ZythiumDelayer1DelayRightBlockType.id && blockId2 <= ZythiumDelayer1DelayUpBlockType.id ||
                         blockId2 >= ZythiumDelayer2DelayRightBlockType.id && blockId2 <= ZythiumDelayer2DelayUpBlockType.id ||
@@ -5324,9 +5327,9 @@ class TerraFrame
                       DDELAY.get(blockId2).foreach(updatet.+=)
                       updatel += l
                     } else {
-                      power(l)(y2)(x2) = power(l)(y)(x) - conducts(blockId).toFloat
+                      power(l.num)(y2)(x2) = power(l.num)(y)(x) - conducts(blockId).toFloat
                       if (conducts(blockId2) >= 0 && wcnct(y2)(x2)) {
-                        if (l === 0) {
+                        if (l === Layer0) {
                           if (receives(blocks(1)(y2)(x2).id)) {
                             power(1)(y2)(x2) = power(0)(y2)(x2) - conducts(blocks(0)(y2)(x2).id).toFloat
                           }
@@ -5334,15 +5337,15 @@ class TerraFrame
                             power(2)(y2)(x2) = power(0)(y2)(x2) - conducts(blocks(0)(y2)(x2).id).toFloat
                           }
                         }
-                        if (l === 1) {
+                        if (l === Layer1) {
                           if (receives(blocks(0)(y2)(x2).id)) {
-                            power(0)(y2)(x2) = power(1)(y2)(x2) - conducts(blocks(1)(y2)(x2).id).toFloat
+                            power(0)(y2)(x2) = power(1)(y2)(x2) - conducts(blocks(1)(y2)(x2).id).toFloat //TODO: looks like first index of power could be replaced by Layer enum
                           }
                           if (receives(blocks(2)(y2)(x2).id)) {
                             power(2)(y2)(x2) = power(1)(y2)(x2) - conducts(blocks(1)(y2)(x2).id).toFloat
                           }
                         }
-                        if (l === 2) {
+                        if (l === Layer2) {
                           if (receives(blocks(0)(y2)(x2).id)) {
                             power(0)(y2)(x2) = power(2)(y2)(x2) - conducts(blocks(2)(y2)(x2).id).toFloat
                           }
@@ -5356,9 +5359,9 @@ class TerraFrame
                       addTileToPQueue(x2, y2)
                     }
                   }
-                  if (power(l)(y)(x) - conducts(blockId) > 0 && blockId2 >= ZythiumInverterRightBlockType.id && blockId2 <= ZythiumInverterUpBlockType.id) {
+                  if (power(l.num)(y)(x) - conducts(blockId) > 0 && blockId2 >= ZythiumInverterRightBlockType.id && blockId2 <= ZythiumInverterUpBlockType.id) {
                     removeBlockPower(x2, y2, l)
-                    blocks(l)(y2)(x2) = BlockType.lookupById(blockId2 + 4)
+                    blocks(l.num)(y2)(x2) = BlockType.lookupById(blockId2 + 4)
                     removeBlockLighting(x2, y2)
                     rdrawn(y2)(x2) = false
                   }
@@ -5397,7 +5400,7 @@ class TerraFrame
       (0 until 3).foreach { l =>
         if (blocks(l)(y)(x).id >= ZythiumWireBlockType.id && blocks(l)(y)(x).id <= ZythiumWire5PowerBlockType.id && power(
               l)(y)(x).toByte =/= pzqn(l)(y)(x)) {
-          removeBlockLighting(x, y, 0)
+          removeBlockLighting(x, y, Layer0)
           WIREP.get(power(l)(y)(x).toInt).foreach { w =>
             blocks(l)(y)(x) = w
           }
@@ -5419,13 +5422,13 @@ class TerraFrame
 
       import GameStateRendering.Implicits._
       val renderer = state match {
-        case InGame => GameStateRendering.renderer[InGame.type]
+        case InGame          => GameStateRendering.renderer[InGame.type]
         case LoadingGraphics => GameStateRendering.renderer[LoadingGraphics.type]
         case GeneratingWorld => GameStateRendering.renderer[GeneratingWorld.type]
-        case LoadingWorld => GameStateRendering.renderer[LoadingWorld.type]
-        case NewWorld => GameStateRendering.renderer[NewWorld.type]
-        case SelectWorld => GameStateRendering.renderer[SelectWorld.type]
-        case TitleScreen => GameStateRendering.renderer[TitleScreen.type]
+        case LoadingWorld    => GameStateRendering.renderer[LoadingWorld.type]
+        case NewWorld        => GameStateRendering.renderer[NewWorld.type]
+        case SelectWorld     => GameStateRendering.renderer[SelectWorld.type]
+        case TitleScreen     => GameStateRendering.renderer[TitleScreen.type]
       }
 
       renderer.render(screenGraphics, this)
@@ -5821,7 +5824,7 @@ class TerraFrame
           if (icTemp.icType =/= Workbench) {
             machinesx += icx
             machinesy += icy
-            icmatrix(iclayer)(icy)(icx) = Some(ItemCollection(icTemp.icType, icTemp.ids, icTemp.nums, icTemp.durs))
+            icmatrix(iclayer.num)(icy)(icx) = Some(ItemCollection(icTemp.icType, icTemp.ids, icTemp.nums, icTemp.durs))
           }
           if (icTemp.icType === Workbench) {
             if (player.imgState === Player.StillRight || player.imgState === Player.WalkRight1 || player.imgState === Player.WalkRight2) {
@@ -5858,7 +5861,7 @@ class TerraFrame
             }
           }
           if (icTemp.icType === Furnace) {
-            icmatrix(iclayer)(icy)(icx).foreach { icMatrixTemp =>
+            icmatrix(iclayer.num)(icy)(icx).foreach { icMatrixTemp =>
               icMatrixTemp.FUELP = icTemp.FUELP
               icMatrixTemp.SMELTP = icTemp.SMELTP
               icMatrixTemp.F_ON = icTemp.F_ON
@@ -6023,11 +6026,11 @@ class TerraFrame
       }
     }
 
-    if (keyCode === KeyEvent.VK_EQUALS && layer < 2) {
-      layer += 1
+    if (keyCode === KeyEvent.VK_EQUALS && layer.num < 2) {
+      layer = Layer.withNum(layer.num + 1)
     }
-    if (keyCode === KeyEvent.VK_MINUS && layer > 0) {
-      layer -= 1
+    if (keyCode === KeyEvent.VK_MINUS && layer.num > 0) {
+      layer = Layer.withNum(layer.num - 1)
     }
   }
 
