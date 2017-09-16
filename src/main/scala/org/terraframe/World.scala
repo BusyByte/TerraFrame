@@ -1,8 +1,9 @@
 package org.terraframe
 
 import scala.math._
-import org.terraframe.{ MathHelper => mh }
+import org.terraframe.{MathHelper => mh}
 import TypeSafeComparisons._
+import org.terraframe.Layer.BackgroundLayer
 
 object World {
 
@@ -679,7 +680,7 @@ object World {
 
   def generate2(blocks: Array2D[BlockType], msg: Boolean): Array2D[OutlineDirection] = {
     var x: Int      = 0
-    val width: Int  = blocks(0).length
+    val width: Int  = blocks(BackgroundLayer.num).length
     val height: Int = blocks.length
     if (msg) {
       println("-> Creating outlines...")
@@ -832,7 +833,7 @@ object World {
 
   def generate2b(blocks: Array2D[BlockType], blockds: Array2D[OutlineDirection], xpos: Int, ypos: Int): Array2D[OutlineDirection] = {
     var x: Int                                                               = 0
-    val width: Int                                                           = blocks(0).length
+    val width: Int                                                           = blocks(BackgroundLayer.num).length
     val height: Int                                                          = blocks.length
     var left, right, up, down, upleft, upright, downleft, downright: Boolean = false
     (ypos - 1 until ypos + 2).foreach { y =>
@@ -997,9 +998,9 @@ object World {
 
   def connect(x1: Int, y1: Int, x2: Int, y2: Int, blocks: Array2D[BlockType]): Boolean = {
     y1 > 0 && y1 < blocks.length - 1 && connect(
-      blocks(y1)(mh.mod(x1, blocks(0).length)),
-      blocks(y2)(mh.mod(x2, blocks(0).length)))
-    /*        WIDTH: Int = blocks(0).length
+      blocks(y1)(mh.mod(x1, blocks(BackgroundLayer.num).length)),
+      blocks(y2)(mh.mod(x2, blocks(BackgroundLayer.num).length)))
+    /*        WIDTH: Int = blocks(BackgroundLayer.num).length
             HEIGHT: Int = blocks.length
             blockcds: Array[Boolean] = TerraFrame.getBLOCKCDS()
             b1: Short = blocks(y1)(x1)
@@ -1021,7 +1022,7 @@ object World {
 
   def generate3(blocks: Array2D[Int], terrain: Array[Double], stonelayer: Array[Double]): Array2D[Byte] = {
     println("-> Creating background...")
-    val width: Int               = blocks(0).length
+    val width: Int               = blocks(BackgroundLayer.num).length
     val height: Int              = blocks.length
     val blockbgsi: Array2D[Byte] = Array.ofDim(height, width)
     (0 until height).foreach { y =>

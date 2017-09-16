@@ -68,7 +68,7 @@ object Chunk {
         blockds(2)(y)(x) = CenterOutlineDirection
       }
     }
-    blockds(1) = generateOutlines(blocks(1))
+    blockds(1) = generateOutlines(blocks(PrimaryLayer.num))
     Chunk(
       cx,
       cy,

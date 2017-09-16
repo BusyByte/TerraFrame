@@ -488,7 +488,7 @@ case class AIEntity(var x: Double, var y: Double, var vx: Double, var vy: Double
 
     val bx1 = max(0, (x / BLOCKSIZE).toInt)
     val by1 = max(0, (y / BLOCKSIZE).toInt)
-    val bx2 = min(blocks(0).length - 1, ((x + width) / BLOCKSIZE).toInt)
+    val bx2 = min(blocks(BackgroundLayer.num).length - 1, ((x + width) / BLOCKSIZE).toInt)
     val by2 = min(blocks.length - 1, ((y + height) / BLOCKSIZE).toInt)
 
     (bx1 to bx2).foreach { i =>
@@ -703,7 +703,7 @@ case class IdEntity(var x: Double,
 
     val bx1: Int = max(0, (x / BLOCKSIZE).toInt)
     val by1: Int = max(0, (y / BLOCKSIZE).toInt)
-    val bx2: Int = min(blocks(0).length - 1, ((x + width) / BLOCKSIZE).toInt)
+    val bx2: Int = min(blocks(BackgroundLayer.num).length - 1, ((x + width) / BLOCKSIZE).toInt)
     val by2: Int = min(blocks.length - 1, ((y + height) / BLOCKSIZE).toInt)
 
     (bx1 to bx2).foreach { i =>

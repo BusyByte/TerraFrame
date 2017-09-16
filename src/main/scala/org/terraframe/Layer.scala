@@ -3,16 +3,16 @@ package org.terraframe
 import enumeratum.values._
 
 sealed abstract class Layer(val value: Int) extends IntEnumEntry {
-  @inline def num: Int = value // TODO: search for references and make sure can't be replace with enum value
+  @inline def num: Int = value
 }
 
 case object Layer extends IntEnum[Layer] {
 
-  case object Layer0 extends Layer(0)
-  case object Layer1 extends Layer(1)
-  case object Layer2 extends Layer(2)
+  case object BackgroundLayer extends Layer(0)
+  case object PrimaryLayer extends Layer(1) // Only Layer with Collision
+  case object ForegroundLayer extends Layer(2)
 
-  val values = findValues.sortBy(_.num) // TODO: need spec to make sure these return in order
+  val values = findValues.sortBy(_.num)
 
   def withNum(num: Int) = withValue(num)
 }

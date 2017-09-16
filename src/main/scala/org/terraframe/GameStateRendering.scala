@@ -308,9 +308,9 @@ object InGameRendering extends GameStateRendering[InGame.type] {
     }
 
     layerImg = layer match {
-      case Layer0 => layersBImage
-      case Layer1 => layersNImage
-      case Layer2 => layersFImage
+      case BackgroundLayer => layersBImage
+      case PrimaryLayer => layersNImage
+      case ForegroundLayer => layersFImage
     }
 
     drawImage(

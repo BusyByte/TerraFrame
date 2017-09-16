@@ -1,6 +1,7 @@
 package org.terraframe
 import TypeSafeComparisons._
-import TerraFrame.{WIDTH, HEIGHT}
+import TerraFrame.{HEIGHT, WIDTH}
+import org.terraframe.Layer.PrimaryLayer
 
 
 sealed abstract class Biome(val name: String)
@@ -21,31 +22,31 @@ object Biome {
     (x - 15 until x + 16).foreach { x2 =>
       (y - 15 until y + 16).foreach { y2 =>
         if (x2 + u >= 0 && x2 + u < WIDTH && y2 + v >= 0 && y2 + v < HEIGHT) {
-          if (blocks(1)(y2 + v)(x2 + u) === SandBlockType || blocks(1)(y2 + v)(x2 + u) === SandstoneBlockType) {
+          if (blocks(PrimaryLayer.num)(y2 + v)(x2 + u) === SandBlockType || blocks(PrimaryLayer.num)(y2 + v)(x2 + u) === SandstoneBlockType) {
             desert += 1
-          } else if (blocks(1)(y2 + v)(x2 + u) =/= AirBlockType) {
+          } else if (blocks(PrimaryLayer.num)(y2 + v)(x2 + u) =/= AirBlockType) {
             desert -= 1
           }
-          if (blocks(1)(y2 + v)(x2 + u) === DirtBlockType || blocks(1)(y2 + v)(x2 + u) === GrassBlockType || blocks(1)(
+          if (blocks(PrimaryLayer.num)(y2 + v)(x2 + u) === DirtBlockType || blocks(PrimaryLayer.num)(y2 + v)(x2 + u) === GrassBlockType || blocks(PrimaryLayer.num)(
             y2 + v)(x2 + u) === JungleGrassBlockType) {
             jungle += 1
-          } else if (blocks(1)(y2 + v)(x2 + u) =/= AirBlockType) {
+          } else if (blocks(PrimaryLayer.num)(y2 + v)(x2 + u) =/= AirBlockType) {
             jungle -= 1
           }
-          if (blocks(1)(y2 + v)(x2 + u) === SwampGrassBlockType || blocks(1)(y2 + v)(x2 + u) === MudBlockType) {
+          if (blocks(PrimaryLayer.num)(y2 + v)(x2 + u) === SwampGrassBlockType || blocks(PrimaryLayer.num)(y2 + v)(x2 + u) === MudBlockType) {
             swamp += 1
-          } else if (blocks(1)(y2 + v)(x2 + u) =/= AirBlockType) {
+          } else if (blocks(PrimaryLayer.num)(y2 + v)(x2 + u) =/= AirBlockType) {
             swamp -= 1
           }
-          if (blocks(1)(y2 + v)(x2 + u) === SnowBlockType) {
+          if (blocks(PrimaryLayer.num)(y2 + v)(x2 + u) === SnowBlockType) {
             frost += 1
-          } else if (blocks(1)(y2 + v)(x2 + u) =/= AirBlockType) {
+          } else if (blocks(PrimaryLayer.num)(y2 + v)(x2 + u) =/= AirBlockType) {
             frost -= 1
           }
           if (blockbgs(y2 + v)(x2 + u) === EmptyBackground) {
             cavern += 1
           }
-          if (blocks(1)(y2 + v)(x2 + u) === DirtBlockType || blocks(1)(y2 + v)(x2 + u) === StoneBlockType) {
+          if (blocks(PrimaryLayer.num)(y2 + v)(x2 + u) === DirtBlockType || blocks(PrimaryLayer.num)(y2 + v)(x2 + u) === StoneBlockType) {
             cavern += 1
           } else {
             cavern -= 1

@@ -1044,7 +1044,7 @@ class TerraFrame
 
   var rgnc1: Int              = 0
   var rgnc2: Int              = 0
-  var layer: Layer            = Layer1
+  var layer: Layer            = PrimaryLayer
   var iclayer: Layer          = _
   var layerTemp: Int          = _
   var blockTemp: BlockType    = _
@@ -1746,7 +1746,7 @@ class TerraFrame
                       }
                       updateApp()
                       updateEnvironment()
-                      player.update(blocks(1), userInput, u, v)
+                      player.update(blocks(PrimaryLayer.num), userInput, u, v)
                       if (timeOfDay >= 86400) {
                         timeOfDay = 0
                         day += 1
@@ -2353,8 +2353,8 @@ class TerraFrame
     (0 until theSize).foreach { y =>
       (0 until theSize).foreach { x =>
         if (random.nextInt(1000) === 0) {
-          if (blocks(1)(y)(x) === TreeNoBarkBlockType) {
-            blocks(1)(y)(x) = TreeBlockType
+          if (blocks(PrimaryLayer.num)(y)(x) === TreeNoBarkBlockType) {
+            blocks(PrimaryLayer.num)(y)(x) = TreeBlockType
           }
         }
       }
@@ -2436,10 +2436,10 @@ class TerraFrame
                 ypos = ay + random.nextInt(20) - 10
                 xpos2 = ax + random.nextInt(20) - 10
                 ypos2 = ay + random.nextInt(20) - 10
-                if (xpos > 0 && xpos < WIDTH - 1 && ypos > 0 && ypos < HEIGHT - 1 && (blocks(1)(ypos)(xpos) === AirBlockType || !blockcds(
-                      blocks(1)(ypos)(xpos).id) &&
-                    xpos2 > 0 && xpos2 < WIDTH - 1 && ypos2 > 0 && ypos2 < HEIGHT - 1 && blocks(1)(ypos2)(xpos2) =/= AirBlockType && blockcds(
-                      blocks(1)(ypos2)(xpos2).id))) {
+                if (xpos > 0 && xpos < WIDTH - 1 && ypos > 0 && ypos < HEIGHT - 1 && (blocks(PrimaryLayer.num)(ypos)(xpos) === AirBlockType || !blockcds(
+                      blocks(PrimaryLayer.num)(ypos)(xpos).id) &&
+                    xpos2 > 0 && xpos2 < WIDTH - 1 && ypos2 > 0 && ypos2 < HEIGHT - 1 && blocks(PrimaryLayer.num)(ypos2)(xpos2) =/= AirBlockType && blockcds(
+                      blocks(PrimaryLayer.num)(ypos2)(xpos2).id))) {
                   mobSpawn = None
                   if (checkBiome(xpos, ypos, u, v, blocks, blockbgs) =/= CavernBiome) {
                     if ((day =/= 0 || DEBUG_HOSTILE > 1) && (timeOfDay >= 75913 || timeOfDay < 28883)) {
@@ -2548,7 +2548,7 @@ class TerraFrame
                   doMobSpawn = true
                   ((xpos / BLOCKSIZE) until (xpos / BLOCKSIZE + xmax)).foreach { x =>
                     ((ypos / BLOCKSIZE) until (ypos / BLOCKSIZE + ymax)).foreach { y =>
-                      if (y > 0 && y < HEIGHT - 1 && blocks(1)(y)(x) =/= AirBlockType && blockcds(blocks(1)(y)(x).id)) {
+                      if (y > 0 && y < HEIGHT - 1 && blocks(PrimaryLayer.num)(y)(x) =/= AirBlockType && blockcds(blocks(PrimaryLayer.num)(y)(x).id)) {
                         doMobSpawn = false
                       }
                     }
@@ -3040,7 +3040,7 @@ class TerraFrame
                       }
                     }
                   }
-                  if (layer.num === 1 && !DEBUG_GPLACE && blockcds(blockTemp.id)) { //TODO: encode blockcs into BlockType
+                  if (layer === PrimaryLayer && !DEBUG_GPLACE && blockcds(blockTemp.id)) { //TODO: encode blockcs into BlockType
                     entities
                       .collect {
                         case e: AIEntity => e
@@ -3676,7 +3676,7 @@ class TerraFrame
           entities += mob
         }
 
-        if (entityTemp.update(blocks(1), player, u, v)) {
+        if (entityTemp.update(blocks(PrimaryLayer.num), player, u, v)) {
           entities.remove(indexTemp)
         } else if (player.playerRect.intersects(entityTemp.rect)) {
           if (immune <= 0) {
@@ -3695,7 +3695,7 @@ class TerraFrame
         }
 
       case (entityTemp: IdEntity, indexTemp) =>
-        if (entityTemp.update(blocks(1), player, u, v)) {
+        if (entityTemp.update(blocks(PrimaryLayer.num), player, u, v)) {
           entities.remove(indexTemp)
         } else if (player.playerRect.intersects(entityTemp.rect)) {
           if (entityTemp.mdelay <= 0) {
@@ -3949,7 +3949,7 @@ class TerraFrame
 
       bx1 = max(0, bx1)
       by1 = max(0, by1)
-      bx2 = min(blocks(0).length - 1, bx2)
+      bx2 = min(blocks(BackgroundLayer.num).length - 1, bx2)
       by2 = min(blocks.length - 1, by2)
 
       lazy val isNamedEntity = entities(i) match {
@@ -3971,7 +3971,7 @@ class TerraFrame
               updatex += x
               updatey += y
               updatet += 0
-              updatel += Layer0
+              updatel += BackgroundLayer
             }
           }
         }
@@ -3999,15 +3999,15 @@ class TerraFrame
   }
 
   def empty(x: Int, y: Int): Boolean = {
-    (blocks(0)(y)(x) === AirBlockType || BLOCKLIGHTS.get(blocks(0)(y)(x).id).fold(true)(_ === 0)) &&
-    (blocks(1)(y)(x) === AirBlockType || BLOCKLIGHTS.get(blocks(1)(y)(x).id).fold(true)(_ === 0)) &&
-    (blocks(2)(y)(x) === AirBlockType || BLOCKLIGHTS.get(blocks(2)(y)(x).id).fold(true)(_ === 0))
+    (blocks(BackgroundLayer.num)(y)(x) === AirBlockType || BLOCKLIGHTS.get(blocks(BackgroundLayer.num)(y)(x).id).fold(true)(_ === 0)) &&
+    (blocks(PrimaryLayer.num)(y)(x) === AirBlockType || BLOCKLIGHTS.get(blocks(PrimaryLayer.num)(y)(x).id).fold(true)(_ === 0)) &&
+    (blocks(ForegroundLayer.num)(y)(x) === AirBlockType || BLOCKLIGHTS.get(blocks(ForegroundLayer.num)(y)(x).id).fold(true)(_ === 0))
   }
 
   def breakCurrentBlock(): Unit = {
     if (DEBUG_INSTAMINE || mining >= UiItem.blockDurabilityForTool(inventory.tool(), blocks(layer.num)(uy)(ux))) {
-      if (blocks(0)(uy)(ux) === TreeRootBlockType) {
-        blocks(0)(uy)(ux) = AirBlockType
+      if (blocks(BackgroundLayer.num)(uy)(ux) === TreeRootBlockType) {
+        blocks(BackgroundLayer.num)(uy)(ux) = AirBlockType
         (uy - 1 until uy + 2).foreach { uly =>
           (ux - 1 until ux + 2).foreach { ulx =>
             blockdns(uly)(ulx) = random.nextInt(5).toByte
@@ -4019,8 +4019,8 @@ class TerraFrame
           }
         }
       }
-      if (blocks(0)(uy + 1)(ux) === TreeRootBlockType) {
-        blocks(0)(uy + 1)(ux) = AirBlockType
+      if (blocks(BackgroundLayer.num)(uy + 1)(ux) === TreeRootBlockType) {
+        blocks(BackgroundLayer.num)(uy + 1)(ux) = AirBlockType
         (uy until uy + 3).foreach { uly =>
           (ux - 1 until ux + 2).foreach { ulx =>
             blockdns(uly)(ulx) = random.nextInt(5).toByte
@@ -4230,7 +4230,7 @@ class TerraFrame
                 (uly - 4 until uly + 5).foreach { uly2 =>
                   breakable {
                     (ulx - 4 until ulx + 5).foreach { ulx2 =>
-                      if (uly2 >= 0 && uly2 < HEIGHT && (blocks(1)(uly2)(ulx2) === TreeBlockType || blocks(1)(uly2)(
+                      if (uly2 >= 0 && uly2 < HEIGHT && (blocks(PrimaryLayer.num)(uly2)(ulx2) === TreeBlockType || blocks(PrimaryLayer.num)(uly2)(
                             ulx2) === TreeNoBarkBlockType)) {
                         keepLeaf = true
                         break
@@ -4273,7 +4273,7 @@ class TerraFrame
                 ()
               }
               removeBlockLighting(ux - 1, uy)
-              if (layer === Layer1) {
+              if (layer === PrimaryLayer) {
                 addSunLighting(ux - 1, uy)
               }
               blockTemp = blocks(layer.num)(uy)(ux - 1)
@@ -4306,7 +4306,7 @@ class TerraFrame
                 ()
               }
               removeBlockLighting(ux + 1, uy)
-              if (layer === Layer1) {
+              if (layer === PrimaryLayer) {
                 addSunLighting(ux + 1, uy)
               }
               blockTemp = blocks(layer.num)(uy)(ux + 1)
@@ -4471,7 +4471,7 @@ class TerraFrame
                     (uly - 4 until uly + 5).foreach { uly2 =>
                       breakable {
                         (ulx - 4 until ulx + 5).foreach { ulx2 =>
-                          if (uly2 >= 0 && uly2 < HEIGHT && (blocks(1)(uly2)(ulx2) === TreeBlockType || blocks(1)(uly2)(
+                          if (uly2 >= 0 && uly2 < HEIGHT && (blocks(PrimaryLayer.num)(uly2)(ulx2) === TreeBlockType || blocks(PrimaryLayer.num)(uly2)(
                                 ulx2) === TreeNoBarkBlockType)) {
                             keepLeaf = true
                             break
@@ -4537,65 +4537,65 @@ class TerraFrame
   }
 
   def addBlockPower(ux: Int, uy: Int): Unit = {
-    if (powers(blocks(1)(uy)(ux))) {
-      if (blocks(1)(uy)(ux).id >= ZythiumDelayer1DelayRightBlockType.id && blocks(1)(uy)(ux).id <= ZythiumDelayer8DelayUpOnBlockType.id) {
+    if (powers(blocks(PrimaryLayer.num)(uy)(ux))) {
+      if (blocks(PrimaryLayer.num)(uy)(ux).id >= ZythiumDelayer1DelayRightBlockType.id && blocks(PrimaryLayer.num)(uy)(ux).id <= ZythiumDelayer8DelayUpOnBlockType.id) {
         println("Whaaat?")
         updatex += ux
         updatey += uy
-        DDELAY.get(blocks(1)(uy)(ux).id).foreach(updatet.+=)
-        updatel += Layer1
+        DDELAY.get(blocks(PrimaryLayer.num)(uy)(ux).id).foreach(updatet.+=)
+        updatel += PrimaryLayer
       } else {
         addTileToPZQueue(ux, uy)
         power(1)(uy)(ux) = 5.toFloat
-        if (conducts(blocks(1)(uy)(ux).id) >= 0 && wcnct(uy)(ux)) {
-          if (receives(blocks(0)(uy)(ux).id)) {
-            power(0)(uy)(ux) = power(1)(uy)(ux) - conducts(blocks(1)(uy)(ux).id).toFloat
+        if (conducts(blocks(PrimaryLayer.num)(uy)(ux).id) >= 0 && wcnct(uy)(ux)) {
+          if (receives(blocks(BackgroundLayer.num)(uy)(ux).id)) {
+            power(0)(uy)(ux) = power(1)(uy)(ux) - conducts(blocks(PrimaryLayer.num)(uy)(ux).id).toFloat
           }
-          if (receives(blocks(2)(uy)(ux).id)) {
-            power(2)(uy)(ux) = power(1)(uy)(ux) - conducts(blocks(1)(uy)(ux).id).toFloat
+          if (receives(blocks(ForegroundLayer.num)(uy)(ux).id)) {
+            power(2)(uy)(ux) = power(1)(uy)(ux) - conducts(blocks(PrimaryLayer.num)(uy)(ux).id).toFloat
           }
         }
         addTileToPQueue(ux, uy)
       }
     }
-    if (powers(blocks(0)(uy)(ux))) {
-      if (blocks(0)(uy)(ux).id >= ZythiumDelayer1DelayRightBlockType.id && blocks(0)(uy)(ux).id <= ZythiumDelayer8DelayUpOnBlockType.id) {
+    if (powers(blocks(BackgroundLayer.num)(uy)(ux))) {
+      if (blocks(BackgroundLayer.num)(uy)(ux).id >= ZythiumDelayer1DelayRightBlockType.id && blocks(BackgroundLayer.num)(uy)(ux).id <= ZythiumDelayer8DelayUpOnBlockType.id) {
         println("Whaaat?")
         updatex += ux
         updatey += uy
-        DDELAY.get(blocks(0)(uy)(ux).id).foreach(updatet.+=)
-        updatel += Layer0
+        DDELAY.get(blocks(BackgroundLayer.num)(uy)(ux).id).foreach(updatet.+=)
+        updatel += BackgroundLayer
       } else {
         addTileToPZQueue(ux, uy)
         power(0)(uy)(ux) = 5.toFloat
-        if (conducts(blocks(0)(uy)(ux).id) >= 0 && wcnct(uy)(ux)) {
-          if (receives(blocks(1)(uy)(ux).id)) {
-            power(1)(uy)(ux) = power(0)(uy)(ux) - conducts(blocks(0)(uy)(ux).id).toFloat
+        if (conducts(blocks(BackgroundLayer.num)(uy)(ux).id) >= 0 && wcnct(uy)(ux)) {
+          if (receives(blocks(PrimaryLayer.num)(uy)(ux).id)) {
+            power(1)(uy)(ux) = power(0)(uy)(ux) - conducts(blocks(BackgroundLayer.num)(uy)(ux).id).toFloat
           }
-          if (receives(blocks(2)(uy)(ux).id)) {
-            power(2)(uy)(ux) = power(0)(uy)(ux) - conducts(blocks(0)(uy)(ux).id).toFloat
+          if (receives(blocks(ForegroundLayer.num)(uy)(ux).id)) {
+            power(2)(uy)(ux) = power(0)(uy)(ux) - conducts(blocks(BackgroundLayer.num)(uy)(ux).id).toFloat
           }
         }
         addTileToPQueue(ux, uy)
       }
     }
-    if (powers(blocks(2)(uy)(ux))) {
-      if (blocks(2)(uy)(ux).id >= ZythiumDelayer1DelayRightBlockType.id && blocks(2)(uy)(ux).id <= ZythiumDelayer8DelayUpOnBlockType.id) {
+    if (powers(blocks(ForegroundLayer.num)(uy)(ux))) {
+      if (blocks(ForegroundLayer.num)(uy)(ux).id >= ZythiumDelayer1DelayRightBlockType.id && blocks(ForegroundLayer.num)(uy)(ux).id <= ZythiumDelayer8DelayUpOnBlockType.id) {
         println("Whaaat?")
         updatex += ux
         updatey += uy
-        DDELAY.get(blocks(2)(uy)(ux).id).foreach(updatet.+=)
-        updatel += Layer2
+        DDELAY.get(blocks(ForegroundLayer.num)(uy)(ux).id).foreach(updatet.+=)
+        updatel += ForegroundLayer
         ()
       } else {
         addTileToPZQueue(ux, uy)
         power(2)(uy)(ux) = 5.toFloat
-        if (conducts(blocks(2)(uy)(ux).id) >= 0 && wcnct(uy)(ux)) {
-          if (receives(blocks(0)(uy)(ux).id)) {
-            power(0)(uy)(ux) = power(2)(uy)(ux) - conducts(blocks(2)(uy)(ux).id).toFloat
+        if (conducts(blocks(ForegroundLayer.num)(uy)(ux).id) >= 0 && wcnct(uy)(ux)) {
+          if (receives(blocks(BackgroundLayer.num)(uy)(ux).id)) {
+            power(0)(uy)(ux) = power(2)(uy)(ux) - conducts(blocks(ForegroundLayer.num)(uy)(ux).id).toFloat
           }
-          if (receives(blocks(1)(uy)(ux).id)) {
-            power(1)(uy)(ux) = power(2)(uy)(ux) - conducts(blocks(2)(uy)(ux).id).toFloat
+          if (receives(blocks(PrimaryLayer.num)(uy)(ux).id)) {
+            power(1)(uy)(ux) = power(2)(uy)(ux) - conducts(blocks(ForegroundLayer.num)(uy)(ux).id).toFloat
           }
         }
         addTileToPQueue(ux, uy)
@@ -4691,44 +4691,44 @@ class TerraFrame
           if (!arbprd(lyr.num)(ay3)(ax3)) {
             rbpRecur(ax3, ay3, lyr)
             if (conducts(blocks(lyr.num)(ay3)(ax3).id) >= 0 && wcnct(ay3)(ax3)) {
-              if (lyr === Layer0) {
-                if (receives(blocks(1)(ay3)(ax3).id)) {
-                  rbpRecur(ax3, ay3, Layer1)
-                  if (powers(blocks(1)(ay3)(ax3))) {
+              if (lyr === BackgroundLayer) {
+                if (receives(blocks(PrimaryLayer.num)(ay3)(ax3).id)) {
+                  rbpRecur(ax3, ay3, PrimaryLayer)
+                  if (powers(blocks(PrimaryLayer.num)(ay3)(ax3))) {
                     addTileToPQueue(ax3, ay3)
                   }
                 }
-                if (receives(blocks(2)(ay3)(ax3).id)) {
-                  rbpRecur(ax3, ay3, Layer2)
-                  if (powers(blocks(2)(ay3)(ax3))) {
-                    addTileToPQueue(ax3, ay3)
-                  }
-                }
-              }
-              if (lyr === Layer1) {
-                if (receives(blocks(0)(ay3)(ax3).id)) {
-                  rbpRecur(ax3, ay3, Layer0)
-                  if (powers(blocks(0)(ay3)(ax3))) {
-                    addTileToPQueue(ax3, ay3)
-                  }
-                }
-                if (receives(blocks(2)(ay3)(ax3).id)) {
-                  rbpRecur(ax3, ay3, Layer2)
-                  if (powers(blocks(2)(ay3)(ax3))) {
+                if (receives(blocks(ForegroundLayer.num)(ay3)(ax3).id)) {
+                  rbpRecur(ax3, ay3, ForegroundLayer)
+                  if (powers(blocks(ForegroundLayer.num)(ay3)(ax3))) {
                     addTileToPQueue(ax3, ay3)
                   }
                 }
               }
-              if (lyr === Layer2) {
-                if (receives(blocks(0)(ay3)(ax3).id)) {
-                  rbpRecur(ax3, ay3, Layer0)
-                  if (powers(blocks(0)(ay3)(ax3))) {
+              if (lyr === PrimaryLayer) {
+                if (receives(blocks(BackgroundLayer.num)(ay3)(ax3).id)) {
+                  rbpRecur(ax3, ay3, BackgroundLayer)
+                  if (powers(blocks(BackgroundLayer.num)(ay3)(ax3))) {
                     addTileToPQueue(ax3, ay3)
                   }
                 }
-                if (receives(blocks(1)(ay3)(ax3).id)) {//TODO: looks like first index to blocks could be replayed with LayerX
-                  rbpRecur(ax3, ay3, Layer1)
-                  if (powers(blocks(1)(ay3)(ax3))) {
+                if (receives(blocks(ForegroundLayer.num)(ay3)(ax3).id)) {
+                  rbpRecur(ax3, ay3, ForegroundLayer)
+                  if (powers(blocks(ForegroundLayer.num)(ay3)(ax3))) {
+                    addTileToPQueue(ax3, ay3)
+                  }
+                }
+              }
+              if (lyr === ForegroundLayer) {
+                if (receives(blocks(BackgroundLayer.num)(ay3)(ax3).id)) {
+                  rbpRecur(ax3, ay3, BackgroundLayer)
+                  if (powers(blocks(BackgroundLayer.num)(ay3)(ax3))) {
+                    addTileToPQueue(ax3, ay3)
+                  }
+                }
+                if (receives(blocks(PrimaryLayer.num)(ay3)(ax3).id)) {//TODO: looks like first index to blocks could be replayed with LayerX
+                  rbpRecur(ax3, ay3, PrimaryLayer)
+                  if (powers(blocks(PrimaryLayer.num)(ay3)(ax3))) {
                     addTileToPQueue(ax3, ay3)
                   }
                 }
@@ -4932,44 +4932,44 @@ class TerraFrame
               if (!arbprd(lyr.num)(ay3)(ax3)) {
                 rbpRecur(ax3, ay3, lyr)
                 if (conducts(blocks(lyr.num)(ay3)(ax3).id) >= 0 && wcnct(ay3)(ax3)) {
-                  if (lyr === Layer0) {
-                    if (receives(blocks(1)(ay3)(ax3).id)) {
-                      rbpRecur(ax3, ay3, Layer1)
-                      if (powers(blocks(1)(ay3)(ax3))) {
+                  if (lyr === BackgroundLayer) {
+                    if (receives(blocks(PrimaryLayer.num)(ay3)(ax3).id)) {
+                      rbpRecur(ax3, ay3, PrimaryLayer)
+                      if (powers(blocks(PrimaryLayer.num)(ay3)(ax3))) {
                         addTileToPQueue(ax3, ay3)
                       }
                     }
-                    if (receives(blocks(2)(ay3)(ax3).id)) {
-                      rbpRecur(ax3, ay3, Layer2)
-                      if (powers(blocks(2)(ay3)(ax3))) {
-                        addTileToPQueue(ax3, ay3)
-                      }
-                    }
-                  }
-                  if (lyr === Layer1) {
-                    if (receives(blocks(0)(ay3)(ax3).id)) {
-                      rbpRecur(ax3, ay3, Layer0)
-                      if (powers(blocks(0)(ay3)(ax3))) {
-                        addTileToPQueue(ax3, ay3)
-                      }
-                    }
-                    if (receives(blocks(2)(ay3)(ax3).id)) {
-                      rbpRecur(ax3, ay3, Layer2)
-                      if (powers(blocks(2)(ay3)(ax3))) {
+                    if (receives(blocks(ForegroundLayer.num)(ay3)(ax3).id)) {
+                      rbpRecur(ax3, ay3, ForegroundLayer)
+                      if (powers(blocks(ForegroundLayer.num)(ay3)(ax3))) {
                         addTileToPQueue(ax3, ay3)
                       }
                     }
                   }
-                  if (lyr === Layer2) {
-                    if (receives(blocks(0)(ay3)(ax3).id)) {
-                      rbpRecur(ax3, ay3, Layer0)
-                      if (powers(blocks(0)(ay3)(ax3))) {
+                  if (lyr === PrimaryLayer) {
+                    if (receives(blocks(BackgroundLayer.num)(ay3)(ax3).id)) {
+                      rbpRecur(ax3, ay3, BackgroundLayer)
+                      if (powers(blocks(BackgroundLayer.num)(ay3)(ax3))) {
                         addTileToPQueue(ax3, ay3)
                       }
                     }
-                    if (receives(blocks(1)(ay3)(ax3).id)) {
-                      rbpRecur(ax3, ay3, Layer1)
-                      if (powers(blocks(1)(ay3)(ax3))) {
+                    if (receives(blocks(ForegroundLayer.num)(ay3)(ax3).id)) {
+                      rbpRecur(ax3, ay3, ForegroundLayer)
+                      if (powers(blocks(ForegroundLayer.num)(ay3)(ax3))) {
+                        addTileToPQueue(ax3, ay3)
+                      }
+                    }
+                  }
+                  if (lyr === ForegroundLayer) {
+                    if (receives(blocks(BackgroundLayer.num)(ay3)(ax3).id)) {
+                      rbpRecur(ax3, ay3, BackgroundLayer)
+                      if (powers(blocks(BackgroundLayer.num)(ay3)(ax3))) {
+                        addTileToPQueue(ax3, ay3)
+                      }
+                    }
+                    if (receives(blocks(PrimaryLayer.num)(ay3)(ax3).id)) {
+                      rbpRecur(ax3, ay3, PrimaryLayer)
+                      if (powers(blocks(PrimaryLayer.num)(ay3)(ax3))) {
                         addTileToPQueue(ax3, ay3)
                       }
                     }
@@ -5065,19 +5065,19 @@ class TerraFrame
 
   def addSunLighting(ux: Int, uy: Int): Unit = { // And including
     (0 until uy).foreach { y =>
-      if (ltrans(blocks(1)(y)(ux).id)) {
+      if (ltrans(blocks(PrimaryLayer.num)(y)(ux).id)) {
         return
       }
     }
     addSources = false
     (uy until HEIGHT - 1).foreach { y =>
-      if (ltrans(blocks(1)(y + 1)(ux - 1).id) || ltrans(blocks(1)(y + 1)(ux + 1).id)) {
+      if (ltrans(blocks(PrimaryLayer.num)(y + 1)(ux - 1).id) || ltrans(blocks(PrimaryLayer.num)(y + 1)(ux + 1).id)) {
         addSources = true
       }
       if (addSources) {
         addTileToQueue(ux, y)
       }
-      if (ltrans(blocks(1)(y)(ux).id)) {
+      if (ltrans(blocks(PrimaryLayer.num)(y)(ux).id)) {
         return
       }
       addTileToZQueue(ux, y)
@@ -5089,7 +5089,7 @@ class TerraFrame
   def removeSunLighting(ux: Int, uy: Int): Unit = { // And including
     n = sunlightlevel
     (0 until uy).foreach { y =>
-      if (ltrans(blocks(1)(y)(ux).id)) {
+      if (ltrans(blocks(PrimaryLayer.num)(y)(ux).id)) {
         return
       }
     }
@@ -5097,7 +5097,7 @@ class TerraFrame
     breakable {
       (uy until HEIGHT).foreach { y =>
         lsources(y)(ux) = isBlockLightSource(ux, y)
-        if (y =/= uy && ltrans(blocks(1)(y)(ux).id)) {
+        if (y =/= uy && ltrans(blocks(PrimaryLayer.num)(y)(ux).id)) {
           break
         }
       }
@@ -5123,7 +5123,7 @@ class TerraFrame
 
   def isReachedBySunlight(ux: Int, uy: Int): Boolean = {
     (0 until uy + 1).foreach { ay =>
-      if (ltrans(blocks(1)(ay)(ux).id)) {
+      if (ltrans(blocks(PrimaryLayer.num)(ay)(ux).id)) {
         return false
       }
     }
@@ -5131,9 +5131,9 @@ class TerraFrame
   }
 
   def isBlockLightSource(ux: Int, uy: Int): Boolean = {
-    blocks(0)(uy)(ux) =/= AirBlockType && BLOCKLIGHTS.get(blocks(0)(uy)(ux).id).exists(_ =/= 0) ||
-    blocks(1)(uy)(ux) =/= AirBlockType && BLOCKLIGHTS.get(blocks(1)(uy)(ux).id).exists(_ =/= 0) ||
-    blocks(2)(uy)(ux) =/= AirBlockType && BLOCKLIGHTS.get(blocks(2)(uy)(ux).id).exists(_ =/= 0)
+    blocks(BackgroundLayer.num)(uy)(ux) =/= AirBlockType && BLOCKLIGHTS.get(blocks(BackgroundLayer.num)(uy)(ux).id).exists(_ =/= 0) ||
+    blocks(PrimaryLayer.num)(uy)(ux) =/= AirBlockType && BLOCKLIGHTS.get(blocks(PrimaryLayer.num)(uy)(ux).id).exists(_ =/= 0) ||
+    blocks(ForegroundLayer.num)(uy)(ux) =/= AirBlockType && BLOCKLIGHTS.get(blocks(ForegroundLayer.num)(uy)(ux).id).exists(_ =/= 0)
   }
 
   def isNonLayeredBlockLightSource(ux: Int, uy: Int): Boolean = {
@@ -5141,24 +5141,24 @@ class TerraFrame
   }
 
   def isNonLayeredBlockLightSource(ux: Int, uy: Int, layer: Layer): Boolean = {
-    layer =/= Layer0 && blocks(0)(uy)(ux) =/= AirBlockType && BLOCKLIGHTS.get(blocks(0)(uy)(ux).id).exists(_ =/= 0) ||
-    layer =/= Layer1 && blocks(1)(uy)(ux) =/= AirBlockType && BLOCKLIGHTS.get(blocks(1)(uy)(ux).id).exists(_ =/= 0) ||
-    layer =/= Layer2 && blocks(2)(uy)(ux) =/= AirBlockType && BLOCKLIGHTS.get(blocks(2)(uy)(ux).id).exists(_ =/= 0)
+    layer =/= BackgroundLayer && blocks(BackgroundLayer.num)(uy)(ux) =/= AirBlockType && BLOCKLIGHTS.get(blocks(BackgroundLayer.num)(uy)(ux).id).exists(_ =/= 0) ||
+    layer =/= PrimaryLayer && blocks(PrimaryLayer.num)(uy)(ux) =/= AirBlockType && BLOCKLIGHTS.get(blocks(PrimaryLayer.num)(uy)(ux).id).exists(_ =/= 0) ||
+    layer =/= ForegroundLayer && blocks(ForegroundLayer.num)(uy)(ux) =/= AirBlockType && BLOCKLIGHTS.get(blocks(ForegroundLayer.num)(uy)(ux).id).exists(_ =/= 0)
   }
 
   def findBlockLightSource(ux: Int, uy: Int): Int = {
     n = 0
-    if (blocks(0)(uy)(ux) =/= AirBlockType) n = BLOCKLIGHTS.get(blocks(0)(uy)(ux).id).map(max(_, n)).getOrElse(0)
-    if (blocks(1)(uy)(ux) =/= AirBlockType) n = BLOCKLIGHTS.get(blocks(1)(uy)(ux).id).map(max(_, n)).getOrElse(0)
-    if (blocks(2)(uy)(ux) =/= AirBlockType) n = BLOCKLIGHTS.get(blocks(2)(uy)(ux).id).map(max(_, n)).getOrElse(0)
+    if (blocks(BackgroundLayer.num)(uy)(ux) =/= AirBlockType) n = BLOCKLIGHTS.get(blocks(BackgroundLayer.num)(uy)(ux).id).map(max(_, n)).getOrElse(0)
+    if (blocks(PrimaryLayer.num)(uy)(ux) =/= AirBlockType) n = BLOCKLIGHTS.get(blocks(PrimaryLayer.num)(uy)(ux).id).map(max(_, n)).getOrElse(0)
+    if (blocks(ForegroundLayer.num)(uy)(ux) =/= AirBlockType) n = BLOCKLIGHTS.get(blocks(ForegroundLayer.num)(uy)(ux).id).map(max(_, n)).getOrElse(0)
     n
   }
 
   def findNonLayeredBlockLightSource(ux: Int, uy: Int): Int = {
     n = 0
-    if (blocks(0)(uy)(ux) =/= AirBlockType) n = BLOCKLIGHTS.get(blocks(0)(uy)(ux).id).map(max(_, n)).getOrElse(0)
-    if (blocks(1)(uy)(ux) =/= AirBlockType) n = BLOCKLIGHTS.get(blocks(1)(uy)(ux).id).map(max(_, n)).getOrElse(0)
-    if (blocks(2)(uy)(ux) =/= AirBlockType) n = BLOCKLIGHTS.get(blocks(2)(uy)(ux).id).map(max(_, n)).getOrElse(0)
+    if (blocks(BackgroundLayer.num)(uy)(ux) =/= AirBlockType) n = BLOCKLIGHTS.get(blocks(BackgroundLayer.num)(uy)(ux).id).map(max(_, n)).getOrElse(0)
+    if (blocks(PrimaryLayer.num)(uy)(ux) =/= AirBlockType) n = BLOCKLIGHTS.get(blocks(PrimaryLayer.num)(uy)(ux).id).map(max(_, n)).getOrElse(0)
+    if (blocks(ForegroundLayer.num)(uy)(ux) =/= AirBlockType) n = BLOCKLIGHTS.get(blocks(ForegroundLayer.num)(uy)(ux).id).map(max(_, n)).getOrElse(0)
     n
   }
 
@@ -5234,7 +5234,7 @@ class TerraFrame
           x2 = x + cl(i)(0)
           y2 = y + cl(i)(1)
           if (y2 >= 0 && y2 < HEIGHT) {
-            if (!ltrans(blocks(1)(y2)(x2).id)) {
+            if (!ltrans(blocks(PrimaryLayer.num)(y2)(x2).id)) {
               if (lights(y2)(x2) <= lights(y)(x) - 1.0f) {
                 addTileToZQueue(x2, y2)
                 lights(y2)(x2) = lights(y)(x) - 1.0f
@@ -5329,28 +5329,28 @@ class TerraFrame
                     } else {
                       power(l.num)(y2)(x2) = power(l.num)(y)(x) - conducts(blockId).toFloat
                       if (conducts(blockId2) >= 0 && wcnct(y2)(x2)) {
-                        if (l === Layer0) {
-                          if (receives(blocks(1)(y2)(x2).id)) {
-                            power(1)(y2)(x2) = power(0)(y2)(x2) - conducts(blocks(0)(y2)(x2).id).toFloat
+                        if (l === BackgroundLayer) {
+                          if (receives(blocks(PrimaryLayer.num)(y2)(x2).id)) {
+                            power(1)(y2)(x2) = power(0)(y2)(x2) - conducts(blocks(BackgroundLayer.num)(y2)(x2).id).toFloat
                           }
-                          if (receives(blocks(2)(y2)(x2).id)) {
-                            power(2)(y2)(x2) = power(0)(y2)(x2) - conducts(blocks(0)(y2)(x2).id).toFloat
-                          }
-                        }
-                        if (l === Layer1) {
-                          if (receives(blocks(0)(y2)(x2).id)) {
-                            power(0)(y2)(x2) = power(1)(y2)(x2) - conducts(blocks(1)(y2)(x2).id).toFloat //TODO: looks like first index of power could be replaced by Layer enum
-                          }
-                          if (receives(blocks(2)(y2)(x2).id)) {
-                            power(2)(y2)(x2) = power(1)(y2)(x2) - conducts(blocks(1)(y2)(x2).id).toFloat
+                          if (receives(blocks(ForegroundLayer.num)(y2)(x2).id)) {
+                            power(2)(y2)(x2) = power(0)(y2)(x2) - conducts(blocks(BackgroundLayer.num)(y2)(x2).id).toFloat
                           }
                         }
-                        if (l === Layer2) {
-                          if (receives(blocks(0)(y2)(x2).id)) {
-                            power(0)(y2)(x2) = power(2)(y2)(x2) - conducts(blocks(2)(y2)(x2).id).toFloat
+                        if (l === PrimaryLayer) {
+                          if (receives(blocks(BackgroundLayer.num)(y2)(x2).id)) {
+                            power(0)(y2)(x2) = power(1)(y2)(x2) - conducts(blocks(PrimaryLayer.num)(y2)(x2).id).toFloat //TODO: looks like first index of power could be replaced by Layer enum
                           }
-                          if (receives(blocks(1)(y2)(x2).id)) {
-                            power(1)(y2)(x2) = power(2)(y2)(x2) - conducts(blocks(2)(y2)(x2).id).toFloat
+                          if (receives(blocks(ForegroundLayer.num)(y2)(x2).id)) {
+                            power(2)(y2)(x2) = power(1)(y2)(x2) - conducts(blocks(PrimaryLayer.num)(y2)(x2).id).toFloat
+                          }
+                        }
+                        if (l === ForegroundLayer) {
+                          if (receives(blocks(BackgroundLayer.num)(y2)(x2).id)) {
+                            power(0)(y2)(x2) = power(2)(y2)(x2) - conducts(blocks(ForegroundLayer.num)(y2)(x2).id).toFloat
+                          }
+                          if (receives(blocks(PrimaryLayer.num)(y2)(x2).id)) {
+                            power(1)(y2)(x2) = power(2)(y2)(x2) - conducts(blocks(ForegroundLayer.num)(y2)(x2).id).toFloat
                           }
                         }
                       }
@@ -5400,7 +5400,7 @@ class TerraFrame
       (0 until 3).foreach { l =>
         if (blocks(l)(y)(x).id >= ZythiumWireBlockType.id && blocks(l)(y)(x).id <= ZythiumWire5PowerBlockType.id && power(
               l)(y)(x).toByte =/= pzqn(l)(y)(x)) {
-          removeBlockLighting(x, y, Layer0)
+          removeBlockLighting(x, y, BackgroundLayer)
           WIREP.get(power(l)(y)(x).toInt).foreach { w =>
             blocks(l)(y)(x) = w
           }
@@ -6026,7 +6026,7 @@ class TerraFrame
       }
     }
 
-    if (keyCode === KeyEvent.VK_EQUALS && layer.num < 2) {
+    if (keyCode === KeyEvent.VK_EQUALS && layer.num < 2) {// TODO: could create increment and decrement or circular buffer
       layer = Layer.withNum(layer.num + 1)
     }
     if (keyCode === KeyEvent.VK_MINUS && layer.num > 0) {
