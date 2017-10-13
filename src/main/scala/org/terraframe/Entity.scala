@@ -1,6 +1,8 @@
 package org.terraframe
 
 
+import org.terraframe.Layer._
+
 import java.awt.Rectangle
 import java.awt.image._
 import java.io.Serializable
