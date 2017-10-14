@@ -3,6 +3,7 @@ package org.terraframe
 import scala.util.Random
 
 import org.terraframe.World.generateOutlines
+import org.terraframe.Layer._
 import TerraFrame.{ CHUNKBLOCKS => size }
 import TypeSafeComparisons._
 
