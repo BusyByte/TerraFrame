@@ -1,7 +1,7 @@
 package org.terraframe
 
 import scala.math._
-import org.terraframe.{MathHelper => mh}
+import org.terraframe.{ MathHelper => mh }
 import TypeSafeComparisons._
 import org.terraframe.Layer.BackgroundLayer
 
@@ -831,7 +831,10 @@ object World {
     blockds
   }
 
-  def generate2b(blocks: Array2D[BlockType], blockds: Array2D[OutlineDirection], xpos: Int, ypos: Int): Array2D[OutlineDirection] = {
+  def generate2b(blocks: Array2D[BlockType],
+                 blockds: Array2D[OutlineDirection],
+                 xpos: Int,
+                 ypos: Int): Array2D[OutlineDirection] = {
     var x: Int                                                               = 0
     val width: Int                                                           = blocks(BackgroundLayer.num).length
     val height: Int                                                          = blocks.length

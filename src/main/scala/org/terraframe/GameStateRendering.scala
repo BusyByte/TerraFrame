@@ -309,7 +309,7 @@ object InGameRendering extends GameStateRendering[InGame.type] {
 
     layerImg = layer match {
       case BackgroundLayer => layersBImage
-      case PrimaryLayer => layersNImage
+      case PrimaryLayer    => layersNImage
       case ForegroundLayer => layersFImage
     }
 
@@ -431,7 +431,13 @@ object InGameRendering extends GameStateRendering[InGame.type] {
             if (mouseX >= inventory.image.getWidth() + ux * 40 + 75 &&
                 mouseX < inventory.image.getWidth() + ux * 40 + 115 &&
                 mouseY >= uy * 40 + 52 && mouseY < uy * 40 + 92 && c.ids(uy * 2 + ux) =/= EmptyUiItem) {
-              UiItem.renderOverlayText(c.ids(uy * 2 + ux), c.durs(uy * 2 + ux), mouseX, mouseY, screenGraphics, mobFont)
+              UiItem.renderOverlayText(
+                c.ids(uy * 2 + ux),
+                c.durs(uy * 2 + ux),
+                mouseX,
+                mouseY,
+                screenGraphics,
+                mobFont)
             }
           }
         }

@@ -8,7 +8,7 @@ import scala.util.control.NonFatal
 
 object Images {
   def loadImage(path: String): Option[BufferedImage] = {
-    val url: URL             = getClass.getResource("/" + path)
+    val url: URL = getClass.getResource("/" + path)
     try {
       Option(ImageIO.read(url))
     } catch {

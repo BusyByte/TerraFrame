@@ -1,16 +1,15 @@
 package org.terraframe
 import TypeSafeComparisons._
-import TerraFrame.{HEIGHT, WIDTH}
+import TerraFrame.{ HEIGHT, WIDTH }
 import org.terraframe.Layer.PrimaryLayer
-
 
 sealed abstract class Biome(val name: String)
 object DesertBiome extends Biome("desert")
 object JungleBiome extends Biome("jungle")
-object SwampBiome extends Biome("swamp")
-object FrostBiome extends Biome("frost")
+object SwampBiome  extends Biome("swamp")
+object FrostBiome  extends Biome("frost")
 object CavernBiome extends Biome("cavern")
-object OtherBiome extends Biome("other")
+object OtherBiome  extends Biome("other")
 
 object Biome {
   def checkBiome(x: Int, y: Int, u: Int, v: Int, blocks: Array3D[BlockType], blockbgs: Array2D[Background]): Biome = {
@@ -27,13 +26,14 @@ object Biome {
           } else if (blocks(PrimaryLayer.num)(y2 + v)(x2 + u) =/= AirBlockType) {
             desert -= 1
           }
-          if (blocks(PrimaryLayer.num)(y2 + v)(x2 + u) === DirtBlockType || blocks(PrimaryLayer.num)(y2 + v)(x2 + u) === GrassBlockType || blocks(PrimaryLayer.num)(
-            y2 + v)(x2 + u) === JungleGrassBlockType) {
+          if (blocks(PrimaryLayer.num)(y2 + v)(x2 + u) === DirtBlockType || blocks(PrimaryLayer.num)(y2 + v)(x2 + u) === GrassBlockType || blocks(
+                PrimaryLayer.num)(y2 + v)(x2 + u) === JungleGrassBlockType) {
             jungle += 1
           } else if (blocks(PrimaryLayer.num)(y2 + v)(x2 + u) =/= AirBlockType) {
             jungle -= 1
           }
-          if (blocks(PrimaryLayer.num)(y2 + v)(x2 + u) === SwampGrassBlockType || blocks(PrimaryLayer.num)(y2 + v)(x2 + u) === MudBlockType) {
+          if (blocks(PrimaryLayer.num)(y2 + v)(x2 + u) === SwampGrassBlockType || blocks(PrimaryLayer.num)(y2 + v)(
+                x2 + u) === MudBlockType) {
             swamp += 1
           } else if (blocks(PrimaryLayer.num)(y2 + v)(x2 + u) =/= AirBlockType) {
             swamp -= 1

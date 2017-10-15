@@ -30,21 +30,21 @@ case class Chunk(
 object Chunk {
 
   def apply(cx: Int, cy: Int, random: Random): Chunk = {
-    val blocks: Array3D[BlockType]       = Array.ofDim(3, size, size)
-    val blockds: Array3D[OutlineDirection]     = Array.ofDim(3, size, size)
-    val blockdns: Array2D[Byte]    = Array.ofDim(size, size)
-    val blockbgs: Array2D[Background]    = Array.ofDim(size, size)
-    val blockts: Array2D[Byte]     = Array.ofDim(size, size)
-    val lights: Array2D[Float]     = Array.ofDim(size, size)
-    val power: Array3D[Float]      = Array.ofDim(3, size, size)
-    val lsources: Array2D[Boolean] = Array.ofDim(size, size)
-    val zqn: Array2D[Byte]         = Array.ofDim(size, size)
-    val pzqn: Array3D[Byte]        = Array.ofDim(3, size, size)
-    val arbprd: Array3D[Boolean]   = Array.ofDim(3, size, size)
-    val wcnct: Array2D[Boolean]    = Array.ofDim(size, size)
-    val drawn: Array2D[Boolean]    = Array.ofDim(size, size)
-    val rdrawn: Array2D[Boolean]   = Array.ofDim(size, size)
-    val ldrawn: Array2D[Boolean]   = Array.ofDim(size, size)
+    val blocks: Array3D[BlockType]         = Array.ofDim(3, size, size)
+    val blockds: Array3D[OutlineDirection] = Array.ofDim(3, size, size)
+    val blockdns: Array2D[Byte]            = Array.ofDim(size, size)
+    val blockbgs: Array2D[Background]      = Array.ofDim(size, size)
+    val blockts: Array2D[Byte]             = Array.ofDim(size, size)
+    val lights: Array2D[Float]             = Array.ofDim(size, size)
+    val power: Array3D[Float]              = Array.ofDim(3, size, size)
+    val lsources: Array2D[Boolean]         = Array.ofDim(size, size)
+    val zqn: Array2D[Byte]                 = Array.ofDim(size, size)
+    val pzqn: Array3D[Byte]                = Array.ofDim(3, size, size)
+    val arbprd: Array3D[Boolean]           = Array.ofDim(3, size, size)
+    val wcnct: Array2D[Boolean]            = Array.ofDim(size, size)
+    val drawn: Array2D[Boolean]            = Array.ofDim(size, size)
+    val rdrawn: Array2D[Boolean]           = Array.ofDim(size, size)
+    val ldrawn: Array2D[Boolean]           = Array.ofDim(size, size)
     (0 until size).foreach { y =>
       (0 until size).foreach { x =>
         (0 until 3).foreach { l =>

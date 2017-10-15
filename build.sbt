@@ -5,15 +5,20 @@ lazy val commonSettings = Seq(
 )
 
 lazy val librarySettings = Seq(
-  "com.chuusai" %% "shapeless" % "2.3.2",
-  "com.beachape" %% "enumeratum" % "1.5.12",
-  "org.specs2"     %% "specs2-core"       % "3.8.6"  % Test,
-  "org.specs2"     %% "specs2-scalacheck" % "3.8.6"  % Test,
+  "com.chuusai"    %% "shapeless"         % "2.3.2",
+  "com.beachape"   %% "enumeratum"        % "1.5.12",
+  "org.specs2"     %% "specs2-core"       % "3.8.6" % Test,
+  "org.specs2"     %% "specs2-scalacheck" % "3.8.6" % Test,
   "org.scalacheck" %% "scalacheck"        % "1.13.4" % Test
 )
 
-def unsafeBut(ws: Wart*): Seq[Wart] = Warts.unsafe ++ Seq(Wart.Equals) filterNot (w => ws exists (_.clazz == w.clazz))
+scalafmtOnCompile in ThisBuild := true
+scalafmtTestOnCompile in ThisBuild := true
+scalafmtFailTest in ThisBuild := false
+ignoreErrors in (ThisBuild, scalafmt) := false
+//scalafmtShowDiff in (ThisBuild, scalafmt) := false
 
+def unsafeBut(ws: Wart*): Seq[Wart] = Warts.unsafe ++ Seq(Wart.Equals) filterNot (w => ws exists (_.clazz == w.clazz))
 
 lazy val root = (project in file("."))
   .settings(commonSettings: _*)
@@ -68,6 +73,11 @@ lazy val root = (project in file("."))
       "-Ywarn-unused:privates", // Warn if a private member is unused.
       "-Ywarn-value-discard" // Warn when non-Unit expression results are unused.
     ))
-  .settings(wartremoverErrors ++= unsafeBut(Wart.NonUnitStatements, Wart.Var, Wart.StringPlusAny, Wart.Return, Wart.Any, Wart.OptionPartial))
-
-
+  .settings(
+    wartremoverErrors ++= unsafeBut(
+      Wart.NonUnitStatements,
+      Wart.Var,
+      Wart.StringPlusAny,
+      Wart.Return,
+      Wart.Any,
+      Wart.OptionPartial))

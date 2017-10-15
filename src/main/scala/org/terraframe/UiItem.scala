@@ -1,6 +1,6 @@
 package org.terraframe
 
-import java.awt.{Color, Font, Graphics2D}
+import java.awt.{ Color, Font, Graphics2D }
 import java.awt.image.BufferedImage
 import TypeSafeComparisons._
 
@@ -18,8 +18,8 @@ object Durability {
 object UiItem {
 
   val defaultDurability: Short = 0
-  val defaultSpeed: Double = 0.175
-  val M: Int = Int.MaxValue
+  val defaultSpeed: Double     = 0.175
+  val M: Int                   = Int.MaxValue
 
   def toolDurability(item: UiItem): Short = item match {
     case a: ArmorUiItem  => a.durability
@@ -46,23 +46,23 @@ object UiItem {
 
   def onImageItem(item: UiItem)(f: (ImageUiItem) => Unit): Unit = item match {
     case imageUiItem: ImageUiItem => f(imageUiItem)
-    case _ =>
+    case _                        =>
   }
 
   def speed(item: UiItem): Double = item match {
-    case t: ToolUiItem => t.speed
+    case t: ToolUiItem   => t.speed
     case w: WeaponUiItem => w.speed
-    case _ => defaultSpeed
+    case _               => defaultSpeed
   }
 
   def isTool(item: UiItem): Boolean = item match {
     case _: ToolUiItem => true
-    case _ => false
+    case _             => false
   }
 
   def blockForTool(item: UiItem): BlockType = item match {
     case b: BlockUiItem => b.blockType
-    case _ => AirBlockType
+    case _              => AirBlockType
   }
 
   def damage(item: UiItem): Int = item match {
@@ -4620,7 +4620,8 @@ sealed abstract class ImageUiItem(imageName: String, name: String, id: Short) ex
   lazy val image: BufferedImage = loadImage("items/" + imageName + ".png").get
 }
 
-sealed abstract class BlockUiItem(imageName: String, name: String, id: Short, val blockType: BlockType) extends ImageUiItem(imageName, name, id)
+sealed abstract class BlockUiItem(imageName: String, name: String, id: Short, val blockType: BlockType)
+    extends ImageUiItem(imageName, name, id)
 
 sealed abstract class ToolUiItem(imageName: String,
                                  name: String,

@@ -257,44 +257,44 @@ object TerraFrame {
   var version: String = "0.3_01"
 
   val blockcds: Array[Boolean] = Array(false, true, true, true, true, true, true, true, false, false, false, false,
-    false, false, false, false, false, false, true, true, false, false, false, false, false, false, false, false, false,
-    false, false, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true,
-    false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-    false, false, false, false, false, false, false, false, true, true, true, true, true, false, false, false, false,
-    false, false, false, true, true, true, true, true, true, true, true, true, true, false, false, false, false, false,
-    false, false, false, false, true, true, false, false, false, false, false, false, false, false, false, false, false,
-    false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-    false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-    false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-    false, false, false, false, false)
-  val solid: Array[Boolean] = Array(false, true, true, true, true, true, true, true, true, true, true, true, true, true,
-    true, true, false, true, true, true, false, false, false, true, false, false, false, false, false, false, false,
-    true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false, false,
-    false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-    false, false, false, false, false, false, true, true, true, true, true, false, false, false, true, true, true, true,
-    true, true, true, true, true, true, true, true, true, true, false, false, false, false, false, false, false, false,
-    false, true, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, true, true, false, false, false, false, false, false, false, false,
+    false, false, false, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true,
+    true, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, true, true, true, true, true, false, false,
+    false, false, false, false, false, true, true, true, true, true, true, true, true, true, true, false, false, false,
+    false, false, false, false, false, false, true, true, false, false, false, false, false, false, false, false,
     false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
     false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
     false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-    false, false)
-  val ltrans: Array[Boolean] = Array(false, true, true, true, true, true, true, true, false, false, false, false, false,
-    false, false, false, false, false, true, true, false, false, false, false, false, false, false, false, false, false,
-    false, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false, false,
+    false, false, false, false, false, false, false, false)
+  val solid: Array[Boolean] = Array(false, true, true, true, true, true, true, true, true, true, true, true, true,
+    true, true, true, false, true, true, true, false, false, false, true, false, false, false, false, false, false,
+    false, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false,
     false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-    false, false, false, false, false, false, false, true, true, true, true, true, false, false, false, false, false,
-    false, false, true, true, true, true, true, true, true, false, false, false, false, false, false, false, false,
-    false, false, false, false, true, true, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, true, true, true, true, true, false, false, false, true, true,
+    true, true, true, true, true, true, true, true, true, true, true, true, false, false, false, false, false, false,
+    false, false, false, true, true, false, false, false, false, false, false, false, false, false, false, false,
     false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
     false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
     false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
     false, false, false, false, false)
+  val ltrans: Array[Boolean] = Array(false, true, true, true, true, true, true, true, false, false, false, false,
+    false, false, false, false, false, false, true, true, false, false, false, false, false, false, false, false,
+    false, false, false, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true,
+    true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, true, true, true, true, true, false, false,
+    false, false, false, false, false, true, true, true, true, true, true, true, false, false, false, false, false,
+    false, false, false, false, false, false, false, true, true, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false)
   val conducts: Array[Double] = Array(-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
     -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
     -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
     -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0, 0, 0, -1, -1, -1,
-    0, -1, 0, -1, 0, -1, -1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+    0, -1, 0, -1, 0, -1, -1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
   val receives: Array[Boolean] = Array(false, false, false, false, false, false, false, false, false, false, false,
     false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
     false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
@@ -302,10 +302,10 @@ object TerraFrame {
     false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
     false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
     false, false, false, true, true, true, true, true, true, false, false, false, true, true, false, false, false,
-    false, false, false, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true,
-    false, false, false, false, false, false, false, false, false, false, true, true, true, true, true, true, true,
+    false, false, false, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true,
+    true, false, false, false, false, false, false, false, false, false, false, true, true, true, true, true, true,
     true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true,
-    true, true, true, true, true, true)
+    true, true, true, true, true, true, true)
   val wirec: Array[Boolean] = Array(false, false, false, false, false, false, false, false, false, false, false, false,
     false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
     false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
@@ -1056,13 +1056,13 @@ class TerraFrame
   private[this] var width, height = 0
   var u, v, uNew, vNew: Int       = _
   var i, j, k, wx, wy, lx, ly, tx, ty, twx, twy, tlx, tly, ux, uy, ux2, uy2, uwx, uwy, uwx2, ulx, uly, ulx2, uly2, ucx,
-  ucy, uclx, ucly, pwx, pwy, n, m, dx, dy, dx2, dy2, mx, my, lsx, lsy, lsn, ax, ay, axl, ayl, nl, vc, xpos, ypos, xpos2,
-  ypos2, x2, y2, rnum, mining, xmin, xmax, ymin, ymax, Intpercent, ground: Int = _
-  var t: BlockType                                                             = _
-  private[this] var x, y                                                       = 0
-  var p, q: Double                                                             = _
-  var s: Short                                                                 = _
-  var miningTool: UiItem                                                       = _
+  ucy, uclx, ucly, pwx, pwy, n, m, dx, dy, dx2, dy2, mx, my, lsx, lsy, lsn, ax, ay, axl, ayl, nl, vc, xpos, ypos,
+  xpos2, ypos2, x2, y2, rnum, mining, xmin, xmax, ymin, ymax, Intpercent, ground: Int = _
+  var t: BlockType                                                                    = _
+  private[this] var x, y                                                              = 0
+  var p, q: Double                                                                    = _
+  var s: Short                                                                        = _
+  var miningTool: UiItem                                                              = _
 
   var moveItem: UiItem                                  = _
   var moveItemTemp: UiItem                              = _
@@ -2271,10 +2271,12 @@ class TerraFrame
           if (random.nextInt(22500) === 0) {
             t = AirBlockType
             blocks(l)(y)(x) match {
-              case SunflowerStage1BlockType if timeOfDay >= 75913 || timeOfDay < 28883  => t = SunflowerStage2BlockType
-              case SunflowerStage2BlockType if timeOfDay >= 75913 || timeOfDay < 28883  => t = SunflowerStage3BlockType
-              case MoonflowerStage1BlockType if timeOfDay >= 32302 && timeOfDay < 72093 => t = MoonflowerStage2BlockType
-              case MoonflowerStage2BlockType if timeOfDay >= 32302 && timeOfDay < 72093 => t = MoonflowerStage3BlockType
+              case SunflowerStage1BlockType if timeOfDay >= 75913 || timeOfDay < 28883 => t = SunflowerStage2BlockType
+              case SunflowerStage2BlockType if timeOfDay >= 75913 || timeOfDay < 28883 => t = SunflowerStage3BlockType
+              case MoonflowerStage1BlockType if timeOfDay >= 32302 && timeOfDay < 72093 =>
+                t = MoonflowerStage2BlockType
+              case MoonflowerStage2BlockType if timeOfDay >= 32302 && timeOfDay < 72093 =>
+                t = MoonflowerStage3BlockType
               case DryweedStage1BlockType if checkBiome(x, y, u, v, blocks, blockbgs) === DesertBiome =>
                 t = DryweedStage2BlockType
               case DryweedStage2BlockType if checkBiome(x, y, u, v, blocks, blockbgs) === DesertBiome =>
@@ -2436,10 +2438,10 @@ class TerraFrame
                 ypos = ay + random.nextInt(20) - 10
                 xpos2 = ax + random.nextInt(20) - 10
                 ypos2 = ay + random.nextInt(20) - 10
-                if (xpos > 0 && xpos < WIDTH - 1 && ypos > 0 && ypos < HEIGHT - 1 && (blocks(PrimaryLayer.num)(ypos)(xpos) === AirBlockType || !blockcds(
-                      blocks(PrimaryLayer.num)(ypos)(xpos).id) &&
-                    xpos2 > 0 && xpos2 < WIDTH - 1 && ypos2 > 0 && ypos2 < HEIGHT - 1 && blocks(PrimaryLayer.num)(ypos2)(xpos2) =/= AirBlockType && blockcds(
-                      blocks(PrimaryLayer.num)(ypos2)(xpos2).id))) {
+                if (xpos > 0 && xpos < WIDTH - 1 && ypos > 0 && ypos < HEIGHT - 1 && (blocks(PrimaryLayer.num)(ypos)(
+                      xpos) === AirBlockType || !blockcds(blocks(PrimaryLayer.num)(ypos)(xpos).id) &&
+                    xpos2 > 0 && xpos2 < WIDTH - 1 && ypos2 > 0 && ypos2 < HEIGHT - 1 && blocks(PrimaryLayer.num)(
+                      ypos2)(xpos2) =/= AirBlockType && blockcds(blocks(PrimaryLayer.num)(ypos2)(xpos2).id))) {
                   mobSpawn = None
                   if (checkBiome(xpos, ypos, u, v, blocks, blockbgs) =/= CavernBiome) {
                     if ((day =/= 0 || DEBUG_HOSTILE > 1) && (timeOfDay >= 75913 || timeOfDay < 28883)) {
@@ -2548,7 +2550,8 @@ class TerraFrame
                   doMobSpawn = true
                   ((xpos / BLOCKSIZE) until (xpos / BLOCKSIZE + xmax)).foreach { x =>
                     ((ypos / BLOCKSIZE) until (ypos / BLOCKSIZE + ymax)).foreach { y =>
-                      if (y > 0 && y < HEIGHT - 1 && blocks(PrimaryLayer.num)(y)(x) =/= AirBlockType && blockcds(blocks(PrimaryLayer.num)(y)(x).id)) {
+                      if (y > 0 && y < HEIGHT - 1 && blocks(PrimaryLayer.num)(y)(x) =/= AirBlockType && blockcds(
+                            blocks(PrimaryLayer.num)(y)(x).id)) {
                         doMobSpawn = false
                       }
                     }
@@ -2988,8 +2991,8 @@ class TerraFrame
                 if (inventory.durs(inventory.selection) <= 0) {
                   inventory.removeLocation(inventory.selection, inventory.nums(inventory.selection))
                 }
-              } else if (blocks(layer.num)(uy)(ux).id >= ZythiumDelayer8DelayRightBlockType.id && blocks(layer.num)(uy)(
-                           ux).id <= ZythiumDelayer8DelayUpOnBlockType.id) {
+              } else if (blocks(layer.num)(uy)(ux).id >= ZythiumDelayer8DelayRightBlockType.id && blocks(layer.num)(
+                           uy)(ux).id <= ZythiumDelayer8DelayUpOnBlockType.id) {
                 inventory.durs(inventory.selection) = (inventory.durs(inventory.selection) - 1).toShort
                 blocks(layer.num)(uy)(ux) = BlockType.lookupById(blocks(layer.num)(uy)(ux).id - 24)
                 rdrawn(uy)(ux) = false
@@ -3046,7 +3049,8 @@ class TerraFrame
                         case e: AIEntity => e
                       }
                       .foreach { entity: AIEntity =>
-                        if (entity.rect.intersects(new Rectangle(ux * BLOCKSIZE, uy * BLOCKSIZE, BLOCKSIZE, BLOCKSIZE))) {
+                        if (entity.rect.intersects(
+                              new Rectangle(ux * BLOCKSIZE, uy * BLOCKSIZE, BLOCKSIZE, BLOCKSIZE))) {
                           blockTemp = AirBlockType
                         }
                       }
@@ -3999,9 +4003,15 @@ class TerraFrame
   }
 
   def empty(x: Int, y: Int): Boolean = {
-    (blocks(BackgroundLayer.num)(y)(x) === AirBlockType || BLOCKLIGHTS.get(blocks(BackgroundLayer.num)(y)(x).id).fold(true)(_ === 0)) &&
-    (blocks(PrimaryLayer.num)(y)(x) === AirBlockType || BLOCKLIGHTS.get(blocks(PrimaryLayer.num)(y)(x).id).fold(true)(_ === 0)) &&
-    (blocks(ForegroundLayer.num)(y)(x) === AirBlockType || BLOCKLIGHTS.get(blocks(ForegroundLayer.num)(y)(x).id).fold(true)(_ === 0))
+    (blocks(BackgroundLayer.num)(y)(x) === AirBlockType || BLOCKLIGHTS
+      .get(blocks(BackgroundLayer.num)(y)(x).id)
+      .fold(true)(_ === 0)) &&
+    (blocks(PrimaryLayer.num)(y)(x) === AirBlockType || BLOCKLIGHTS
+      .get(blocks(PrimaryLayer.num)(y)(x).id)
+      .fold(true)(_ === 0)) &&
+    (blocks(ForegroundLayer.num)(y)(x) === AirBlockType || BLOCKLIGHTS
+      .get(blocks(ForegroundLayer.num)(y)(x).id)
+      .fold(true)(_ === 0))
   }
 
   def breakCurrentBlock(): Unit = {
@@ -4230,8 +4240,8 @@ class TerraFrame
                 (uly - 4 until uly + 5).foreach { uly2 =>
                   breakable {
                     (ulx - 4 until ulx + 5).foreach { ulx2 =>
-                      if (uly2 >= 0 && uly2 < HEIGHT && (blocks(PrimaryLayer.num)(uly2)(ulx2) === TreeBlockType || blocks(PrimaryLayer.num)(uly2)(
-                            ulx2) === TreeNoBarkBlockType)) {
+                      if (uly2 >= 0 && uly2 < HEIGHT && (blocks(PrimaryLayer.num)(uly2)(ulx2) === TreeBlockType || blocks(
+                            PrimaryLayer.num)(uly2)(ulx2) === TreeNoBarkBlockType)) {
                         keepLeaf = true
                         break
                       }
@@ -4471,8 +4481,8 @@ class TerraFrame
                     (uly - 4 until uly + 5).foreach { uly2 =>
                       breakable {
                         (ulx - 4 until ulx + 5).foreach { ulx2 =>
-                          if (uly2 >= 0 && uly2 < HEIGHT && (blocks(PrimaryLayer.num)(uly2)(ulx2) === TreeBlockType || blocks(PrimaryLayer.num)(uly2)(
-                                ulx2) === TreeNoBarkBlockType)) {
+                          if (uly2 >= 0 && uly2 < HEIGHT && (blocks(PrimaryLayer.num)(uly2)(ulx2) === TreeBlockType || blocks(
+                                PrimaryLayer.num)(uly2)(ulx2) === TreeNoBarkBlockType)) {
                             keepLeaf = true
                             break
                           }
@@ -4538,7 +4548,8 @@ class TerraFrame
 
   def addBlockPower(ux: Int, uy: Int): Unit = {
     if (powers(blocks(PrimaryLayer.num)(uy)(ux))) {
-      if (blocks(PrimaryLayer.num)(uy)(ux).id >= ZythiumDelayer1DelayRightBlockType.id && blocks(PrimaryLayer.num)(uy)(ux).id <= ZythiumDelayer8DelayUpOnBlockType.id) {
+      if (blocks(PrimaryLayer.num)(uy)(ux).id >= ZythiumDelayer1DelayRightBlockType.id && blocks(PrimaryLayer.num)(uy)(
+            ux).id <= ZythiumDelayer8DelayUpOnBlockType.id) {
         println("Whaaat?")
         updatex += ux
         updatey += uy
@@ -4559,7 +4570,8 @@ class TerraFrame
       }
     }
     if (powers(blocks(BackgroundLayer.num)(uy)(ux))) {
-      if (blocks(BackgroundLayer.num)(uy)(ux).id >= ZythiumDelayer1DelayRightBlockType.id && blocks(BackgroundLayer.num)(uy)(ux).id <= ZythiumDelayer8DelayUpOnBlockType.id) {
+      if (blocks(BackgroundLayer.num)(uy)(ux).id >= ZythiumDelayer1DelayRightBlockType.id && blocks(
+            BackgroundLayer.num)(uy)(ux).id <= ZythiumDelayer8DelayUpOnBlockType.id) {
         println("Whaaat?")
         updatex += ux
         updatey += uy
@@ -4580,7 +4592,8 @@ class TerraFrame
       }
     }
     if (powers(blocks(ForegroundLayer.num)(uy)(ux))) {
-      if (blocks(ForegroundLayer.num)(uy)(ux).id >= ZythiumDelayer1DelayRightBlockType.id && blocks(ForegroundLayer.num)(uy)(ux).id <= ZythiumDelayer8DelayUpOnBlockType.id) {
+      if (blocks(ForegroundLayer.num)(uy)(ux).id >= ZythiumDelayer1DelayRightBlockType.id && blocks(
+            ForegroundLayer.num)(uy)(ux).id <= ZythiumDelayer8DelayUpOnBlockType.id) {
         println("Whaaat?")
         updatex += ux
         updatey += uy
@@ -4726,7 +4739,7 @@ class TerraFrame
                     addTileToPQueue(ax3, ay3)
                   }
                 }
-                if (receives(blocks(PrimaryLayer.num)(ay3)(ax3).id)) {//TODO: looks like first index to blocks could be replayed with LayerX
+                if (receives(blocks(PrimaryLayer.num)(ay3)(ax3).id)) { //TODO: looks like first index to blocks could be replayed with LayerX
                   rbpRecur(ax3, ay3, PrimaryLayer)
                   if (powers(blocks(PrimaryLayer.num)(ay3)(ax3))) {
                     addTileToPQueue(ax3, ay3)
@@ -5018,7 +5031,8 @@ class TerraFrame
       removeBlockLighting(ux, uy)
       rdrawn(uy)(ux) = false
     }
-    if (turnOffDelayer && blocks(lyr.num)(uy)(ux).id >= ZythiumDelayer1DelayRightBlockType.id && blocks(lyr.num)(uy)(ux).id <= ZythiumDelayer8DelayUpOnBlockType.id) {
+    if (turnOffDelayer && blocks(lyr.num)(uy)(ux).id >= ZythiumDelayer1DelayRightBlockType.id && blocks(lyr.num)(uy)(
+          ux).id <= ZythiumDelayer8DelayUpOnBlockType.id) {
       println("???")
       updatex += ux
       updatey += uy
@@ -5055,8 +5069,8 @@ class TerraFrame
   }
 
   def redoBlockPower(ux: Int, uy: Int, lyr: Layer): Unit = {
-    if (powers(blocks(lyr.num)(uy)(ux)) || blocks(lyr.num)(uy)(ux).id >= ZythiumWireBlockType.id && blocks(lyr.num)(uy)(
-          ux).id <= ZythiumWire5PowerBlockType.id) {
+    if (powers(blocks(lyr.num)(uy)(ux)) || blocks(lyr.num)(uy)(ux).id >= ZythiumWireBlockType.id && blocks(lyr.num)(
+          uy)(ux).id <= ZythiumWire5PowerBlockType.id) {
       addAdjacentTilesToPQueue(ux, uy)
     } else {
       removeBlockPower(ux, uy, lyr)
@@ -5131,9 +5145,15 @@ class TerraFrame
   }
 
   def isBlockLightSource(ux: Int, uy: Int): Boolean = {
-    blocks(BackgroundLayer.num)(uy)(ux) =/= AirBlockType && BLOCKLIGHTS.get(blocks(BackgroundLayer.num)(uy)(ux).id).exists(_ =/= 0) ||
-    blocks(PrimaryLayer.num)(uy)(ux) =/= AirBlockType && BLOCKLIGHTS.get(blocks(PrimaryLayer.num)(uy)(ux).id).exists(_ =/= 0) ||
-    blocks(ForegroundLayer.num)(uy)(ux) =/= AirBlockType && BLOCKLIGHTS.get(blocks(ForegroundLayer.num)(uy)(ux).id).exists(_ =/= 0)
+    blocks(BackgroundLayer.num)(uy)(ux) =/= AirBlockType && BLOCKLIGHTS
+      .get(blocks(BackgroundLayer.num)(uy)(ux).id)
+      .exists(_ =/= 0) ||
+    blocks(PrimaryLayer.num)(uy)(ux) =/= AirBlockType && BLOCKLIGHTS
+      .get(blocks(PrimaryLayer.num)(uy)(ux).id)
+      .exists(_ =/= 0) ||
+    blocks(ForegroundLayer.num)(uy)(ux) =/= AirBlockType && BLOCKLIGHTS
+      .get(blocks(ForegroundLayer.num)(uy)(ux).id)
+      .exists(_ =/= 0)
   }
 
   def isNonLayeredBlockLightSource(ux: Int, uy: Int): Boolean = {
@@ -5141,24 +5161,36 @@ class TerraFrame
   }
 
   def isNonLayeredBlockLightSource(ux: Int, uy: Int, layer: Layer): Boolean = {
-    layer =/= BackgroundLayer && blocks(BackgroundLayer.num)(uy)(ux) =/= AirBlockType && BLOCKLIGHTS.get(blocks(BackgroundLayer.num)(uy)(ux).id).exists(_ =/= 0) ||
-    layer =/= PrimaryLayer && blocks(PrimaryLayer.num)(uy)(ux) =/= AirBlockType && BLOCKLIGHTS.get(blocks(PrimaryLayer.num)(uy)(ux).id).exists(_ =/= 0) ||
-    layer =/= ForegroundLayer && blocks(ForegroundLayer.num)(uy)(ux) =/= AirBlockType && BLOCKLIGHTS.get(blocks(ForegroundLayer.num)(uy)(ux).id).exists(_ =/= 0)
+    layer =/= BackgroundLayer && blocks(BackgroundLayer.num)(uy)(ux) =/= AirBlockType && BLOCKLIGHTS
+      .get(blocks(BackgroundLayer.num)(uy)(ux).id)
+      .exists(_ =/= 0) ||
+    layer =/= PrimaryLayer && blocks(PrimaryLayer.num)(uy)(ux) =/= AirBlockType && BLOCKLIGHTS
+      .get(blocks(PrimaryLayer.num)(uy)(ux).id)
+      .exists(_ =/= 0) ||
+    layer =/= ForegroundLayer && blocks(ForegroundLayer.num)(uy)(ux) =/= AirBlockType && BLOCKLIGHTS
+      .get(blocks(ForegroundLayer.num)(uy)(ux).id)
+      .exists(_ =/= 0)
   }
 
   def findBlockLightSource(ux: Int, uy: Int): Int = {
     n = 0
-    if (blocks(BackgroundLayer.num)(uy)(ux) =/= AirBlockType) n = BLOCKLIGHTS.get(blocks(BackgroundLayer.num)(uy)(ux).id).map(max(_, n)).getOrElse(0)
-    if (blocks(PrimaryLayer.num)(uy)(ux) =/= AirBlockType) n = BLOCKLIGHTS.get(blocks(PrimaryLayer.num)(uy)(ux).id).map(max(_, n)).getOrElse(0)
-    if (blocks(ForegroundLayer.num)(uy)(ux) =/= AirBlockType) n = BLOCKLIGHTS.get(blocks(ForegroundLayer.num)(uy)(ux).id).map(max(_, n)).getOrElse(0)
+    if (blocks(BackgroundLayer.num)(uy)(ux) =/= AirBlockType)
+      n = BLOCKLIGHTS.get(blocks(BackgroundLayer.num)(uy)(ux).id).map(max(_, n)).getOrElse(0)
+    if (blocks(PrimaryLayer.num)(uy)(ux) =/= AirBlockType)
+      n = BLOCKLIGHTS.get(blocks(PrimaryLayer.num)(uy)(ux).id).map(max(_, n)).getOrElse(0)
+    if (blocks(ForegroundLayer.num)(uy)(ux) =/= AirBlockType)
+      n = BLOCKLIGHTS.get(blocks(ForegroundLayer.num)(uy)(ux).id).map(max(_, n)).getOrElse(0)
     n
   }
 
   def findNonLayeredBlockLightSource(ux: Int, uy: Int): Int = {
     n = 0
-    if (blocks(BackgroundLayer.num)(uy)(ux) =/= AirBlockType) n = BLOCKLIGHTS.get(blocks(BackgroundLayer.num)(uy)(ux).id).map(max(_, n)).getOrElse(0)
-    if (blocks(PrimaryLayer.num)(uy)(ux) =/= AirBlockType) n = BLOCKLIGHTS.get(blocks(PrimaryLayer.num)(uy)(ux).id).map(max(_, n)).getOrElse(0)
-    if (blocks(ForegroundLayer.num)(uy)(ux) =/= AirBlockType) n = BLOCKLIGHTS.get(blocks(ForegroundLayer.num)(uy)(ux).id).map(max(_, n)).getOrElse(0)
+    if (blocks(BackgroundLayer.num)(uy)(ux) =/= AirBlockType)
+      n = BLOCKLIGHTS.get(blocks(BackgroundLayer.num)(uy)(ux).id).map(max(_, n)).getOrElse(0)
+    if (blocks(PrimaryLayer.num)(uy)(ux) =/= AirBlockType)
+      n = BLOCKLIGHTS.get(blocks(PrimaryLayer.num)(uy)(ux).id).map(max(_, n)).getOrElse(0)
+    if (blocks(ForegroundLayer.num)(uy)(ux) =/= AirBlockType)
+      n = BLOCKLIGHTS.get(blocks(ForegroundLayer.num)(uy)(ux).id).map(max(_, n)).getOrElse(0)
     n
   }
 
@@ -6026,7 +6058,7 @@ class TerraFrame
       }
     }
 
-    if (keyCode === KeyEvent.VK_EQUALS && layer.num < 2) {// TODO: could create increment and decrement or circular buffer
+    if (keyCode === KeyEvent.VK_EQUALS && layer.num < 2) { // TODO: could create increment and decrement or circular buffer
       layer = Layer.withNum(layer.num + 1)
     }
     if (keyCode === KeyEvent.VK_MINUS && layer.num > 0) {

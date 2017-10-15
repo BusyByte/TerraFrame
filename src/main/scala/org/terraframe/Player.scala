@@ -24,14 +24,13 @@ object Player {
   lazy val totalHP: Int                   = 50
 
   sealed trait PlayerImageState
-  object StillLeft extends PlayerImageState
+  object StillLeft  extends PlayerImageState
   object StillRight extends PlayerImageState
   object WalkRight1 extends PlayerImageState
   object WalkRight2 extends PlayerImageState
-  object WalkLeft1 extends PlayerImageState
-  object WalkLeft2 extends PlayerImageState
+  object WalkLeft1  extends PlayerImageState
+  object WalkLeft2  extends PlayerImageState
 }
-
 
 case class Player(var x: Double, var y: Double) extends Serializable {
 
@@ -62,9 +61,9 @@ case class Player(var x: Double, var y: Double) extends Serializable {
   val intersectRect = new Rectangle(-1, -1, -1, -1)
 
   // TODO: move
-  private [this] def safeBlock(blocks: Array2D[BlockType])(xCoord: Int)(yCoord: Int) : Option[BlockType] = {
-    if(yCoord >= 0 && yCoord < blocks.length) {
-      if(xCoord >= 0 && xCoord < blocks(yCoord).length) {
+  private[this] def safeBlock(blocks: Array2D[BlockType])(xCoord: Int)(yCoord: Int): Option[BlockType] = {
+    if (yCoord >= 0 && yCoord < blocks.length) {
+      if (xCoord >= 0 && xCoord < blocks(yCoord).length) {
         Some(blocks(yCoord)(xCoord))
       } else {
         None
@@ -196,41 +195,41 @@ case class Player(var x: Double, var y: Double) extends Serializable {
 
     if (!TerraFrame.DEBUG_NOCLIP) {
       //(0 until 2).foreach { _ =>
-        ix = x.toInt
-        iy = y.toInt
-        ivx = vx.toInt
-        ivy = vy.toInt
+      ix = x.toInt
+      iy = y.toInt
+      ivx = vx.toInt
+      ivy = vy.toInt
 
-        playerRect.setBounds(ix - 1, iy, width + 2, height)
+      playerRect.setBounds(ix - 1, iy, width + 2, height)
 
-        val bx1: Int = (x / BLOCKSIZE).toInt
-        val by1: Int = (y / BLOCKSIZE).toInt
-        val bx2: Int = ((x + width) / BLOCKSIZE).toInt
-        val by2: Int = ((y + height) / BLOCKSIZE).toInt
+      val bx1: Int = (x / BLOCKSIZE).toInt
+      val by1: Int = (y / BLOCKSIZE).toInt
+      val bx2: Int = ((x + width) / BLOCKSIZE).toInt
+      val by2: Int = ((y + height) / BLOCKSIZE).toInt
 
-        val safeBlockLookup = safeBlock(blocks) _
-        (bx1 to bx2).foreach { i =>
-          val safeX = safeBlockLookup(i + u)
-          (by1 to by2).foreach { j =>
-            val maybeBlock = safeX(j + v)
+      val safeBlockLookup = safeBlock(blocks) _
+      (bx1 to bx2).foreach { i =>
+        val safeX = safeBlockLookup(i + u)
+        (by1 to by2).foreach { j =>
+          val maybeBlock = safeX(j + v)
 
-            maybeBlock.foreach { block =>
-              if (block =/= AirBlockType && TerraFrame.BLOCKCD.get(block.id).exists(identity)) {
-                intersectRect.setBounds(i * BLOCKSIZE, j * BLOCKSIZE, BLOCKSIZE, BLOCKSIZE)
-                if (playerRect.intersects(intersectRect)) {
-                  if (oldx <= i * 16 - width && vx > 0) {
-                    x = (i * 16 - width).toDouble
-                    vx = 0 // right
-                  }
-                  if (oldx >= i * 16 + BLOCKSIZE && vx < 0) {
-                    x = (i * 16 + BLOCKSIZE).toDouble
-                    vx = 0 // left
-                  }
+          maybeBlock.foreach { block =>
+            if (block =/= AirBlockType && TerraFrame.BLOCKCD.get(block.id).exists(identity)) {
+              intersectRect.setBounds(i * BLOCKSIZE, j * BLOCKSIZE, BLOCKSIZE, BLOCKSIZE)
+              if (playerRect.intersects(intersectRect)) {
+                if (oldx <= i * 16 - width && vx > 0) {
+                  x = (i * 16 - width).toDouble
+                  vx = 0 // right
+                }
+                if (oldx >= i * 16 + BLOCKSIZE && vx < 0) {
+                  x = (i * 16 + BLOCKSIZE).toDouble
+                  vx = 0 // left
                 }
               }
             }
           }
         }
+      }
       //}
     }
 
@@ -238,48 +237,46 @@ case class Player(var x: Double, var y: Double) extends Serializable {
     onGround = false
     if (!TerraFrame.DEBUG_NOCLIP) {
       //(0 until 2).foreach { _ =>
-        ix = x.toInt
-        iy = y.toInt
-        ivx = vx.toInt
-        ivy = vy.toInt
+      ix = x.toInt
+      iy = y.toInt
+      ivx = vx.toInt
+      ivy = vy.toInt
 
-        playerRect.setBounds(ix, iy - 1, width, height + 2)
+      playerRect.setBounds(ix, iy - 1, width, height + 2)
 
-        val bx1: Int = (x / BLOCKSIZE).toInt
-        val by1: Int = max(0, (y / BLOCKSIZE).toInt)
-        val bx2: Int = ((x + width) / BLOCKSIZE).toInt
-        val by2: Int = min(blocks.length - 1, ((y + height) / BLOCKSIZE).toInt)
+      val bx1: Int = (x / BLOCKSIZE).toInt
+      val by1: Int = max(0, (y / BLOCKSIZE).toInt)
+      val bx2: Int = ((x + width) / BLOCKSIZE).toInt
+      val by2: Int = min(blocks.length - 1, ((y + height) / BLOCKSIZE).toInt)
 
-         val safeBlockLookup = safeBlock(blocks) _
+      val safeBlockLookup = safeBlock(blocks) _
 
-        (bx1 to bx2).foreach { i =>
-          val safeX = safeBlockLookup(i + u)
-          (by1 to by2).foreach { j =>
-            val maybeBlock = safeX(j + v)
-            maybeBlock.foreach { block =>
-              if (block =/= AirBlockType && TerraFrame.BLOCKCD.get(block.id).exists(identity)) {
-                intersectRect.setBounds(i * BLOCKSIZE, j * BLOCKSIZE, BLOCKSIZE, BLOCKSIZE)
-                if (playerRect.intersects(intersectRect)) {
-                  if (oldy <= j * 16 - height && vy > 0) {
-                    y = (j * 16 - height).toDouble
-                    if (pvy >= 10 && !TerraFrame.DEBUG_INVINCIBLE) {
-                      hp -= ((pvy - 12.5) * 2).toInt
-                    }
-                    onGround = true
-                    vy = 0 // down
-                    pvy = 0
+      (bx1 to bx2).foreach { i =>
+        val safeX = safeBlockLookup(i + u)
+        (by1 to by2).foreach { j =>
+          val maybeBlock = safeX(j + v)
+          maybeBlock.foreach { block =>
+            if (block =/= AirBlockType && TerraFrame.BLOCKCD.get(block.id).exists(identity)) {
+              intersectRect.setBounds(i * BLOCKSIZE, j * BLOCKSIZE, BLOCKSIZE, BLOCKSIZE)
+              if (playerRect.intersects(intersectRect)) {
+                if (oldy <= j * 16 - height && vy > 0) {
+                  y = (j * 16 - height).toDouble
+                  if (pvy >= 10 && !TerraFrame.DEBUG_INVINCIBLE) {
+                    hp -= ((pvy - 12.5) * 2).toInt
                   }
-                  if (oldy >= j * 16 + BLOCKSIZE && vy < 0) {
-                    y = (j * 16 + BLOCKSIZE).toDouble
-                    vy = 0 // up
-                  }
+                  onGround = true
+                  vy = 0 // down
+                  pvy = 0
+                }
+                if (oldy >= j * 16 + BLOCKSIZE && vy < 0) {
+                  y = (j * 16 + BLOCKSIZE).toDouble
+                  vy = 0 // up
                 }
               }
             }
           }
         }
-
-
+      }
       //}
     }
 

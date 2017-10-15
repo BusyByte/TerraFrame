@@ -2,11 +2,10 @@ package org.terraframe
 
 import org.terraframe.Images.loadImage
 
-
 object Background {
   def onBackgroundImage(background: Background)(f: BackgroundImage => Unit): Unit = background match {
     case bgi: BackgroundImage => f(bgi)
-    case _ => ()
+    case _                    => ()
   }
 }
 
