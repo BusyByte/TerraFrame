@@ -1,7 +1,6 @@
 package org.terraframe
 
 import org.terraframe.Layer._
-
 import java.awt.Rectangle
 import java.awt.image._
 import java.io.Serializable
@@ -152,25 +151,31 @@ object Drops {
 
   object BatDrops extends Drops {
     override def generateDrops(random: Random): List[ImageUiItem] = {
-      List.empty //TODO: figure out what this drops
+      addWithOneInNChance(random, 15, CaverootSeedsUiItem)
     }
   }
 
   object BeeDrops extends Drops {
     override def generateDrops(random: Random): List[ImageUiItem] = {
-      List.empty //TODO: figure out what this drops
+      addWithOneInNChance(random, 15, SunflowerSeedsUiItem)
     }
   }
 
   object SkeletonDrops extends Drops {
     override def generateDrops(random: Random): List[ImageUiItem] = {
-      List.empty //TODO: figure out what this drops
+      addWithOneInNChance(random, 15, WoodenSwordUiItem) ++
+        addWithOneInNChance(random, 15, CopperHelmetUiItem) ++
+        addWithOneInNChance(random, 15, CopperChestplateUiItem) ++
+        addWithOneInNChance(random, 15, CopperLeggingsUiItem) ++
+        addWithOneInNChance(random, 15, CopperGreavesUiItem)
     }
   }
 
   object SandbotBulletDrops extends Drops {
     override def generateDrops(random: Random): List[ImageUiItem] = {
-      List.empty //TODO: figure out what this drops
+      addWithOneInNChance(random, 15, SandUiItem) ++
+      addWithOneInNChance(random, 15, CoalUiItem) ++
+      addWithOneInNChance(random, 15, IronOreUiItem)
     }
   }
 
