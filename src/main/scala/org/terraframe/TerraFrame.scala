@@ -583,67 +583,67 @@ object TerraFrame {
     outlineImgsTemp.asScala.toMap
   }
 
-  lazy val BLOCKLIGHTS: Map[Int, Int] = { //TODO: key should be block, not sure the value
-    val blockLightsTemp = new jul.HashMap[Int, Int](blocknames.length)
-
-    blocknames.indices.foreach { i =>
-      blockLightsTemp.put(i, 0)
-    }
-
-    blockLightsTemp.put(19, 21)
-    blockLightsTemp.put(20, 15)
-    blockLightsTemp.put(21, 18)
-    blockLightsTemp.put(22, 21)
-    blockLightsTemp.put(23, 15)
-    blockLightsTemp.put(24, 15)
-    blockLightsTemp.put(25, 15)
-    blockLightsTemp.put(26, 18)
-    blockLightsTemp.put(27, 18)
-    blockLightsTemp.put(28, 21)
-    blockLightsTemp.put(29, 21)
-    blockLightsTemp.put(36, 15)
-    blockLightsTemp.put(36, 15)
-    blockLightsTemp.put(38, 18)
-    blockLightsTemp.put(51, 15)
-    blockLightsTemp.put(52, 15)
-    blockLightsTemp.put(53, 15)
-    blockLightsTemp.put(95, 6)
-    blockLightsTemp.put(96, 7)
-    blockLightsTemp.put(97, 8)
-    blockLightsTemp.put(98, 9)
-    blockLightsTemp.put(99, 10)
-    blockLightsTemp.put(100, 12)
-    blockLightsTemp.put(101, 12)
-    blockLightsTemp.put(102, 12)
-    blockLightsTemp.put(104, 21)
-    blockLightsTemp.put(112, 12)
-    blockLightsTemp.put(114, 12)
-    blockLightsTemp.put(116, 12)
-    blockLightsTemp.put(118, 12)
-    blockLightsTemp.put(123, 12)
-    blockLightsTemp.put(124, 12)
-    blockLightsTemp.put(125, 12)
-    blockLightsTemp.put(126, 12)
-
-    blockLightsTemp.put(137, 12)
-    blockLightsTemp.put(138, 12)
-    blockLightsTemp.put(139, 12)
-    blockLightsTemp.put(140, 12)
-    blockLightsTemp.put(145, 12)
-    blockLightsTemp.put(146, 12)
-    blockLightsTemp.put(147, 12)
-    blockLightsTemp.put(148, 12)
-    blockLightsTemp.put(153, 12)
-    blockLightsTemp.put(154, 12)
-    blockLightsTemp.put(155, 12)
-    blockLightsTemp.put(156, 12)
-    blockLightsTemp.put(161, 12)
-    blockLightsTemp.put(162, 12)
-    blockLightsTemp.put(163, 12)
-    blockLightsTemp.put(164, 12)
-
-    blockLightsTemp.asScala.toMap
-  }
+//  lazy val BLOCKLIGHTS: Map[Int, Int] = {
+//    val blockLightsTemp = new jul.HashMap[Int, Int](blocknames.length)
+//
+//    blocknames.indices.foreach { i =>
+//      blockLightsTemp.put(i, 0)
+//    }
+//
+//    blockLightsTemp.put(19, 21)
+//    blockLightsTemp.put(20, 15)
+//    blockLightsTemp.put(21, 18)
+//    blockLightsTemp.put(22, 21)
+//    blockLightsTemp.put(23, 15)
+//    blockLightsTemp.put(24, 15)
+//    blockLightsTemp.put(25, 15)
+//    blockLightsTemp.put(26, 18)
+//    blockLightsTemp.put(27, 18)
+//    blockLightsTemp.put(28, 21)
+//    blockLightsTemp.put(29, 21)
+//    blockLightsTemp.put(36, 15)
+//    blockLightsTemp.put(36, 15)
+//    blockLightsTemp.put(38, 18)
+//    blockLightsTemp.put(51, 15)
+//    blockLightsTemp.put(52, 15)
+//    blockLightsTemp.put(53, 15)
+//    blockLightsTemp.put(95, 6)
+//    blockLightsTemp.put(96, 7)
+//    blockLightsTemp.put(97, 8)
+//    blockLightsTemp.put(98, 9)
+//    blockLightsTemp.put(99, 10)
+//    blockLightsTemp.put(100, 12)
+//    blockLightsTemp.put(101, 12)
+//    blockLightsTemp.put(102, 12)
+//    blockLightsTemp.put(104, 21)
+//    blockLightsTemp.put(112, 12)
+//    blockLightsTemp.put(114, 12)
+//    blockLightsTemp.put(116, 12)
+//    blockLightsTemp.put(118, 12)
+//    blockLightsTemp.put(123, 12)
+//    blockLightsTemp.put(124, 12)
+//    blockLightsTemp.put(125, 12)
+//    blockLightsTemp.put(126, 12)
+//
+//    blockLightsTemp.put(137, 12)
+//    blockLightsTemp.put(138, 12)
+//    blockLightsTemp.put(139, 12)
+//    blockLightsTemp.put(140, 12)
+//    blockLightsTemp.put(145, 12)
+//    blockLightsTemp.put(146, 12)
+//    blockLightsTemp.put(147, 12)
+//    blockLightsTemp.put(148, 12)
+//    blockLightsTemp.put(153, 12)
+//    blockLightsTemp.put(154, 12)
+//    blockLightsTemp.put(155, 12)
+//    blockLightsTemp.put(156, 12)
+//    blockLightsTemp.put(161, 12)
+//    blockLightsTemp.put(162, 12)
+//    blockLightsTemp.put(163, 12)
+//    blockLightsTemp.put(164, 12)
+//
+//    blockLightsTemp.asScala.toMap
+//  }
   lazy val GRASSDIRT: Map[Int, Int] = {
     val grassDirtTemp = new jul.HashMap[Int, Int](10)
 
@@ -1154,7 +1154,7 @@ class TerraFrame
       SKYCOLORS.size
       SKYLIGHTS.size
       LIGHTLEVELS.size
-      BLOCKLIGHTS.size
+      //BLOCKLIGHTS.size
       GRASSDIRT.size
       //TOOLDURS.size
       FUELS.size
@@ -4002,18 +4002,6 @@ class TerraFrame
     }
   }
 
-  def empty(x: Int, y: Int): Boolean = {
-    (blocks(BackgroundLayer.num)(y)(x) === AirBlockType || BLOCKLIGHTS
-      .get(blocks(BackgroundLayer.num)(y)(x).id)
-      .fold(true)(_ === 0)) &&
-    (blocks(PrimaryLayer.num)(y)(x) === AirBlockType || BLOCKLIGHTS
-      .get(blocks(PrimaryLayer.num)(y)(x).id)
-      .fold(true)(_ === 0)) &&
-    (blocks(ForegroundLayer.num)(y)(x) === AirBlockType || BLOCKLIGHTS
-      .get(blocks(ForegroundLayer.num)(y)(x).id)
-      .fold(true)(_ === 0))
-  }
-
   def breakCurrentBlock(): Unit = {
     if (DEBUG_INSTAMINE || mining >= UiItem.blockDurabilityForTool(inventory.tool(), blocks(layer.num)(uy)(ux))) {
       if (blocks(BackgroundLayer.num)(uy)(ux) === TreeRootBlockType) {
@@ -4739,7 +4727,7 @@ class TerraFrame
                     addTileToPQueue(ax3, ay3)
                   }
                 }
-                if (receives(blocks(PrimaryLayer.num)(ay3)(ax3).id)) { //TODO: looks like first index to blocks could be replayed with LayerX
+                if (receives(blocks(PrimaryLayer.num)(ay3)(ax3).id)) {
                   rbpRecur(ax3, ay3, PrimaryLayer)
                   if (powers(blocks(PrimaryLayer.num)(ay3)(ax3))) {
                     addTileToPQueue(ax3, ay3)
@@ -5145,15 +5133,9 @@ class TerraFrame
   }
 
   def isBlockLightSource(ux: Int, uy: Int): Boolean = {
-    blocks(BackgroundLayer.num)(uy)(ux) =/= AirBlockType && BLOCKLIGHTS
-      .get(blocks(BackgroundLayer.num)(uy)(ux).id)
-      .exists(_ =/= 0) ||
-    blocks(PrimaryLayer.num)(uy)(ux) =/= AirBlockType && BLOCKLIGHTS
-      .get(blocks(PrimaryLayer.num)(uy)(ux).id)
-      .exists(_ =/= 0) ||
-    blocks(ForegroundLayer.num)(uy)(ux) =/= AirBlockType && BLOCKLIGHTS
-      .get(blocks(ForegroundLayer.num)(uy)(ux).id)
-      .exists(_ =/= 0)
+    blocks(BackgroundLayer.num)(uy)(ux) =/= AirBlockType && isLightBlock(blocks(BackgroundLayer.num)(uy)(ux)) ||
+    blocks(PrimaryLayer.num)(uy)(ux) =/= AirBlockType && isLightBlock(blocks(PrimaryLayer.num)(uy)(ux)) ||
+    blocks(ForegroundLayer.num)(uy)(ux) =/= AirBlockType && isLightBlock(blocks(ForegroundLayer.num)(uy)(ux))
   }
 
   def isNonLayeredBlockLightSource(ux: Int, uy: Int): Boolean = {
@@ -5161,36 +5143,30 @@ class TerraFrame
   }
 
   def isNonLayeredBlockLightSource(ux: Int, uy: Int, layer: Layer): Boolean = {
-    layer =/= BackgroundLayer && blocks(BackgroundLayer.num)(uy)(ux) =/= AirBlockType && BLOCKLIGHTS
-      .get(blocks(BackgroundLayer.num)(uy)(ux).id)
-      .exists(_ =/= 0) ||
-    layer =/= PrimaryLayer && blocks(PrimaryLayer.num)(uy)(ux) =/= AirBlockType && BLOCKLIGHTS
-      .get(blocks(PrimaryLayer.num)(uy)(ux).id)
-      .exists(_ =/= 0) ||
-    layer =/= ForegroundLayer && blocks(ForegroundLayer.num)(uy)(ux) =/= AirBlockType && BLOCKLIGHTS
-      .get(blocks(ForegroundLayer.num)(uy)(ux).id)
-      .exists(_ =/= 0)
+    layer =/= BackgroundLayer && blocks(BackgroundLayer.num)(uy)(ux) =/= AirBlockType && isLightBlock(blocks(BackgroundLayer.num)(uy)(ux)) ||
+    layer =/= PrimaryLayer && blocks(PrimaryLayer.num)(uy)(ux) =/= AirBlockType && isLightBlock(blocks(PrimaryLayer.num)(uy)(ux)) ||
+    layer =/= ForegroundLayer && blocks(ForegroundLayer.num)(uy)(ux) =/= AirBlockType && isLightBlock(blocks(ForegroundLayer.num)(uy)(ux))
   }
 
   def findBlockLightSource(ux: Int, uy: Int): Int = {
     n = 0
     if (blocks(BackgroundLayer.num)(uy)(ux) =/= AirBlockType)
-      n = BLOCKLIGHTS.get(blocks(BackgroundLayer.num)(uy)(ux).id).map(max(_, n)).getOrElse(0)
+      n = max(lightIntensity(blocks(BackgroundLayer.num)(uy)(ux)), n)
     if (blocks(PrimaryLayer.num)(uy)(ux) =/= AirBlockType)
-      n = BLOCKLIGHTS.get(blocks(PrimaryLayer.num)(uy)(ux).id).map(max(_, n)).getOrElse(0)
+      n = max(lightIntensity(blocks(PrimaryLayer.num)(uy)(ux)), n)
     if (blocks(ForegroundLayer.num)(uy)(ux) =/= AirBlockType)
-      n = BLOCKLIGHTS.get(blocks(ForegroundLayer.num)(uy)(ux).id).map(max(_, n)).getOrElse(0)
+      n = max(lightIntensity(blocks(ForegroundLayer.num)(uy)(ux)), n)
     n
   }
 
   def findNonLayeredBlockLightSource(ux: Int, uy: Int): Int = {
     n = 0
     if (blocks(BackgroundLayer.num)(uy)(ux) =/= AirBlockType)
-      n = BLOCKLIGHTS.get(blocks(BackgroundLayer.num)(uy)(ux).id).map(max(_, n)).getOrElse(0)
+      n = max(lightIntensity(blocks(BackgroundLayer.num)(uy)(ux)), n)
     if (blocks(PrimaryLayer.num)(uy)(ux) =/= AirBlockType)
-      n = BLOCKLIGHTS.get(blocks(PrimaryLayer.num)(uy)(ux).id).map(max(_, n)).getOrElse(0)
+      n = max(lightIntensity(blocks(PrimaryLayer.num)(uy)(ux)), n)
     if (blocks(ForegroundLayer.num)(uy)(ux) =/= AirBlockType)
-      n = BLOCKLIGHTS.get(blocks(ForegroundLayer.num)(uy)(ux).id).map(max(_, n)).getOrElse(0)
+      n = max(lightIntensity(blocks(ForegroundLayer.num)(uy)(ux)), n)
     n
   }
 

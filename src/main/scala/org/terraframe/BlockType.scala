@@ -679,7 +679,66 @@ object BlockType {
     case ZythiumDelayer8DelayUpOnBlockType    => true
     case _                                    => false
   }
+
+  def lightIntensity(block: BlockType): Int = block match {
+    case LumenstoneBlockType                  => 21
+    case WoodenTorchBlockType                 => 15
+    case CoalTorchBlockType                   => 18
+    case LumenstoneTorchBlockType             => 21
+    case FurnaceOnBlockType                   => 15
+    case WoodenTorchLeftWallBlockType         => 15
+    case WoodenTorchRightWallBlockType        => 15
+    case CoalTorchLeftWallBlockType           => 18
+    case CoalTorchRightWallBlockType          => 19
+    case LumenstoneTorchLeftWallBlockType     => 21
+    case LumenstoneTorchRightWallBlockType    => 21
+    case UraniumOreBlockType                  => 15
+    case ZythiumOreBlockType                  => 15
+    case ZythiumOreOnBlockType                => 18
+    case MoonflowerStage1BlockType            => 15
+    case MoonflowerStage2BlockType            => 15
+    case MoonflowerStage3BlockType            => 15
+    case ZythiumWire1PowerBlockType           => 6
+    case ZythiumWire2PowerBlockType           => 7
+    case ZythiumWire3PowerBlockType           => 8
+    case ZythiumWire4PowerBlockType           => 9
+    case ZythiumWire5PowerBlockType           => 10
+    case ZythiumTorchBlockType                => 12
+    case ZythiumTorchLeftWallBlockType        => 12
+    case ZythiumTorchRightWallBlockType       => 12
+    case ZythiumLampOnBlockType               => 21
+    case ZythiumAmplifierDownBlockType        => 12
+    case ZythiumAmplifierUpBlockType          => 12
+    case ZythiumAmplifierDownOnBlockType      => 12
+    case ZythiumAmplifierUpOnBlockType        => 12
+    case ZythiumInverterRightOnBlockType      => 12
+    case ZythiumInverterDownOnBlockType       => 12
+    case ZythiumInverterLeftOnBlockType       => 12
+    case ZythiumInverterUpOnBlockType         => 12
+    case ZythiumDelayer1DelayRightBlockType   => 12
+    case ZythiumDelayer1DelayDownBlockType    => 12
+    case ZythiumDelayer1DelayLeftBlockType    => 12
+    case ZythiumDelayer1DelayUpBlockType      => 12
+    case ZythiumDelayer2DelayRightBlockType   => 12
+    case ZythiumDelayer2DelayDownBlockType    => 12
+    case ZythiumDelayer2DelayLeftBlockType    => 12
+    case ZythiumDelayer2DelayUpBlockType      => 12
+    case ZythiumDelayer4DelayRightBlockType   => 12
+    case ZythiumDelayer4DelayDownBlockType    => 12
+    case ZythiumDelayer4DelayLeftBlockType    => 12
+    case ZythiumDelayer4DelayUpBlockType      => 12
+    case ZythiumDelayer8DelayRightBlockType   => 12
+    case ZythiumDelayer8DelayDownBlockType    => 12
+    case ZythiumDelayer8DelayLeftBlockType    => 12
+    case ZythiumDelayer8DelayUpBlockType      => 12
+
+    case _ => 0
+  }
+
+  def isLightBlock(block: BlockType): Boolean = lightIntensity(block) > 0
 }
+
+
 
 sealed abstract class BlockType(val id: Int)
 case object AirBlockType                         extends BlockType(0)
