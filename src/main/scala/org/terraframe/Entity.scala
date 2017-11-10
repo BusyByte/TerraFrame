@@ -10,6 +10,7 @@ import Images.loadImage
 import scala.math._
 import scala.util.Random
 import TypeSafeComparisons._
+import Block._
 
 sealed trait AI
 case object BubbleAI       extends AI
@@ -192,7 +193,7 @@ sealed trait Entity {
   def reloadImage(): Unit
   var immune: Boolean
 
-  def update(blocks: Array2D[BlockType], player: Player, u: Int, v: Int): Boolean
+  def update(blocks: Array2D[Block], player: Player, u: Int, v: Int): Boolean
 }
 
 object AIEntity {
@@ -264,7 +265,7 @@ case class AIEntity(var x: Double, var y: Double, var vx: Double, var vy: Double
 
   var hp: Int = strategy.thp
 
-  def update(blocks: Array2D[BlockType], player: Player, u: Int, v: Int): Boolean = {
+  def update(blocks: Array2D[Block], player: Player, u: Int, v: Int): Boolean = {
     newMob = None
 
     strategy.ai match {
@@ -470,7 +471,7 @@ case class AIEntity(var x: Double, var y: Double, var vx: Double, var vy: Double
     }
   }
 
-  def collide(blocks: Array2D[BlockType], player: Player, u: Int, v: Int): Boolean = {
+  def collide(blocks: Array2D[Block], player: Player, u: Int, v: Int): Boolean = {
     var rv: Boolean = false
 
     grounded = onGround || onGroundDelay
@@ -496,7 +497,7 @@ case class AIEntity(var x: Double, var y: Double, var vx: Double, var vy: Double
 
     (bx1 to bx2).foreach { i =>
       (by1 to by2).foreach { j =>
-        if (blocks(j)(i) =/= AirBlockType && TerraFrame.BLOCKCD.get(blocks(j + v)(i + u).id).exists(identity)) {
+        if (blocks(j)(i) =/= AirBlock && TerraFrame.BLOCKCD.get(blocks(j + v)(i + u).id).exists(identity)) {
           intersectRect.setBounds(i * BLOCKSIZE, j * BLOCKSIZE, BLOCKSIZE, BLOCKSIZE)
           if (rect.intersects(intersectRect)) {
             if (oldx <= i * 16 - width && (vx > 0 || strategy.ai === ShootingStarAI)) {
@@ -548,7 +549,7 @@ case class AIEntity(var x: Double, var y: Double, var vx: Double, var vy: Double
 
     (bx1 to bx2).foreach { i =>
       (by1 to by2).foreach { j =>
-        if (blocks(j)(i) =/= AirBlockType && TerraFrame.BLOCKCD.get(blocks(j + v)(i + u).id).exists(identity)) {
+        if (blocks(j)(i) =/= AirBlock && TerraFrame.BLOCKCD.get(blocks(j + v)(i + u).id).exists(identity)) {
           intersectRect.setBounds(i * BLOCKSIZE, j * BLOCKSIZE, BLOCKSIZE, BLOCKSIZE)
           if (rect.intersects(intersectRect)) {
             if (oldy <= j * 16 - height && (vy > 0 || strategy.ai === ShootingStarAI)) {
@@ -663,7 +664,7 @@ case class IdEntity(var x: Double,
     this(x, y, vx, vy, id, num, dur, 0)
   }
 
-  def update(blocks: Array2D[BlockType], player: Player, u: Int, v: Int): Boolean = {
+  def update(blocks: Array2D[Block], player: Player, u: Int, v: Int): Boolean = {
     if (!onGround) {
       vy = vy + 0.3
       if (vy > 7) {
@@ -682,7 +683,7 @@ case class IdEntity(var x: Double,
     false
   }
 
-  def collide(blocks: Array2D[BlockType], u: Int, v: Int): Boolean = {
+  def collide(blocks: Array2D[Block], u: Int, v: Int): Boolean = {
     var rv: Boolean = false
 
     grounded = onGround || onGroundDelay
@@ -708,7 +709,7 @@ case class IdEntity(var x: Double,
 
     (bx1 to bx2).foreach { i =>
       (by1 to by2).foreach { j =>
-        if (blocks(j)(i) =/= AirBlockType && TerraFrame.BLOCKCD.get(blocks(j + v)(i + u).id).exists(identity)) {
+        if (blocks(j)(i) =/= AirBlock && TerraFrame.BLOCKCD.get(blocks(j + v)(i + u).id).exists(identity)) {
           intersectRect.setBounds(i * BLOCKSIZE, j * BLOCKSIZE, BLOCKSIZE, BLOCKSIZE)
           if (rect.intersects(intersectRect)) {
             if (oldx <= i * 16 - width && (vx > 0)) {
@@ -738,7 +739,7 @@ case class IdEntity(var x: Double,
 
     (bx1 to bx2).foreach { i =>
       (by1 to by2).foreach { j =>
-        if (blocks(j)(i) =/= AirBlockType && TerraFrame.BLOCKCD.get(blocks(j + v)(i + u).id).exists(identity)) {
+        if (blocks(j)(i) =/= AirBlock && TerraFrame.BLOCKCD.get(blocks(j + v)(i + u).id).exists(identity)) {
           intersectRect.setBounds(i * BLOCKSIZE, j * BLOCKSIZE, BLOCKSIZE, BLOCKSIZE)
           if (rect.intersects(intersectRect)) {
             if (oldy <= j * 16 - height && (vy > 0)) {

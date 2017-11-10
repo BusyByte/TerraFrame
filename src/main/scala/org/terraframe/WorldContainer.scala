@@ -5,7 +5,7 @@ import java.io.Serializable
 import scala.collection.mutable.ArrayBuffer
 import scala.util.Random
 
-case class WorldContainer(blocks: Array3D[BlockType],
+case class WorldContainer(blocks: Array3D[Block],
                           blockds: Array3D[OutlineDirection],
                           blockdns: Array2D[Byte],
                           blockbgs: Array2D[Background],
@@ -33,7 +33,7 @@ case class WorldContainer(blocks: Array3D[BlockType],
                           rgnc2: Int,
                           layer: Layer,
                           layerTemp: Int,
-                          blockTemp: BlockType,
+                          blockTemp: Block,
                           mx: Int,
                           my: Int,
                           icx: Int,

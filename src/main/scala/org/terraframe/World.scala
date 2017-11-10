@@ -4,6 +4,7 @@ import scala.math._
 import org.terraframe.{ MathHelper => mh }
 import TypeSafeComparisons._
 import org.terraframe.Layer.BackgroundLayer
+import Block._
 
 object World {
 
@@ -12,7 +13,7 @@ object World {
   var coordlist: Array2D[Boolean]  = _
   var coordlist2: Array2D[Boolean] = _
 
-  def generateOutlines(blocks: Array2D[BlockType]): Array2D[OutlineDirection] = {
+  def generateOutlines(blocks: Array2D[Block]): Array2D[OutlineDirection] = {
     generate2(blocks, false)
   }
 
@@ -678,7 +679,7 @@ object World {
     }
    */
 
-  def generate2(blocks: Array2D[BlockType], msg: Boolean): Array2D[OutlineDirection] = {
+  def generate2(blocks: Array2D[Block], msg: Boolean): Array2D[OutlineDirection] = {
     var x: Int      = 0
     val width: Int  = blocks(BackgroundLayer.num).length
     val height: Int = blocks.length
@@ -691,7 +692,7 @@ object World {
     (0 until height).foreach { y =>
       (0 until width).foreach { x2 =>
         x = mh.mod(x2, width)
-        if (y > 0 && y < height - 1 && blocks(y)(x) =/= AirBlockType) {
+        if (y > 0 && y < height - 1 && blocks(y)(x) =/= AirBlock) {
           left = connect(x - 1, y, x, y, blocks)
           right = connect(x + 1, y, x, y, blocks)
           up = connect(x, y - 1, x, y, blocks)
@@ -831,7 +832,7 @@ object World {
     blockds
   }
 
-  def generate2b(blocks: Array2D[BlockType],
+  def generate2b(blocks: Array2D[Block],
                  blockds: Array2D[OutlineDirection],
                  xpos: Int,
                  ypos: Int): Array2D[OutlineDirection] = {
@@ -842,7 +843,7 @@ object World {
     (ypos - 1 until ypos + 2).foreach { y =>
       (xpos - 1 until xpos + 2).foreach { x2 =>
         x = mh.mod(x2, width)
-        if (y > 0 && y < height - 1 && blocks(y)(x) =/= AirBlockType) {
+        if (y > 0 && y < height - 1 && blocks(y)(x) =/= AirBlock) {
           left = connect(x - 1, y, x, y, blocks)
           right = connect(x + 1, y, x, y, blocks)
           up = connect(x, y - 1, x, y, blocks)
@@ -982,24 +983,24 @@ object World {
     blockds
   }
 
-  def connect(b1: BlockType, b2: BlockType): Boolean = {
-    b1 =/= AirBlockType && b1 === b2 ||
-    b1 === DirtBlockType && b2 === GrassBlockType ||
-    b2 === DirtBlockType && b1 === GrassBlockType ||
-    b1 === DirtBlockType && b2 === JungleGrassBlockType ||
-    b2 === DirtBlockType && b1 === JungleGrassBlockType ||
-    b1 === MudBlockType && b2 === SwampGrassBlockType ||
-    b2 === MudBlockType && b1 === SwampGrassBlockType ||
-    b1 === DirtTransparentBlockType && b2 === GrasstransparentBlockType ||
-    b2 === DirtTransparentBlockType && b1 === GrasstransparentBlockType ||
-    b2.id >= ZythiumWireBlockType.id && b2.id <= ZythiumWire5PowerBlockType.id && TerraFrame.wirec(b1.id) ||
-    b1 === ZythiumLampBlockType && b2 === ZythiumLampOnBlockType ||
-    b2 === ZythiumLampBlockType && b1 === ZythiumLampOnBlockType ||
-    b1 === TreeBlockType && b2 === TreeNoBarkBlockType ||
-    b2 === TreeNoBarkBlockType && b1 === TreeBlockType
+  def connect(b1: Block, b2: Block): Boolean = {
+    b1 =/= AirBlock && b1 === b2 ||
+    b1 === DirtBlock && b2 === GrassBlock ||
+    b2 === DirtBlock && b1 === GrassBlock ||
+    b1 === DirtBlock && b2 === JungleGrassBlock ||
+    b2 === DirtBlock && b1 === JungleGrassBlock ||
+    b1 === MudBlock && b2 === SwampGrassBlock ||
+    b2 === MudBlock && b1 === SwampGrassBlock ||
+    b1 === DirtTransparentBlock && b2 === GrasstransparentBlock ||
+    b2 === DirtTransparentBlock && b1 === GrasstransparentBlock ||
+    b2.id >= ZythiumWireBlock.id && b2.id <= ZythiumWire5PowerBlock.id && TerraFrame.wirec(b1.id) ||
+    b1 === ZythiumLampBlock && b2 === ZythiumLampOnBlock ||
+    b2 === ZythiumLampBlock && b1 === ZythiumLampOnBlock ||
+    b1 === TreeBlock && b2 === TreeNoBarkBlock ||
+    b2 === TreeNoBarkBlock && b1 === TreeBlock
   }
 
-  def connect(x1: Int, y1: Int, x2: Int, y2: Int, blocks: Array2D[BlockType]): Boolean = {
+  def connect(x1: Int, y1: Int, x2: Int, y2: Int, blocks: Array2D[Block]): Boolean = {
     y1 > 0 && y1 < blocks.length - 1 && connect(
       blocks(y1)(mh.mod(x1, blocks(BackgroundLayer.num).length)),
       blocks(y2)(mh.mod(x2, blocks(BackgroundLayer.num).length)))

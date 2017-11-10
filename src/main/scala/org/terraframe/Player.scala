@@ -10,6 +10,7 @@ import TerraFrame.BLOCKSIZE
 import scala.math._
 
 import TypeSafeComparisons._
+import Block._
 
 object Player {
   lazy val width: Int  = TerraFrame.PLAYERSIZEX
@@ -61,7 +62,7 @@ case class Player(var x: Double, var y: Double) extends Serializable {
   val intersectRect = new Rectangle(-1, -1, -1, -1)
 
   // TODO: move
-  private[this] def safeBlock(blocks: Array2D[BlockType])(xCoord: Int)(yCoord: Int): Option[BlockType] = {
+  private[this] def safeBlock(blocks: Array2D[Block])(xCoord: Int)(yCoord: Int): Option[Block] = {
     if (yCoord >= 0 && yCoord < blocks.length) {
       if (xCoord >= 0 && xCoord < blocks(yCoord).length) {
         Some(blocks(yCoord)(xCoord))
@@ -73,7 +74,7 @@ case class Player(var x: Double, var y: Double) extends Serializable {
     }
   }
 
-  def update(blocks: Array2D[BlockType], userInput: UserInput, u: Int, v: Int): Unit = {
+  def update(blocks: Array2D[Block], userInput: UserInput, u: Int, v: Int): Unit = {
     grounded = onGround || onGroundDelay
     if (userInput.isLeftKeyPressed) {
       if (vx > -4 || TerraFrame.DEBUG_SPEED) {
@@ -214,7 +215,7 @@ case class Player(var x: Double, var y: Double) extends Serializable {
           val maybeBlock = safeX(j + v)
 
           maybeBlock.foreach { block =>
-            if (block =/= AirBlockType && TerraFrame.BLOCKCD.get(block.id).exists(identity)) {
+            if (block =/= AirBlock && TerraFrame.BLOCKCD.get(block.id).exists(identity)) {
               intersectRect.setBounds(i * BLOCKSIZE, j * BLOCKSIZE, BLOCKSIZE, BLOCKSIZE)
               if (playerRect.intersects(intersectRect)) {
                 if (oldx <= i * 16 - width && vx > 0) {
@@ -256,7 +257,7 @@ case class Player(var x: Double, var y: Double) extends Serializable {
         (by1 to by2).foreach { j =>
           val maybeBlock = safeX(j + v)
           maybeBlock.foreach { block =>
-            if (block =/= AirBlockType && TerraFrame.BLOCKCD.get(block.id).exists(identity)) {
+            if (block =/= AirBlock && TerraFrame.BLOCKCD.get(block.id).exists(identity)) {
               intersectRect.setBounds(i * BLOCKSIZE, j * BLOCKSIZE, BLOCKSIZE, BLOCKSIZE)
               if (playerRect.intersects(intersectRect)) {
                 if (oldy <= j * 16 - height && vy > 0) {
