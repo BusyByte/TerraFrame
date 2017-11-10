@@ -4545,13 +4545,15 @@ class TerraFrame
         updatel += PrimaryLayer
       } else {
         addTileToPZQueue(ux, uy)
-        power(1)(uy)(ux) = 5.toFloat
+        power(PrimaryLayer.num)(uy)(ux) = 5.toFloat
         if (conducts(blocks(PrimaryLayer.num)(uy)(ux).id) >= 0 && wcnct(uy)(ux)) {
           if (receives(blocks(BackgroundLayer.num)(uy)(ux).id)) {
-            power(0)(uy)(ux) = power(1)(uy)(ux) - conducts(blocks(PrimaryLayer.num)(uy)(ux).id).toFloat
+            power(BackgroundLayer.num)(uy)(ux) = power(PrimaryLayer.num)(uy)(ux) - conducts(
+              blocks(PrimaryLayer.num)(uy)(ux).id).toFloat
           }
           if (receives(blocks(ForegroundLayer.num)(uy)(ux).id)) {
-            power(2)(uy)(ux) = power(1)(uy)(ux) - conducts(blocks(PrimaryLayer.num)(uy)(ux).id).toFloat
+            power(ForegroundLayer.num)(uy)(ux) = power(PrimaryLayer.num)(uy)(ux) - conducts(
+              blocks(PrimaryLayer.num)(uy)(ux).id).toFloat
           }
         }
         addTileToPQueue(ux, uy)
@@ -4567,13 +4569,15 @@ class TerraFrame
         updatel += BackgroundLayer
       } else {
         addTileToPZQueue(ux, uy)
-        power(0)(uy)(ux) = 5.toFloat
+        power(BackgroundLayer.num)(uy)(ux) = 5.toFloat
         if (conducts(blocks(BackgroundLayer.num)(uy)(ux).id) >= 0 && wcnct(uy)(ux)) {
           if (receives(blocks(PrimaryLayer.num)(uy)(ux).id)) {
-            power(1)(uy)(ux) = power(0)(uy)(ux) - conducts(blocks(BackgroundLayer.num)(uy)(ux).id).toFloat
+            power(PrimaryLayer.num)(uy)(ux) = power(BackgroundLayer.num)(uy)(ux) - conducts(
+              blocks(BackgroundLayer.num)(uy)(ux).id).toFloat
           }
           if (receives(blocks(ForegroundLayer.num)(uy)(ux).id)) {
-            power(2)(uy)(ux) = power(0)(uy)(ux) - conducts(blocks(BackgroundLayer.num)(uy)(ux).id).toFloat
+            power(ForegroundLayer.num)(uy)(ux) = power(BackgroundLayer.num)(uy)(ux) - conducts(
+              blocks(BackgroundLayer.num)(uy)(ux).id).toFloat
           }
         }
         addTileToPQueue(ux, uy)
@@ -4590,13 +4594,15 @@ class TerraFrame
         ()
       } else {
         addTileToPZQueue(ux, uy)
-        power(2)(uy)(ux) = 5.toFloat
+        power(ForegroundLayer.num)(uy)(ux) = 5.toFloat
         if (conducts(blocks(ForegroundLayer.num)(uy)(ux).id) >= 0 && wcnct(uy)(ux)) {
           if (receives(blocks(BackgroundLayer.num)(uy)(ux).id)) {
-            power(0)(uy)(ux) = power(2)(uy)(ux) - conducts(blocks(ForegroundLayer.num)(uy)(ux).id).toFloat
+            power(BackgroundLayer.num)(uy)(ux) = power(ForegroundLayer.num)(uy)(ux) - conducts(
+              blocks(ForegroundLayer.num)(uy)(ux).id).toFloat
           }
           if (receives(blocks(PrimaryLayer.num)(uy)(ux).id)) {
-            power(1)(uy)(ux) = power(2)(uy)(ux) - conducts(blocks(ForegroundLayer.num)(uy)(ux).id).toFloat
+            power(PrimaryLayer.num)(uy)(ux) = power(ForegroundLayer.num)(uy)(ux) - conducts(
+              blocks(ForegroundLayer.num)(uy)(ux).id).toFloat
           }
         }
         addTileToPQueue(ux, uy)
@@ -5143,9 +5149,12 @@ class TerraFrame
   }
 
   def isNonLayeredBlockLightSource(ux: Int, uy: Int, layer: Layer): Boolean = {
-    layer =/= BackgroundLayer && blocks(BackgroundLayer.num)(uy)(ux) =/= AirBlockType && isLightBlock(blocks(BackgroundLayer.num)(uy)(ux)) ||
-    layer =/= PrimaryLayer && blocks(PrimaryLayer.num)(uy)(ux) =/= AirBlockType && isLightBlock(blocks(PrimaryLayer.num)(uy)(ux)) ||
-    layer =/= ForegroundLayer && blocks(ForegroundLayer.num)(uy)(ux) =/= AirBlockType && isLightBlock(blocks(ForegroundLayer.num)(uy)(ux))
+    layer =/= BackgroundLayer && blocks(BackgroundLayer.num)(uy)(ux) =/= AirBlockType && isLightBlock(
+      blocks(BackgroundLayer.num)(uy)(ux)) ||
+    layer =/= PrimaryLayer && blocks(PrimaryLayer.num)(uy)(ux) =/= AirBlockType && isLightBlock(
+      blocks(PrimaryLayer.num)(uy)(ux)) ||
+    layer =/= ForegroundLayer && blocks(ForegroundLayer.num)(uy)(ux) =/= AirBlockType && isLightBlock(
+      blocks(ForegroundLayer.num)(uy)(ux))
   }
 
   def findBlockLightSource(ux: Int, uy: Int): Int = {
@@ -5217,9 +5226,9 @@ class TerraFrame
     if (!pzqd(uy)(ux)) {
       pzqx += ux
       pzqy += uy
-      pzqn(0)(uy)(ux) = power(0)(uy)(ux).toByte
-      pzqn(1)(uy)(ux) = power(1)(uy)(ux).toByte
-      pzqn(2)(uy)(ux) = power(2)(uy)(ux).toByte
+      pzqn(0)(uy)(ux) = power(BackgroundLayer.num)(uy)(ux).toByte
+      pzqn(1)(uy)(ux) = power(PrimaryLayer.num)(uy)(ux).toByte
+      pzqn(2)(uy)(ux) = power(ForegroundLayer.num)(uy)(ux).toByte
       pzqd(uy)(ux) = true
     }
   }
@@ -5339,26 +5348,32 @@ class TerraFrame
                       if (conducts(blockId2) >= 0 && wcnct(y2)(x2)) {
                         if (l === BackgroundLayer) {
                           if (receives(blocks(PrimaryLayer.num)(y2)(x2).id)) {
-                            power(1)(y2)(x2) = power(0)(y2)(x2) - conducts(blocks(BackgroundLayer.num)(y2)(x2).id).toFloat
+                            power(PrimaryLayer.num)(y2)(x2) = power(BackgroundLayer.num)(y2)(x2) - conducts(
+                              blocks(BackgroundLayer.num)(y2)(x2).id).toFloat
                           }
                           if (receives(blocks(ForegroundLayer.num)(y2)(x2).id)) {
-                            power(2)(y2)(x2) = power(0)(y2)(x2) - conducts(blocks(BackgroundLayer.num)(y2)(x2).id).toFloat
+                            power(ForegroundLayer.num)(y2)(x2) = power(BackgroundLayer.num)(y2)(x2) - conducts(
+                              blocks(BackgroundLayer.num)(y2)(x2).id).toFloat
                           }
                         }
                         if (l === PrimaryLayer) {
                           if (receives(blocks(BackgroundLayer.num)(y2)(x2).id)) {
-                            power(0)(y2)(x2) = power(1)(y2)(x2) - conducts(blocks(PrimaryLayer.num)(y2)(x2).id).toFloat //TODO: looks like first index of power could be replaced by Layer enum
+                            power(BackgroundLayer.num)(y2)(x2) = power(PrimaryLayer.num)(y2)(x2) - conducts(
+                              blocks(PrimaryLayer.num)(y2)(x2).id).toFloat
                           }
                           if (receives(blocks(ForegroundLayer.num)(y2)(x2).id)) {
-                            power(2)(y2)(x2) = power(1)(y2)(x2) - conducts(blocks(PrimaryLayer.num)(y2)(x2).id).toFloat
+                            power(ForegroundLayer.num)(y2)(x2) = power(PrimaryLayer.num)(y2)(x2) - conducts(
+                              blocks(PrimaryLayer.num)(y2)(x2).id).toFloat
                           }
                         }
                         if (l === ForegroundLayer) {
                           if (receives(blocks(BackgroundLayer.num)(y2)(x2).id)) {
-                            power(0)(y2)(x2) = power(2)(y2)(x2) - conducts(blocks(ForegroundLayer.num)(y2)(x2).id).toFloat
+                            power(BackgroundLayer.num)(y2)(x2) = power(ForegroundLayer.num)(y2)(x2) - conducts(
+                              blocks(ForegroundLayer.num)(y2)(x2).id).toFloat
                           }
                           if (receives(blocks(PrimaryLayer.num)(y2)(x2).id)) {
-                            power(1)(y2)(x2) = power(2)(y2)(x2) - conducts(blocks(ForegroundLayer.num)(y2)(x2).id).toFloat
+                            power(PrimaryLayer.num)(y2)(x2) = power(ForegroundLayer.num)(y2)(x2) - conducts(
+                              blocks(ForegroundLayer.num)(y2)(x2).id).toFloat
                           }
                         }
                       }

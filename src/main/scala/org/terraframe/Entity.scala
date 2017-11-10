@@ -174,8 +174,8 @@ object Drops {
   object SandbotBulletDrops extends Drops {
     override def generateDrops(random: Random): List[ImageUiItem] = {
       addWithOneInNChance(random, 15, SandUiItem) ++
-      addWithOneInNChance(random, 15, CoalUiItem) ++
-      addWithOneInNChance(random, 15, IronOreUiItem)
+        addWithOneInNChance(random, 15, CoalUiItem) ++
+        addWithOneInNChance(random, 15, IronOreUiItem)
     }
   }
 
