@@ -45,7 +45,7 @@ import Layer._
 object TerraFrame {
   val config: GraphicsConfiguration =
     GraphicsEnvironment.getLocalGraphicsEnvironment.getDefaultScreenDevice.getDefaultConfiguration
-  var armor: ItemCollection = _
+  var armor: ItemCollection = new ItemCollection(Armor)
   var WIDTH: Int            = 2400
   var HEIGHT: Int           = 2400
 
@@ -801,7 +801,7 @@ object TerraFrame {
     ddelayTemp.asScala.toMap
   }
 
-  var log: BufferedWriter = _
+  lazy val log: BufferedWriter = new BufferedWriter(new FileWriter("log.txt"))
 
   def main(args: Array[String]): Unit = {
     val f = new JFrame("TerraFrame: Infinite worlds!")
@@ -827,7 +827,6 @@ object TerraFrame {
       sb.append("\n        at " + ste.toString)
     }
     try {
-      log = new BufferedWriter(new FileWriter("log.txt"))
       log.write(sb.toString())
       log.close()
     } catch {
@@ -1006,50 +1005,722 @@ class TerraFrame
 
   var cic: Option[ItemCollection]   = None
   var screen: Option[BufferedImage] = None
-  var backgroundColor: Color        = _
+  var backgroundColor: Color        = Color.BLACK
 
   val cl: Array2D[Int] = Array(Array(-1, 0), Array(1, 0), Array(0, -1), Array(0, 1))
 
-  var timer, menuTimer, paIntTimer: javax.swing.Timer = _
-  var worldFiles, worldNames: List[String]            = _
-  var currentWorld: String                            = _
-  var newWorldName: TextField                         = _
+  val mainthread: Action = new AbstractAction() {
+    def actionPerformed(ae: ActionEvent): Unit = {
+      try {
+        if (ready) {
+          ready = false
+          uNew = ((player.x - getWidth / 2 + Player.width) / CHUNKSIZE.toDouble).toInt
+          vNew = ((player.y - getHeight / 2 + Player.height) / CHUNKSIZE.toDouble).toInt
+          if (ou =/= uNew || ov =/= vNew) {
+            ou = uNew
+            ov = vNew
+            val chunkTemp = mutable.ArrayBuffer.empty[Chunk]
+            (0 until 2).foreach { twy =>
+              (0 until 2).foreach { twx =>
+                chunkMatrix(twy)(twx).foreach { c =>
+                  chunkTemp += c
+                  chunkMatrix(twy)(twx) = None
+                }
+              }
+            }
+            (0 until 2).foreach { twy =>
+              import scala.util.control.Breaks._
+              (0 until 2).foreach { twx =>
+                breakable {
+                  chunkTemp.toList.zipWithIndex.reverse.foreach { p =>
+                    val c     = p._1
+                    val index = p._2
+                    if (c.cx === twx && c.cy === twy) {
+                      chunkMatrix(twy)(twx) = Some(c)
+                      chunkTemp.remove(index)
+                      break
+                    }
+                  }
+                }
+                if (chunkMatrix(twy)(twx).isEmpty) {
+                  temporarySaveFile(twy)(twx).fold {
+                    println("no save file")
+                    chunkMatrix(twy)(twx) = Some(Chunk(twx + ou, twy + ov, random))
+                  } { c =>
+                    println("using save file")
+                    chunkMatrix(twy)(twx) = Some(c)
+                  }
+                }
+              }
+            }
+            chunkTemp.foreach { chunk =>
+              temporarySaveFile(1)(1) = Some(chunk) // TODO: not sure about what this does, used to be twy, twx
+            }
 
-  var blocks: Array3D[Block]                                             = _
-  var blockds: Array3D[OutlineDirection]                                 = _
-  var blockdns: Array2D[Byte]                                            = _
-  var blockbgs: Array2D[Background]                                      = _
-  var blockts: Array2D[Byte]                                             = _
-  var lights: Array2D[Float]                                             = _
-  var power: Array3D[Float]                                              = _
-  var lsources: Array2D[Boolean]                                         = _
-  var lqx, lqy, pqx, pqy, zqx, zqy, pzqx, pzqy: mutable.ArrayBuffer[Int] = _
-  var lqd, zqd, pqd, pzqd: Array2D[Boolean]                              = _
-  var zqn: Array2D[Byte]                                                 = _
-  var pzqn: Array3D[Byte]                                                = _
-  var arbprd: Array3D[Boolean]                                           = _
-  var updatex, updatey, updatet: mutable.ArrayBuffer[Int]                = _
-  var updatel: mutable.ArrayBuffer[Layer]                                = _
-  var wcnct: Array2D[Boolean]                                            = _
-  var drawn, ldrawn, rdrawn: Array2D[Boolean]                            = _
-  var player: Player                                                     = _
-  var inventory: Inventory                                               = _
+            (0 until 2).foreach { twy =>
+              (0 until 2).foreach { twx =>
+                chunkMatrix(twy)(twx).foreach { cMatrix =>
+                  (0 until CHUNKBLOCKS).foreach { y =>
+                    (0 until CHUNKBLOCKS).foreach { x =>
+                      (0 until 3).foreach { l =>
+                        blocks(l)(twy * CHUNKBLOCKS + y)(twx * CHUNKBLOCKS + x) = cMatrix.blocks(l)(y)(x)
+                        power(l)(twy * CHUNKBLOCKS + y)(twx * CHUNKBLOCKS + x) = cMatrix.power(l)(y)(x)
+                        pzqn(l)(twy * CHUNKBLOCKS + y)(twx * CHUNKBLOCKS + x) = cMatrix.pzqn(l)(y)(x)
+                        arbprd(l)(twy * CHUNKBLOCKS + y)(twx * CHUNKBLOCKS + x) = cMatrix.arbprd(l)(y)(x)
+                        blockds(l)(twy * CHUNKBLOCKS + y)(twx * CHUNKBLOCKS + x) = cMatrix.blockds(l)(y)(x)
+                      }
+                      blockdns(twy * CHUNKBLOCKS + y)(twx * CHUNKBLOCKS + x) = cMatrix.blockdns(y)(x)
+                      blockbgs(twy * CHUNKBLOCKS + y)(twx * CHUNKBLOCKS + x) = cMatrix.blockbgs(y)(x)
+                      blockts(twy * CHUNKBLOCKS + y)(twx * CHUNKBLOCKS + x) = cMatrix.blockts(y)(x)
+                      lights(twy * CHUNKBLOCKS + y)(twx * CHUNKBLOCKS + x) = cMatrix.lights(y)(x)
+                      lsources(twy * CHUNKBLOCKS + y)(twx * CHUNKBLOCKS + x) = cMatrix.lsources(y)(x)
+                      zqn(twy * CHUNKBLOCKS + y)(twx * CHUNKBLOCKS + x) = cMatrix.zqn(y)(x)
+                      wcnct(twy * CHUNKBLOCKS + y)(twx * CHUNKBLOCKS + x) = cMatrix.wcnct(y)(x)
+                      drawn(twy * CHUNKBLOCKS + y)(twx * CHUNKBLOCKS + x) = cMatrix.drawn(y)(x)
+                      rdrawn(twy * CHUNKBLOCKS + y)(twx * CHUNKBLOCKS + x) = cMatrix.rdrawn(y)(x)
+                      ldrawn(twy * CHUNKBLOCKS + y)(twx * CHUNKBLOCKS + x) = cMatrix.ldrawn(y)(x)
+                    }
+                  }
+                }
+                worlds(twy)(twx) = None
+              }
+            }
+          }
+          u = -ou * CHUNKBLOCKS
+          v = -ov * CHUNKBLOCKS
+          (0 until 2).foreach { twy =>
+            (0 until 2).foreach { twx =>
+              kworlds(twy)(twx) = false
+            }
+          }
+          var somevar: Boolean = false
+          (0 until 2).foreach { twy =>
+            (0 until 2).foreach { twx =>
+              val twxc: Int = twx + ou
+              val twyc: Int = twy + ov
+              if (((player.ix + getWidth / 2 + Player.width >= twxc * CHUNKSIZE &&
+                  player.ix + getWidth / 2 + Player.width <= twxc * CHUNKSIZE + CHUNKSIZE) ||
+                  (player.ix - getWidth / 2 + Player.width + BLOCKSIZE >= twxc * CHUNKSIZE &&
+                  player.ix - getWidth / 2 + Player.width - BLOCKSIZE <= twxc * CHUNKSIZE + CHUNKSIZE)) &&
+                  ((player.iy + getHeight / 2 + Player.height >= twyc * CHUNKSIZE &&
+                  player.iy + getHeight / 2 + Player.height <= twyc * CHUNKSIZE + CHUNKSIZE) ||
+                  (player.iy - getHeight / 2 + Player.height >= twyc * CHUNKSIZE &&
+                  player.iy - getHeight / 2 + Player.height <= twyc * CHUNKSIZE + CHUNKSIZE))) {
+                kworlds(twy)(twx) = true
+                worlds(twy)(twx) = worlds(twy)(twx)
+                  .orElse(Some(config.createCompatibleImage(CHUNKSIZE, CHUNKSIZE, Transparency.TRANSLUCENT)))
+                fworlds(twy)(twx) = fworlds(twy)(twx)
+                  .orElse(Some(config.createCompatibleImage(CHUNKSIZE, CHUNKSIZE, Transparency.TRANSLUCENT)))
 
-  var entities: mutable.ArrayBuffer[Entity]                  = _
-  var cloudsx, cloudsy, cloudsv: mutable.ArrayBuffer[Double] = _
-  var cloudsn: mutable.ArrayBuffer[Int]                      = _
-  var machinesx, machinesy: mutable.ArrayBuffer[Int]         = _
+                worlds(twy)(twx).foreach { w =>
+                  fworlds(twy)(twx).foreach { fw =>
+                    val wg2: Graphics2D  = w.createGraphics()
+                    val fwg2: Graphics2D = fw.createGraphics()
+                    (max(twy * CHUNKSIZE, (player.iy - getHeight / 2 + Player.height / 2 + v * BLOCKSIZE) - 64) until (min(
+                      twy * CHUNKSIZE + CHUNKSIZE,
+                      (player.iy + getHeight / 2 - Player.height / 2 + v * BLOCKSIZE) + 128), BLOCKSIZE))
+                      .foreach { tly =>
+                        (max(twx * CHUNKSIZE, (player.ix - getWidth / 2 + Player.width / 2 + u * BLOCKSIZE) - 64) until (min(
+                          twx * CHUNKSIZE + CHUNKSIZE,
+                          (player.ix + getWidth / 2 - Player.width / 2 + u * BLOCKSIZE) + 112), BLOCKSIZE))
+                          .foreach { tlx =>
+                            tx = tlx / BLOCKSIZE
+                            ty = tly / BLOCKSIZE
+                            if (tx >= 0 && tx < theSize && ty >= 0 && ty < theSize) {
+                              if (!drawn(ty)(tx)) {
+                                somevar = true
+                                blockts(ty)(tx) = random.nextInt(8).toByte
+                                (0 until BLOCKSIZE).foreach { y =>
+                                  (0 until BLOCKSIZE).foreach { x =>
+                                    try {
+                                      w.setRGB(
+                                        tx * BLOCKSIZE - twxc * CHUNKSIZE + x,
+                                        ty * BLOCKSIZE - twyc * CHUNKSIZE + y,
+                                        9539985)
+                                      fw.setRGB(
+                                        tx * BLOCKSIZE - twxc * CHUNKSIZE + x,
+                                        ty * BLOCKSIZE - twyc * CHUNKSIZE + y,
+                                        9539985)
+                                    } catch {
+                                      case _: ArrayIndexOutOfBoundsException =>
+                                    }
+                                  }
+                                }
+                                Background.onBackgroundImage(blockbgs(ty)(tx)) { img =>
+                                  drawImage(
+                                    wg2,
+                                    img.image,
+                                    tx * BLOCKSIZE - twx * CHUNKSIZE,
+                                    ty * BLOCKSIZE - twy * CHUNKSIZE,
+                                    tx * BLOCKSIZE + BLOCKSIZE - twx * CHUNKSIZE,
+                                    ty * BLOCKSIZE + BLOCKSIZE - twy * CHUNKSIZE,
+                                    0,
+                                    0,
+                                    IMAGESIZE,
+                                    IMAGESIZE
+                                  )
+                                  ()
+                                }
+                                (0 until 3).foreach { l =>
+                                  if (blocks(l)(ty)(tx) =/= AirBlock) {
+                                    if (l === 2) {
+                                      OUTLINES.get(blocks(l)(ty)(tx).id).foreach { outlineName =>
+                                        drawImage(
+                                          fwg2,
+                                          loadBlock(
+                                            blocks(l)(ty)(tx),
+                                            blockds(l)(ty)(tx),
+                                            blockdns(ty)(tx),
+                                            blockts(ty)(tx),
+                                            blocknames,
+                                            outlineName,
+                                            tx,
+                                            ty,
+                                            l),
+                                          tx * BLOCKSIZE - twx * CHUNKSIZE,
+                                          ty * BLOCKSIZE - twy * CHUNKSIZE,
+                                          tx * BLOCKSIZE + BLOCKSIZE - twx * CHUNKSIZE,
+                                          ty * BLOCKSIZE + BLOCKSIZE - twy * CHUNKSIZE,
+                                          0,
+                                          0,
+                                          IMAGESIZE,
+                                          IMAGESIZE
+                                        )
+                                      }
+                                    } else {
+                                      OUTLINES.get(blocks(l)(ty)(tx).id).foreach { outlineName =>
+                                        drawImage(
+                                          wg2,
+                                          loadBlock(
+                                            blocks(l)(ty)(tx),
+                                            blockds(l)(ty)(tx),
+                                            blockdns(ty)(tx),
+                                            blockts(ty)(tx),
+                                            blocknames,
+                                            outlineName,
+                                            tx,
+                                            ty,
+                                            l),
+                                          tx * BLOCKSIZE - twx * CHUNKSIZE,
+                                          ty * BLOCKSIZE - twy * CHUNKSIZE,
+                                          tx * BLOCKSIZE + BLOCKSIZE - twx * CHUNKSIZE,
+                                          ty * BLOCKSIZE + BLOCKSIZE - twy * CHUNKSIZE,
+                                          0,
+                                          0,
+                                          IMAGESIZE,
+                                          IMAGESIZE
+                                        )
+                                      }
 
-  var temporarySaveFile: Array2D[Option[Chunk]] = _
-  var chunkMatrix: Array2D[Option[Chunk]]       = _
+                                    }
+                                  }
+                                  if (wcnct(ty)(tx) && blocks(l)(ty)(tx).id >= ZythiumWireBlock.id && blocks(l)(ty)(tx).id <= ZythiumWire5PowerBlock.id) {
+                                    if (l === 2) {
+                                      drawImage(
+                                        fwg2,
+                                        wcnct_px,
+                                        tx * BLOCKSIZE - twx * CHUNKSIZE,
+                                        ty * BLOCKSIZE - twy * CHUNKSIZE,
+                                        tx * BLOCKSIZE + BLOCKSIZE - twx * CHUNKSIZE,
+                                        ty * BLOCKSIZE + BLOCKSIZE - twy * CHUNKSIZE,
+                                        0,
+                                        0,
+                                        IMAGESIZE,
+                                        IMAGESIZE
+                                      )
+                                    } else {
+                                      drawImage(
+                                        wg2,
+                                        wcnct_px,
+                                        tx * BLOCKSIZE - twx * CHUNKSIZE,
+                                        ty * BLOCKSIZE - twy * CHUNKSIZE,
+                                        tx * BLOCKSIZE + BLOCKSIZE - twx * CHUNKSIZE,
+                                        ty * BLOCKSIZE + BLOCKSIZE - twy * CHUNKSIZE,
+                                        0,
+                                        0,
+                                        IMAGESIZE,
+                                        IMAGESIZE
+                                      )
+                                    }
+                                  }
+                                }
+                                if (!DEBUG_LIGHT) {
+                                  LIGHTLEVELS
+                                    .get(lights(ty)(tx).toInt)
+                                    .foreach(drawImage(
+                                      fwg2,
+                                      _,
+                                      tx * BLOCKSIZE - twx * CHUNKSIZE,
+                                      ty * BLOCKSIZE - twy * CHUNKSIZE,
+                                      tx * BLOCKSIZE + BLOCKSIZE - twx * CHUNKSIZE,
+                                      ty * BLOCKSIZE + BLOCKSIZE - twy * CHUNKSIZE,
+                                      0,
+                                      0,
+                                      IMAGESIZE,
+                                      IMAGESIZE
+                                    ))
+                                }
+                                drawn(ty)(tx) = true
+                                rdrawn(ty)(tx) = true
+                                ldrawn(ty)(tx) = true
+                              }
+                              if (!rdrawn(ty)(tx)) {
+                                somevar = true
+                                (0 until BLOCKSIZE).foreach { y =>
+                                  (0 until BLOCKSIZE).foreach { x =>
+                                    try {
+                                      w.setRGB(
+                                        tx * BLOCKSIZE - twxc * CHUNKSIZE + x,
+                                        ty * BLOCKSIZE - twyc * CHUNKSIZE + y,
+                                        9539985)
+                                      fw.setRGB(
+                                        tx * BLOCKSIZE - twxc * CHUNKSIZE + x,
+                                        ty * BLOCKSIZE - twyc * CHUNKSIZE + y,
+                                        9539985)
+                                    } catch {
+                                      case _: ArrayIndexOutOfBoundsException =>
+                                    }
+                                  }
+                                }
+                                Background.onBackgroundImage(blockbgs(ty)(tx)) { img =>
+                                  drawImage(
+                                    wg2,
+                                    img.image,
+                                    tx * BLOCKSIZE - twx * CHUNKSIZE,
+                                    ty * BLOCKSIZE - twy * CHUNKSIZE,
+                                    tx * BLOCKSIZE + BLOCKSIZE - twx * CHUNKSIZE,
+                                    ty * BLOCKSIZE + BLOCKSIZE - twy * CHUNKSIZE,
+                                    0,
+                                    0,
+                                    IMAGESIZE,
+                                    IMAGESIZE
+                                  )
+                                  ()
+                                }
+                                (0 until 3).foreach { l =>
+                                  if (blocks(l)(ty)(tx) =/= AirBlock) {
+                                    if (l === 2) {
+                                      OUTLINES.get(blocks(l)(ty)(tx).id).foreach { outlineName =>
+                                        drawImage(
+                                          fwg2,
+                                          loadBlock(
+                                            blocks(l)(ty)(tx),
+                                            blockds(l)(ty)(tx),
+                                            blockdns(ty)(tx),
+                                            blockts(ty)(tx),
+                                            blocknames,
+                                            outlineName,
+                                            tx,
+                                            ty,
+                                            l),
+                                          tx * BLOCKSIZE - twx * CHUNKSIZE,
+                                          ty * BLOCKSIZE - twy * CHUNKSIZE,
+                                          tx * BLOCKSIZE + BLOCKSIZE - twx * CHUNKSIZE,
+                                          ty * BLOCKSIZE + BLOCKSIZE - twy * CHUNKSIZE,
+                                          0,
+                                          0,
+                                          IMAGESIZE,
+                                          IMAGESIZE
+                                        )
+                                      }
+                                    } else {
+                                      OUTLINES.get(blocks(l)(ty)(tx).id).foreach { outlineName =>
+                                        drawImage(
+                                          wg2,
+                                          loadBlock(
+                                            blocks(l)(ty)(tx),
+                                            blockds(l)(ty)(tx),
+                                            blockdns(ty)(tx),
+                                            blockts(ty)(tx),
+                                            blocknames,
+                                            outlineName,
+                                            tx,
+                                            ty,
+                                            l),
+                                          tx * BLOCKSIZE - twx * CHUNKSIZE,
+                                          ty * BLOCKSIZE - twy * CHUNKSIZE,
+                                          tx * BLOCKSIZE + BLOCKSIZE - twx * CHUNKSIZE,
+                                          ty * BLOCKSIZE + BLOCKSIZE - twy * CHUNKSIZE,
+                                          0,
+                                          0,
+                                          IMAGESIZE,
+                                          IMAGESIZE
+                                        )
+                                      }
 
-  var rgnc1: Int              = 0
-  var rgnc2: Int              = 0
-  var layer: Layer            = PrimaryLayer
-  var iclayer: Layer          = _
-  var layerTemp: Int          = _
-  var blockTemp: Block        = _
-  var layerImg: BufferedImage = _
+                                    }
+                                  }
+                                  if (wcnct(ty)(tx) && blocks(l)(ty)(tx).id >= ZythiumWireBlock.id && blocks(l)(ty)(tx).id <= ZythiumWire5PowerBlock.id) {
+                                    if (l === 2) {
+                                      drawImage(
+                                        fwg2,
+                                        wcnct_px,
+                                        tx * BLOCKSIZE - twx * CHUNKSIZE,
+                                        ty * BLOCKSIZE - twy * CHUNKSIZE,
+                                        tx * BLOCKSIZE + BLOCKSIZE - twx * CHUNKSIZE,
+                                        ty * BLOCKSIZE + BLOCKSIZE - twy * CHUNKSIZE,
+                                        0,
+                                        0,
+                                        IMAGESIZE,
+                                        IMAGESIZE
+                                      )
+                                    } else {
+                                      drawImage(
+                                        wg2,
+                                        wcnct_px,
+                                        tx * BLOCKSIZE - twx * CHUNKSIZE,
+                                        ty * BLOCKSIZE - twy * CHUNKSIZE,
+                                        tx * BLOCKSIZE + BLOCKSIZE - twx * CHUNKSIZE,
+                                        ty * BLOCKSIZE + BLOCKSIZE - twy * CHUNKSIZE,
+                                        0,
+                                        0,
+                                        IMAGESIZE,
+                                        IMAGESIZE
+                                      )
+                                    }
+                                  }
+                                }
+                                if (!DEBUG_LIGHT) {
+                                  LIGHTLEVELS
+                                    .get(lights(ty)(tx).toInt)
+                                    .foreach(drawImage(
+                                      fwg2,
+                                      _,
+                                      tx * BLOCKSIZE - twx * CHUNKSIZE,
+                                      ty * BLOCKSIZE - twy * CHUNKSIZE,
+                                      tx * BLOCKSIZE + BLOCKSIZE - twx * CHUNKSIZE,
+                                      ty * BLOCKSIZE + BLOCKSIZE - twy * CHUNKSIZE,
+                                      0,
+                                      0,
+                                      IMAGESIZE,
+                                      IMAGESIZE
+                                    ))
+                                }
+                                drawn(ty)(tx) = true
+                                rdrawn(ty)(tx) = true
+                                ldrawn(ty)(tx) = true
+                              }
+                              if (!ldrawn(ty)(tx) && random.nextInt(10) === 0) {
+                                somevar = true
+                                (0 until BLOCKSIZE).foreach { y =>
+                                  (0 until BLOCKSIZE).foreach { x =>
+                                    try {
+                                      w.setRGB(
+                                        tx * BLOCKSIZE - twxc * CHUNKSIZE + x,
+                                        ty * BLOCKSIZE - twyc * CHUNKSIZE + y,
+                                        9539985)
+                                      fw.setRGB(
+                                        tx * BLOCKSIZE - twxc * CHUNKSIZE + x,
+                                        ty * BLOCKSIZE - twyc * CHUNKSIZE + y,
+                                        9539985)
+                                    } catch {
+                                      case _: ArrayIndexOutOfBoundsException =>
+                                    }
+                                  }
+                                }
+                                Background.onBackgroundImage(blockbgs(ty)(tx)) { img =>
+                                  drawImage(
+                                    wg2,
+                                    img.image,
+                                    tx * BLOCKSIZE - twx * CHUNKSIZE,
+                                    ty * BLOCKSIZE - twy * CHUNKSIZE,
+                                    tx * BLOCKSIZE + BLOCKSIZE - twx * CHUNKSIZE,
+                                    ty * BLOCKSIZE + BLOCKSIZE - twy * CHUNKSIZE,
+                                    0,
+                                    0,
+                                    IMAGESIZE,
+                                    IMAGESIZE
+                                  )
+                                  ()
+                                }
+
+                                (0 until 3).foreach { l =>
+                                  if (blocks(l)(ty)(tx) =/= AirBlock) {
+                                    if (l === 2) {
+                                      OUTLINES.get(blocks(l)(ty)(tx).id).foreach { outlineName =>
+                                        drawImage(
+                                          fwg2,
+                                          loadBlock(
+                                            blocks(l)(ty)(tx),
+                                            blockds(l)(ty)(tx),
+                                            blockdns(ty)(tx),
+                                            blockts(ty)(tx),
+                                            blocknames,
+                                            outlineName,
+                                            tx,
+                                            ty,
+                                            l),
+                                          tx * BLOCKSIZE - twx * CHUNKSIZE,
+                                          ty * BLOCKSIZE - twy * CHUNKSIZE,
+                                          tx * BLOCKSIZE + BLOCKSIZE - twx * CHUNKSIZE,
+                                          ty * BLOCKSIZE + BLOCKSIZE - twy * CHUNKSIZE,
+                                          0,
+                                          0,
+                                          IMAGESIZE,
+                                          IMAGESIZE
+                                        )
+                                      }
+
+                                    } else {
+                                      OUTLINES.get(blocks(l)(ty)(tx).id).foreach { outlineName =>
+                                        drawImage(
+                                          wg2,
+                                          loadBlock(
+                                            blocks(l)(ty)(tx),
+                                            blockds(l)(ty)(tx),
+                                            blockdns(ty)(tx),
+                                            blockts(ty)(tx),
+                                            blocknames,
+                                            outlineName,
+                                            tx,
+                                            ty,
+                                            l),
+                                          tx * BLOCKSIZE - twx * CHUNKSIZE,
+                                          ty * BLOCKSIZE - twy * CHUNKSIZE,
+                                          tx * BLOCKSIZE + BLOCKSIZE - twx * CHUNKSIZE,
+                                          ty * BLOCKSIZE + BLOCKSIZE - twy * CHUNKSIZE,
+                                          0,
+                                          0,
+                                          IMAGESIZE,
+                                          IMAGESIZE
+                                        )
+                                      }
+
+                                    }
+                                  }
+                                  if (wcnct(ty)(tx) && blocks(l)(ty)(tx).id >= ZythiumWireBlock.id && blocks(l)(ty)(tx).id <= ZythiumWire5PowerBlock.id) {
+                                    if (l === 2) {
+                                      drawImage(
+                                        fwg2,
+                                        wcnct_px,
+                                        tx * BLOCKSIZE - twx * CHUNKSIZE,
+                                        ty * BLOCKSIZE - twy * CHUNKSIZE,
+                                        tx * BLOCKSIZE + BLOCKSIZE - twx * CHUNKSIZE,
+                                        ty * BLOCKSIZE + BLOCKSIZE - twy * CHUNKSIZE,
+                                        0,
+                                        0,
+                                        IMAGESIZE,
+                                        IMAGESIZE
+                                      )
+                                    } else {
+                                      drawImage(
+                                        wg2,
+                                        wcnct_px,
+                                        tx * BLOCKSIZE - twx * CHUNKSIZE,
+                                        ty * BLOCKSIZE - twy * CHUNKSIZE,
+                                        tx * BLOCKSIZE + BLOCKSIZE - twx * CHUNKSIZE,
+                                        ty * BLOCKSIZE + BLOCKSIZE - twy * CHUNKSIZE,
+                                        0,
+                                        0,
+                                        IMAGESIZE,
+                                        IMAGESIZE
+                                      )
+                                    }
+                                  }
+                                }
+                                if (!DEBUG_LIGHT) {
+                                  LIGHTLEVELS
+                                    .get(lights(ty)(tx).toInt)
+                                    .foreach(drawImage(
+                                      fwg2,
+                                      _,
+                                      tx * BLOCKSIZE - twx * CHUNKSIZE,
+                                      ty * BLOCKSIZE - twy * CHUNKSIZE,
+                                      tx * BLOCKSIZE + BLOCKSIZE - twx * CHUNKSIZE,
+                                      ty * BLOCKSIZE + BLOCKSIZE - twy * CHUNKSIZE,
+                                      0,
+                                      0,
+                                      IMAGESIZE,
+                                      IMAGESIZE
+                                    ))
+                                }
+                                drawn(ty)(tx) = true
+                                rdrawn(ty)(tx) = true
+                                ldrawn(ty)(tx) = true
+                              }
+                            }
+                          }
+                      }
+                  }
+                }
+              }
+            }
+          }
+          if (somevar) {
+            println("Drew at least one block.")
+          }
+          (0 until 2).foreach { twy =>
+            (0 until 2).foreach { twx =>
+              if (!kworlds(twy)(twx) && worlds(twy)(twx).isDefined) {
+                worlds(twy)(twx) = None
+                fworlds(twy)(twx) = None
+                (twy * CHUNKBLOCKS until twy * CHUNKBLOCKS + CHUNKBLOCKS).foreach { ty =>
+                  (twx * CHUNKBLOCKS until twx * CHUNKBLOCKS + CHUNKBLOCKS).foreach { tx =>
+                    if (tx >= 0 && tx < theSize && ty >= 0 && ty < theSize) {
+                      drawn(ty)(tx) = false
+                    }
+                  }
+                }
+                println("Destroyed image at " + twx + " " + twy)
+              }
+            }
+          }
+          updateApp()
+          updateEnvironment()
+          player.update(blocks(PrimaryLayer.num), userInput, u, v)
+          if (timeOfDay >= 86400) {
+            timeOfDay = 0
+            day += 1
+          }
+          repaint()
+          ready = true
+        }
+      } catch {
+        case NonFatal(e) => postError(e)
+      }
+    }
+  }
+  var timer: javax.swing.Timer = new javax.swing.Timer(20, mainthread)
+  val actionListener = new ActionListener() {
+    def actionPerformed(ae: ActionEvent): Unit = {
+      try {
+        if (userInput.isLeftMousePressed) {
+
+          val (mouseX, mouseY) = userInput.currentMousePosition
+          if (state === TitleScreen && !menuPressed) {
+            if (mouseX >= 239 && mouseX <= 557) {
+              if (mouseY >= 213 && mouseY <= 249) { // singleplayer
+                findWorlds()
+                state = SelectWorld
+                repaint()
+                menuPressed = true
+              }
+            }
+          }
+          if (state === SelectWorld && !menuPressed) {
+            if (mouseX >= 186 && mouseX <= 615 &&
+                mouseY >= 458 && mouseY <= 484) { // create new world
+              state = NewWorld
+              repaint()
+              menuPressed = true
+            }
+            if (mouseX >= 334 && mouseX <= 457 &&
+                mouseY >= 504 && mouseY <= 530) { // back
+              state = TitleScreen
+              repaint()
+              menuPressed = true
+            }
+            import scala.util.control.Breaks._
+            breakable {
+              worldFiles.indices.foreach { i =>
+                if (mouseX >= 166 && mouseX <= 470 &&
+                    mouseY >= 117 + i * 35 && mouseY <= 152 + i * 35) { // load world
+                  currentWorld = Some(worldNames(i))
+                  state = LoadingWorld
+                  backgroundColor = Color.BLACK
+                  if (loadWorld(worldFiles(i))) {
+                    menuTimer.stop()
+                    backgroundColor = CYANISH
+                    state = InGame
+                    ready = true
+                    timer.start()
+                    break
+                  }
+                }
+              }
+            }
+          }
+          if (state === NewWorld && !menuPressed) {
+            if (mouseX >= 186 && mouseX <= 615 &&
+                mouseY >= 458 && mouseY <= 484) { // create new world
+              if (newWorldName.text =/= "") {
+                findWorlds()
+                doGenerateWorld = true
+                worldNames.indices.foreach { i =>
+                  if (newWorldName.text === worldNames(i)) {
+                    doGenerateWorld = false
+                  }
+                }
+                if (doGenerateWorld) {
+                  menuTimer.stop()
+                  backgroundColor = Color.BLACK
+                  state = GeneratingWorld
+                  currentWorld = Some(newWorldName.text)
+                  repaint()
+                  createWorldTimer.start()
+                }
+              }
+            }
+            if (mouseX >= 334 && mouseX <= 457 &&
+                mouseY >= 504 && mouseY <= 530) { // back
+              state = SelectWorld
+              repaint()
+              menuPressed = true
+            }
+          }
+        }
+      } catch {
+        case NonFatal(e) => postError(e)
+      }
+    }
+  }
+  var menuTimer: javax.swing.Timer         = new javax.swing.Timer(20, actionListener)
+  var worldFiles, worldNames: List[String] = Nil
+  var currentWorld: Option[String]         = None
+  var newWorldName: TextField              = TextField(400, "New World")
+
+  var blocks: Array3D[Block]             = Array.ofDim(3, theSize, theSize)
+  var blockds: Array3D[OutlineDirection] = Array.ofDim(3, theSize, theSize)
+  var blockdns: Array2D[Byte]            = Array.ofDim(theSize, theSize)
+  var blockbgs: Array2D[Background]      = Array.ofDim(theSize, theSize)
+  var blockts: Array2D[Byte]             = Array.ofDim(theSize, theSize)
+  var lights: Array2D[Float]             = Array.ofDim(theSize, theSize)
+  var power: Array3D[Float]              = Array.ofDim(3, theSize, theSize)
+  var lsources: Array2D[Boolean]         = Array.ofDim(theSize, theSize)
+  var lqx: mutable.ArrayBuffer[Int]      = mutable.ArrayBuffer.empty[Int]
+  var lqy: mutable.ArrayBuffer[Int]      = mutable.ArrayBuffer.empty[Int]
+  var pqx: mutable.ArrayBuffer[Int]      = mutable.ArrayBuffer.empty[Int]
+  var pqy: mutable.ArrayBuffer[Int]      = mutable.ArrayBuffer.empty[Int]
+  var zqx: mutable.ArrayBuffer[Int]      = mutable.ArrayBuffer.empty[Int]
+  var zqy: mutable.ArrayBuffer[Int]      = mutable.ArrayBuffer.empty[Int]
+  var pzqx: mutable.ArrayBuffer[Int]     = mutable.ArrayBuffer.empty[Int]
+  var pzqy: mutable.ArrayBuffer[Int]     = mutable.ArrayBuffer.empty[Int]
+  var lqd: Array2D[Boolean]              = Array.fill(theSize, theSize)(false)
+  var zqd: Array2D[Boolean]              = Array.fill(theSize, theSize)(false)
+  var pqd: Array2D[Boolean]              = Array.fill(theSize, theSize)(false)
+  var pzqd: Array2D[Boolean]             = Array.fill(theSize, theSize)(false)
+  var zqn: Array2D[Byte]                 = Array.ofDim(theSize, theSize)
+  var pzqn: Array3D[Byte]                = Array.ofDim(3, theSize, theSize)
+  var arbprd: Array3D[Boolean]           = Array.ofDim(3, theSize, theSize)
+
+  var updatex: mutable.ArrayBuffer[Int]   = mutable.ArrayBuffer.empty[Int]
+  var updatey: mutable.ArrayBuffer[Int]   = mutable.ArrayBuffer.empty[Int]
+  var updatet: mutable.ArrayBuffer[Int]   = mutable.ArrayBuffer.empty[Int]
+  var updatel: mutable.ArrayBuffer[Layer] = mutable.ArrayBuffer.empty[Layer]
+  var wcnct: Array2D[Boolean]             = Array.ofDim(theSize, theSize)
+  var drawn: Array2D[Boolean]             = Array.ofDim(theSize, theSize)
+  var ldrawn: Array2D[Boolean]            = Array.ofDim(theSize, theSize)
+  var rdrawn: Array2D[Boolean]            = Array.ofDim(theSize, theSize)
+  var player: Player                      = new Player(WIDTH * 0.5 * BLOCKSIZE, 45)
+  var inventory: Inventory                = new Inventory()
+
+  var entities: mutable.ArrayBuffer[Entity] = mutable.ArrayBuffer.empty[Entity]
+  var cloudsx: mutable.ArrayBuffer[Double]  = mutable.ArrayBuffer.empty[Double]
+  var cloudsy: mutable.ArrayBuffer[Double]  = mutable.ArrayBuffer.empty[Double]
+  var cloudsv: mutable.ArrayBuffer[Double]  = mutable.ArrayBuffer.empty[Double]
+  var cloudsn: mutable.ArrayBuffer[Int]     = mutable.ArrayBuffer.empty[Int]
+  var machinesx: mutable.ArrayBuffer[Int]   = mutable.ArrayBuffer.empty[Int]
+  var machinesy: mutable.ArrayBuffer[Int]   = mutable.ArrayBuffer.empty[Int]
+
+  var temporarySaveFile: Array2D[Option[Chunk]] = Array.fill(2, 2)(None)
+  var chunkMatrix: Array2D[Option[Chunk]]       = Array.fill(2, 2)(None)
+
+  var rgnc1: Int       = 0
+  var rgnc2: Int       = 0
+  var layer: Layer     = PrimaryLayer
+  var iclayer: Layer   = PrimaryLayer
+  var layerTemp: Int   = _
+  var blockTemp: Block = AirBlock
 
   var state: GameState                 = LoadingGraphics
   var mobSpawn: Option[EntityStrategy] = None
@@ -1059,14 +1730,13 @@ class TerraFrame
   var i, j, k, wx, wy, lx, ly, tx, ty, twx, twy, tlx, tly, ux, uy, ux2, uy2, uwx, uwy, uwx2, ulx, uly, ulx2, uly2, ucx,
   ucy, uclx, ucly, pwx, pwy, n, m, dx, dy, dx2, dy2, mx, my, lsx, lsy, lsn, ax, ay, axl, ayl, nl, vc, xpos, ypos,
   xpos2, ypos2, x2, y2, rnum, mining, xmin, xmax, ymin, ymax, Intpercent, ground: Int = _
-  var t: Block                                                                        = _
   private[this] var x, y                                                              = 0
   var p, q: Double                                                                    = _
   var s: Short                                                                        = _
-  var miningTool: UiItem                                                              = _
+  var miningTool: UiItem                                                              = EmptyUiItem
 
-  var moveItem: UiItem                                  = _
-  var moveItemTemp: UiItem                              = _
+  var moveItem: UiItem                                  = EmptyUiItem
+  var moveItemTemp: UiItem                              = EmptyUiItem
   var moveNum, moveDur, moveNumTemp, moveDurTemp: Short = _
   var msi, ou, ov, icx, icy, immune: Int                = 0
 
@@ -1082,9 +1752,21 @@ class TerraFrame
 
   var loadTextPos: Int = 0
 
-  var cloud: BufferedImage = _
-
-  var createWorldTimer: javax.swing.Timer = _
+  val createWorldThread: Action = new AbstractAction() {
+    def actionPerformed(ae: ActionEvent): Unit = {
+      try {
+        createNewWorld()
+        backgroundColor = CYANISH
+        state = InGame
+        ready = true
+        timer.start()
+        createWorldTimer.stop()
+      } catch {
+        case NonFatal(e) => postError(e)
+      }
+    }
+  }
+  var createWorldTimer: javax.swing.Timer = new javax.swing.Timer(1, createWorldThread)
 
   val userInput = UserInput()
 
@@ -1111,19 +1793,17 @@ class TerraFrame
 
   var ic: Option[ItemCollection] = None
 
-  var worlds, fworlds: Array2D[Option[BufferedImage]] = _
-  var kworlds: Array2D[Boolean]                       = _
+  var worlds: Array2D[Option[BufferedImage]]  = Array.fill(2, 2)(None)
+  var fworlds: Array2D[Option[BufferedImage]] = Array.fill(2, 2)(None)
+  var kworlds: Array2D[Boolean]               = Array.fill(2, 2)(false)
 
-  var icmatrix: Array3D[Option[ItemCollection]] = _
+  var icmatrix: Array3D[Option[ItemCollection]] = Array.ofDim(3, HEIGHT, WIDTH)
 
   var tool: Option[BufferedImage] = None
-
-  var wg2, fwg2: Graphics2D = _
 
   def init(): Unit = {
     try {
       setLayout(new BorderLayout())
-      backgroundColor = Color.BLACK
 
       addKeyListener(this)
       addMouseListener(this)
@@ -1178,685 +1858,6 @@ class TerraFrame
 
       repaint()
 
-      val actionListener = new ActionListener() {
-        def actionPerformed(ae: ActionEvent): Unit = {
-          try {
-            if (userInput.isLeftMousePressed) {
-              val mainthread: Action = new AbstractAction() {
-                def actionPerformed(ae: ActionEvent): Unit = {
-                  try {
-                    if (ready) {
-                      ready = false
-                      uNew = ((player.x - getWidth / 2 + Player.width) / CHUNKSIZE.toDouble).toInt
-                      vNew = ((player.y - getHeight / 2 + Player.height) / CHUNKSIZE.toDouble).toInt
-                      if (ou =/= uNew || ov =/= vNew) {
-                        ou = uNew
-                        ov = vNew
-                        val chunkTemp = mutable.ArrayBuffer.empty[Chunk]
-                        (0 until 2).foreach { twy =>
-                          (0 until 2).foreach { twx =>
-                            chunkMatrix(twy)(twx).foreach { c =>
-                              chunkTemp += c
-                              chunkMatrix(twy)(twx) = None
-                            }
-                          }
-                        }
-                        (0 until 2).foreach { twy =>
-                          import scala.util.control.Breaks._
-                          (0 until 2).foreach { twx =>
-                            breakable {
-                              chunkTemp.toList.zipWithIndex.reverse.foreach { p =>
-                                val c     = p._1
-                                val index = p._2
-                                if (c.cx === twx && c.cy === twy) {
-                                  chunkMatrix(twy)(twx) = Some(c)
-                                  chunkTemp.remove(index)
-                                  break
-                                }
-                              }
-                            }
-                            if (chunkMatrix(twy)(twx).isEmpty) {
-                              temporarySaveFile(twy)(twx).fold {
-                                println("no save file")
-                                chunkMatrix(twy)(twx) = Some(Chunk(twx + ou, twy + ov, random))
-                              } { c =>
-                                println("using save file")
-                                chunkMatrix(twy)(twx) = Some(c)
-                              }
-                            }
-                          }
-                        }
-                        chunkTemp.foreach { chunk =>
-                          temporarySaveFile(1)(1) = Some(chunk) // TODO: not sure about what this does, used to be twy, twx
-                        }
-
-                        (0 until 2).foreach { twy =>
-                          (0 until 2).foreach { twx =>
-                            chunkMatrix(twy)(twx).foreach { cMatrix =>
-                              (0 until CHUNKBLOCKS).foreach { y =>
-                                (0 until CHUNKBLOCKS).foreach { x =>
-                                  (0 until 3).foreach { l =>
-                                    blocks(l)(twy * CHUNKBLOCKS + y)(twx * CHUNKBLOCKS + x) = cMatrix.blocks(l)(y)(x)
-                                    power(l)(twy * CHUNKBLOCKS + y)(twx * CHUNKBLOCKS + x) = cMatrix.power(l)(y)(x)
-                                    pzqn(l)(twy * CHUNKBLOCKS + y)(twx * CHUNKBLOCKS + x) = cMatrix.pzqn(l)(y)(x)
-                                    arbprd(l)(twy * CHUNKBLOCKS + y)(twx * CHUNKBLOCKS + x) = cMatrix.arbprd(l)(y)(x)
-                                    blockds(l)(twy * CHUNKBLOCKS + y)(twx * CHUNKBLOCKS + x) = cMatrix.blockds(l)(y)(x)
-                                  }
-                                  blockdns(twy * CHUNKBLOCKS + y)(twx * CHUNKBLOCKS + x) = cMatrix.blockdns(y)(x)
-                                  blockbgs(twy * CHUNKBLOCKS + y)(twx * CHUNKBLOCKS + x) = cMatrix.blockbgs(y)(x)
-                                  blockts(twy * CHUNKBLOCKS + y)(twx * CHUNKBLOCKS + x) = cMatrix.blockts(y)(x)
-                                  lights(twy * CHUNKBLOCKS + y)(twx * CHUNKBLOCKS + x) = cMatrix.lights(y)(x)
-                                  lsources(twy * CHUNKBLOCKS + y)(twx * CHUNKBLOCKS + x) = cMatrix.lsources(y)(x)
-                                  zqn(twy * CHUNKBLOCKS + y)(twx * CHUNKBLOCKS + x) = cMatrix.zqn(y)(x)
-                                  wcnct(twy * CHUNKBLOCKS + y)(twx * CHUNKBLOCKS + x) = cMatrix.wcnct(y)(x)
-                                  drawn(twy * CHUNKBLOCKS + y)(twx * CHUNKBLOCKS + x) = cMatrix.drawn(y)(x)
-                                  rdrawn(twy * CHUNKBLOCKS + y)(twx * CHUNKBLOCKS + x) = cMatrix.rdrawn(y)(x)
-                                  ldrawn(twy * CHUNKBLOCKS + y)(twx * CHUNKBLOCKS + x) = cMatrix.ldrawn(y)(x)
-                                }
-                              }
-                            }
-                            worlds(twy)(twx) = None
-                          }
-                        }
-                      }
-                      u = -ou * CHUNKBLOCKS
-                      v = -ov * CHUNKBLOCKS
-                      (0 until 2).foreach { twy =>
-                        (0 until 2).foreach { twx =>
-                          kworlds(twy)(twx) = false
-                        }
-                      }
-                      var somevar: Boolean = false
-                      (0 until 2).foreach { twy =>
-                        (0 until 2).foreach { twx =>
-                          val twxc: Int = twx + ou
-                          val twyc: Int = twy + ov
-                          if (((player.ix + getWidth / 2 + Player.width >= twxc * CHUNKSIZE &&
-                              player.ix + getWidth / 2 + Player.width <= twxc * CHUNKSIZE + CHUNKSIZE) ||
-                              (player.ix - getWidth / 2 + Player.width + BLOCKSIZE >= twxc * CHUNKSIZE &&
-                              player.ix - getWidth / 2 + Player.width - BLOCKSIZE <= twxc * CHUNKSIZE + CHUNKSIZE)) &&
-                              ((player.iy + getHeight / 2 + Player.height >= twyc * CHUNKSIZE &&
-                              player.iy + getHeight / 2 + Player.height <= twyc * CHUNKSIZE + CHUNKSIZE) ||
-                              (player.iy - getHeight / 2 + Player.height >= twyc * CHUNKSIZE &&
-                              player.iy - getHeight / 2 + Player.height <= twyc * CHUNKSIZE + CHUNKSIZE))) {
-                            kworlds(twy)(twx) = true
-                            worlds(twy)(twx) = worlds(twy)(twx).orElse(
-                              Some(config.createCompatibleImage(CHUNKSIZE, CHUNKSIZE, Transparency.TRANSLUCENT)))
-                            fworlds(twy)(twx) = fworlds(twy)(twx).orElse(
-                              Some(config.createCompatibleImage(CHUNKSIZE, CHUNKSIZE, Transparency.TRANSLUCENT)))
-
-                            worlds(twy)(twx).foreach { w =>
-                              fworlds(twy)(twx).foreach { fw =>
-                                wg2 = w.createGraphics()
-                                fwg2 = fw.createGraphics()
-                                (max(
-                                  twy * CHUNKSIZE,
-                                  (player.iy - getHeight / 2 + Player.height / 2 + v * BLOCKSIZE) - 64) until (min(
-                                  twy * CHUNKSIZE + CHUNKSIZE,
-                                  (player.iy + getHeight / 2 - Player.height / 2 + v * BLOCKSIZE) + 128), BLOCKSIZE))
-                                  .foreach { tly =>
-                                    (max(
-                                      twx * CHUNKSIZE,
-                                      (player.ix - getWidth / 2 + Player.width / 2 + u * BLOCKSIZE) - 64) until (min(
-                                      twx * CHUNKSIZE + CHUNKSIZE,
-                                      (player.ix + getWidth / 2 - Player.width / 2 + u * BLOCKSIZE) + 112), BLOCKSIZE))
-                                      .foreach { tlx =>
-                                        tx = tlx / BLOCKSIZE
-                                        ty = tly / BLOCKSIZE
-                                        if (tx >= 0 && tx < theSize && ty >= 0 && ty < theSize) {
-                                          if (!drawn(ty)(tx)) {
-                                            somevar = true
-                                            blockts(ty)(tx) = random.nextInt(8).toByte
-                                            (0 until BLOCKSIZE).foreach { y =>
-                                              (0 until BLOCKSIZE).foreach { x =>
-                                                try {
-                                                  w.setRGB(
-                                                    tx * BLOCKSIZE - twxc * CHUNKSIZE + x,
-                                                    ty * BLOCKSIZE - twyc * CHUNKSIZE + y,
-                                                    9539985)
-                                                  fw.setRGB(
-                                                    tx * BLOCKSIZE - twxc * CHUNKSIZE + x,
-                                                    ty * BLOCKSIZE - twyc * CHUNKSIZE + y,
-                                                    9539985)
-                                                } catch {
-                                                  case _: ArrayIndexOutOfBoundsException =>
-                                                }
-                                              }
-                                            }
-                                            Background.onBackgroundImage(blockbgs(ty)(tx)) { img =>
-                                              drawImage(
-                                                wg2,
-                                                img.image,
-                                                tx * BLOCKSIZE - twx * CHUNKSIZE,
-                                                ty * BLOCKSIZE - twy * CHUNKSIZE,
-                                                tx * BLOCKSIZE + BLOCKSIZE - twx * CHUNKSIZE,
-                                                ty * BLOCKSIZE + BLOCKSIZE - twy * CHUNKSIZE,
-                                                0,
-                                                0,
-                                                IMAGESIZE,
-                                                IMAGESIZE
-                                              )
-                                              ()
-                                            }
-                                            (0 until 3).foreach { l =>
-                                              if (blocks(l)(ty)(tx) =/= AirBlock) {
-                                                if (l === 2) {
-                                                  OUTLINES.get(blocks(l)(ty)(tx).id).foreach { outlineName =>
-                                                    drawImage(
-                                                      fwg2,
-                                                      loadBlock(
-                                                        blocks(l)(ty)(tx),
-                                                        blockds(l)(ty)(tx),
-                                                        blockdns(ty)(tx),
-                                                        blockts(ty)(tx),
-                                                        blocknames,
-                                                        outlineName,
-                                                        tx,
-                                                        ty,
-                                                        l),
-                                                      tx * BLOCKSIZE - twx * CHUNKSIZE,
-                                                      ty * BLOCKSIZE - twy * CHUNKSIZE,
-                                                      tx * BLOCKSIZE + BLOCKSIZE - twx * CHUNKSIZE,
-                                                      ty * BLOCKSIZE + BLOCKSIZE - twy * CHUNKSIZE,
-                                                      0,
-                                                      0,
-                                                      IMAGESIZE,
-                                                      IMAGESIZE
-                                                    )
-                                                  }
-                                                } else {
-                                                  OUTLINES.get(blocks(l)(ty)(tx).id).foreach { outlineName =>
-                                                    drawImage(
-                                                      wg2,
-                                                      loadBlock(
-                                                        blocks(l)(ty)(tx),
-                                                        blockds(l)(ty)(tx),
-                                                        blockdns(ty)(tx),
-                                                        blockts(ty)(tx),
-                                                        blocknames,
-                                                        outlineName,
-                                                        tx,
-                                                        ty,
-                                                        l),
-                                                      tx * BLOCKSIZE - twx * CHUNKSIZE,
-                                                      ty * BLOCKSIZE - twy * CHUNKSIZE,
-                                                      tx * BLOCKSIZE + BLOCKSIZE - twx * CHUNKSIZE,
-                                                      ty * BLOCKSIZE + BLOCKSIZE - twy * CHUNKSIZE,
-                                                      0,
-                                                      0,
-                                                      IMAGESIZE,
-                                                      IMAGESIZE
-                                                    )
-                                                  }
-
-                                                }
-                                              }
-                                              if (wcnct(ty)(tx) && blocks(l)(ty)(tx).id >= ZythiumWireBlock.id && blocks(
-                                                    l)(ty)(tx).id <= ZythiumWire5PowerBlock.id) {
-                                                if (l === 2) {
-                                                  drawImage(
-                                                    fwg2,
-                                                    wcnct_px,
-                                                    tx * BLOCKSIZE - twx * CHUNKSIZE,
-                                                    ty * BLOCKSIZE - twy * CHUNKSIZE,
-                                                    tx * BLOCKSIZE + BLOCKSIZE - twx * CHUNKSIZE,
-                                                    ty * BLOCKSIZE + BLOCKSIZE - twy * CHUNKSIZE,
-                                                    0,
-                                                    0,
-                                                    IMAGESIZE,
-                                                    IMAGESIZE
-                                                  )
-                                                } else {
-                                                  drawImage(
-                                                    wg2,
-                                                    wcnct_px,
-                                                    tx * BLOCKSIZE - twx * CHUNKSIZE,
-                                                    ty * BLOCKSIZE - twy * CHUNKSIZE,
-                                                    tx * BLOCKSIZE + BLOCKSIZE - twx * CHUNKSIZE,
-                                                    ty * BLOCKSIZE + BLOCKSIZE - twy * CHUNKSIZE,
-                                                    0,
-                                                    0,
-                                                    IMAGESIZE,
-                                                    IMAGESIZE
-                                                  )
-                                                }
-                                              }
-                                            }
-                                            if (!DEBUG_LIGHT) {
-                                              LIGHTLEVELS
-                                                .get(lights(ty)(tx).toInt)
-                                                .foreach(drawImage(
-                                                  fwg2,
-                                                  _,
-                                                  tx * BLOCKSIZE - twx * CHUNKSIZE,
-                                                  ty * BLOCKSIZE - twy * CHUNKSIZE,
-                                                  tx * BLOCKSIZE + BLOCKSIZE - twx * CHUNKSIZE,
-                                                  ty * BLOCKSIZE + BLOCKSIZE - twy * CHUNKSIZE,
-                                                  0,
-                                                  0,
-                                                  IMAGESIZE,
-                                                  IMAGESIZE
-                                                ))
-                                            }
-                                            drawn(ty)(tx) = true
-                                            rdrawn(ty)(tx) = true
-                                            ldrawn(ty)(tx) = true
-                                          }
-                                          if (!rdrawn(ty)(tx)) {
-                                            somevar = true
-                                            (0 until BLOCKSIZE).foreach { y =>
-                                              (0 until BLOCKSIZE).foreach { x =>
-                                                try {
-                                                  w.setRGB(
-                                                    tx * BLOCKSIZE - twxc * CHUNKSIZE + x,
-                                                    ty * BLOCKSIZE - twyc * CHUNKSIZE + y,
-                                                    9539985)
-                                                  fw.setRGB(
-                                                    tx * BLOCKSIZE - twxc * CHUNKSIZE + x,
-                                                    ty * BLOCKSIZE - twyc * CHUNKSIZE + y,
-                                                    9539985)
-                                                } catch {
-                                                  case _: ArrayIndexOutOfBoundsException =>
-                                                }
-                                              }
-                                            }
-                                            Background.onBackgroundImage(blockbgs(ty)(tx)) { img =>
-                                              drawImage(
-                                                wg2,
-                                                img.image,
-                                                tx * BLOCKSIZE - twx * CHUNKSIZE,
-                                                ty * BLOCKSIZE - twy * CHUNKSIZE,
-                                                tx * BLOCKSIZE + BLOCKSIZE - twx * CHUNKSIZE,
-                                                ty * BLOCKSIZE + BLOCKSIZE - twy * CHUNKSIZE,
-                                                0,
-                                                0,
-                                                IMAGESIZE,
-                                                IMAGESIZE
-                                              )
-                                              ()
-                                            }
-                                            (0 until 3).foreach { l =>
-                                              if (blocks(l)(ty)(tx) =/= AirBlock) {
-                                                if (l === 2) {
-                                                  OUTLINES.get(blocks(l)(ty)(tx).id).foreach { outlineName =>
-                                                    drawImage(
-                                                      fwg2,
-                                                      loadBlock(
-                                                        blocks(l)(ty)(tx),
-                                                        blockds(l)(ty)(tx),
-                                                        blockdns(ty)(tx),
-                                                        blockts(ty)(tx),
-                                                        blocknames,
-                                                        outlineName,
-                                                        tx,
-                                                        ty,
-                                                        l),
-                                                      tx * BLOCKSIZE - twx * CHUNKSIZE,
-                                                      ty * BLOCKSIZE - twy * CHUNKSIZE,
-                                                      tx * BLOCKSIZE + BLOCKSIZE - twx * CHUNKSIZE,
-                                                      ty * BLOCKSIZE + BLOCKSIZE - twy * CHUNKSIZE,
-                                                      0,
-                                                      0,
-                                                      IMAGESIZE,
-                                                      IMAGESIZE
-                                                    )
-                                                  }
-                                                } else {
-                                                  OUTLINES.get(blocks(l)(ty)(tx).id).foreach { outlineName =>
-                                                    drawImage(
-                                                      wg2,
-                                                      loadBlock(
-                                                        blocks(l)(ty)(tx),
-                                                        blockds(l)(ty)(tx),
-                                                        blockdns(ty)(tx),
-                                                        blockts(ty)(tx),
-                                                        blocknames,
-                                                        outlineName,
-                                                        tx,
-                                                        ty,
-                                                        l),
-                                                      tx * BLOCKSIZE - twx * CHUNKSIZE,
-                                                      ty * BLOCKSIZE - twy * CHUNKSIZE,
-                                                      tx * BLOCKSIZE + BLOCKSIZE - twx * CHUNKSIZE,
-                                                      ty * BLOCKSIZE + BLOCKSIZE - twy * CHUNKSIZE,
-                                                      0,
-                                                      0,
-                                                      IMAGESIZE,
-                                                      IMAGESIZE
-                                                    )
-                                                  }
-
-                                                }
-                                              }
-                                              if (wcnct(ty)(tx) && blocks(l)(ty)(tx).id >= ZythiumWireBlock.id && blocks(
-                                                    l)(ty)(tx).id <= ZythiumWire5PowerBlock.id) {
-                                                if (l === 2) {
-                                                  drawImage(
-                                                    fwg2,
-                                                    wcnct_px,
-                                                    tx * BLOCKSIZE - twx * CHUNKSIZE,
-                                                    ty * BLOCKSIZE - twy * CHUNKSIZE,
-                                                    tx * BLOCKSIZE + BLOCKSIZE - twx * CHUNKSIZE,
-                                                    ty * BLOCKSIZE + BLOCKSIZE - twy * CHUNKSIZE,
-                                                    0,
-                                                    0,
-                                                    IMAGESIZE,
-                                                    IMAGESIZE
-                                                  )
-                                                } else {
-                                                  drawImage(
-                                                    wg2,
-                                                    wcnct_px,
-                                                    tx * BLOCKSIZE - twx * CHUNKSIZE,
-                                                    ty * BLOCKSIZE - twy * CHUNKSIZE,
-                                                    tx * BLOCKSIZE + BLOCKSIZE - twx * CHUNKSIZE,
-                                                    ty * BLOCKSIZE + BLOCKSIZE - twy * CHUNKSIZE,
-                                                    0,
-                                                    0,
-                                                    IMAGESIZE,
-                                                    IMAGESIZE
-                                                  )
-                                                }
-                                              }
-                                            }
-                                            if (!DEBUG_LIGHT) {
-                                              LIGHTLEVELS
-                                                .get(lights(ty)(tx).toInt)
-                                                .foreach(drawImage(
-                                                  fwg2,
-                                                  _,
-                                                  tx * BLOCKSIZE - twx * CHUNKSIZE,
-                                                  ty * BLOCKSIZE - twy * CHUNKSIZE,
-                                                  tx * BLOCKSIZE + BLOCKSIZE - twx * CHUNKSIZE,
-                                                  ty * BLOCKSIZE + BLOCKSIZE - twy * CHUNKSIZE,
-                                                  0,
-                                                  0,
-                                                  IMAGESIZE,
-                                                  IMAGESIZE
-                                                ))
-                                            }
-                                            drawn(ty)(tx) = true
-                                            rdrawn(ty)(tx) = true
-                                            ldrawn(ty)(tx) = true
-                                          }
-                                          if (!ldrawn(ty)(tx) && random.nextInt(10) === 0) {
-                                            somevar = true
-                                            (0 until BLOCKSIZE).foreach { y =>
-                                              (0 until BLOCKSIZE).foreach { x =>
-                                                try {
-                                                  w.setRGB(
-                                                    tx * BLOCKSIZE - twxc * CHUNKSIZE + x,
-                                                    ty * BLOCKSIZE - twyc * CHUNKSIZE + y,
-                                                    9539985)
-                                                  fw.setRGB(
-                                                    tx * BLOCKSIZE - twxc * CHUNKSIZE + x,
-                                                    ty * BLOCKSIZE - twyc * CHUNKSIZE + y,
-                                                    9539985)
-                                                } catch {
-                                                  case _: ArrayIndexOutOfBoundsException =>
-                                                }
-                                              }
-                                            }
-                                            Background.onBackgroundImage(blockbgs(ty)(tx)) { img =>
-                                              drawImage(
-                                                wg2,
-                                                img.image,
-                                                tx * BLOCKSIZE - twx * CHUNKSIZE,
-                                                ty * BLOCKSIZE - twy * CHUNKSIZE,
-                                                tx * BLOCKSIZE + BLOCKSIZE - twx * CHUNKSIZE,
-                                                ty * BLOCKSIZE + BLOCKSIZE - twy * CHUNKSIZE,
-                                                0,
-                                                0,
-                                                IMAGESIZE,
-                                                IMAGESIZE
-                                              )
-                                              ()
-                                            }
-
-                                            (0 until 3).foreach { l =>
-                                              if (blocks(l)(ty)(tx) =/= AirBlock) {
-                                                if (l === 2) {
-                                                  OUTLINES.get(blocks(l)(ty)(tx).id).foreach { outlineName =>
-                                                    drawImage(
-                                                      fwg2,
-                                                      loadBlock(
-                                                        blocks(l)(ty)(tx),
-                                                        blockds(l)(ty)(tx),
-                                                        blockdns(ty)(tx),
-                                                        blockts(ty)(tx),
-                                                        blocknames,
-                                                        outlineName,
-                                                        tx,
-                                                        ty,
-                                                        l),
-                                                      tx * BLOCKSIZE - twx * CHUNKSIZE,
-                                                      ty * BLOCKSIZE - twy * CHUNKSIZE,
-                                                      tx * BLOCKSIZE + BLOCKSIZE - twx * CHUNKSIZE,
-                                                      ty * BLOCKSIZE + BLOCKSIZE - twy * CHUNKSIZE,
-                                                      0,
-                                                      0,
-                                                      IMAGESIZE,
-                                                      IMAGESIZE
-                                                    )
-                                                  }
-
-                                                } else {
-                                                  OUTLINES.get(blocks(l)(ty)(tx).id).foreach { outlineName =>
-                                                    drawImage(
-                                                      wg2,
-                                                      loadBlock(
-                                                        blocks(l)(ty)(tx),
-                                                        blockds(l)(ty)(tx),
-                                                        blockdns(ty)(tx),
-                                                        blockts(ty)(tx),
-                                                        blocknames,
-                                                        outlineName,
-                                                        tx,
-                                                        ty,
-                                                        l),
-                                                      tx * BLOCKSIZE - twx * CHUNKSIZE,
-                                                      ty * BLOCKSIZE - twy * CHUNKSIZE,
-                                                      tx * BLOCKSIZE + BLOCKSIZE - twx * CHUNKSIZE,
-                                                      ty * BLOCKSIZE + BLOCKSIZE - twy * CHUNKSIZE,
-                                                      0,
-                                                      0,
-                                                      IMAGESIZE,
-                                                      IMAGESIZE
-                                                    )
-                                                  }
-
-                                                }
-                                              }
-                                              if (wcnct(ty)(tx) && blocks(l)(ty)(tx).id >= ZythiumWireBlock.id && blocks(
-                                                    l)(ty)(tx).id <= ZythiumWire5PowerBlock.id) {
-                                                if (l === 2) {
-                                                  drawImage(
-                                                    fwg2,
-                                                    wcnct_px,
-                                                    tx * BLOCKSIZE - twx * CHUNKSIZE,
-                                                    ty * BLOCKSIZE - twy * CHUNKSIZE,
-                                                    tx * BLOCKSIZE + BLOCKSIZE - twx * CHUNKSIZE,
-                                                    ty * BLOCKSIZE + BLOCKSIZE - twy * CHUNKSIZE,
-                                                    0,
-                                                    0,
-                                                    IMAGESIZE,
-                                                    IMAGESIZE
-                                                  )
-                                                } else {
-                                                  drawImage(
-                                                    wg2,
-                                                    wcnct_px,
-                                                    tx * BLOCKSIZE - twx * CHUNKSIZE,
-                                                    ty * BLOCKSIZE - twy * CHUNKSIZE,
-                                                    tx * BLOCKSIZE + BLOCKSIZE - twx * CHUNKSIZE,
-                                                    ty * BLOCKSIZE + BLOCKSIZE - twy * CHUNKSIZE,
-                                                    0,
-                                                    0,
-                                                    IMAGESIZE,
-                                                    IMAGESIZE
-                                                  )
-                                                }
-                                              }
-                                            }
-                                            if (!DEBUG_LIGHT) {
-                                              LIGHTLEVELS
-                                                .get(lights(ty)(tx).toInt)
-                                                .foreach(drawImage(
-                                                  fwg2,
-                                                  _,
-                                                  tx * BLOCKSIZE - twx * CHUNKSIZE,
-                                                  ty * BLOCKSIZE - twy * CHUNKSIZE,
-                                                  tx * BLOCKSIZE + BLOCKSIZE - twx * CHUNKSIZE,
-                                                  ty * BLOCKSIZE + BLOCKSIZE - twy * CHUNKSIZE,
-                                                  0,
-                                                  0,
-                                                  IMAGESIZE,
-                                                  IMAGESIZE
-                                                ))
-                                            }
-                                            drawn(ty)(tx) = true
-                                            rdrawn(ty)(tx) = true
-                                            ldrawn(ty)(tx) = true
-                                          }
-                                        }
-                                      }
-                                  }
-                              }
-                            }
-                          }
-                        }
-                      }
-                      if (somevar) {
-                        println("Drew at least one block.")
-                      }
-                      (0 until 2).foreach { twy =>
-                        (0 until 2).foreach { twx =>
-                          if (!kworlds(twy)(twx) && worlds(twy)(twx).isDefined) {
-                            worlds(twy)(twx) = None
-                            fworlds(twy)(twx) = None
-                            (twy * CHUNKBLOCKS until twy * CHUNKBLOCKS + CHUNKBLOCKS).foreach { ty =>
-                              (twx * CHUNKBLOCKS until twx * CHUNKBLOCKS + CHUNKBLOCKS).foreach { tx =>
-                                if (tx >= 0 && tx < theSize && ty >= 0 && ty < theSize) {
-                                  drawn(ty)(tx) = false
-                                }
-                              }
-                            }
-                            println("Destroyed image at " + twx + " " + twy)
-                          }
-                        }
-                      }
-                      updateApp()
-                      updateEnvironment()
-                      player.update(blocks(PrimaryLayer.num), userInput, u, v)
-                      if (timeOfDay >= 86400) {
-                        timeOfDay = 0
-                        day += 1
-                      }
-                      repaint()
-                      ready = true
-                    }
-                  } catch {
-                    case NonFatal(e) => postError(e)
-                  }
-                }
-              }
-              timer = new javax.swing.Timer(20, mainthread)
-
-              val (mouseX, mouseY) = userInput.currentMousePosition
-              if (state === TitleScreen && !menuPressed) {
-                if (mouseX >= 239 && mouseX <= 557) {
-                  if (mouseY >= 213 && mouseY <= 249) { // singleplayer
-                    findWorlds()
-                    state = SelectWorld
-                    repaint()
-                    menuPressed = true
-                  }
-                }
-              }
-              if (state === SelectWorld && !menuPressed) {
-                if (mouseX >= 186 && mouseX <= 615 &&
-                    mouseY >= 458 && mouseY <= 484) { // create new world
-                  state = NewWorld
-                  newWorldName = TextField(400, "New World")
-                  repaint()
-                  menuPressed = true
-                }
-                if (mouseX >= 334 && mouseX <= 457 &&
-                    mouseY >= 504 && mouseY <= 530) { // back
-                  state = TitleScreen
-                  repaint()
-                  menuPressed = true
-                }
-                import scala.util.control.Breaks._
-                breakable {
-                  worldFiles.indices.foreach { i =>
-                    if (mouseX >= 166 && mouseX <= 470 &&
-                        mouseY >= 117 + i * 35 && mouseY <= 152 + i * 35) { // load world
-                      currentWorld = worldNames(i)
-                      state = LoadingWorld
-                      backgroundColor = Color.BLACK
-                      if (loadWorld(worldFiles(i))) {
-                        menuTimer.stop()
-                        backgroundColor = CYANISH
-                        state = InGame
-                        ready = true
-                        timer.start()
-                        break
-                      }
-                    }
-                  }
-                }
-              }
-              if (state === NewWorld && !menuPressed) {
-                if (mouseX >= 186 && mouseX <= 615 &&
-                    mouseY >= 458 && mouseY <= 484) { // create new world
-                  if (newWorldName.text =/= "") {
-                    findWorlds()
-                    doGenerateWorld = true
-                    worldNames.indices.foreach { i =>
-                      if (newWorldName.text === worldNames(i)) {
-                        doGenerateWorld = false
-                      }
-                    }
-                    if (doGenerateWorld) {
-                      menuTimer.stop()
-                      backgroundColor = Color.BLACK
-                      state = GeneratingWorld
-                      currentWorld = newWorldName.text
-                      repaint()
-                      val createWorldThread: Action = new AbstractAction() {
-                        def actionPerformed(ae: ActionEvent): Unit = {
-                          try {
-                            createNewWorld()
-                            backgroundColor = CYANISH
-                            state = InGame
-                            ready = true
-                            timer.start()
-                            createWorldTimer.stop()
-                          } catch {
-                            case NonFatal(e) => postError(e)
-                          }
-                        }
-                      }
-                      createWorldTimer = new javax.swing.Timer(1, createWorldThread)
-                      createWorldTimer.start()
-                    }
-                  }
-                }
-                if (mouseX >= 334 && mouseX <= 457 &&
-                    mouseY >= 504 && mouseY <= 530) { // back
-                  state = SelectWorld
-                  repaint()
-                  menuPressed = true
-                }
-              }
-            }
-          } catch {
-            case NonFatal(e) => postError(e)
-          }
-        }
-      }
-      menuTimer = new javax.swing.Timer(20, actionListener)
       menuTimer.start()
     } catch {
       case NonFatal(e) => postError(e)
@@ -1884,30 +1885,6 @@ class TerraFrame
   }
 
   def createNewWorld(): Unit = {
-    temporarySaveFile = Array.fill(2, 2)(None)
-    chunkMatrix = Array.fill(2, 2)(None)
-
-    blocks = Array.ofDim(3, theSize, theSize)
-    blockds = Array.ofDim(3, theSize, theSize)
-    blockdns = Array.ofDim(theSize, theSize)
-    blockbgs = Array.ofDim(theSize, theSize)
-    blockts = Array.ofDim(theSize, theSize)
-    lights = Array.ofDim(theSize, theSize)
-    power = Array.ofDim(3, theSize, theSize)
-    lsources = Array.ofDim(theSize, theSize)
-    zqn = Array.ofDim(theSize, theSize)
-    pzqn = Array.ofDim(3, theSize, theSize)
-    arbprd = Array.ofDim(3, theSize, theSize)
-    wcnct = Array.ofDim(theSize, theSize)
-    drawn = Array.ofDim(theSize, theSize)
-    rdrawn = Array.ofDim(theSize, theSize)
-    ldrawn = Array.ofDim(theSize, theSize)
-    lqd = Array.fill(theSize, theSize)(false)
-    zqd = Array.fill(theSize, theSize)(false)
-
-    player = new Player(WIDTH * 0.5 * BLOCKSIZE, 45)
-
-    inventory = new Inventory()
 
     DEBUG_ITEMS match {
       case Some(NormalDebugItem) =>
@@ -2003,51 +1980,18 @@ class TerraFrame
     cic = Some(new ItemCollection(Crafting))
     cic.foreach(inventory.renderCollection)
 
-    armor = new ItemCollection(Armor)
     inventory.renderCollection(armor)
 
     toolAngle = 4.7
     mining = 0
-    miningTool = EmptyUiItem
+
     mx = 0
     my = 0
-    moveItem = EmptyUiItem
+
     moveNum = 0
     moveDur = 0
 
-    entities = mutable.ArrayBuffer.empty[Entity]
-
-    cloudsx = mutable.ArrayBuffer.empty[Double]
-    cloudsy = mutable.ArrayBuffer.empty[Double]
-    cloudsv = mutable.ArrayBuffer.empty[Double]
-    cloudsn = mutable.ArrayBuffer.empty[Int]
-
-    machinesx = mutable.ArrayBuffer.empty[Int]
-    machinesy = mutable.ArrayBuffer.empty[Int]
-
-    icmatrix = Array.ofDim(3, HEIGHT, WIDTH)
-
-    worlds = Array.fill(2, 2)(None)
-    fworlds = Array.fill(2, 2)(None)
-    kworlds = Array.fill(2, 2)(false)
-
-    pqx = mutable.ArrayBuffer.empty[Int]
-    pqy = mutable.ArrayBuffer.empty[Int]
-
     println("-> Adding light sources...")
-
-    lqx = mutable.ArrayBuffer.empty[Int]
-    lqy = mutable.ArrayBuffer.empty[Int]
-    zqx = mutable.ArrayBuffer.empty[Int]
-    zqy = mutable.ArrayBuffer.empty[Int]
-    pqx = mutable.ArrayBuffer.empty[Int]
-    pqy = mutable.ArrayBuffer.empty[Int]
-    pzqx = mutable.ArrayBuffer.empty[Int]
-    pzqy = mutable.ArrayBuffer.empty[Int]
-    updatex = mutable.ArrayBuffer.empty[Int]
-    updatey = mutable.ArrayBuffer.empty[Int]
-    updatet = mutable.ArrayBuffer.empty[Int]
-    updatel = mutable.ArrayBuffer.empty[Layer]
 
     (0 until WIDTH).foreach { x =>
       //            addSunLighting(x, 0)
@@ -2253,7 +2197,7 @@ class TerraFrame
       (0 until theSize).foreach { y =>
         (0 until theSize).foreach { x =>
           if (random.nextInt(22500) === 0) {
-            t = AirBlock
+            var t: Block = AirBlock
             blocks(l)(y)(x) match {
               case SunflowerStage1Block if timeOfDay >= 75913 || timeOfDay < 28883 => t = SunflowerStage2Block
               case SunflowerStage2Block if timeOfDay >= 75913 || timeOfDay < 28883 => t = SunflowerStage3Block
@@ -4494,7 +4438,7 @@ class TerraFrame
     }
     if (random.nextInt((1500 / DEBUG_ACCEL).toInt) === 0) {
       cloudsn += random.nextInt(1)
-      cloud = clouds(cloudsn(cloudsn.length - 1))
+      val cloud: BufferedImage = clouds(cloudsn(cloudsn.length - 1))
       if (random.nextInt(2) === 0) {
         cloudsx += (-cloud.getWidth() * 2).toDouble
         cloudsv += 0.1 * DEBUG_ACCEL
@@ -5461,7 +5405,7 @@ class TerraFrame
   def saveWorld(): Unit = {
     try {
       val wc: WorldContainer = createWorldContainer()
-      val fileOut            = new FileOutputStream("worlds/" + currentWorld + ".dat")
+      val fileOut            = new FileOutputStream("worlds/" + currentWorld.getOrElse("") + ".dat")
       val out                = new ObjectOutputStream(fileOut)
       out.writeObject(wc)
       out.close()

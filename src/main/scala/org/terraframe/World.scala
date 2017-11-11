@@ -1,6 +1,5 @@
 package org.terraframe
 
-import scala.math._
 import org.terraframe.{ MathHelper => mh }
 import TypeSafeComparisons._
 import org.terraframe.Layer.BackgroundLayer
@@ -8,10 +7,8 @@ import Block._
 
 object World {
 
-  import TerraFrame.random
-
-  var coordlist: Array2D[Boolean]  = _
-  var coordlist2: Array2D[Boolean] = _
+  //var coordlist: Array2D[Boolean]  = _
+  //var coordlist2: Array2D[Boolean] = _
 
   def generateOutlines(blocks: Array2D[Block]): Array2D[OutlineDirection] = {
     generate2(blocks, false)
@@ -1209,34 +1206,34 @@ object World {
     rv
   }
 
-  def blob(cwidth: Int, cheight: Int, erosion: Double): Array2D[Boolean] = {
-    coordlist = Array.ofDim(cwidth * 2 + 1, cheight * 2 + 1)
-    (-cwidth to cwidth).foreach { x =>
-      (-cheight to cheight).foreach { y =>
-        coordlist(x + cwidth)(y + cheight) = pow(x * 1.0 / cwidth, 2) + pow(y * 1.0 / cheight, 2) < 1 - random
-          .nextDouble() * erosion
-      }
-    }
-    (-cwidth to cwidth).foreach { x =>
-      (-cheight to cheight).foreach { y =>
-        if ((x + cwidth <= 0 || !coordlist(x + cwidth - 1)(y + cheight)) &&
-            (x + cwidth + 1 >= coordlist.length || !coordlist(x + cwidth + 1)(y + cheight)) &&
-            (y + cheight <= 0 || !coordlist(x + cwidth)(y + cheight - 1)) &&
-            (y + cheight + 1 >= coordlist(0).length || !coordlist(x + cwidth)(y + cheight + 1))) {
-          coordlist(x + cwidth)(y + cheight) = false
-        }
-      }
-    }
-    (-cwidth to cwidth).foreach { x =>
-      (-cheight to cheight).foreach { y =>
-        if ((x + cwidth <= 0 || coordlist(x + cwidth - 1)(y + cheight)) &&
-            (x + cwidth + 1 >= coordlist.length || coordlist(x + cwidth + 1)(y + cheight)) &&
-            (y + cheight <= 0 || coordlist(x + cwidth)(y + cheight - 1)) &&
-            (y + cheight + 1 >= coordlist(0).length || coordlist(x + cwidth)(y + cheight + 1))) {
-          coordlist(x + cwidth)(y + cheight) = true
-        }
-      }
-    }
-    coordlist
-  }
+//  def blob(cwidth: Int, cheight: Int, erosion: Double): Array2D[Boolean] = {
+//    coordlist = Array.ofDim(cwidth * 2 + 1, cheight * 2 + 1)
+//    (-cwidth to cwidth).foreach { x =>
+//      (-cheight to cheight).foreach { y =>
+//        coordlist(x + cwidth)(y + cheight) = pow(x * 1.0 / cwidth, 2) + pow(y * 1.0 / cheight, 2) < 1 - random
+//          .nextDouble() * erosion
+//      }
+//    }
+//    (-cwidth to cwidth).foreach { x =>
+//      (-cheight to cheight).foreach { y =>
+//        if ((x + cwidth <= 0 || !coordlist(x + cwidth - 1)(y + cheight)) &&
+//            (x + cwidth + 1 >= coordlist.length || !coordlist(x + cwidth + 1)(y + cheight)) &&
+//            (y + cheight <= 0 || !coordlist(x + cwidth)(y + cheight - 1)) &&
+//            (y + cheight + 1 >= coordlist(0).length || !coordlist(x + cwidth)(y + cheight + 1))) {
+//          coordlist(x + cwidth)(y + cheight) = false
+//        }
+//      }
+//    }
+//    (-cwidth to cwidth).foreach { x =>
+//      (-cheight to cheight).foreach { y =>
+//        if ((x + cwidth <= 0 || coordlist(x + cwidth - 1)(y + cheight)) &&
+//            (x + cwidth + 1 >= coordlist.length || coordlist(x + cwidth + 1)(y + cheight)) &&
+//            (y + cheight <= 0 || coordlist(x + cwidth)(y + cheight - 1)) &&
+//            (y + cheight + 1 >= coordlist(0).length || coordlist(x + cwidth)(y + cheight + 1))) {
+//          coordlist(x + cwidth)(y + cheight) = true
+//        }
+//      }
+//    }
+//    coordlist
+//  }
 }

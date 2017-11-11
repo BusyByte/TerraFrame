@@ -224,7 +224,7 @@ case class AIEntity(var x: Double, var y: Double, var vx: Double, var vy: Double
 
   var nohit: Boolean = false
 
-  var imgState: ImageState                               = _
+  var imgState: ImageState                               = StillRight
   var onGround, immune, grounded, onGroundDelay: Boolean = _
 
   var newMob: Option[Entity] = None

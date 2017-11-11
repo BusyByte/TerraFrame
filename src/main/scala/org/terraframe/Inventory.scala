@@ -35,10 +35,12 @@ class Inventory extends Serializable {
   var n, px, py, selection, width, height: Int = _
   var fpx, fpy: Double                         = _
 
-  @transient var image, box, box_selected: BufferedImage = _
-  val font                                               = new Font("Chalkboard", Font.PLAIN, 12)
+  @transient var image: BufferedImage        = new BufferedImage(466, 190, BufferedImage.TYPE_INT_ARGB)
+  @transient var box: BufferedImage          = loadImage("interface/inventory.png").get
+  @transient var box_selected: BufferedImage = loadImage("interface/inventory_selected.png").get
+  val font                                   = new Font("Chalkboard", Font.PLAIN, 12)
 
-  @transient var g2: Graphics2D = _
+  @transient var g2: Graphics2D = image.createGraphics()
 
   val ids: Array[UiItem] = Array.fill(40)(EmptyUiItem)
   val nums: Array[Short] = Array.fill(40)(0)
@@ -60,10 +62,7 @@ class Inventory extends Serializable {
   //Begin Constructor
 
   selection = 0
-  image = new BufferedImage(466, 190, BufferedImage.TYPE_INT_ARGB)
-  box = loadImage("interface/inventory.png").get
-  box_selected = loadImage("interface/inventory_selected.png").get
-  g2 = image.createGraphics()
+
   (0 until 10).foreach { x =>
     (0 until 4).foreach { y =>
       if (x === 0 && y === 0) {

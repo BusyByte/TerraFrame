@@ -1,5 +1,6 @@
 package org.terraframe
 
+import java.awt.image.BufferedImage
 import java.awt.{ Color, Graphics2D, Point }
 
 import GraphicsHelper._
@@ -87,7 +88,7 @@ object InGameRendering extends GameStateRendering[InGame.type] {
       screenGraphics.translate((-getWidth / 2).toDouble, -getHeight * 0.85)
 
       cloudsx.indices.foreach { i =>
-        cloud = clouds(cloudsn(i))
+        val cloud: BufferedImage = clouds(cloudsn(i))
         drawImage(
           screenGraphics,
           clouds(cloudsn(i)),
@@ -307,7 +308,7 @@ object InGameRendering extends GameStateRendering[InGame.type] {
       )
     }
 
-    layerImg = layer match {
+    val layerImg: BufferedImage = layer match {
       case BackgroundLayer => layersBImage
       case PrimaryLayer    => layersNImage
       case ForegroundLayer => layersFImage
