@@ -63,7 +63,13 @@ case object Furnace extends ItemCollectionType(4) {
   lazy val image = loadImage("interface/furnace.png").get
 }
 
-case class ItemCollection(icType: ItemCollectionType, ids: Array[UiItem], nums: Array[Short], durs: Array[Short])
+case class ItemCollection(icType: ItemCollectionType,
+                          ids: Array[UiItem],
+                          nums: Array[Short],
+                          durs: Array[Short],
+                          fuelPower: Double,
+                          smeltPower: Double,
+                          furnaceOn: Boolean)
     extends Serializable {
 
   def this(icType: ItemCollectionType) =
@@ -71,9 +77,11 @@ case class ItemCollection(icType: ItemCollectionType, ids: Array[UiItem], nums: 
       icType,
       Array.fill(icType.collectionSize)(EmptyUiItem),
       Array.fill(icType.collectionSize)(0),
-      Array.fill(icType.collectionSize)(0))
+      Array.fill(icType.collectionSize)(0),
+      0,
+      0,
+      false)
 
-  var FUELP: Double  = 0
-  var SMELTP: Double = 0
-  var F_ON: Boolean  = false
+  def this(icType: ItemCollectionType, ids: Array[UiItem], nums: Array[Short], durs: Array[Short]) =
+    this(icType, ids, nums, durs, 0, 0, false)
 }

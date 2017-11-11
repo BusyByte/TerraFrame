@@ -2101,113 +2101,93 @@ class TerraFrame
       rgnc1 -= 1
     }
 
+    def updateItemCollection(l: Int, y: Int, x: Int)(ic: ItemCollection): ItemCollection = {
+      if (ic.icType === Furnace) {
+        if (ic.furnaceOn) {
+
+          val icUpdated1: ItemCollection = {
+            if (ic.ids(1) === EmptyUiItem) {
+              FUELS
+                .get(ic.ids(2).id)
+                .fold {
+                  removeBlockLighting(x, y)
+                  blocks(l)(y)(x) = FurnaceBlock
+                  rdrawn(y)(x) = false
+                  ic.copy(furnaceOn = false)
+                } { _ =>
+                  inventory.addLocationIC(ic, 1, ic.ids(2), 1.toShort)
+                  inventory.removeLocationIC(ic, 2, 1.toShort)
+                  ic.copy(fuelPower = 1)
+                }
+            } else {
+              ic
+            }
+          }
+
+          val icUpdated2: ItemCollection = {
+            FUELS
+              .get(icUpdated1.ids(1).id)
+              .fold(icUpdated1) { fuel =>
+                val updatedFuelPower = {
+                  val fuelPowerTemp = icUpdated1.fuelPower - fuel
+                  if (fuelPowerTemp < 0.0d) {
+                    inventory.removeLocationIC(icUpdated1, 1, icUpdated1.nums(1))
+                    0.0d
+                  } else {
+                    fuelPowerTemp
+                  }
+                }
+
+                val maybeSpeed = FSPEED.get(icUpdated1.ids(1).id)
+                val maybeIndex = FRI1.indices.find { i =>
+                  icUpdated1.ids(0) === FRI1(i) && icUpdated1.nums(0) >= FRN1(i)
+                }
+
+                val maybeUpdatedSmeltPower = for {
+                  fspeed <- maybeSpeed
+                  i      <- maybeIndex
+                } yield {
+                  val smeltPowerTemp = icUpdated1.smeltPower + fspeed
+                  if (smeltPowerTemp > 1.0d) {
+                    inventory.removeLocationIC(icUpdated1, 0, FRN1(i))
+                    inventory.addLocationIC(icUpdated1, 3, FRI2(i), FRN2(i))
+                    0.0d
+                  } else {
+                    smeltPowerTemp
+                  }
+                }
+
+                val updatedSmeltPower = maybeUpdatedSmeltPower.getOrElse(icUpdated1.smeltPower)
+
+                icUpdated1
+                  .copy(
+                    fuelPower = updatedFuelPower,
+                    smeltPower = updatedSmeltPower
+                  )
+              }
+          }
+
+          icUpdated2
+
+        } else {
+          val smeltTemp         = ic.smeltPower - 0.00025
+          val updatedSmeltPower = math.min(0, smeltTemp)
+          ic.copy(smeltPower = updatedSmeltPower)
+        }
+      } else {
+        ic
+      }
+    }
+
     machinesx.indices.foreach { j =>
       x = machinesx(j)
       y = machinesy(j)
       (0 until 3).foreach { l =>
-        icmatrix(l)(y)(x).foreach { icMatrixTemp =>
-          if (icMatrixTemp.icType === Furnace) {
-            if (icMatrixTemp.F_ON) {
-              if (icMatrixTemp.ids(1) === EmptyUiItem) {
-                FUELS
-                  .get(icMatrixTemp.ids(2).id)
-                  .fold {
-                    icMatrixTemp.F_ON = false
-                    removeBlockLighting(x, y)
-                    blocks(l)(y)(x) = FurnaceBlock
-                    rdrawn(y)(x) = false
-                  } { _ =>
-                    inventory.addLocationIC(icMatrixTemp, 1, icMatrixTemp.ids(2), 1.toShort)
-                    inventory.removeLocationIC(icMatrixTemp, 2, 1.toShort)
-                    icMatrixTemp.FUELP = 1
-                  }
-              }
-              FUELS.get(icMatrixTemp.ids(1).id).foreach { fuel =>
-                icMatrixTemp.FUELP -= fuel
-                if (icMatrixTemp.FUELP < 0) {
-                  icMatrixTemp.FUELP = 0
-                  inventory.removeLocationIC(icMatrixTemp, 1, icMatrixTemp.nums(1))
-                }
-                import scala.util.control.Breaks._
-                breakable {
-                  FRI1.indices.foreach { i =>
-                    FSPEED.get(icMatrixTemp.ids(1).id).foreach { fspeed =>
-                      if (icMatrixTemp.ids(0) === FRI1(i) && icMatrixTemp.nums(0) >= FRN1(i)) {
-                        icMatrixTemp.SMELTP += fspeed
-                        if (icMatrixTemp.SMELTP > 1) {
-                          icMatrixTemp.SMELTP = 0
-                          inventory.removeLocationIC(icMatrixTemp, 0, FRN1(i))
-                          inventory.addLocationIC(icMatrixTemp, 3, FRI2(i), FRN2(i))
-                        }
-                        break
-                      }
-                    }
-                  }
-                }
-              }
-            } else {
-              icMatrixTemp.SMELTP -= 0.00025
-              if (icMatrixTemp.SMELTP < 0) {
-                icMatrixTemp.SMELTP = 0
-              }
-            }
-          }
-        }
+        icmatrix(l)(y)(x) = icmatrix(l)(y)(x).map(updateItemCollection(l, y, x))
       }
     }
 
-    ic.foreach { icTemp =>
-      if (icTemp.icType === Furnace) {
-        if (icTemp.F_ON) {
-          if (icTemp.ids(1) === EmptyUiItem) {
-            FUELS
-              .get(icTemp.ids(2).id)
-              .fold {
-
-                icTemp.F_ON = false
-                removeBlockLighting(icx, icy)
-                blocks(iclayer.num)(icy)(icx) = FurnaceBlock
-                rdrawn(icy)(icx) = false
-
-              } { _ =>
-                inventory.addLocationIC(icTemp, 1, icTemp.ids(2), 1.toShort)
-                inventory.removeLocationIC(icTemp, 2, 1.toShort)
-                icTemp.FUELP = 1
-
-              }
-          }
-          FUELS.get(icTemp.ids(1).id).foreach { fuels =>
-            icTemp.FUELP -= fuels
-            if (icTemp.FUELP < 0) {
-              icTemp.FUELP = 0
-              inventory.removeLocationIC(icTemp, 1, icTemp.nums(1))
-            }
-            import scala.util.control.Breaks._
-            breakable {
-              FRI1.indices.foreach { i =>
-                FSPEED.get(icTemp.ids(1).id).foreach { fspeed =>
-                  if (icTemp.ids(0) === FRI1(i) && icTemp.nums(0) >= FRN1(i)) {
-                    icTemp.SMELTP += fspeed
-                    if (icTemp.SMELTP > 1) {
-                      icTemp.SMELTP = 0
-                      inventory.removeLocationIC(icTemp, 0, FRN1(i))
-                      inventory.addLocationIC(icTemp, 3, FRI2(i), FRN2(i))
-                    }
-                    break
-                  }
-                }
-              }
-            }
-          }
-        } else {
-          icTemp.SMELTP -= 0.00025
-          if (icTemp.SMELTP < 0) {
-            icTemp.SMELTP = 0
-          }
-        }
-        inventory.updateIC(icTemp, -1)
-      }
-    }
+    ic = ic.map(updateItemCollection(iclayer.num, icy, icx))
 
     if (sqrt(
           pow(player.x + player.image.getWidth() - icx * BLOCKSIZE + BLOCKSIZE / 2, 2) + pow(
@@ -2217,7 +2197,8 @@ class TerraFrame
         if (icTemp.icType =/= Workbench) {
           machinesx += icx
           machinesy += icy
-          icmatrix(iclayer.num)(icy)(icx) = Some(ItemCollection(icTemp.icType, icTemp.ids, icTemp.nums, icTemp.durs))
+          icmatrix(iclayer.num)(icy)(icx) =
+            Some(new ItemCollection(icTemp.icType, icTemp.ids, icTemp.nums, icTemp.durs))
         }
         if (icTemp.icType === Workbench) {
           if (player.imgState === Player.StillRight || player.imgState === Player.WalkRight1 || player.imgState === Player.WalkRight2) {
@@ -2254,10 +2235,12 @@ class TerraFrame
           }
         }
         if (icTemp.icType === Furnace) {
-          icmatrix(iclayer.num)(icy)(icx).foreach { icMatrixTemp =>
-            icMatrixTemp.FUELP = icTemp.FUELP
-            icMatrixTemp.SMELTP = icTemp.SMELTP
-            icMatrixTemp.F_ON = icTemp.F_ON
+          icmatrix(iclayer.num)(icy)(icx) = icmatrix(iclayer.num)(icy)(icx).map { icMatrixTemp =>
+            icMatrixTemp.copy(
+              fuelPower = icTemp.fuelPower,
+              smeltPower = icTemp.smeltPower,
+              furnaceOn = icTemp.furnaceOn
+            )
           }
 
         }
@@ -2695,7 +2678,7 @@ class TerraFrame
             }
           }
         }
-        ic.foreach { icTemp =>
+        ic = ic.map { icTemp =>
           if (icTemp.icType === Workbench) {
             (0 until 3).foreach { ux =>
               (0 until 3).foreach { uy =>
@@ -2743,12 +2726,12 @@ class TerraFrame
                 }
               }
             }
-          }
-          if (icTemp.icType === WoodenChest || icTemp.icType === StoneChest ||
-              icTemp.icType === CopperChest || icTemp.icType === IronChest ||
-              icTemp.icType === SilverChest || icTemp.icType === GoldChest ||
-              icTemp.icType === ZincChest || icTemp.icType === RhymestoneChest ||
-              icTemp.icType === ObduriteChest) { //TODO: chest trait?
+            icTemp
+          } else if (icTemp.icType === WoodenChest || icTemp.icType === StoneChest ||
+                     icTemp.icType === CopperChest || icTemp.icType === IronChest ||
+                     icTemp.icType === SilverChest || icTemp.icType === GoldChest ||
+                     icTemp.icType === ZincChest || icTemp.icType === RhymestoneChest ||
+                     icTemp.icType === ObduriteChest) { //TODO: chest trait?
             (0 until inventory.CX).foreach { ux =>
               (0 until inventory.CY).foreach { uy =>
                 if (mouseX >= ux * 46 + 6 && mouseX < ux * 46 + 46 &&
@@ -2776,8 +2759,9 @@ class TerraFrame
                 }
               }
             }
-          }
-          if (icTemp.icType === Furnace) {
+            icTemp
+          } else if (icTemp.icType === Furnace) {
+            var updatedSmeltPower = icTemp.smeltPower
             if (mouseX >= 6 && mouseX < 46 &&
                 mouseY >= inventory.image.getHeight() + 46 &&
                 mouseY < inventory.image.getHeight() + 86) {
@@ -2798,7 +2782,7 @@ class TerraFrame
                   }
                   moveItem = moveItemTemp
                   moveNum = moveNumTemp
-                  icTemp.SMELTP = 0
+                  updatedSmeltPower = 0
                 }
               }
             }
@@ -2846,6 +2830,9 @@ class TerraFrame
                 }
               }
             }
+            icTemp.copy(smeltPower = updatedSmeltPower)
+          } else {
+            icTemp
           }
         }
         (0 until 4).foreach { uy =>
@@ -2958,31 +2945,37 @@ class TerraFrame
               }
             } else if (inventory.tool() === StoneLighterUiItem) {
               if (blocks(layer.num)(uy)(ux) === FurnaceBlock || blocks(layer.num)(uy)(ux) === FurnaceOnBlock) {
-                icmatrix(layer.num)(uy)(ux).fold {
-                  ic.foreach { icTemp =>
-                    if (icTemp.icType === Furnace) {
-                      inventory.durs(inventory.selection) = (inventory.durs(inventory.selection) - 1).toShort
-                      icTemp.F_ON = true
-                      blocks(layer.num)(icy)(icx) = FurnaceOnBlock
-                      addBlockLighting(ux, uy)
-                      rdrawn(icy)(icx) = false
-                      if (inventory.durs(inventory.selection) <= 0) {
-                        inventory.removeLocation(inventory.selection, inventory.nums(inventory.selection))
+                icmatrix(layer.num)(uy)(ux) = (icmatrix(layer.num)(uy)(ux).fold {
+                  ic = ic.map {
+                    icTemp =>
+                      if (icTemp.icType === Furnace) {
+                        inventory.durs(inventory.selection) = (inventory.durs(inventory.selection) - 1).toShort
+                        blocks(layer.num)(icy)(icx) = FurnaceOnBlock
+                        addBlockLighting(ux, uy)
+                        rdrawn(icy)(icx) = false
+                        if (inventory.durs(inventory.selection) <= 0) {
+                          inventory.removeLocation(inventory.selection, inventory.nums(inventory.selection))
+                        }
+                        icTemp.copy(furnaceOn = true)
+                      } else {
+                        icTemp
                       }
-                    }
                   }
+                  Option.empty[ItemCollection]
                 } { icMatrixTemp =>
                   if (icMatrixTemp.icType === Furnace) {
                     inventory.durs(inventory.selection) = (inventory.durs(inventory.selection) - 1).toShort
-                    icMatrixTemp.F_ON = true
                     blocks(layer.num)(uy)(ux) = FurnaceOnBlock
                     addBlockLighting(ux, uy)
                     if (inventory.durs(inventory.selection) <= 0) {
                       inventory.removeLocation(inventory.selection, inventory.nums(inventory.selection))
                     }
                     rdrawn(uy)(ux) = false
+                    Some(icMatrixTemp.copy(furnaceOn = true))
+                  } else {
+                    Some(icMatrixTemp)
                   }
-                }
+                })
               }
             } else if (inventory.tool() === WrenchUiItem) {
               if (blocks(layer.num)(uy)(ux).id >= ZythiumDelayer1DelayRightBlock.id && blocks(layer.num)(uy)(ux).id <= ZythiumDelayer4DelayUpOnBlock.id) { // TODO need a better logic method than comparing ids
@@ -3364,7 +3357,7 @@ class TerraFrame
                   machinesx += icx
                   machinesy += icy
                   icmatrix(iclayer.num)(icy)(icx) =
-                    Some(ItemCollection(icTemp.icType, icTemp.ids, icTemp.nums, icTemp.durs))
+                    Some(new ItemCollection(icTemp.icType, icTemp.ids, icTemp.nums, icTemp.durs))
                 }
                 if (icTemp.icType === Workbench) {
                   if (player.imgState === Player.StillRight || player.imgState === Player.WalkRight1 || player.imgState === Player.WalkRight2) {
@@ -3401,10 +3394,12 @@ class TerraFrame
                   }
                 }
                 if (icTemp.icType === Furnace) {
-                  icmatrix(iclayer.num)(icy)(icx).foreach { icMatrixTemp =>
-                    icMatrixTemp.FUELP = icTemp.FUELP
-                    icMatrixTemp.SMELTP = icTemp.SMELTP
-                    icMatrixTemp.F_ON = icTemp.F_ON
+                  icmatrix(iclayer.num)(icy)(icx) = icmatrix(iclayer.num)(icy)(icx).map { icMatrixTemp =>
+                    icMatrixTemp.copy(
+                      fuelPower = icTemp.fuelPower,
+                      smeltPower = icTemp.smeltPower,
+                      furnaceOn = icTemp.furnaceOn
+                    )
                   }
                 }
                 ic = None
@@ -3413,9 +3408,8 @@ class TerraFrame
               (0 until 3).foreach { l =>
                 if (blocks(l)(uy)(ux) === WorkbenchBlock) {
                   ic = icmatrix(l)(uy)(ux) match {
-                    case Some(ItemCollection(Workbench, ids, nums, durs)) =>
-                      Some(ItemCollection(Workbench, ids, nums, durs))
-                    case _ => Some(new ItemCollection(Workbench))
+                    case origIC @ Some(ItemCollection(Workbench, _, _, _, _, _, _)) => origIC
+                    case _                                                          => Some(new ItemCollection(Workbench))
                   }
 
                   icx = ux
@@ -3425,9 +3419,8 @@ class TerraFrame
                 }
                 if (blocks(l)(uy)(ux) === WoodenChestBlock) {
                   ic = icmatrix(l)(uy)(ux) match {
-                    case Some(ItemCollection(WoodenChest, ids, nums, durs)) =>
-                      Some(ItemCollection(WoodenChest, ids, nums, durs))
-                    case _ => Some(new ItemCollection(WoodenChest))
+                    case origIC @ Some(ItemCollection(WoodenChest, _, _, _, _, _, _)) => origIC
+                    case _                                                            => Some(new ItemCollection(WoodenChest))
                   }
 
                   icx = ux
@@ -3437,9 +3430,8 @@ class TerraFrame
                 }
                 if (blocks(l)(uy)(ux) === StoneChestBlock) {
                   ic = icmatrix(l)(uy)(ux) match {
-                    case Some(ItemCollection(StoneChest, ids, nums, durs)) =>
-                      Some(ItemCollection(StoneChest, ids, nums, durs))
-                    case _ => Some(new ItemCollection(StoneChest))
+                    case origIC @ Some(ItemCollection(StoneChest, _, _, _, _, _, _)) => origIC
+                    case _                                                           => Some(new ItemCollection(StoneChest))
                   }
 
                   icx = ux
@@ -3449,9 +3441,8 @@ class TerraFrame
                 }
                 if (blocks(l)(uy)(ux) === CopperChestBlock) {
                   ic = icmatrix(l)(uy)(ux) match {
-                    case Some(ItemCollection(CopperChest, ids, nums, durs)) =>
-                      Some(ItemCollection(CopperChest, ids, nums, durs))
-                    case _ => Some(new ItemCollection(CopperChest))
+                    case origIC @ Some(ItemCollection(CopperChest, _, _, _, _, _, _)) => origIC
+                    case _                                                            => Some(new ItemCollection(CopperChest))
                   }
 
                   icx = ux
@@ -3461,9 +3452,8 @@ class TerraFrame
                 }
                 if (blocks(l)(uy)(ux) === IronChestBlock) { //TODO: seems like all these blocks only differ by type
                   ic = icmatrix(l)(uy)(ux) match {
-                    case Some(ItemCollection(IronChest, ids, nums, durs)) =>
-                      Some(ItemCollection(IronChest, ids, nums, durs))
-                    case _ => Some(new ItemCollection(IronChest))
+                    case origIC @ Some(ItemCollection(IronChest, _, _, _, _, _, _)) => origIC
+                    case _                                                          => Some(new ItemCollection(IronChest))
                   }
 
                   icx = ux
@@ -3473,9 +3463,8 @@ class TerraFrame
                 }
                 if (blocks(l)(uy)(ux) === SilverChestBlock) {
                   ic = icmatrix(l)(uy)(ux) match {
-                    case Some(ItemCollection(SilverChest, ids, nums, durs)) =>
-                      Some(ItemCollection(SilverChest, ids, nums, durs))
-                    case _ => Some(new ItemCollection(SilverChest))
+                    case origIC @ Some(ItemCollection(SilverChest, _, _, _, _, _, _)) => origIC
+                    case _                                                            => Some(new ItemCollection(SilverChest))
                   }
 
                   icx = ux
@@ -3485,9 +3474,8 @@ class TerraFrame
                 }
                 if (blocks(l)(uy)(ux) === GoldChestBlock) {
                   ic = icmatrix(l)(uy)(ux) match {
-                    case Some(ItemCollection(GoldChest, ids, nums, durs)) =>
-                      Some(ItemCollection(GoldChest, ids, nums, durs))
-                    case _ => Some(new ItemCollection(GoldChest))
+                    case origIC @ Some(ItemCollection(GoldChest, _, _, _, _, _, _)) => origIC
+                    case _                                                          => Some(new ItemCollection(GoldChest))
                   }
 
                   icx = ux
@@ -3497,9 +3485,8 @@ class TerraFrame
                 }
                 if (blocks(l)(uy)(ux) === ZincChestBlock) {
                   ic = icmatrix(l)(uy)(ux) match {
-                    case Some(ItemCollection(ZincChest, ids, nums, durs)) =>
-                      Some(ItemCollection(ZincChest, ids, nums, durs))
-                    case _ => Some(new ItemCollection(ZincChest))
+                    case origIC @ Some(ItemCollection(ZincChest, _, _, _, _, _, _)) => origIC
+                    case _                                                          => Some(new ItemCollection(ZincChest))
                   }
 
                   icx = ux
@@ -3509,9 +3496,8 @@ class TerraFrame
                 }
                 if (blocks(l)(uy)(ux) === RhymestoneChestBlock) {
                   ic = icmatrix(l)(uy)(ux) match {
-                    case Some(ItemCollection(RhymestoneChest, ids, nums, durs)) =>
-                      Some(ItemCollection(RhymestoneChest, ids, nums, durs))
-                    case _ => Some(new ItemCollection(RhymestoneChest))
+                    case origIC @ Some(ItemCollection(RhymestoneChest, _, _, _, _, _, _)) => origIC
+                    case _                                                                => Some(new ItemCollection(RhymestoneChest))
                   }
 
                   icx = ux
@@ -3522,9 +3508,8 @@ class TerraFrame
                 if (blocks(l)(uy)(ux) === ObduriteChestBlock) {
 
                   ic = icmatrix(l)(uy)(ux) match {
-                    case Some(ItemCollection(ObduriteChest, ids, nums, durs)) =>
-                      Some(ItemCollection(ObduriteChest, ids, nums, durs))
-                    case _ => Some(new ItemCollection(ObduriteChest))
+                    case origIC @ Some(ItemCollection(ObduriteChest, _, _, _, _, _, _)) => origIC
+                    case _                                                              => Some(new ItemCollection(ObduriteChest))
                   }
                   icx = ux
                   icy = uy
@@ -3533,15 +3518,10 @@ class TerraFrame
                 }
                 if (blocks(l)(uy)(ux) === FurnaceBlock || blocks(l)(uy)(ux) === FurnaceOnBlock) {
                   ic = icmatrix(l)(uy)(ux) match {
-                    case Some(origIC @ ItemCollection(Furnace, ids, nums, durs)) =>
-                      val updatedIC = ItemCollection(Furnace, ids, nums, durs)
-                      updatedIC.FUELP = origIC.FUELP
-                      updatedIC.SMELTP = origIC.SMELTP
-                      updatedIC.F_ON = origIC.F_ON
-                      icmatrix(l)(uy)(ux) = None
-                      Some(updatedIC)
-                    case _ => Some(new ItemCollection(Furnace))
+                    case origIC @ Some(ItemCollection(Furnace, _, _, _, _, _, _)) => origIC
+                    case _                                                        => Some(new ItemCollection(Furnace))
                   }
+                  icmatrix(l)(uy)(ux) = None
                   icx = ux
                   icy = uy
                   ic.foreach(inventory.renderCollection)
@@ -3756,7 +3736,8 @@ class TerraFrame
         if (icTemp.icType =/= Workbench) {
           machinesx += icx
           machinesy += icy
-          icmatrix(iclayer.num)(icy)(icx) = Some(ItemCollection(icTemp.icType, icTemp.ids, icTemp.nums, icTemp.durs))
+          icmatrix(iclayer.num)(icy)(icx) =
+            Some(new ItemCollection(icTemp.icType, icTemp.ids, icTemp.nums, icTemp.durs))
         }
         if (icTemp.icType === Workbench) {
           if (player.imgState === Player.StillRight || player.imgState === Player.WalkRight1 || player.imgState === Player.WalkRight2) {
@@ -3793,10 +3774,12 @@ class TerraFrame
           }
         }
         if (icTemp.icType === Furnace) {
-          icmatrix(iclayer.num)(icy)(icx).foreach { icMatrixTemp =>
-            icMatrixTemp.FUELP = icTemp.FUELP
-            icMatrixTemp.SMELTP = icTemp.SMELTP
-            icMatrixTemp.F_ON = icTemp.F_ON
+          icmatrix(iclayer.num)(icy)(icx) = icmatrix(iclayer.num)(icy)(icx).map { icMatrixTemp =>
+            icMatrixTemp.copy(
+              fuelPower = icTemp.fuelPower,
+              smeltPower = icTemp.smeltPower,
+              furnaceOn = icTemp.furnaceOn
+            )
           }
         }
         ic = None
@@ -5844,7 +5827,8 @@ class TerraFrame
           if (icTemp.icType =/= Workbench) {
             machinesx += icx
             machinesy += icy
-            icmatrix(iclayer.num)(icy)(icx) = Some(ItemCollection(icTemp.icType, icTemp.ids, icTemp.nums, icTemp.durs))
+            icmatrix(iclayer.num)(icy)(icx) =
+              Some(new ItemCollection(icTemp.icType, icTemp.ids, icTemp.nums, icTemp.durs))
           }
           if (icTemp.icType === Workbench) {
             if (player.imgState === Player.StillRight || player.imgState === Player.WalkRight1 || player.imgState === Player.WalkRight2) {
@@ -5881,10 +5865,12 @@ class TerraFrame
             }
           }
           if (icTemp.icType === Furnace) {
-            icmatrix(iclayer.num)(icy)(icx).foreach { icMatrixTemp =>
-              icMatrixTemp.FUELP = icTemp.FUELP
-              icMatrixTemp.SMELTP = icTemp.SMELTP
-              icMatrixTemp.F_ON = icTemp.F_ON
+            icmatrix(iclayer.num)(icy)(icx) = icmatrix(iclayer.num)(icy)(icx).map { icMatrixTemp =>
+              icMatrixTemp.copy(
+                fuelPower = icTemp.fuelPower,
+                smeltPower = icTemp.smeltPower,
+                furnaceOn = icTemp.furnaceOn
+              )
             }
           }
           ic = None

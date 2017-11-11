@@ -1835,18 +1835,18 @@ class Inventory extends Serializable {
     if (ic.icType === Furnace) {
       if (i === -1) {
         (0 until 5).foreach { y =>
-          (0 until (ic.FUELP * 38).toInt).foreach { x =>
+          (0 until (ic.fuelPower * 38).toInt).foreach { x =>
             ic.icType.image.setRGB(x + 1, y + 51, new Color(255, 0, 0).getRGB)
           }
-          ((ic.FUELP * 38).toInt until 38).foreach { x =>
+          ((ic.fuelPower * 38).toInt until 38).foreach { x =>
             ic.icType.image.setRGB(x + 1, y + 51, new Color(145, 145, 145).getRGB)
           }
         }
         (0 until 5).foreach { x =>
-          (0 until (ic.SMELTP * 38).toInt).foreach { y =>
+          (0 until (ic.smeltPower * 38).toInt).foreach { y =>
             ic.icType.image.setRGB(x + 40, y + 1, new Color(255, 0, 0).getRGB)
           }
-          ((ic.SMELTP * 38).toInt until 38).foreach { y =>
+          ((ic.smeltPower * 38).toInt until 38).foreach { y =>
             ic.icType.image.setRGB(x + 40, y + 1, new Color(145, 145, 145).getRGB)
           }
         }
