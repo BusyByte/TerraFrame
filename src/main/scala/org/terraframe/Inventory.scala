@@ -32,8 +32,8 @@ class Inventory extends Serializable {
   import Inventory._
   import GraphicsHelper._
 
-  var n, px, py, selection, width, height: Int = _
-  var fpx, fpy: Double                         = _
+  var px, py, selection, width, height: Int = _
+  var fpx, fpy: Double                      = _
 
   @transient var image: BufferedImage        = new BufferedImage(466, 190, BufferedImage.TYPE_INT_ARGB)
   @transient var box: BufferedImage          = loadImage("interface/inventory.png").get
@@ -1358,22 +1358,22 @@ class Inventory extends Serializable {
 
   def select(i: Int): Unit = {
     if (i === 0) {
-      n = selection
+      val priorSelection = selection
       selection = 9
-      update(n)
+      update(priorSelection)
       update(9)
     } else {
-      n = selection
+      val priorSelection = selection
       selection = i - 1
-      update(n)
+      update(priorSelection)
       update(i - 1)
     }
   }
 
   def select2(i: Int): Unit = {
-    n = selection
+    val priorSelection = selection
     selection = i
-    update(n)
+    update(priorSelection)
     update(i)
   }
 
@@ -1584,12 +1584,12 @@ class Inventory extends Serializable {
           }
           breakable {
             (0 until 4).foreach { j =>
-              n = r3.indexOf(ic.ids(j))
-              if (n === -1) {
+              val index = r3.indexOf(ic.ids(j))
+              if (index === -1) {
                 valid = false
                 break
               } else {
-                r3.remove(n)
+                r3.remove(index)
               }
             }
           }
@@ -1737,12 +1737,12 @@ class Inventory extends Serializable {
           }
           breakable {
             (0 until 9).foreach { j =>
-              n = r3.indexOf(ic.ids(j))
-              if (n === -1) {
+              val index = r3.indexOf(ic.ids(j))
+              if (index === -1) {
                 valid = false
                 break
               } else {
-                r3.remove(n)
+                r3.remove(index)
               }
             }
           }
@@ -1944,12 +1944,12 @@ class Inventory extends Serializable {
         }
         breakable {
           (0 until 9).foreach { k =>
-            n = r3.indexOf(ic.ids(k))
-            if (n === -1) {
+            val index = r3.indexOf(ic.ids(k))
+            if (index === -1) {
               valid = false
               break
             } else {
-              r3.remove(n)
+              r3.remove(index)
             }
           }
         }
@@ -1959,8 +1959,8 @@ class Inventory extends Serializable {
             r3 += ingredient
           }
           (0 until 9).foreach { k =>
-            n = r3.indexOf(ic.ids(k))
-            r3.remove(n)
+            val index = r3.indexOf(ic.ids(k))
+            r3.remove(index)
             removeLocationIC(ic, k, 1.toShort)
             updateIC(ic, k)
           }
@@ -2000,12 +2000,12 @@ class Inventory extends Serializable {
         }
         breakable {
           (0 until 4).foreach { k =>
-            n = r3.indexOf(ic.ids(k))
-            if (n === -1) {
+            val index = r3.indexOf(ic.ids(k))
+            if (index === -1) {
               valid = false
               break
             } else {
-              r3.remove(n)
+              r3.remove(index)
             }
           }
         }
@@ -2015,8 +2015,8 @@ class Inventory extends Serializable {
             r3 += k
           }
           (0 until 4).foreach { k =>
-            n = r3.indexOf(ic.ids(k))
-            r3.remove(n)
+            val index = r3.indexOf(ic.ids(k))
+            r3.remove(index)
             removeLocationIC(ic, k, 1.toShort)
             updateIC(ic, k)
           }

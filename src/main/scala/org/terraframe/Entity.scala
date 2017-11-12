@@ -224,8 +224,11 @@ case class AIEntity(var x: Double, var y: Double, var vx: Double, var vy: Double
 
   var nohit: Boolean = false
 
-  var imgState: ImageState                               = StillRight
-  var onGround, immune, grounded, onGroundDelay: Boolean = _
+  var imgState: ImageState   = StillRight
+  var onGround: Boolean      = false
+  var immune: Boolean        = false
+  var grounded: Boolean      = false
+  var onGroundDelay: Boolean = false
 
   var newMob: Option[Entity] = None
   @transient var image: BufferedImage = strategy.ai match {
