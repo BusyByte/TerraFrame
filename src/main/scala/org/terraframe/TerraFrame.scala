@@ -1014,8 +1014,8 @@ class TerraFrame
       try {
         if (ready) {
           ready = false
-          uNew = ((player.x - getWidth / 2 + Player.width) / CHUNKSIZE.toDouble).toInt
-          vNew = ((player.y - getHeight / 2 + Player.height) / CHUNKSIZE.toDouble).toInt
+          val uNew: Int = ((player.x - getWidth / 2 + Player.width) / CHUNKSIZE.toDouble).toInt
+          val vNew: Int = ((player.y - getHeight / 2 + Player.height) / CHUNKSIZE.toDouble).toInt
           if (ou =/= uNew || ov =/= vNew) {
             ou = uNew
             ov = vNew
@@ -1124,8 +1124,8 @@ class TerraFrame
                           twx * CHUNKSIZE + CHUNKSIZE,
                           (player.ix + getWidth / 2 - Player.width / 2 + u * BLOCKSIZE) + 112), BLOCKSIZE))
                           .foreach { tlx =>
-                            tx = tlx / BLOCKSIZE
-                            ty = tly / BLOCKSIZE
+                            val tx: Int = tlx / BLOCKSIZE
+                            val ty: Int = tly / BLOCKSIZE
                             if (tx >= 0 && tx < theSize && ty >= 0 && ty < theSize) {
                               if (!drawn(ty)(tx)) {
                                 somevar = true
@@ -1719,30 +1719,25 @@ class TerraFrame
   var rgnc2: Int       = 0
   var layer: Layer     = PrimaryLayer
   var iclayer: Layer   = PrimaryLayer
-  var layerTemp: Int   = _
   var blockTemp: Block = AirBlock
 
   var state: GameState                 = LoadingGraphics
   var mobSpawn: Option[EntityStrategy] = None
 
-  private[this] var width, height = 0
-  var u, v, uNew, vNew: Int       = _
-  var i, j, k, wx, wy, lx, ly, tx, ty, twx, twy, tlx, tly, ux, uy, ux2, uy2, uwx, uwy, uwx2, ulx, uly, ulx2, uly2, ucx,
-  ucy, uclx, ucly, pwx, pwy, n, m, dx, dy, dx2, dy2, mx, my, lsx, lsy, lsn, ax, ay, axl, ayl, nl, vc, xpos, ypos,
-  xpos2, ypos2, x2, y2, rnum, mining, xmin, xmax, ymin, ymax, Intpercent, ground: Int = _
-  private[this] var x, y                                                              = 0
-  var p, q: Double                                                                    = _
-  var s: Short                                                                        = _
-  var miningTool: UiItem                                                              = EmptyUiItem
+  private[this] var width, height                            = 0
+  var u, v: Int                                              = 0
+  var ux, uy, n, mx, my, vc, xpos, ypos, x2, y2, mining: Int = 0 //TODO get rid of all usages of `n`
+  private[this] var x, y                                     = 0
+
+  var miningTool: UiItem = EmptyUiItem
 
   var moveItem: UiItem                                  = EmptyUiItem
   var moveItemTemp: UiItem                              = EmptyUiItem
-  var moveNum, moveDur, moveNumTemp, moveDurTemp: Short = _
+  var moveNum, moveDur, moveNumTemp, moveDurTemp: Short = 0
   var msi, ou, ov, icx, icy, immune: Int                = 0
 
-  var top, bottom, percent: Double = _
-
-  var toolAngle, toolSpeed: Double = _
+  var toolAngle: Double = 4.7
+  var toolSpeed: Double = UiItem.defaultSpeed
 
   var timeOfDay: Double    = 0 // 28000 (before dusk), 32000 (after dusk)
   var currentSkyLight: Int = 28800
@@ -1983,13 +1978,6 @@ class TerraFrame
     inventory.renderCollection(armor)
 
     toolAngle = 4.7
-    mining = 0
-
-    mx = 0
-    my = 0
-
-    moveNum = 0
-    moveDur = 0
 
     println("-> Adding light sources...")
 
@@ -2364,8 +2352,8 @@ class TerraFrame
               if (random.nextInt(100000 / DEBUG_HOSTILE) === 0) {
                 xpos = ax + random.nextInt(20) - 10
                 ypos = ay + random.nextInt(20) - 10
-                xpos2 = ax + random.nextInt(20) - 10
-                ypos2 = ay + random.nextInt(20) - 10
+                val xpos2: Int = ax + random.nextInt(20) - 10
+                val ypos2: Int = ay + random.nextInt(20) - 10
                 if (xpos > 0 && xpos < WIDTH - 1 && ypos > 0 && ypos < HEIGHT - 1 && (blocks(PrimaryLayer.num)(ypos)(
                       xpos) === AirBlock || !blockcds(blocks(PrimaryLayer.num)(ypos)(xpos).id) &&
                     xpos2 > 0 && xpos2 < WIDTH - 1 && ypos2 > 0 && ypos2 < HEIGHT - 1 && blocks(PrimaryLayer.num)(
@@ -2374,7 +2362,7 @@ class TerraFrame
                   if (checkBiome(xpos, ypos, u, v, blocks, blockbgs) =/= CavernBiome) {
                     if ((day =/= 0 || DEBUG_HOSTILE > 1) && (timeOfDay >= 75913 || timeOfDay < 28883)) {
                       if (random.nextInt(350) === 0) {
-                        rnum = random.nextInt(100)
+                        val rnum = random.nextInt(100)
                         if (rnum >= 0 && rnum < 45) {
                           mobSpawn = Some(BlueBubble) // 45%
                         }
@@ -2388,7 +2376,7 @@ class TerraFrame
                     }
                     if (timeOfDay >= 32302 && timeOfDay < 72093) {
                       if (random.nextInt(200) === 0) {
-                        rnum = random.nextInt(100)
+                        val rnum = random.nextInt(100)
                         if (rnum >= 0 && rnum < 80) {
                           mobSpawn = Some(Zombie) // 80%
                         }
@@ -2402,7 +2390,7 @@ class TerraFrame
                     }
                   } else {
                     if (random.nextInt(100) === 0) {
-                      rnum = random.nextInt(100)
+                      val rnum = random.nextInt(100)
                       if (rnum >= 0 && rnum < 25) {
                         mobSpawn = Some(YellowBubble) // 25%
                       }
@@ -2441,40 +2429,36 @@ class TerraFrame
                     break // was continue, is same
                   } else if (DEBUG_MOBTEST.isDefined)
                     mobSpawn = DEBUG_MOBTEST
-                  // TODO do pattern matching
-                  if (mobSpawn.contains(BlueBubble) ||
-                      mobSpawn.contains(GreenBubble) ||
-                      mobSpawn.contains(RedBubble) ||
-                      mobSpawn.contains(YellowBubble) ||
-                      mobSpawn.contains(BlackBubble) ||
-                      mobSpawn.contains(WhiteBubble)) {
-                    xmax = 2
-                    ymax = 2
-                  } else if (mobSpawn.contains(Zombie)) {
-                    xmax = 2
-                    ymax = 3
-                  } else if (mobSpawn.contains(ArmoredZombie)) {
-                    xmax = 2
-                    ymax = 3
-                  } else if (mobSpawn.contains(ShootingStar)) {
-                    xmax = 2
-                    ymax = 2
-                  } else if (mobSpawn.contains(Sandbot)) {
-                    xmax = 2
-                    ymax = 2
-                  } else if (mobSpawn.contains(Snowman)) {
-                    xmax = 2
-                    ymax = 3
-                  } else if (mobSpawn.contains(Bat)) {
-                    xmax = 1
-                    ymax = 1
-                  } else if (mobSpawn.contains(Bee)) {
-                    xmax = 1
-                    ymax = 1
-                  } else if (mobSpawn.contains(Skeleton)) {
-                    xmax = 1
-                    ymax = 3
+
+                  val (xmax, ymax): (Int, Int) = {
+                    if (mobSpawn.contains(BlueBubble) ||
+                        mobSpawn.contains(GreenBubble) ||
+                        mobSpawn.contains(RedBubble) ||
+                        mobSpawn.contains(YellowBubble) ||
+                        mobSpawn.contains(BlackBubble) ||
+                        mobSpawn.contains(WhiteBubble)) {
+                      (2, 2)
+                    } else if (mobSpawn.contains(Zombie)) {
+                      (2, 3)
+                    } else if (mobSpawn.contains(ArmoredZombie)) {
+                      (2, 3)
+                    } else if (mobSpawn.contains(ShootingStar)) {
+                      (2, 2)
+                    } else if (mobSpawn.contains(Sandbot)) {
+                      (2, 2)
+                    } else if (mobSpawn.contains(Snowman)) {
+                      (2, 3)
+                    } else if (mobSpawn.contains(Bat)) {
+                      (1, 1)
+                    } else if (mobSpawn.contains(Bee)) {
+                      (1, 1)
+                    } else if (mobSpawn.contains(Skeleton)) {
+                      (1, 3)
+                    } else {
+                      (0, 0)
+                    }
                   }
+
                   doMobSpawn = true
                   ((xpos / BLOCKSIZE) until (xpos / BLOCKSIZE + xmax)).foreach { x =>
                     ((ypos / BLOCKSIZE) until (ypos / BLOCKSIZE + ymax)).foreach { y =>
@@ -2789,7 +2773,7 @@ class TerraFrame
             checkBlocks = false
             if (mouseClicked) {
               mouseNoLongerClicked = true
-              i = uy
+              val i: Int = uy
               if (uy === 0 && (moveItem === CopperHelmetUiItem || moveItem === IronHelmetUiItem || moveItem === SilverHelmetUiItem || moveItem === GoldHelmetUiItem ||
                   moveItem === ZincHelmetUiItem || moveItem === RhymestoneHelmetUiItem || moveItem === ObduriteHelmetUiItem || moveItem === AluminumHelmetUiItem ||
                   moveItem === LeadHelmetUiItem || moveItem === ZythiumHelmetUiItem) ||
@@ -2854,8 +2838,8 @@ class TerraFrame
           toolAngle = 4.7
           ux = playerMouseXOffset / BLOCKSIZE
           uy = playerMouseYOffset / BLOCKSIZE
-          ux2 = playerMouseXOffset / BLOCKSIZE
-          uy2 = playerMouseYOffset / BLOCKSIZE
+          val ux2 = playerMouseXOffset / BLOCKSIZE
+          val uy2 = playerMouseYOffset / BLOCKSIZE
           if (sqrt(pow(player.x + player.image.getWidth() - ux2 * BLOCKSIZE + BLOCKSIZE / 2, 2) + pow(
                 player.y + player.image.getHeight() - uy2 * BLOCKSIZE + BLOCKSIZE / 2,
                 2)) <= 160 ||
@@ -2863,8 +2847,6 @@ class TerraFrame
                 pow(player.x + player.image.getWidth() - ux2 * BLOCKSIZE + BLOCKSIZE / 2 + WIDTH * BLOCKSIZE, 2) + pow(
                   player.y + player.image.getHeight() - uy2 * BLOCKSIZE + BLOCKSIZE / 2,
                   2)) <= 160 || DEBUG_REACH) {
-            ucx = ux - CHUNKBLOCKS * (ux / CHUNKBLOCKS)
-            ucy = uy - CHUNKBLOCKS * (uy / CHUNKBLOCKS)
             if (UiItem.isTool(inventory.tool())) {
               if (layer.num < blocks.length && uy < blocks(layer.num).length && ux < blocks(layer.num)(uy).length && blocks(
                     layer.num)(uy)(ux) =/= AirBlock && Block
@@ -3291,8 +3273,6 @@ class TerraFrame
           if (DEBUG_REACH || sqrt(pow(player.x + player.image.getWidth() - ux * BLOCKSIZE + BLOCKSIZE / 2, 2) + pow(
                 player.y + player.image.getHeight() - uy * BLOCKSIZE + BLOCKSIZE / 2,
                 2)) <= 160) {
-            ucx = ux - CHUNKBLOCKS * (ux / CHUNKBLOCKS)
-            ucy = uy - CHUNKBLOCKS * (uy / CHUNKBLOCKS)
             if (layer.num < blocks.length && uy < blocks(layer.num).length && ux < blocks(layer.num)(uy).length && blocks(
                   layer.num)(uy)(ux).id >= WorkbenchBlock.id && blocks(layer.num)(uy)(ux).id <= GoldChestBlock.id || blocks(
                   layer.num)(uy)(ux) === FurnaceBlock || blocks(layer.num)(uy)(ux) === FurnaceOnBlock || blocks(
@@ -3603,7 +3583,7 @@ class TerraFrame
             }
             rgnc1 = 750
             immune = 40
-            if (player.x + Player.width / 2 < entities(i).x + entityTemp.width / 2) {
+            if (player.x + Player.width / 2 < entityTemp.x + entityTemp.width / 2) {
               player.vx -= 8
             } else {
               player.vx += 8
@@ -3632,6 +3612,7 @@ class TerraFrame
           }
         }
     }
+
     if (player.hp <= 0) {
       (0 until 40).foreach { j =>
         UiItem.onImageItem(inventory.ids(j)) { imgItm =>
@@ -3852,7 +3833,9 @@ class TerraFrame
     }
 
     (-1 until entities.length).foreach { i =>
-      if (i === -1) {
+      var p, q: Double = 0
+
+      if (i === -1) { //TODO: rendering entities should be different than player and abuse of -1 and just iterate entities
         width = Player.width
         height = Player.height
         p = player.x
@@ -5431,7 +5414,6 @@ class TerraFrame
     rgnc1 = wc.rgnc1
     rgnc2 = wc.rgnc2
     layer = wc.layer
-    layerTemp = wc.layerTemp
     blockTemp = wc.blockTemp
     mx = wc.mx
     my = wc.my
@@ -5527,7 +5509,6 @@ class TerraFrame
       rgnc1,
       rgnc2,
       layer,
-      layerTemp,
       blockTemp,
       mx,
       my,

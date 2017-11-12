@@ -388,10 +388,12 @@ object InGameRendering extends GameStateRendering[InGame.type] {
           }
         }
     }
-    if (showInv) {
-      ymax = 4
-    } else {
-      ymax = 1
+    val ymax: Int = {
+      if (showInv) {
+        4
+      } else {
+        1
+      }
     }
     (0 until 10).foreach { ux =>
       (0 until ymax).foreach { uy =>
