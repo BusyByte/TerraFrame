@@ -2675,26 +2675,29 @@ class TerraFrame
                      icTemp.icType === CopperChest || icTemp.icType === IronChest ||
                      icTemp.icType === SilverChest || icTemp.icType === GoldChest ||
                      icTemp.icType === ZincChest || icTemp.icType === RhymestoneChest ||
-                     icTemp.icType === ObduriteChest) { //TODO: chest trait?
-            (0 until inventory.CX).foreach { ux =>
-              (0 until inventory.CY).foreach { uy =>
+                     icTemp.icType === ObduriteChest) { //TODO: chest trait? use ChestItemCollectionType?
+            (0 until icTemp.icType.CX).foreach { ux =>
+              (0 until icTemp.icType.CY).foreach { uy =>
                 if (mouseX >= ux * 46 + 6 && mouseX < ux * 46 + 46 &&
                     mouseY >= uy * 46 + inventory.image.getHeight() + 46 &&
                     mouseY < uy * 46 + inventory.image.getHeight() + 86) {
                   checkBlocks = false
                   if (mouseClicked) {
                     mouseNoLongerClicked = true
-                    moveItemTemp = icTemp.ids(uy * inventory.CX + ux)
-                    moveNumTemp = icTemp.nums(uy * inventory.CX + ux)
-                    if (moveItem === icTemp.ids(uy * inventory.CX + ux)) {
-                      moveNum = inventory.addLocationIC(icTemp, uy * inventory.CX + ux, moveItem, moveNum)
+                    moveItemTemp = icTemp.ids(uy * icTemp.icType.CX + ux)
+                    moveNumTemp = icTemp.nums(uy * icTemp.icType.CX + ux)
+                    if (moveItem === icTemp.ids(uy * icTemp.icType.CX + ux)) {
+                      moveNum = inventory.addLocationIC(icTemp, uy * icTemp.icType.CX + ux, moveItem, moveNum)
                       if (moveNum === 0) {
                         moveItem = EmptyUiItem
                       }
                     } else {
-                      inventory.removeLocationIC(icTemp, uy * inventory.CX + ux, icTemp.nums(uy * inventory.CX + ux))
+                      inventory.removeLocationIC(
+                        icTemp,
+                        uy * icTemp.icType.CX + ux,
+                        icTemp.nums(uy * icTemp.icType.CX + ux))
                       if (moveItem =/= EmptyUiItem) {
-                        inventory.addLocationIC(icTemp, uy * inventory.CX + ux, moveItem, moveNum)
+                        inventory.addLocationIC(icTemp, uy * icTemp.icType.CX + ux, moveItem, moveNum)
                       }
                       moveItem = moveItemTemp
                       moveNum = moveNumTemp
@@ -3158,39 +3161,38 @@ class TerraFrame
                 //
               }
             }
-          }
-          if (icTemp.icType === WoodenChest || icTemp.icType === StoneChest ||
-              icTemp.icType === CopperChest || icTemp.icType === IronChest ||
-              icTemp.icType === SilverChest || icTemp.icType === GoldChest ||
-              icTemp.icType === ZincChest || icTemp.icType === RhymestoneChest ||
-              icTemp.icType === ObduriteChest) { //TODO: chest trait?
-            (0 until inventory.CX).foreach { ux =>
-              (0 until inventory.CY).foreach { uy =>
+          } else if (icTemp.icType === WoodenChest || icTemp.icType === StoneChest ||
+                     icTemp.icType === CopperChest || icTemp.icType === IronChest ||
+                     icTemp.icType === SilverChest || icTemp.icType === GoldChest ||
+                     icTemp.icType === ZincChest || icTemp.icType === RhymestoneChest ||
+                     icTemp.icType === ObduriteChest) { //TODO: chest trait?
+            (0 until icTemp.icType.CX).foreach { ux =>
+              (0 until icTemp.icType.CY).foreach { uy =>
                 if (mouseX >= ux * 46 + 6 && mouseX < ux * 46 + 46 &&
                     mouseY >= uy * 46 + inventory.image.getHeight() + 46 &&
                     mouseY < uy * 46 + inventory.image.getHeight() + 86) {
                   checkBlocks = false
                   if (mouseClicked2) {
                     mouseNoLongerClicked2 = true
-                    moveItemTemp = icTemp.ids(uy * inventory.CX + ux)
-                    moveNumTemp = (icTemp.nums(uy * inventory.CX + ux) / 2).toShort
-                    if (icTemp.ids(uy * inventory.CX + ux) === EmptyUiItem) {
-                      inventory.addLocationIC(icTemp, uy * inventory.CX + ux, moveItem, 1.toShort) // TODOShould moveDur go away?
+                    moveItemTemp = icTemp.ids(uy * icTemp.icType.CX + ux)
+                    moveNumTemp = (icTemp.nums(uy * icTemp.icType.CX + ux) / 2).toShort
+                    if (icTemp.ids(uy * icTemp.icType.CX + ux) === EmptyUiItem) {
+                      inventory.addLocationIC(icTemp, uy * icTemp.icType.CX + ux, moveItem, 1.toShort)
                       moveNum = (moveNum - 1).toShort
                       if (moveNum === 0) {
                         moveItem = EmptyUiItem
                       }
-                    } else if (moveItem === EmptyUiItem && icTemp.nums(uy * inventory.CX + ux) =/= 1) {
+                    } else if (moveItem === EmptyUiItem && icTemp.nums(uy * icTemp.icType.CX + ux) =/= 1) {
                       inventory.removeLocationIC(
                         icTemp,
-                        uy * inventory.CX + ux,
-                        (icTemp.nums(uy * inventory.CX + ux) / 2).toShort)
+                        uy * icTemp.icType.CX + ux,
+                        (icTemp.nums(uy * icTemp.icType.CX + ux) / 2).toShort)
                       moveItem = moveItemTemp
                       moveNum = moveNumTemp
-                    } else if (moveItem === icTemp.ids(uy * inventory.CX + ux)) {
-                      val maxstacks = icTemp.ids(uy * inventory.CX + ux).maxStacks
-                      if (icTemp.nums(uy * inventory.CX + ux) < maxstacks) {
-                        inventory.addLocationIC(icTemp, uy * inventory.CX + ux, moveItem, 1.toShort)
+                    } else if (moveItem === icTemp.ids(uy * icTemp.icType.CX + ux)) {
+                      val maxstacks = icTemp.ids(uy * icTemp.icType.CX + ux).maxStacks
+                      if (icTemp.nums(uy * icTemp.icType.CX + ux) < maxstacks) {
+                        inventory.addLocationIC(icTemp, uy * icTemp.icType.CX + ux, moveItem, 1.toShort)
                         moveNum = (moveNum - 1).toShort
                         if (moveNum === 0) {
                           moveItem = EmptyUiItem
@@ -3202,8 +3204,7 @@ class TerraFrame
                 }
               }
             }
-          }
-          if (icTemp.icType === Furnace) {
+          } else if (icTemp.icType === Furnace) {
             if (mouseX >= 6 && mouseX < 46 &&
                 mouseY >= inventory.image.getHeight() + 46 &&
                 mouseY < inventory.image.getHeight() + 86) {
@@ -3336,8 +3337,7 @@ class TerraFrame
                       }
                     }
                   }
-                }
-                if (icTemp.icType === Furnace) {
+                } else if (icTemp.icType === Furnace) {
                   icmatrix(iclayer.num)(icy)(icx) = icmatrix(iclayer.num)(icy)(icx).map { icMatrixTemp =>
                     icMatrixTemp.copy(
                       fuelPower = icTemp.fuelPower,
@@ -3360,8 +3360,7 @@ class TerraFrame
                   icy = uy
                   ic.foreach(inventory.renderCollection)
                   showInv = true
-                }
-                if (blocks(l)(uy)(ux) === WoodenChestBlock) {
+                } else if (blocks(l)(uy)(ux) === WoodenChestBlock) {
                   ic = icmatrix(l)(uy)(ux) match {
                     case origIC @ Some(ItemCollection(WoodenChest, _, _, _, _, _, _)) => origIC
                     case _                                                            => Some(new ItemCollection(WoodenChest))
@@ -3371,8 +3370,7 @@ class TerraFrame
                   icy = uy
                   ic.foreach(inventory.renderCollection)
                   showInv = true
-                }
-                if (blocks(l)(uy)(ux) === StoneChestBlock) {
+                } else if (blocks(l)(uy)(ux) === StoneChestBlock) {
                   ic = icmatrix(l)(uy)(ux) match {
                     case origIC @ Some(ItemCollection(StoneChest, _, _, _, _, _, _)) => origIC
                     case _                                                           => Some(new ItemCollection(StoneChest))
@@ -3382,8 +3380,7 @@ class TerraFrame
                   icy = uy
                   ic.foreach(inventory.renderCollection)
                   showInv = true
-                }
-                if (blocks(l)(uy)(ux) === CopperChestBlock) {
+                } else if (blocks(l)(uy)(ux) === CopperChestBlock) {
                   ic = icmatrix(l)(uy)(ux) match {
                     case origIC @ Some(ItemCollection(CopperChest, _, _, _, _, _, _)) => origIC
                     case _                                                            => Some(new ItemCollection(CopperChest))
@@ -3393,8 +3390,7 @@ class TerraFrame
                   icy = uy
                   ic.foreach(inventory.renderCollection)
                   showInv = true
-                }
-                if (blocks(l)(uy)(ux) === IronChestBlock) { //TODO: seems like all these blocks only differ by type
+                } else if (blocks(l)(uy)(ux) === IronChestBlock) { //TODO: seems like all these blocks only differ by type
                   ic = icmatrix(l)(uy)(ux) match {
                     case origIC @ Some(ItemCollection(IronChest, _, _, _, _, _, _)) => origIC
                     case _                                                          => Some(new ItemCollection(IronChest))
@@ -3404,8 +3400,7 @@ class TerraFrame
                   icy = uy
                   ic.foreach(inventory.renderCollection)
                   showInv = true
-                }
-                if (blocks(l)(uy)(ux) === SilverChestBlock) {
+                } else if (blocks(l)(uy)(ux) === SilverChestBlock) {
                   ic = icmatrix(l)(uy)(ux) match {
                     case origIC @ Some(ItemCollection(SilverChest, _, _, _, _, _, _)) => origIC
                     case _                                                            => Some(new ItemCollection(SilverChest))
@@ -3415,8 +3410,7 @@ class TerraFrame
                   icy = uy
                   ic.foreach(inventory.renderCollection)
                   showInv = true
-                }
-                if (blocks(l)(uy)(ux) === GoldChestBlock) {
+                } else if (blocks(l)(uy)(ux) === GoldChestBlock) {
                   ic = icmatrix(l)(uy)(ux) match {
                     case origIC @ Some(ItemCollection(GoldChest, _, _, _, _, _, _)) => origIC
                     case _                                                          => Some(new ItemCollection(GoldChest))
@@ -3426,8 +3420,7 @@ class TerraFrame
                   icy = uy
                   ic.foreach(inventory.renderCollection)
                   showInv = true
-                }
-                if (blocks(l)(uy)(ux) === ZincChestBlock) {
+                } else if (blocks(l)(uy)(ux) === ZincChestBlock) {
                   ic = icmatrix(l)(uy)(ux) match {
                     case origIC @ Some(ItemCollection(ZincChest, _, _, _, _, _, _)) => origIC
                     case _                                                          => Some(new ItemCollection(ZincChest))
@@ -3437,8 +3430,7 @@ class TerraFrame
                   icy = uy
                   ic.foreach(inventory.renderCollection)
                   showInv = true
-                }
-                if (blocks(l)(uy)(ux) === RhymestoneChestBlock) {
+                } else if (blocks(l)(uy)(ux) === RhymestoneChestBlock) {
                   ic = icmatrix(l)(uy)(ux) match {
                     case origIC @ Some(ItemCollection(RhymestoneChest, _, _, _, _, _, _)) => origIC
                     case _                                                                => Some(new ItemCollection(RhymestoneChest))
@@ -3448,8 +3440,7 @@ class TerraFrame
                   icy = uy
                   ic.foreach(inventory.renderCollection)
                   showInv = true
-                }
-                if (blocks(l)(uy)(ux) === ObduriteChestBlock) {
+                } else if (blocks(l)(uy)(ux) === ObduriteChestBlock) {
 
                   ic = icmatrix(l)(uy)(ux) match {
                     case origIC @ Some(ItemCollection(ObduriteChest, _, _, _, _, _, _)) => origIC
@@ -3459,8 +3450,7 @@ class TerraFrame
                   icy = uy
                   ic.foreach(inventory.renderCollection)
                   showInv = true
-                }
-                if (blocks(l)(uy)(ux) === FurnaceBlock || blocks(l)(uy)(ux) === FurnaceOnBlock) {
+                } else if (blocks(l)(uy)(ux) === FurnaceBlock || blocks(l)(uy)(ux) === FurnaceOnBlock) {
                   ic = icmatrix(l)(uy)(ux) match {
                     case origIC @ Some(ItemCollection(Furnace, _, _, _, _, _, _)) => origIC
                     case _                                                        => Some(new ItemCollection(Furnace))

@@ -32,8 +32,11 @@ class Inventory extends Serializable {
   import Inventory._
   import GraphicsHelper._
 
-  var px, py, selection, width, height: Int = _
-  var fpx, fpy: Double                      = _
+  var px: Int        = 0
+  var py: Int        = 0
+  var selection: Int = 0
+  var width: Int     = 0
+  var height: Int    = 0
 
   @transient var image: BufferedImage        = new BufferedImage(466, 190, BufferedImage.TYPE_INT_ARGB)
   @transient var box: BufferedImage          = loadImage("interface/inventory.png").get
@@ -49,8 +52,6 @@ class Inventory extends Serializable {
   var trolx: Int = 37
   var troly: Int = 17
 
-  var CX, CY: Int = _
-
   var valid: Boolean = false
 
   //val RECIPES: Map[String, Array2D[UiItem]] = createRecipies
@@ -60,8 +61,6 @@ class Inventory extends Serializable {
   val shapelessRecipes: List[ShapelessRecipe]       = createShapelessRecipes
 
   //Begin Constructor
-
-  selection = 0
 
   (0 until 10).foreach { x =>
     (0 until 4).foreach { y =>
@@ -1386,83 +1385,51 @@ class Inventory extends Serializable {
       (0 until 4).foreach { i =>
         updateIC(ic, i)
       }
-    }
-    if (ic.icType === Armor) {
-      CX = 1
-      CY = 4
+    } else if (ic.icType === Armor) {
       (0 until 4).foreach { i =>
         updateIC(ic, i)
       }
-    }
-    if (ic.icType === Workbench) { //TODO: type classes
+    } else if (ic.icType === Workbench) { //TODO: type classes
       (0 until 9).foreach { i =>
         updateIC(ic, i)
       }
-    }
-    if (ic.icType === WoodenChest) {
-      CX = 3
-      CY = 3
+    } else if (ic.icType === WoodenChest) {
       (0 until 9).foreach { i =>
         updateIC(ic, i)
       }
-    }
-    if (ic.icType === StoneChest) {
-      CX = 5
-      CY = 3
+    } else if (ic.icType === StoneChest) {
       (0 until 15).foreach { i =>
         updateIC(ic, i)
       }
-    }
-    if (ic.icType === CopperChest) {
-      CX = 5
-      CY = 4
+    } else if (ic.icType === CopperChest) {
       (0 until 20).foreach { i =>
         updateIC(ic, i)
       }
-    }
-    if (ic.icType === IronChest) {
-      CX = 7
-      CY = 4
+    } else if (ic.icType === IronChest) {
       (0 until 28).foreach { i =>
         updateIC(ic, i)
       }
-    }
-    if (ic.icType === SilverChest) {
-      CX = 7
-      CY = 5
+    } else if (ic.icType === SilverChest) {
       (0 until 35).foreach { i =>
         updateIC(ic, i)
       }
-    }
-    if (ic.icType === GoldChest) {
-      CX = 7
-      CY = 6
+    } else if (ic.icType === GoldChest) {
       (0 until 42).foreach { i =>
         updateIC(ic, i)
       }
-    }
-    if (ic.icType === ZincChest) {
-      CX = 7
-      CY = 8
+    } else if (ic.icType === ZincChest) {
       (0 until 56).foreach { i =>
         updateIC(ic, i)
       }
-    }
-    if (ic.icType === RhymestoneChest) {
-      CX = 8
-      CY = 9
+    } else if (ic.icType === RhymestoneChest) {
       (0 until 72).foreach { i =>
         updateIC(ic, i)
       }
-    }
-    if (ic.icType === ObduriteChest) {
-      CX = 10
-      CY = 10
+    } else if (ic.icType === ObduriteChest) {
       (0 until 100).foreach { i =>
         updateIC(ic, i)
       }
-    }
-    if (ic.icType === Furnace) {
+    } else if (ic.icType === Furnace) {
       (-1 until 4).foreach { i =>
         updateIC(ic, i)
       }
@@ -1517,8 +1484,8 @@ class Inventory extends Serializable {
 
   def updateIC(ic: ItemCollection, i: Int): Unit = {
     if (ic.icType === Crafting) { //TODO: typeclass per trait
-      py = i / 2
-      px = i - (py * 2)
+      py = i / ic.icType.CX
+      px = i - (py * ic.icType.CX)
       (px * 40 until px * 40 + 40).foreach { x =>
         (py * 40 until py * 40 + 40).foreach { y =>
           ic.icType.image.setRGB(x, y, 9539985)
@@ -1634,10 +1601,9 @@ class Inventory extends Serializable {
 
         case _ =>
       }
-    }
-    if (ic.icType === Armor) {
-      py = i / CX
-      px = i - (py * CX)
+    } else if (ic.icType === Armor) {
+      py = i / ic.icType.CX
+      px = i - (py * ic.icType.CX)
       (px * 46 until px * 46 + 40).foreach { x =>
         (py * 46 until py * 46 + 40).foreach { y =>
           ic.icType.image.setRGB(x, y, 9539985)
@@ -1668,10 +1634,9 @@ class Inventory extends Serializable {
           g2.drawString(ic.nums(i) + " ", px * 46 + 9, py * 46 + 34)
         }
       }
-    }
-    if (ic.icType === Workbench) {
-      py = i / 3
-      px = i - (py * 3)
+    } else if (ic.icType === Workbench) {
+      py = i / ic.icType.CX
+      px = i - (py * ic.icType.CX)
       (px * 40 until px * 40 + 40).foreach { x =>
         (py * 40 until py * 40 + 40).foreach { y =>
           ic.icType.image.setRGB(x, y, 9539985)
@@ -1787,14 +1752,13 @@ class Inventory extends Serializable {
           }
         case _ =>
       }
-    }
-    if (ic.icType === WoodenChest || ic.icType === StoneChest ||
-        ic.icType === CopperChest || ic.icType === IronChest ||
-        ic.icType === SilverChest || ic.icType === GoldChest ||
-        ic.icType === ZincChest || ic.icType === RhymestoneChest ||
-        ic.icType === ObduriteChest) { //TODO: chest trait?
-      py = i / CX
-      px = i - (py * CX)
+    } else if (ic.icType === WoodenChest || ic.icType === StoneChest ||
+               ic.icType === CopperChest || ic.icType === IronChest ||
+               ic.icType === SilverChest || ic.icType === GoldChest ||
+               ic.icType === ZincChest || ic.icType === RhymestoneChest ||
+               ic.icType === ObduriteChest) { //TODO: chest trait?
+      py = i / ic.icType.CX
+      px = i - (py * ic.icType.CX)
       (px * 46 until px * 46 + 40).foreach { x =>
         (py * 46 until py * 46 + 40).foreach { y =>
           ic.icType.image.setRGB(x, y, 9539985)
@@ -1830,8 +1794,7 @@ class Inventory extends Serializable {
         case _ =>
       }
 
-    }
-    if (ic.icType === Furnace) {
+    } else if (ic.icType === Furnace) {
       if (i === -1) {
         (0 until 5).foreach { y =>
           (0 until (ic.fuelPower * 38).toInt).foreach { x =>
@@ -1850,21 +1813,12 @@ class Inventory extends Serializable {
           }
         }
       } else {
-        if (i === 0) {
-          fpx = 0
-          fpy = 0
-        }
-        if (i === 1) {
-          fpx = 0
-          fpy = 1.4
-        }
-        if (i === 2) {
-          fpx = 0
-          fpy = 2.4
-        }
-        if (i === 3) {
-          fpx = 1.4
-          fpy = 0
+        val (fpx, fpy): (Double, Double) = i match {
+          case 0 => (0, 0)
+          case 1 => (0, 1.4)
+          case 2 => (0, 2.4)
+          case 3 => (1.4, 0)
+          case _ => (0, 0)
         }
         ((fpx * 40).toInt until (fpx * 40 + 40).toInt).foreach { x =>
           ((fpy * 40).toInt until (fpy * 40 + 40).toInt).foreach { y =>

@@ -482,16 +482,16 @@ object InGameRendering extends GameStateRendering[InGame.type] {
             UiItem.renderOverlayText(icTemp.ids(9), icTemp.durs(9), mouseX, mouseY, screenGraphics, mobFont)
           }
 
-        case ChestItemCollection(_) =>
-          (0 until inventory.CX).foreach { ux =>
-            (0 until inventory.CY).foreach { uy =>
+        case ChestItemCollectionType(icType) =>
+          (0 until icType.CX).foreach { ux =>
+            (0 until icType.CY).foreach { uy =>
               if (mouseX >= ux * 46 + 6 && mouseX < ux * 46 + 46 &&
                   mouseY >= uy * 46 + inventory.image.getHeight() + 46 &&
                   mouseY < uy * 46 + inventory.image.getHeight() + 86 &&
-                  icTemp.ids(uy * inventory.CX + ux) =/= EmptyUiItem) {
+                  icTemp.ids(uy * icType.CX + ux) =/= EmptyUiItem) {
                 UiItem.renderOverlayText(
-                  icTemp.ids(uy * inventory.CX + ux),
-                  icTemp.durs(uy * inventory.CX + ux),
+                  icTemp.ids(uy * icType.CX + ux),
+                  icTemp.durs(uy * icType.CX + ux),
                   mouseX,
                   mouseY,
                   screenGraphics,
