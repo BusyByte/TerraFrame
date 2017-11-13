@@ -5689,23 +5689,24 @@ class TerraFrame
 
   def keyPressed(key: KeyEvent): Unit = {
     val keyCode = key.getKeyCode
-    if (keyCode === KeyEvent.VK_LEFT || keyCode === KeyEvent.VK_A) {
+    import KeyEvent._
+    if (keyCode === VK_LEFT || keyCode === VK_A) {
       userInput.setLeftKeyPressed(true)
     }
-    if (keyCode === KeyEvent.VK_RIGHT || keyCode === KeyEvent.VK_D) {
+    if (keyCode === VK_RIGHT || keyCode === VK_D) {
       userInput.setRightKeyPressed(true)
     }
-    if (keyCode === KeyEvent.VK_UP || keyCode === KeyEvent.VK_W) {
+    if (keyCode === VK_UP || keyCode === VK_W) {
       userInput.setUpKeyPressed(true)
     }
-    if (keyCode === KeyEvent.VK_DOWN || keyCode === KeyEvent.VK_S) {
+    if (keyCode === VK_DOWN || keyCode === VK_S) {
       userInput.setDownKeyPressed(true)
     }
-    if (keyCode === KeyEvent.VK_SHIFT) {
+    if (keyCode === VK_SHIFT) {
       userInput.setShiftKeyPressed(true)
     }
     if (state === InGame) {
-      if (keyCode === KeyEvent.VK_ESCAPE) {
+      if (keyCode === VK_ESCAPE) {
         ic.fold {
           if (showInv) {
             (0 until 4).foreach { i =>
@@ -5788,137 +5789,186 @@ class TerraFrame
         }
       }
       if (!showTool) {
-        if (keyCode === KeyEvent.VK_1) {
+        if (keyCode === VK_1) {
           inventory.select(1)
         }
-        if (keyCode === KeyEvent.VK_2) {
+        if (keyCode === VK_2) {
           inventory.select(2)
         }
-        if (keyCode === KeyEvent.VK_3) {
+        if (keyCode === VK_3) {
           inventory.select(3)
         }
-        if (keyCode === KeyEvent.VK_4) {
+        if (keyCode === VK_4) {
           inventory.select(4)
         }
-        if (keyCode === KeyEvent.VK_5) {
+        if (keyCode === VK_5) {
           inventory.select(5)
         }
-        if (keyCode === KeyEvent.VK_6) {
+        if (keyCode === VK_6) {
           inventory.select(6)
         }
-        if (keyCode === KeyEvent.VK_7) {
+        if (keyCode === VK_7) {
           inventory.select(7)
         }
-        if (keyCode === KeyEvent.VK_8) {
+        if (keyCode === VK_8) {
           inventory.select(8)
         }
-        if (keyCode === KeyEvent.VK_9) {
+        if (keyCode === VK_9) {
           inventory.select(9)
         }
-        if (keyCode === KeyEvent.VK_0) {
+        if (keyCode === VK_0) {
           inventory.select(0)
         }
       }
     }
-    var c: Char = 0
-    if (keyCode === KeyEvent.VK_Q) c = 'q'
-    if (keyCode === KeyEvent.VK_W) c = 'w'
-    if (keyCode === KeyEvent.VK_E) c = 'e'
-    if (keyCode === KeyEvent.VK_R) c = 'r'
-    if (keyCode === KeyEvent.VK_T) c = 't'
-    if (keyCode === KeyEvent.VK_Y) c = 'y'
-    if (keyCode === KeyEvent.VK_U) c = 'u'
-    if (keyCode === KeyEvent.VK_I) c = 'i'
-    if (keyCode === KeyEvent.VK_O) c = 'o'
-    if (keyCode === KeyEvent.VK_P) c = 'p'
-    if (keyCode === KeyEvent.VK_A) c = 'a'
-    if (keyCode === KeyEvent.VK_S) c = 's'
-    if (keyCode === KeyEvent.VK_D) c = 'd'
-    if (keyCode === KeyEvent.VK_F) c = 'f'
-    if (keyCode === KeyEvent.VK_G) c = 'g'
-    if (keyCode === KeyEvent.VK_H) c = 'h'
-    if (keyCode === KeyEvent.VK_J) c = 'j'
-    if (keyCode === KeyEvent.VK_K) c = 'k'
-    if (keyCode === KeyEvent.VK_L) c = 'l'
-    if (keyCode === KeyEvent.VK_Z) c = 'z'
-    if (keyCode === KeyEvent.VK_X) c = 'x'
-    if (keyCode === KeyEvent.VK_C) c = 'c'
-    if (keyCode === KeyEvent.VK_V) c = 'v'
-    if (keyCode === KeyEvent.VK_B) c = 'b'
-    if (keyCode === KeyEvent.VK_N) c = 'n'
-    if (keyCode === KeyEvent.VK_M) c = 'm'
-    if (keyCode === KeyEvent.VK_1) c = '1'
-    if (keyCode === KeyEvent.VK_2) c = '2'
-    if (keyCode === KeyEvent.VK_3) c = '3'
-    if (keyCode === KeyEvent.VK_4) c = '4'
-    if (keyCode === KeyEvent.VK_5) c = '5'
-    if (keyCode === KeyEvent.VK_6) c = '6'
-    if (keyCode === KeyEvent.VK_7) c = '7'
-    if (keyCode === KeyEvent.VK_8) c = '8'
-    if (keyCode === KeyEvent.VK_9) c = '9'
-    if (keyCode === KeyEvent.VK_0) c = '0'
-    if (keyCode === KeyEvent.VK_SPACE) c = ' '
-    if (keyCode === 192) c = '`'
-    if (keyCode === KeyEvent.VK_MINUS) c = '-'
-    if (keyCode === KeyEvent.VK_EQUALS) c = '='
-    if (keyCode === KeyEvent.VK_OPEN_BRACKET) c = '['
-    if (keyCode === KeyEvent.VK_CLOSE_BRACKET) c = ']'
-    if (keyCode === KeyEvent.VK_BACK_SLASH) c = '\\'
-    if (keyCode === KeyEvent.VK_COLON) c = ':'
-    if (keyCode === KeyEvent.VK_QUOTE) c = '\''
-    if (keyCode === KeyEvent.VK_COMMA) c = ','
-    if (keyCode === KeyEvent.VK_PERIOD) c = '.'
-    if (keyCode === KeyEvent.VK_SLASH) c = '/'
 
-    if (userInput.isShiftKeyPressed) {
-      if (c === 'q') c = 'Q'
-      if (c === 'w') c = 'W'
-      if (c === 'e') c = 'E'
-      if (c === 'r') c = 'R'
-      if (c === 't') c = 'T'
-      if (c === 'y') c = 'Y'
-      if (c === 'u') c = 'U'
-      if (c === 'i') c = 'I'
-      if (c === 'o') c = 'O'
-      if (c === 'p') c = 'P'
-      if (c === 'a') c = 'A'
-      if (c === 's') c = 'S'
-      if (c === 'd') c = 'D'
-      if (c === 'f') c = 'F'
-      if (c === 'g') c = 'G'
-      if (c === 'h') c = 'H'
-      if (c === 'j') c = 'J'
-      if (c === 'k') c = 'K'
-      if (c === 'l') c = 'L'
-      if (c === 'z') c = 'Z'
-      if (c === 'x') c = 'X'
-      if (c === 'c') c = 'C'
-      if (c === 'v') c = 'V'
-      if (c === 'b') c = 'B'
-      if (c === 'n') c = 'N'
-      if (c === 'm') c = 'M'
-      if (c === '1') c = '!'
-      if (c === '2') c = '@'
-      if (c === '3') c = '#'
-      if (c === '4') c = '$'
-      if (c === '5') c = '%'
-      if (c === '6') c = '^'
-      if (c === '7') c = '&'
-      if (c === '8') c = '*'
-      if (c === '9') c = '('
-      if (c === '0') c = ')'
-      if (c === ' ') c = ' '
-      if (c === '`') c = '~'
-      if (c === '-') c = '_'
-      if (c === '=') c = '+'
-      if (c === '[') c = '{'
-      if (c === ']') c = '}'
-      if (c === '\\') c = '|'
-      if (c === ';') c = ')'
-      if (c === '\'') c = '"'
-      if (c === ',') c = '<'
-      if (c === '.') c = '>'
-      if (c === '/') c = '?'
+    val shiftPressed = userInput.isShiftKeyPressed
+
+    val c: Char = keyCode match {
+      case VK_Q if shiftPressed => 'Q'
+      case VK_Q                 => 'q'
+
+      case VK_W if shiftPressed => 'W'
+      case VK_W                 => 'w'
+
+      case VK_E if shiftPressed => 'E'
+      case VK_E                 => 'e'
+
+      case VK_R if shiftPressed => 'R'
+      case VK_R                 => 'r'
+
+      case VK_T if shiftPressed => 'T'
+      case VK_T                 => 't'
+
+      case VK_Y if shiftPressed => 'Y'
+      case VK_Y                 => 'y'
+
+      case VK_U if shiftPressed => 'U'
+      case VK_U                 => 'u'
+
+      case VK_I if shiftPressed => 'I'
+      case VK_I                 => 'i'
+
+      case VK_O if shiftPressed => 'O'
+      case VK_O                 => 'o'
+
+      case VK_P if shiftPressed => 'P'
+      case VK_P                 => 'p'
+
+      case VK_A if shiftPressed => 'A'
+      case VK_A                 => 'a'
+
+      case VK_S if shiftPressed => 'S'
+      case VK_S                 => 's'
+
+      case VK_D if shiftPressed => 'D'
+      case VK_D                 => 'd'
+
+      case VK_F if shiftPressed => 'F'
+      case VK_F                 => 'f'
+
+      case VK_G if shiftPressed => 'G'
+      case VK_G                 => 'g'
+
+      case VK_H if shiftPressed => 'H'
+      case VK_H                 => 'h'
+
+      case VK_J if shiftPressed => 'J'
+      case VK_J                 => 'j'
+
+      case VK_K if shiftPressed => 'K'
+      case VK_K                 => 'k'
+
+      case VK_L if shiftPressed => 'L'
+      case VK_L                 => 'l'
+
+      case VK_Z if shiftPressed => 'Z'
+      case VK_Z                 => 'z'
+
+      case VK_X if shiftPressed => 'X'
+      case VK_X                 => 'x'
+
+      case VK_C if shiftPressed => 'C'
+      case VK_C                 => 'c'
+
+      case VK_V if shiftPressed => 'V'
+      case VK_V                 => 'v'
+
+      case VK_B if shiftPressed => 'B'
+      case VK_B                 => 'b'
+
+      case VK_N if shiftPressed => 'N'
+      case VK_N                 => 'n'
+
+      case VK_M if shiftPressed => 'M'
+      case VK_M                 => 'm'
+
+      case VK_1 if shiftPressed => '!'
+      case VK_1                 => '1'
+
+      case VK_2 if shiftPressed => '@'
+      case VK_2                 => '2'
+
+      case VK_3 if shiftPressed => '#'
+      case VK_3                 => '3'
+
+      case VK_4 if shiftPressed => '$'
+      case VK_4                 => '4'
+
+      case VK_5 if shiftPressed => '%'
+      case VK_5                 => '5'
+
+      case VK_6 if shiftPressed => '^'
+      case VK_6                 => '6'
+
+      case VK_7 if shiftPressed => '&'
+      case VK_7                 => '7'
+
+      case VK_8 if shiftPressed => '*'
+      case VK_8                 => '8'
+
+      case VK_9 if shiftPressed => '('
+      case VK_9                 => '9'
+
+      case VK_0 if shiftPressed => ')'
+      case VK_0                 => '0'
+
+      case VK_SPACE => ' '
+
+      case VK_BACK_QUOTE if shiftPressed => '~'
+      case VK_BACK_QUOTE                 => '`'
+
+      case VK_MINUS if shiftPressed => '_'
+      case VK_MINUS                 => '-'
+
+      case VK_EQUALS if shiftPressed => '+'
+      case VK_EQUALS                 => '='
+
+      case VK_OPEN_BRACKET if shiftPressed => '{'
+      case VK_OPEN_BRACKET                 => '['
+
+      case VK_CLOSE_BRACKET if shiftPressed => '}'
+      case VK_CLOSE_BRACKET                 => ']'
+
+      case VK_BACK_SLASH if shiftPressed => '|'
+      case VK_BACK_SLASH                 => '\\'
+
+      case VK_SEMICOLON if shiftPressed => ':'
+      case VK_SEMICOLON                 => ';'
+
+      case VK_QUOTE if shiftPressed => '"'
+      case VK_QUOTE                 => '\''
+
+      case VK_COMMA if shiftPressed => '<'
+      case VK_COMMA                 => ','
+
+      case VK_PERIOD if shiftPressed => '>'
+      case VK_PERIOD                 => '.'
+
+      case VK_SLASH if shiftPressed => '?'
+      case VK_SLASH                 => '/'
+
+      case _ => 0: Char
     }
 
     if (state === NewWorld && !newWorldFocus) {
@@ -5927,16 +5977,16 @@ class TerraFrame
         repaint()
       }
 
-      if (keyCode === 8) {
+      if (keyCode === VK_BACK_SPACE) {
         newWorldName.deleteKey()
         repaint()
       }
     }
 
-    if (keyCode === KeyEvent.VK_EQUALS && layer.num < 2) { // TODO: could create increment and decrement or circular buffer
+    if (keyCode === VK_EQUALS && layer.num < 2) { // TODO: could create increment and decrement or circular buffer
       layer = Layer.withNum(layer.num + 1)
     }
-    if (keyCode === KeyEvent.VK_MINUS && layer.num > 0) {
+    if (keyCode === VK_MINUS && layer.num > 0) {
       layer = Layer.withNum(layer.num - 1)
     }
   }
