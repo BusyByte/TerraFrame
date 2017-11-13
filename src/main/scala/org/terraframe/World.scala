@@ -7,6 +7,8 @@ import Block._
 
 object World {
 
+  private val logger = org.log4s.getLogger
+
   //var coordlist: Array2D[Boolean]  = _
   //var coordlist2: Array2D[Boolean] = _
 
@@ -681,7 +683,7 @@ object World {
     val width: Int  = blocks(BackgroundLayer.num).length
     val height: Int = blocks.length
     if (msg) {
-      println("-> Creating outlines...")
+      logger.info("-> Creating outlines...")
     }
     val blockds: Array2D[OutlineDirection] = Array.ofDim(height, width)
     //val blockdns: Array2D[Byte] = Array.ofDim(height,width)
@@ -1022,7 +1024,7 @@ object World {
   }
 
   def generate3(blocks: Array2D[Int], terrain: Array[Double], stonelayer: Array[Double]): Array2D[Byte] = {
-    println("-> Creating background...")
+    logger.info("-> Creating background...")
     val width: Int               = blocks(BackgroundLayer.num).length
     val height: Int              = blocks.length
     val blockbgsi: Array2D[Byte] = Array.ofDim(height, width)

@@ -10,6 +10,7 @@ import GraphicsHelper._
 import scala.io.StdIn
 
 object LightConverter {
+  private val logger = org.log4s.getLogger
 
   val BLOCKSIZE: Int = 16
   val IMAGESIZE: Int = 8
@@ -60,7 +61,7 @@ object LightConverter {
         try {
           ImageIO.write(texture, "png", new File("blocks/" + name + "/texture" + j + ".png"))
         } catch {
-          case _: IOException => println("Error in writing file.")
+          case e: IOException => logger.error(e)("Error in writing file.")
         }
       }
     }

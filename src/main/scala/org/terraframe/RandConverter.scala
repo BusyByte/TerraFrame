@@ -12,6 +12,7 @@ import scala.util.Random
 import TypeSafeComparisons._
 
 object RandConverter {
+  private val logger = org.log4s.getLogger
 
   val BLOCKSIZE: Int = 16
   val IMAGESIZE: Int = 8
@@ -84,7 +85,7 @@ object RandConverter {
                 try {
                   ImageIO.write(result, "png", new File("outlines/" + name + "/" + dirs(k) + j + ".png"))
                 } catch {
-                  case _: IOException => println("Error in writing file.")
+                  case e: IOException => logger.error(e)("Error in writing file.")
                 }
               }
             }
@@ -112,7 +113,7 @@ object RandConverter {
             try {
               ImageIO.write(result, "png", new File("blocks/" + name + "/texture" + (i + 2) + ".png"))
             } catch {
-              case _: IOException => println("Error in writing file.")
+              case e: IOException => logger.error(e)("Error in writing file.")
             }
           }
         }

@@ -43,6 +43,8 @@ import TypeSafeComparisons._
 import Layer._
 
 object TerraFrame {
+  private val logger = org.log4s.getLogger
+
   val config: GraphicsConfiguration =
     GraphicsEnvironment.getLocalGraphicsEnvironment.getDefaultScreenDevice.getDefaultConfiguration
   var armor: ItemCollection = new ItemCollection(Armor)
@@ -555,7 +557,7 @@ object TerraFrame {
       (0 until 8).foreach { j =>
         loadImage("blocks/" + blocknames(i) + "/texture" + (j + 1) + ".png")
           .fold {
-            println("(ERROR) Could not load block graphic '" + blocknames(i) + "'.")
+            logger.error(s"(ERROR) Could not load block graphic '${blocknames(i)}'.")
           } { img =>
             blockImgsTemp.put("blocks/" + blocknames(i) + "/texture" + (j + 1) + ".png", img)
             ()
@@ -801,8 +803,6 @@ object TerraFrame {
     ddelayTemp.asScala.toMap
   }
 
-  lazy val log: BufferedWriter = new BufferedWriter(new FileWriter("log.txt"))
-
   def main(args: Array[String]): Unit = {
     val f = new JFrame("TerraFrame: Infinite worlds!")
     f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE)
@@ -814,26 +814,6 @@ object TerraFrame {
     f.pack()
 
     ap.init()
-  }
-
-  def postError(e: Throwable): Unit = {
-    val sb = new StringBuilder()
-    sb.append("Exception in thread " + e.getClass.getName)
-    Option(e.getMessage).foreach { message =>
-      sb.append(": ")
-      sb.append(message)
-    }
-    e.getStackTrace.foreach { ste =>
-      sb.append("\n        at " + ste.toString)
-    }
-    try {
-      log.write(sb.toString())
-      log.close()
-    } catch {
-      case _: IOException =>
-    } finally {
-      println(sb.toString)
-    }
   }
 
   val theSize: Int = CHUNKBLOCKS * 2
@@ -1044,10 +1024,10 @@ class TerraFrame
                 }
                 if (chunkMatrix(twy)(twx).isEmpty) {
                   temporarySaveFile(twy)(twx).fold {
-                    println("no save file")
+                    logger.info("no save file")
                     chunkMatrix(twy)(twx) = Some(Chunk(twx + ou, twy + ov, random))
                   } { c =>
-                    println("using save file")
+                    logger.info("using save file")
                     chunkMatrix(twy)(twx) = Some(c)
                   }
                 }
@@ -1547,7 +1527,7 @@ class TerraFrame
             }
           }
           if (somevar) {
-            println("Drew at least one block.")
+            logger.debug("Drew at least one block.")
           }
           (0 until 2).foreach { twy =>
             (0 until 2).foreach { twx =>
@@ -1561,7 +1541,7 @@ class TerraFrame
                     }
                   }
                 }
-                println("Destroyed image at " + twx + " " + twy)
+                logger.debug(s"Destroyed image at $twx $twy")
               }
             }
           }
@@ -1576,7 +1556,7 @@ class TerraFrame
           ready = true
         }
       } catch {
-        case NonFatal(e) => postError(e)
+        case NonFatal(e) => logger.error(e)("Error reacting to ActionEvent")
       }
     }
   }
@@ -1660,7 +1640,7 @@ class TerraFrame
           }
         }
       } catch {
-        case NonFatal(e) => postError(e)
+        case NonFatal(e) => logger.error(e)("Error reacting to menu input")
       }
     }
   }
@@ -1757,7 +1737,7 @@ class TerraFrame
         timer.start()
         createWorldTimer.stop()
       } catch {
-        case NonFatal(e) => postError(e)
+        case NonFatal(e) => logger.error(e)("Error reacting to create user input")
       }
     }
   }
@@ -1855,7 +1835,7 @@ class TerraFrame
 
       menuTimer.start()
     } catch {
-      case NonFatal(e) => postError(e)
+      case NonFatal(e) => logger.error(e)("Error initializing")
     }
   }
 
@@ -1979,7 +1959,7 @@ class TerraFrame
 
     toolAngle = 4.7
 
-    println("-> Adding light sources...")
+    logger.info("-> Adding light sources...")
 
     (0 until WIDTH).foreach { x =>
       //            addSunLighting(x, 0)
@@ -1992,12 +1972,12 @@ class TerraFrame
       }
     }
 
-    println("-> Calculating light...")
+    logger.info("-> Calculating light...")
 
     resolvePowerMatrix()
     resolveLightMatrix()
 
-    println("Finished generation.")
+    logger.info("Finished generation.")
   }
 
   def updateApp(): Unit = {
@@ -2314,7 +2294,7 @@ class TerraFrame
                      updatel(i).num)(updatey(i))(updatex(i)).id <= ZythiumDelayer4DelayUpOnBlock.id || blocks(
                      updatel(i).num)(updatey(i))(updatex(i)).id >= ZythiumDelayer8DelayRightOnBlock.id && blocks(
                      updatel(i).num)(updatey(i))(updatex(i)).id <= ZythiumDelayer8DelayUpOnBlock.id) {
-          println("(DEBUG2R)")
+          logger.debug("(DEBUG2R)")
           blockTemp = blocks(updatel(i).num)(updatey(i))(updatex(i))
           removeBlockPower(updatex(i), updatey(i), updatel(i), false)
           blocks(updatel(i).num)(updatey(i))(updatex(i)) =
@@ -2328,7 +2308,7 @@ class TerraFrame
                      updatel(i).num)(updatey(i))(updatex(i)).id <= ZythiumDelayer4DelayUpBlock.id || blocks(
                      updatel(i).num)(updatey(i))(updatex(i)).id >= ZythiumDelayer8DelayRightBlock.id && blocks(
                      updatel(i).num)(updatey(i))(updatex(i)).id <= ZythiumDelayer8DelayUpBlock.id) {
-          println("(DEBUG2A)")
+          logger.debug("(DEBUG2A)")
           blocks(updatel(i).num)(updatey(i))(updatex(i)) =
             Block.withId(blocks(updatel(i).num)(updatey(i))(updatex(i)).id + 4)
           power(updatel(i).num)(updatey(i))(updatex(i)) = 5.toFloat
@@ -3518,7 +3498,7 @@ class TerraFrame
                 blocks(layer.num)(uy)(ux) = Block.withId(blocks(layer.num)(uy)(ux).id + 1)
                 addBlockPower(ux, uy)
                 rdrawn(uy)(ux) = false
-                println("Srsly?") //TODO: should not use print in tight loops, should use asychronous logging
+                logger.debug("Srsly?")
                 updatex += ux
                 updatey += uy
                 updatet += 50
@@ -3871,7 +3851,7 @@ class TerraFrame
               blocks(layer.num)(y)(x) = Block.withId(blocks(layer.num)(y)(x).id + 1)
               rdrawn(y)(x) = false
               addBlockPower(x, y)
-              println("Srsly?")
+              logger.debug("Srsly?")
               updatex += x
               updatey += y
               updatet += 0
@@ -4437,7 +4417,7 @@ class TerraFrame
   def addBlockPower(ux: Int, uy: Int): Unit = {
     if (powers(blocks(PrimaryLayer.num)(uy)(ux))) {
       if (blocks(PrimaryLayer.num)(uy)(ux).id >= ZythiumDelayer1DelayRightBlock.id && blocks(PrimaryLayer.num)(uy)(ux).id <= ZythiumDelayer8DelayUpOnBlock.id) {
-        println("Whaaat?")
+        logger.debug("Whaaat?")
         updatex += ux
         updatey += uy
         DDELAY.get(blocks(PrimaryLayer.num)(uy)(ux).id).foreach(updatet.+=)
@@ -4461,7 +4441,7 @@ class TerraFrame
     if (powers(blocks(BackgroundLayer.num)(uy)(ux))) {
       if (blocks(BackgroundLayer.num)(uy)(ux).id >= ZythiumDelayer1DelayRightBlock.id && blocks(BackgroundLayer.num)(
             uy)(ux).id <= ZythiumDelayer8DelayUpOnBlock.id) {
-        println("Whaaat?")
+        logger.debug("Whaaat?")
         updatex += ux
         updatey += uy
         DDELAY.get(blocks(BackgroundLayer.num)(uy)(ux).id).foreach(updatet.+=)
@@ -4485,7 +4465,7 @@ class TerraFrame
     if (powers(blocks(ForegroundLayer.num)(uy)(ux))) {
       if (blocks(ForegroundLayer.num)(uy)(ux).id >= ZythiumDelayer1DelayRightBlock.id && blocks(ForegroundLayer.num)(
             uy)(ux).id <= ZythiumDelayer8DelayUpOnBlock.id) {
-        println("Whaaat?")
+        logger.debug("Whaaat?")
         updatex += ux
         updatey += uy
         DDELAY.get(blocks(ForegroundLayer.num)(uy)(ux).id).foreach(updatet.+=)
@@ -4539,7 +4519,7 @@ class TerraFrame
 
   def rbpRecur(ux: Int, uy: Int, lyr: Layer): Unit = {
     arbprd(lyr.num)(uy)(ux) = true
-    println("(rbpR) " + ux + " " + uy)
+    logger.debug(s"(rbpR) $ux $uy")
     addTileToPZQueue(ux, uy)
     val remember: Array[Boolean] = Array(false, false, false, false)
     var ax3, ay3: Int            = 0
@@ -4564,21 +4544,21 @@ class TerraFrame
               blockId >= ZythiumDelayer1DelayRightBlock.id && blockId <= ZythiumDelayer8DelayUpOnBlock.id && uy > ay3 && block =/= ZythiumDelayer1DelayDownBlock && block =/= ZythiumDelayer1DelayDownOnBlock && block =/= ZythiumDelayer2DelayDownBlock && block =/= ZythiumDelayer2DelayDownOnBlock && block =/= ZythiumDelayer4DelayDownBlock && block =/= ZythiumDelayer4DelayDownOnBlock && block =/= ZythiumDelayer8DelayDownBlock && block =/= ZythiumDelayer8DelayDownOnBlock ||
               blockId >= ZythiumDelayer1DelayRightBlock.id && blockId <= ZythiumDelayer8DelayUpOnBlock.id && ux < ax3 && block =/= ZythiumDelayer1DelayLeftBlock && block =/= ZythiumDelayer1DelayLeftOnBlock && block =/= ZythiumDelayer2DelayLeftBlock && block =/= ZythiumDelayer2DelayLeftOnBlock && block =/= ZythiumDelayer4DelayLeftBlock && block =/= ZythiumDelayer4DelayLeftOnBlock && block =/= ZythiumDelayer8DelayLeftBlock && block =/= ZythiumDelayer8DelayLeftOnBlock ||
               blockId >= ZythiumDelayer1DelayRightBlock.id && blockId <= ZythiumDelayer8DelayUpOnBlock.id && uy < ay3 && block =/= ZythiumDelayer1DelayUpBlock && block =/= ZythiumDelayer1DelayUpOnBlock && block =/= ZythiumDelayer2DelayUpBlock && block =/= ZythiumDelayer2DelayUpOnBlock && block =/= ZythiumDelayer4DelayUpBlock && block =/= ZythiumDelayer4DelayUpOnBlock && block =/= ZythiumDelayer8DelayUpBlock && block =/= ZythiumDelayer8DelayUpOnBlock))) {
-          println("Added tile " + ax3 + " " + ay3 + " to PQueue.")
+          logger.debug(s"Added tile $ax3 $ay3 to PQueue.")
           addTileToPQueue(ax3, ay3)
           remember(ir) = true
         }
       }
     }
     (0 until 4).foreach { ir =>
-      println("[liek srsly man?] " + ir)
+      logger.debug(s"[liek srsly man?] $ir")
       ax3 = ux + cl(ir)(0)
       ay3 = uy + cl(ir)(1)
-      println("(rpbRecur2) " + ax3 + " " + ay3 + " " + power(lyr.num)(ay3)(ax3))
+      logger.debug(s"(rpbRecur2) $ax3 $ay3 ${power(lyr.num)(ay3)(ax3)}")
       lazy val userBlock   = blocks(lyr.num)(uy)(ux)
       lazy val userBlockId = userBlock.id
       if (ay3 >= 0 && ay3 < HEIGHT && power(lyr.num)(ay3)(ax3) =/= 0) {
-        println("(rbpRecur) " + power(lyr.num)(ay3)(ax3) + " " + power(lyr.num)(uy)(ux) + " " + conducts(userBlockId))
+        logger.debug(s"(rbpRecur) ${power(lyr.num)(ay3)(ax3)} ${power(lyr.num)(uy)(ux)} ${conducts(userBlockId)}")
         if ((power(lyr.num)(ay3)(ax3) === power(lyr.num)(uy)(ux) - conducts(userBlockId).toFloat) &&
             (!(blocks(lyr.num)(ay3)(ax3).id >= ZythiumAmplifierRightBlock.id && blocks(lyr.num)(ay3)(ax3).id <= ZythiumAmplifierUpOnBlock.id || blocks(
               lyr.num)(ay3)(ax3).id >= ZythiumInverterRightBlock.id && blocks(lyr.num)(ay3)(ax3).id <= ZythiumInverterUpOnBlock.id) ||
@@ -4758,7 +4738,7 @@ class TerraFrame
                 block =/= ZythiumDelayer8DelayUpOnBlock)) {
         if (blockId >= ZythiumInverterRightOnBlock.id && blockId <= ZythiumInverterUpOnBlock.id) {
           blocks(lyr.num)(ay3)(ax3) = Block.withId(blockId - 4)
-          println("Adding power for inverter at (" + ax3 + ", " + ay3 + ").")
+          logger.debug(s"Adding power for inverter at ($ax3, $ay3).")
           addBlockPower(ax3, ay3)
           addBlockLighting(ax3, ay3)
           rdrawn(ay3)(ax3) = false
@@ -4781,7 +4761,7 @@ class TerraFrame
 
   def removeBlockPower(ux: Int, uy: Int, lyr: Layer, turnOffDelayer: Boolean): Unit = {
     arbprd(lyr.num)(uy)(ux) = true
-    println("[rbp ] " + ux + " " + uy + " " + lyr.num + " " + turnOffDelayer)
+    logger.debug(s"[rbp ] $ux $uy ${lyr.num} ${turnOffDelayer}")
     if (!((blocks(lyr.num)(uy)(ux).id >= ZythiumDelayer1DelayRightOnBlock.id && blocks(lyr.num)(uy)(ux).id <= ZythiumDelayer1DelayUpOnBlock.id || blocks(
           lyr.num)(uy)(ux).id >= ZythiumDelayer2DelayRightOnBlock.id && blocks(lyr.num)(uy)(ux).id <= ZythiumDelayer2DelayUpOnBlock.id || blocks(
           lyr.num)(uy)(ux).id >= ZythiumDelayer4DelayRightOnBlock.id && blocks(lyr.num)(uy)(ux).id <= ZythiumDelayer4DelayUpOnBlock.id || blocks(
@@ -4807,7 +4787,7 @@ class TerraFrame
                 blockId >= ZythiumDelayer1DelayRightBlock.id && blockId <= ZythiumDelayer8DelayUpOnBlock.id && uy > ay3 && block =/= ZythiumDelayer1DelayDownBlock && block =/= ZythiumDelayer1DelayDownOnBlock && block =/= ZythiumDelayer2DelayDownBlock && block =/= ZythiumDelayer2DelayDownOnBlock && block =/= ZythiumDelayer4DelayDownBlock && block =/= ZythiumDelayer4DelayDownOnBlock && block =/= ZythiumDelayer8DelayDownBlock && block =/= ZythiumDelayer8DelayDownOnBlock ||
                 blockId >= ZythiumDelayer1DelayRightBlock.id && blockId <= ZythiumDelayer8DelayUpOnBlock.id && ux < ax3 && block =/= ZythiumDelayer1DelayLeftBlock && block =/= ZythiumDelayer1DelayLeftOnBlock && block =/= ZythiumDelayer2DelayLeftBlock && block =/= ZythiumDelayer2DelayLeftOnBlock && block =/= ZythiumDelayer4DelayLeftBlock && block =/= ZythiumDelayer4DelayLeftOnBlock && block =/= ZythiumDelayer8DelayLeftBlock && block =/= ZythiumDelayer8DelayLeftOnBlock ||
                 blockId >= ZythiumDelayer1DelayRightBlock.id && blockId <= ZythiumDelayer8DelayUpOnBlock.id && uy < ay3 && block =/= ZythiumDelayer1DelayUpBlock && block =/= ZythiumDelayer1DelayUpOnBlock && block =/= ZythiumDelayer2DelayUpBlock && block =/= ZythiumDelayer2DelayUpOnBlock && block =/= ZythiumDelayer4DelayUpBlock && block =/= ZythiumDelayer4DelayUpOnBlock && block =/= ZythiumDelayer8DelayUpBlock && block =/= ZythiumDelayer8DelayUpOnBlock))) {
-            println("Added tile " + ax3 + " " + ay3 + " to PQueue.")
+            logger.debug(s"Added tile $ax3 $ay3 to PQueue.")
             addTileToPQueue(ax3, ay3)
           }
         }
@@ -4817,9 +4797,9 @@ class TerraFrame
         ay3 = uy + cl(ir)(1)
         lazy val userBlock   = blocks(lyr.num)(uy)(ux)
         lazy val userBlockId = userBlock.id
-        println(blocks(lyr.num)(ay3)(ax3) + " " + power(lyr.num)(ay3)(ax3))
+        logger.debug(s"${blocks(lyr.num)(ay3)(ax3)} ${power(lyr.num)(ay3)(ax3)}")
         if (ay3 >= 0 && ay3 < HEIGHT && power(lyr.num)(ay3)(ax3) =/= 0) {
-          println(power(lyr.num)(uy)(ux) + " " + power(lyr.num)(ay3)(ax3) + " " + conducts(userBlockId))
+          logger.debug(s"${power(lyr.num)(uy)(ux)} ${power(lyr.num)(ay3)(ax3)} ${conducts(userBlockId)}")
           if (power(lyr.num)(ay3)(ax3) === power(lyr.num)(uy)(ux) - conducts(userBlockId).toFloat) {
             if (!(blocks(lyr.num)(ay3)(ax3).id >= ZythiumAmplifierRightBlock.id && blocks(lyr.num)(ay3)(ax3).id <= ZythiumAmplifierUpOnBlock.id || blocks(
                   lyr.num)(ay3)(ax3).id >= ZythiumInverterRightBlock.id && blocks(lyr.num)(ay3)(ax3).id <= ZythiumInverterUpOnBlock.id) ||
@@ -4902,7 +4882,7 @@ class TerraFrame
               blockId >= ZythiumDelayer1DelayRightBlock.id && blockId <= ZythiumDelayer8DelayUpOnBlock.id && uy > ay3 && block =/= ZythiumDelayer1DelayUpBlock && block =/= ZythiumDelayer1DelayUpOnBlock && block =/= ZythiumDelayer2DelayUpBlock && block =/= ZythiumDelayer2DelayUpOnBlock && block =/= ZythiumDelayer4DelayUpBlock && block =/= ZythiumDelayer4DelayUpOnBlock && block =/= ZythiumDelayer8DelayUpBlock && block =/= ZythiumDelayer8DelayUpOnBlock)) {
           if (blockId >= ZythiumInverterRightOnBlock.id && blockId <= ZythiumInverterUpOnBlock.id) {
             blocks(lyr.num)(ay3)(ax3) = Block.withId(blockId - 4)
-            println("Adding power for inverter at (" + ax3 + ", " + ay3 + ").")
+            logger.debug(s"Adding power for inverter at ($ax3, $ay3).")
             addBlockPower(ax3, ay3)
             addBlockLighting(ax3, ay3)
             rdrawn(ay3)(ax3) = false
@@ -4925,7 +4905,7 @@ class TerraFrame
       rdrawn(uy)(ux) = false
     }
     if (turnOffDelayer && blocks(lyr.num)(uy)(ux).id >= ZythiumDelayer1DelayRightBlock.id && blocks(lyr.num)(uy)(ux).id <= ZythiumDelayer8DelayUpOnBlock.id) {
-      println("???")
+      logger.debug("???")
       updatex += ux
       updatey += uy
       DDELAY.get(blocks(lyr.num)(uy)(ux).id).foreach(updatet.+=)
@@ -5235,7 +5215,7 @@ class TerraFrame
                         blockId2 >= ZythiumDelayer2DelayRightBlock.id && blockId2 <= ZythiumDelayer2DelayUpBlock.id ||
                         blockId2 >= ZythiumDelayer4DelayRightBlock.id && blockId2 <= ZythiumDelayer4DelayUpBlock.id ||
                         blockId2 >= ZythiumDelayer8DelayRightBlock.id && blockId2 <= ZythiumDelayer8DelayUpBlock.id) {
-                      println("(DEBUG1)")
+                      logger.debug("(DEBUG1)")
                       updatex += x2
                       updatey += y2
                       DDELAY.get(blockId2).foreach(updatet.+=)
@@ -5294,7 +5274,7 @@ class TerraFrame
         pqy.remove(0)
         pqd(y)(x) = false
         (0 until 3).foreach { l =>
-          println("(resolvePowerMatrix) " + x + " " + y + " " + l + " " + blocks(l)(y)(x) + " " + power(l)(y)(x))
+          logger.debug(s"(resolvePowerMatrix) $x $y $l ${blocks(l)(y)(x)} ${power(l)(y)(x)}")
           if (power(l)(y)(x) > 0) {
             if (blocks(l)(y)(x) === ZythiumLampBlock) {
               blocks(l)(y)(x) = ZythiumLampOnBlock
@@ -5302,7 +5282,7 @@ class TerraFrame
               rdrawn(y)(x) = false
             }
             if (blocks(l)(y)(x).id >= ZythiumAmplifierRightBlock.id && blocks(l)(y)(x).id <= ZythiumAmplifierUpBlock.id) {
-              println("Processed amplifier at " + x + " " + y)
+              logger.debug(s"Processed amplifier at $x $y")
               blocks(l)(y)(x) = Block.withId(blocks(l)(y)(x).id + 4)
               addTileToPQueue(x, y)
               addBlockLighting(x, y)

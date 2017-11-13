@@ -5,6 +5,8 @@ lazy val commonSettings = Seq(
 )
 
 lazy val librarySettings = Seq(
+  "ch.qos.logback" % "logback-classic"    % "1.2.3",
+  "org.log4s"      %% "log4s"             % "1.4.0",
   "com.chuusai"    %% "shapeless"         % "2.3.2",
   "com.beachape"   %% "enumeratum"        % "1.5.12",
   "org.specs2"     %% "specs2-core"       % "3.8.6" % Test,
