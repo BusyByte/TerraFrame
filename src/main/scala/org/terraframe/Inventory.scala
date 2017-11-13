@@ -49,8 +49,8 @@ class Inventory extends Serializable {
   val nums: Array[Short] = Array.fill(40)(0)
   val durs: Array[Short] = Array.fill(40)(0)
 
-  var trolx: Int = 37
-  var troly: Int = 17
+  val trolx: Int = 37
+  val troly: Int = 17
 
   var valid: Boolean = false
 
@@ -1208,7 +1208,7 @@ class Inventory extends Serializable {
   }
 
 //  def removeItem(item: Short, quantity: Short): Short = {
-//    var updatedQuantity: Short = quantity
+//    val updatedQuantity: Short = quantity
 //    (0 until 40).foreach { i =>
 //      if (ids(i) === EmptyUiItem) {
 //        if (nums(i) <= updatedQuantity) {

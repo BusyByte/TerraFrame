@@ -47,7 +47,7 @@ object TerraFrame {
 
   val config: GraphicsConfiguration =
     GraphicsEnvironment.getLocalGraphicsEnvironment.getDefaultScreenDevice.getDefaultConfiguration
-  var armor: ItemCollection = new ItemCollection(Armor)
+  val armor: ItemCollection = new ItemCollection(Armor)
   var WIDTH: Int            = 2400
   var HEIGHT: Int           = 2400
 
@@ -176,7 +176,7 @@ object TerraFrame {
     "stone_bricks",
     "clay",
     "clay_bricks",
-    "varnished_wood",
+    "valnished_wood",
     "dirt_trans",
     "magnetite_ore_trans",
     "grass_trans",
@@ -1073,7 +1073,7 @@ class TerraFrame
               kworlds(twy)(twx) = false
             }
           }
-          var somevar: Boolean = false
+          var someval: Boolean = false
           (0 until 2).foreach { twy =>
             (0 until 2).foreach { twx =>
               val twxc: Int = twx + ou
@@ -1108,7 +1108,7 @@ class TerraFrame
                             val ty: Int = tly / BLOCKSIZE
                             if (tx >= 0 && tx < theSize && ty >= 0 && ty < theSize) {
                               if (!drawn(ty)(tx)) {
-                                somevar = true
+                                someval = true
                                 blockts(ty)(tx) = random.nextInt(8).toByte
                                 (0 until BLOCKSIZE).foreach { y =>
                                   (0 until BLOCKSIZE).foreach { x =>
@@ -1245,7 +1245,7 @@ class TerraFrame
                                 ldrawn(ty)(tx) = true
                               }
                               if (!rdrawn(ty)(tx)) {
-                                somevar = true
+                                someval = true
                                 (0 until BLOCKSIZE).foreach { y =>
                                   (0 until BLOCKSIZE).foreach { x =>
                                     try {
@@ -1381,7 +1381,7 @@ class TerraFrame
                                 ldrawn(ty)(tx) = true
                               }
                               if (!ldrawn(ty)(tx) && random.nextInt(10) === 0) {
-                                somevar = true
+                                someval = true
                                 (0 until BLOCKSIZE).foreach { y =>
                                   (0 until BLOCKSIZE).foreach { x =>
                                     try {
@@ -1526,7 +1526,7 @@ class TerraFrame
               }
             }
           }
-          if (somevar) {
+          if (someval) {
             logger.debug("Drew at least one block.")
           }
           (0 until 2).foreach { twy =>
@@ -1560,7 +1560,7 @@ class TerraFrame
       }
     }
   }
-  var timer: javax.swing.Timer = new javax.swing.Timer(20, mainthread)
+  val timer: javax.swing.Timer = new javax.swing.Timer(20, mainthread)
   val actionListener = new ActionListener() {
     def actionPerformed(ae: ActionEvent): Unit = {
       try {
@@ -1644,56 +1644,56 @@ class TerraFrame
       }
     }
   }
-  var menuTimer: javax.swing.Timer         = new javax.swing.Timer(20, actionListener)
+  val menuTimer: javax.swing.Timer         = new javax.swing.Timer(20, actionListener)
   var worldFiles, worldNames: List[String] = Nil
   var currentWorld: Option[String]         = None
-  var newWorldName: TextField              = TextField(400, "New World")
+  val newWorldName: TextField              = TextField(400, "New World")
 
-  var blocks: Array3D[Block]             = Array.ofDim(3, theSize, theSize)
-  var blockds: Array3D[OutlineDirection] = Array.ofDim(3, theSize, theSize)
-  var blockdns: Array2D[Byte]            = Array.ofDim(theSize, theSize)
-  var blockbgs: Array2D[Background]      = Array.ofDim(theSize, theSize)
-  var blockts: Array2D[Byte]             = Array.ofDim(theSize, theSize)
-  var lights: Array2D[Float]             = Array.ofDim(theSize, theSize)
-  var power: Array3D[Float]              = Array.ofDim(3, theSize, theSize)
-  var lsources: Array2D[Boolean]         = Array.ofDim(theSize, theSize)
-  var lqx: mutable.ArrayBuffer[Int]      = mutable.ArrayBuffer.empty[Int]
-  var lqy: mutable.ArrayBuffer[Int]      = mutable.ArrayBuffer.empty[Int]
-  var pqx: mutable.ArrayBuffer[Int]      = mutable.ArrayBuffer.empty[Int]
-  var pqy: mutable.ArrayBuffer[Int]      = mutable.ArrayBuffer.empty[Int]
-  var zqx: mutable.ArrayBuffer[Int]      = mutable.ArrayBuffer.empty[Int]
-  var zqy: mutable.ArrayBuffer[Int]      = mutable.ArrayBuffer.empty[Int]
-  var pzqx: mutable.ArrayBuffer[Int]     = mutable.ArrayBuffer.empty[Int]
-  var pzqy: mutable.ArrayBuffer[Int]     = mutable.ArrayBuffer.empty[Int]
-  var lqd: Array2D[Boolean]              = Array.fill(theSize, theSize)(false)
-  var zqd: Array2D[Boolean]              = Array.fill(theSize, theSize)(false)
-  var pqd: Array2D[Boolean]              = Array.fill(theSize, theSize)(false)
-  var pzqd: Array2D[Boolean]             = Array.fill(theSize, theSize)(false)
-  var zqn: Array2D[Byte]                 = Array.ofDim(theSize, theSize)
-  var pzqn: Array3D[Byte]                = Array.ofDim(3, theSize, theSize)
-  var arbprd: Array3D[Boolean]           = Array.ofDim(3, theSize, theSize)
+  val blocks: Array3D[Block]             = Array.ofDim(3, theSize, theSize)
+  val blockds: Array3D[OutlineDirection] = Array.ofDim(3, theSize, theSize)
+  val blockdns: Array2D[Byte]            = Array.ofDim(theSize, theSize)
+  val blockbgs: Array2D[Background]      = Array.ofDim(theSize, theSize)
+  val blockts: Array2D[Byte]             = Array.ofDim(theSize, theSize)
+  val lights: Array2D[Float]             = Array.ofDim(theSize, theSize)
+  val power: Array3D[Float]              = Array.ofDim(3, theSize, theSize)
+  val lsources: Array2D[Boolean]         = Array.ofDim(theSize, theSize)
+  val lqx: mutable.ArrayBuffer[Int]      = mutable.ArrayBuffer.empty[Int]
+  val lqy: mutable.ArrayBuffer[Int]      = mutable.ArrayBuffer.empty[Int]
+  val pqx: mutable.ArrayBuffer[Int]      = mutable.ArrayBuffer.empty[Int]
+  val pqy: mutable.ArrayBuffer[Int]      = mutable.ArrayBuffer.empty[Int]
+  val zqx: mutable.ArrayBuffer[Int]      = mutable.ArrayBuffer.empty[Int]
+  val zqy: mutable.ArrayBuffer[Int]      = mutable.ArrayBuffer.empty[Int]
+  val pzqx: mutable.ArrayBuffer[Int]     = mutable.ArrayBuffer.empty[Int]
+  val pzqy: mutable.ArrayBuffer[Int]     = mutable.ArrayBuffer.empty[Int]
+  val lqd: Array2D[Boolean]              = Array.fill(theSize, theSize)(false)
+  val zqd: Array2D[Boolean]              = Array.fill(theSize, theSize)(false)
+  val pqd: Array2D[Boolean]              = Array.fill(theSize, theSize)(false)
+  val pzqd: Array2D[Boolean]             = Array.fill(theSize, theSize)(false)
+  val zqn: Array2D[Byte]                 = Array.ofDim(theSize, theSize)
+  val pzqn: Array3D[Byte]                = Array.ofDim(3, theSize, theSize)
+  val arbprd: Array3D[Boolean]           = Array.ofDim(3, theSize, theSize)
 
-  var updatex: mutable.ArrayBuffer[Int]   = mutable.ArrayBuffer.empty[Int]
-  var updatey: mutable.ArrayBuffer[Int]   = mutable.ArrayBuffer.empty[Int]
-  var updatet: mutable.ArrayBuffer[Int]   = mutable.ArrayBuffer.empty[Int]
-  var updatel: mutable.ArrayBuffer[Layer] = mutable.ArrayBuffer.empty[Layer]
-  var wcnct: Array2D[Boolean]             = Array.ofDim(theSize, theSize)
-  var drawn: Array2D[Boolean]             = Array.ofDim(theSize, theSize)
-  var ldrawn: Array2D[Boolean]            = Array.ofDim(theSize, theSize)
-  var rdrawn: Array2D[Boolean]            = Array.ofDim(theSize, theSize)
+  val updatex: mutable.ArrayBuffer[Int]   = mutable.ArrayBuffer.empty[Int]
+  val updatey: mutable.ArrayBuffer[Int]   = mutable.ArrayBuffer.empty[Int]
+  val updatet: mutable.ArrayBuffer[Int]   = mutable.ArrayBuffer.empty[Int]
+  val updatel: mutable.ArrayBuffer[Layer] = mutable.ArrayBuffer.empty[Layer]
+  val wcnct: Array2D[Boolean]             = Array.ofDim(theSize, theSize)
+  val drawn: Array2D[Boolean]             = Array.ofDim(theSize, theSize)
+  val ldrawn: Array2D[Boolean]            = Array.ofDim(theSize, theSize)
+  val rdrawn: Array2D[Boolean]            = Array.ofDim(theSize, theSize)
   var player: Player                      = new Player(WIDTH * 0.5 * BLOCKSIZE, 45)
   var inventory: Inventory                = new Inventory()
 
-  var entities: mutable.ArrayBuffer[Entity] = mutable.ArrayBuffer.empty[Entity]
-  var cloudsx: mutable.ArrayBuffer[Double]  = mutable.ArrayBuffer.empty[Double]
-  var cloudsy: mutable.ArrayBuffer[Double]  = mutable.ArrayBuffer.empty[Double]
-  var cloudsv: mutable.ArrayBuffer[Double]  = mutable.ArrayBuffer.empty[Double]
-  var cloudsn: mutable.ArrayBuffer[Int]     = mutable.ArrayBuffer.empty[Int]
-  var machinesx: mutable.ArrayBuffer[Int]   = mutable.ArrayBuffer.empty[Int]
-  var machinesy: mutable.ArrayBuffer[Int]   = mutable.ArrayBuffer.empty[Int]
+  val entities: mutable.ArrayBuffer[Entity] = mutable.ArrayBuffer.empty[Entity]
+  val cloudsx: mutable.ArrayBuffer[Double]  = mutable.ArrayBuffer.empty[Double]
+  val cloudsy: mutable.ArrayBuffer[Double]  = mutable.ArrayBuffer.empty[Double]
+  val cloudsv: mutable.ArrayBuffer[Double]  = mutable.ArrayBuffer.empty[Double]
+  val cloudsn: mutable.ArrayBuffer[Int]     = mutable.ArrayBuffer.empty[Int]
+  val machinesx: mutable.ArrayBuffer[Int]   = mutable.ArrayBuffer.empty[Int]
+  val machinesy: mutable.ArrayBuffer[Int]   = mutable.ArrayBuffer.empty[Int]
 
-  var temporarySaveFile: Array2D[Option[Chunk]] = Array.fill(2, 2)(None)
-  var chunkMatrix: Array2D[Option[Chunk]]       = Array.fill(2, 2)(None)
+  val temporarySaveFile: Array2D[Option[Chunk]] = Array.fill(2, 2)(None)
+  val chunkMatrix: Array2D[Option[Chunk]]       = Array.fill(2, 2)(None)
 
   var rgnc1: Int       = 0
   var rgnc2: Int       = 0
@@ -1725,7 +1725,7 @@ class TerraFrame
 
   var mobCount: Int = 0
 
-  var loadTextPos: Int = 0
+  val loadTextPos: Int = 0
 
   val createWorldThread: Action = new AbstractAction() {
     def actionPerformed(ae: ActionEvent): Unit = {
@@ -1741,11 +1741,11 @@ class TerraFrame
       }
     }
   }
-  var createWorldTimer: javax.swing.Timer = new javax.swing.Timer(1, createWorldThread)
+  val createWorldTimer: javax.swing.Timer = new javax.swing.Timer(1, createWorldThread)
 
   val userInput = UserInput()
 
-  var done: Boolean                  = false
+  val done: Boolean                  = false
   var ready: Boolean                 = true
   var showTool: Boolean              = false
   var showInv: Boolean               = false
@@ -1755,24 +1755,24 @@ class TerraFrame
   var mouseNoLongerClicked: Boolean  = false
   var mouseNoLongerClicked2: Boolean = false
   var addSources: Boolean            = false
-  var removeSources: Boolean         = false
-  var beginLight: Boolean            = false
+  val removeSources: Boolean         = false
+  val beginLight: Boolean            = false
   var doMobSpawn: Boolean            = false
   var keepLeaf: Boolean              = false
-  var newWorldFocus: Boolean         = false
+  val newWorldFocus: Boolean         = false
   var menuPressed: Boolean           = false
   var doGenerateWorld: Boolean       = true
   var doGrassGrow: Boolean           = false
-  var reallyAddPower: Boolean        = false
-  var reallyRemovePower: Boolean     = false
+  val reallyAddPower: Boolean        = false
+  val reallyRemovePower: Boolean     = false
 
   var ic: Option[ItemCollection] = None
 
-  var worlds: Array2D[Option[BufferedImage]]  = Array.fill(2, 2)(None)
-  var fworlds: Array2D[Option[BufferedImage]] = Array.fill(2, 2)(None)
-  var kworlds: Array2D[Boolean]               = Array.fill(2, 2)(false)
+  val worlds: Array2D[Option[BufferedImage]]  = Array.fill(2, 2)(None)
+  val fworlds: Array2D[Option[BufferedImage]] = Array.fill(2, 2)(None)
+  val kworlds: Array2D[Boolean]               = Array.fill(2, 2)(false)
 
-  var icmatrix: Array3D[Option[ItemCollection]] = Array.ofDim(3, HEIGHT, WIDTH)
+  val icmatrix: Array3D[Option[ItemCollection]] = Array.ofDim(3, HEIGHT, WIDTH)
 
   var tool: Option[BufferedImage] = None
 
@@ -5369,28 +5369,49 @@ class TerraFrame
   }
 
   def emptyWorldContainer(wc: WorldContainer): Unit = {
-    blocks = wc.blocks
-    blockds = wc.blockds
-    blockdns = wc.blockdns
-    blockbgs = wc.blockbgs
-    blockts = wc.blockts
-    lights = wc.lights
-    power = wc.power
+    Array.copy(wc.blocks, 0, blocks, 0, wc.blocks.length)
+    Array.copy(wc.blockds, 0, blockds, 0, wc.blockds.length)
+    Array.copy(wc.blockdns, 0, blockdns, 0, wc.blockdns.length)
+    Array.copy(wc.blockbgs, 0, blockbgs, 0, wc.blockbgs.length)
+    Array.copy(wc.blockts, 0, blockts, 0, wc.blockts.length)
+    Array.copy(wc.lights, 0, lights, 0, wc.lights.length)
+    Array.copy(wc.power, 0, power, 0, wc.power.length)
     resetDrawn()
     player = wc.player
     inventory = wc.inventory
     cic = wc.cic
-    entities = wc.entities
-    cloudsx = wc.cloudsx
-    cloudsy = wc.cloudsy
-    cloudsv = wc.cloudsv
-    cloudsn = wc.cloudsn
-    machinesx = wc.machinesx
-    machinesy = wc.machinesy
-    lsources = wc.lsources
-    lqx = wc.lqx
-    lqy = wc.lqy
-    lqd = wc.lqd
+
+    entities.clear()
+    entities ++= wc.entities
+
+    cloudsx.clear()
+    cloudsx ++= wc.cloudsx
+
+    cloudsy.clear()
+    cloudsy ++= wc.cloudsy
+
+    cloudsv.clear()
+    cloudsv ++= wc.cloudsv
+
+    cloudsn.clear()
+    cloudsn ++= wc.cloudsn
+
+    machinesx.clear()
+    machinesx ++= wc.machinesx
+
+    machinesy.clear()
+    machinesy ++= wc.machinesy
+
+    Array.copy(wc.lsources, 0, lsources, 0, wc.lsources.length)
+
+    lqx.clear()
+    lqx ++= wc.lqx
+
+    lqy.clear()
+    lqy ++= wc.lqy
+
+    Array.copy(wc.lqd, 0, lqd, 0, wc.lqd.length)
+
     rgnc1 = wc.rgnc1
     rgnc2 = wc.rgnc2
     layer = wc.layer
@@ -5421,9 +5442,9 @@ class TerraFrame
     random = wc.random
     WORLDWIDTH = wc.WORLDWIDTH
     WORLDHEIGHT = wc.WORLDHEIGHT
-    kworlds = wc.kworlds
+    Array.copy(wc.kworlds, 0, kworlds, 0, wc.kworlds.length)
     ic = wc.ic
-    icmatrix = wc.icmatrix
+    Array.copy(wc.icmatrix, 0, icmatrix, 0, wc.icmatrix.length)
     version = wc.version
     player.reloadImage()
     inventory.reloadImage()
@@ -5435,29 +5456,14 @@ class TerraFrame
     entities.foreach { entity: Entity =>
       entity.reloadImage()
     }
-    worlds = Array.ofDim(2, 2)
-    fworlds = Array.fill(2, 2)(None)
+    Array.copy(Array.fill(2, 2)(None), 0, worlds, 0, worlds.length)
+    Array.copy(Array.fill(2, 2)(None), 0, fworlds, 0, fworlds.length)
   }
 
   def resetDrawn(): Unit = {
-    drawn = Array.ofDim(HEIGHT, WIDTH)
-    (0 until HEIGHT).foreach { y =>
-      (0 until WIDTH).foreach { x =>
-        drawn(y)(x) = false
-      }
-    }
-    ldrawn = Array.ofDim(HEIGHT, WIDTH)
-    (0 until HEIGHT).foreach { y =>
-      (0 until WIDTH).foreach { x =>
-        ldrawn(y)(x) = false
-      }
-    }
-    rdrawn = Array.ofDim(HEIGHT, WIDTH)
-    (0 until HEIGHT).foreach { y =>
-      (0 until WIDTH).foreach { x =>
-        rdrawn(y)(x) = false
-      }
-    }
+    Array.copy(Array.fill(theSize, theSize)(false), 0, drawn, 0, theSize)
+    Array.copy(Array.fill(theSize, theSize)(false), 0, ldrawn, 0, theSize)
+    Array.copy(Array.fill(theSize, theSize)(false), 0, rdrawn, 0, theSize)
   }
 
   def createWorldContainer(): WorldContainer = {

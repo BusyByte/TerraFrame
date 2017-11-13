@@ -9,8 +9,8 @@ object World {
 
   private val logger = org.log4s.getLogger
 
-  //var coordlist: Array2D[Boolean]  = _
-  //var coordlist2: Array2D[Boolean] = _
+  //val coordlist: Array2D[Boolean]  = _
+  //val coordlist2: Array2D[Boolean] = _
 
   def generateOutlines(blocks: Array2D[Block]): Array2D[OutlineDirection] = {
     generate2(blocks, false)
@@ -43,13 +43,13 @@ object World {
         rnum: Int
         biomes: Array[String] = new String(width)
         verify: Array[Boolean] = {false, false, false, false, false}
-        bvar: Boolean = false
+        bval: Boolean = false
         while (true) {
             bCount = 0
             (0 until 5).foreach { i =>
                 verify(i) = false
             }
-            bvar = true
+            bval = true
             (0 until width).foreach { x =>
                 if (bCount === 0) {
                     rnum = random.nextInt(100)
@@ -80,10 +80,10 @@ object World {
             }
             (0 until 5).foreach { i =>
                 if (!verify(i)) {
-                    bvar = false
+                    bval = false
                 }
             }
-            if (bvar || width < 1500) {
+            if (bval || width < 1500) {
                 break
             }
         }

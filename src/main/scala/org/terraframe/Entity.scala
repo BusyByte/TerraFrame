@@ -222,9 +222,12 @@ case class AIEntity(var x: Double, var y: Double, var vx: Double, var vy: Double
   var oldx: Double = x
   var oldy: Double = y
 
-  var nohit: Boolean = false
+  val nohit: Boolean = false
 
-  var imgState: ImageState   = StillRight
+  var imgState: ImageState = strategy.ai match {
+    case BatAI => NormalRight
+    case _     => StillRight
+  }
   var onGround: Boolean      = false
   var immune: Boolean        = false
   var grounded: Boolean      = false
@@ -245,11 +248,6 @@ case class AIEntity(var x: Double, var y: Double, var vx: Double, var vy: Double
 
   val width: Int  = image.getWidth() * 2
   val height: Int = image.getHeight() * 2
-
-  imgState = strategy.ai match {
-    case BatAI => NormalRight
-    case _     => StillRight
-  }
 
   vx = strategy.ai match {
     case BatAI => 3.toDouble
