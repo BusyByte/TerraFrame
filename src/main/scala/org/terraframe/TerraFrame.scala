@@ -1704,10 +1704,10 @@ class TerraFrame
   var state: GameState                 = LoadingGraphics
   var mobSpawn: Option[EntityStrategy] = None
 
-  private[this] var width, height                            = 0
-  var u, v: Int                                              = 0
-  var ux, uy, n, mx, my, vc, xpos, ypos, x2, y2, mining: Int = 0 //TODO get rid of all usages of `n`
-  private[this] var x, y                                     = 0
+  private[this] var width, height                         = 0
+  var u, v: Int                                           = 0
+  var ux, uy, mx, my, vc, xpos, ypos, x2, y2, mining: Int = 0 //TODO get rid of all usages of `n`
+  private[this] var x, y                                  = 0
 
   var miningTool: UiItem = EmptyUiItem
 
@@ -3577,7 +3577,7 @@ class TerraFrame
           entities.remove(indexTemp)
         } else if (player.playerRect.intersects(entityTemp.rect)) {
           if (entityTemp.mdelay <= 0) {
-            n = inventory.addItem(entityTemp.id, entityTemp.num).toInt
+            val n = inventory.addItem(entityTemp.id, entityTemp.num).toInt
             if (n =/= 0) {
               entities += new IdEntity(
                 entityTemp.x,
@@ -3975,90 +3975,35 @@ class TerraFrame
         }
       }
 
-      var tempUiItem: UiItem = EmptyUiItem
-      blocks(layer.num)(uy)(ux) match {
-        case SunflowerStage1Block =>
-          tempUiItem = SunflowerSeedsUiItem
-          n = random.nextInt(4) - 2
-        case SunflowerStage2Block =>
-          tempUiItem = SunflowerSeedsUiItem
-          n = random.nextInt(2)
-        case SunflowerStage3Block =>
-          tempUiItem = SunflowerSeedsUiItem
-          n = random.nextInt(3) + 1
-        case MoonflowerStage1Block =>
-          tempUiItem = MoonflowerSeedsUiItem
-          n = random.nextInt(4) - 2
-        case MoonflowerStage2Block =>
-          tempUiItem = MoonflowerSeedsUiItem
-          n = random.nextInt(2)
-        case MoonflowerStage3Block =>
-          tempUiItem = MoonflowerSeedsUiItem
-          n = random.nextInt(3) + 1
-        case DryweedStage1Block =>
-          tempUiItem = DryweedSeedsUiItem
-          n = random.nextInt(4) - 2
-        case DryweedStage2Block =>
-          tempUiItem = DryweedSeedsUiItem
-          n = random.nextInt(2)
-        case DryweedStage3Block =>
-          tempUiItem = DryweedSeedsUiItem
-          n = random.nextInt(3) + 1
-        case GreenleafStage1Block =>
-          tempUiItem = GreenleafSeedsUiItem
-          n = random.nextInt(4) - 2
-        case GreenleafStage2Block =>
-          tempUiItem = GreenleafSeedsUiItem
-          n = random.nextInt(2)
-        case GreenleafStage3Block =>
-          tempUiItem = GreenleafSeedsUiItem
-          n = random.nextInt(3) + 1
-        case FrostleafStage1Block =>
-          tempUiItem = FrostleafSeedsUiItem
-          n = random.nextInt(4) - 2
-        case FrostleafStage2Block =>
-          tempUiItem = FrostleafSeedsUiItem
-          n = random.nextInt(2)
-        case FrostleafStage3Block =>
-          tempUiItem = FrostleafSeedsUiItem
-          n = random.nextInt(3) + 1
-        case CaverootStage1Block =>
-          tempUiItem = CaverootSeedsUiItem
-          n = random.nextInt(4) - 2
-        case CaverootStage2Block =>
-          tempUiItem = CaverootSeedsUiItem
-          n = random.nextInt(2)
-        case CaverootStage3Block =>
-          tempUiItem = CaverootSeedsUiItem
-          n = random.nextInt(3) + 1
-        case SkyblossomStage1Block =>
-          tempUiItem = SkyblossomSeedsUiItem
-          n = random.nextInt(4) - 2
-        case SkyblossomStage2Block =>
-          tempUiItem = SkyblossomSeedsUiItem
-          n = random.nextInt(2)
-        case SkyblossomStage3Block =>
-          tempUiItem = SkyblossomSeedsUiItem
-          n = random.nextInt(3) + 1
-        case VoidRotStage1Block =>
-          tempUiItem = VoidRotSeedsUiItem
-          n = random.nextInt(4) - 2
-        case VoidRotStage2Block =>
-          tempUiItem = VoidRotSeedsUiItem
-          n = random.nextInt(2)
-        case VoidRotStage3Block =>
-          tempUiItem = VoidRotSeedsUiItem
-          n = random.nextInt(3) + 1
-        case MarshleafStage1Block =>
-          tempUiItem = MarshleafSeedsUiItem
-          n = random.nextInt(4) - 2
-        case MarshleafStage2Block =>
-          tempUiItem = MarshleafSeedsUiItem
-          n = random.nextInt(2)
-        case MarshleafStage3Block =>
-          tempUiItem = MarshleafSeedsUiItem
-          n = random.nextInt(3) + 1
-        case _ =>
+      val (tempUiItem, n): (UiItem, Int) = blocks(layer.num)(uy)(ux) match {
+        case SunflowerStage1Block  => (SunflowerSeedsUiItem, random.nextInt(4) - 2)
+        case SunflowerStage2Block  => (SunflowerSeedsUiItem, random.nextInt(2))
+        case SunflowerStage3Block  => (SunflowerSeedsUiItem, random.nextInt(3) + 1)
+        case MoonflowerStage1Block => (MoonflowerSeedsUiItem, random.nextInt(4) - 2)
+        case MoonflowerStage2Block => (MoonflowerSeedsUiItem, random.nextInt(2))
+        case MoonflowerStage3Block => (MoonflowerSeedsUiItem, random.nextInt(3) + 1)
+        case DryweedStage1Block    => (DryweedSeedsUiItem, random.nextInt(4) - 2)
+        case DryweedStage2Block    => (DryweedSeedsUiItem, random.nextInt(2))
+        case DryweedStage3Block    => (DryweedSeedsUiItem, random.nextInt(3) + 1)
+        case GreenleafStage1Block  => (GreenleafSeedsUiItem, random.nextInt(4) - 2)
+        case GreenleafStage2Block  => (GreenleafSeedsUiItem, random.nextInt(2))
+        case GreenleafStage3Block  => (GreenleafSeedsUiItem, random.nextInt(3) + 1)
+        case FrostleafStage1Block  => (FrostleafSeedsUiItem, random.nextInt(4) - 2)
+        case FrostleafStage2Block  => (FrostleafSeedsUiItem, random.nextInt(2))
+        case FrostleafStage3Block  => (FrostleafSeedsUiItem, random.nextInt(3) + 1)
+        case CaverootStage1Block   => (CaverootSeedsUiItem, random.nextInt(4) - 2)
+        case CaverootStage2Block   => (CaverootSeedsUiItem, random.nextInt(2))
+        case CaverootStage3Block   => (CaverootSeedsUiItem, random.nextInt(3) + 1)
+        case SkyblossomStage1Block => (SkyblossomSeedsUiItem, random.nextInt(4) - 2)
+        case SkyblossomStage2Block => (SkyblossomSeedsUiItem, random.nextInt(2))
+        case SkyblossomStage3Block => (SkyblossomSeedsUiItem, random.nextInt(3) + 1)
+        case VoidRotStage1Block    => (VoidRotSeedsUiItem, random.nextInt(4) - 2)
+        case VoidRotStage2Block    => (VoidRotSeedsUiItem, random.nextInt(2))
+        case VoidRotStage3Block    => (VoidRotSeedsUiItem, random.nextInt(3) + 1)
+        case MarshleafStage1Block  => (MarshleafSeedsUiItem, random.nextInt(4) - 2)
+        case MarshleafStage2Block  => (MarshleafSeedsUiItem, random.nextInt(2))
+        case MarshleafStage3Block  => (MarshleafSeedsUiItem, random.nextInt(3) + 1)
+        case _                     => (EmptyUiItem, 0)
       }
 
       UiItem.onImageItem(tempUiItem) { imgItm =>
@@ -4217,94 +4162,39 @@ class TerraFrame
             }
           }
 
-          var tempUiItem: UiItem = EmptyUiItem
-          blocks(layer.num)(uy)(ux) match {
-            case SunflowerStage1Block =>
-              tempUiItem = SunflowerSeedsUiItem
-              n = random.nextInt(4) - 2
-            case SunflowerStage2Block =>
-              tempUiItem = SunflowerSeedsUiItem
-              n = random.nextInt(2)
-            case SunflowerStage3Block =>
-              tempUiItem = SunflowerSeedsUiItem
-              n = random.nextInt(3) + 1
-            case MoonflowerStage1Block =>
-              tempUiItem = MoonflowerSeedsUiItem
-              n = random.nextInt(4) - 2
-            case MoonflowerStage2Block =>
-              tempUiItem = MoonflowerSeedsUiItem
-              n = random.nextInt(2)
-            case MoonflowerStage3Block =>
-              tempUiItem = MoonflowerSeedsUiItem
-              n = random.nextInt(3) + 1
-            case DryweedStage1Block =>
-              tempUiItem = DryweedSeedsUiItem
-              n = random.nextInt(4) - 2
-            case DryweedStage2Block =>
-              tempUiItem = DryweedSeedsUiItem
-              n = random.nextInt(2)
-            case DryweedStage3Block =>
-              tempUiItem = DryweedSeedsUiItem
-              n = random.nextInt(3) + 1
-            case GreenleafStage1Block =>
-              tempUiItem = GreenleafSeedsUiItem
-              n = random.nextInt(4) - 2
-            case GreenleafStage2Block =>
-              tempUiItem = GreenleafSeedsUiItem
-              n = random.nextInt(2)
-            case GreenleafStage3Block =>
-              tempUiItem = GreenleafSeedsUiItem
-              n = random.nextInt(3) + 1
-            case FrostleafStage1Block =>
-              tempUiItem = FrostleafSeedsUiItem
-              n = random.nextInt(4) - 2
-            case FrostleafStage2Block =>
-              tempUiItem = FrostleafSeedsUiItem
-              n = random.nextInt(2)
-            case FrostleafStage3Block =>
-              tempUiItem = FrostleafSeedsUiItem
-              n = random.nextInt(3) + 1
-            case CaverootStage1Block =>
-              tempUiItem = CaverootSeedsUiItem
-              n = random.nextInt(4) - 2
-            case CaverootStage2Block =>
-              tempUiItem = CaverootSeedsUiItem
-              n = random.nextInt(2)
-            case CaverootStage3Block =>
-              tempUiItem = CaverootSeedsUiItem
-              n = random.nextInt(3) + 1
-            case SkyblossomStage1Block =>
-              tempUiItem = SkyblossomSeedsUiItem
-              n = random.nextInt(4) - 2
-            case SkyblossomStage2Block =>
-              tempUiItem = SkyblossomSeedsUiItem
-              n = random.nextInt(2)
-            case SkyblossomStage3Block =>
-              tempUiItem = SkyblossomSeedsUiItem
-              n = random.nextInt(3) + 1
-            case VoidRotStage1Block =>
-              tempUiItem = VoidRotSeedsUiItem
-              n = random.nextInt(4) - 2
-            case VoidRotStage2Block =>
-              tempUiItem = VoidRotSeedsUiItem
-              n = random.nextInt(2)
-            case VoidRotStage3Block =>
-              tempUiItem = VoidRotSeedsUiItem
-              n = random.nextInt(3) + 1
-            case MarshleafStage1Block =>
-              tempUiItem = MarshleafSeedsUiItem
-              n = random.nextInt(4) - 2
-            case MarshleafStage2Block =>
-              tempUiItem = MarshleafSeedsUiItem
-              n = random.nextInt(2)
-            case MarshleafStage3Block =>
-              tempUiItem = MarshleafSeedsUiItem
-              n = random.nextInt(3) + 1
-            case _ =>
+          val (tempUiItem2, n2): (UiItem, Int) = blocks(layer.num)(uy)(ux) match {
+            case SunflowerStage1Block  => (SunflowerSeedsUiItem, random.nextInt(4) - 2)
+            case SunflowerStage2Block  => (SunflowerSeedsUiItem, random.nextInt(2))
+            case SunflowerStage3Block  => (SunflowerSeedsUiItem, random.nextInt(3) + 1)
+            case MoonflowerStage1Block => (MoonflowerSeedsUiItem, random.nextInt(4) - 2)
+            case MoonflowerStage2Block => (MoonflowerSeedsUiItem, random.nextInt(2))
+            case MoonflowerStage3Block => (MoonflowerSeedsUiItem, random.nextInt(3) + 1)
+            case DryweedStage1Block    => (DryweedSeedsUiItem, random.nextInt(4) - 2)
+            case DryweedStage2Block    => (DryweedSeedsUiItem, random.nextInt(2))
+            case DryweedStage3Block    => (DryweedSeedsUiItem, random.nextInt(3) + 1)
+            case GreenleafStage1Block  => (GreenleafSeedsUiItem, random.nextInt(4) - 2)
+            case GreenleafStage2Block  => (GreenleafSeedsUiItem, random.nextInt(2))
+            case GreenleafStage3Block  => (GreenleafSeedsUiItem, random.nextInt(3) + 1)
+            case FrostleafStage1Block  => (FrostleafSeedsUiItem, random.nextInt(4) - 2)
+            case FrostleafStage2Block  => (FrostleafSeedsUiItem, random.nextInt(2))
+            case FrostleafStage3Block  => (FrostleafSeedsUiItem, random.nextInt(3) + 1)
+            case CaverootStage1Block   => (CaverootSeedsUiItem, random.nextInt(4) - 2)
+            case CaverootStage2Block   => (CaverootSeedsUiItem, random.nextInt(2))
+            case CaverootStage3Block   => (CaverootSeedsUiItem, random.nextInt(3) + 1)
+            case SkyblossomStage1Block => (SkyblossomSeedsUiItem, random.nextInt(4) - 2)
+            case SkyblossomStage2Block => (SkyblossomSeedsUiItem, random.nextInt(2))
+            case SkyblossomStage3Block => (SkyblossomSeedsUiItem, random.nextInt(3) + 1)
+            case VoidRotStage1Block    => (VoidRotSeedsUiItem, random.nextInt(4) - 2)
+            case VoidRotStage2Block    => (VoidRotSeedsUiItem, random.nextInt(2))
+            case VoidRotStage3Block    => (VoidRotSeedsUiItem, random.nextInt(3) + 1)
+            case MarshleafStage1Block  => (MarshleafSeedsUiItem, random.nextInt(4) - 2)
+            case MarshleafStage2Block  => (MarshleafSeedsUiItem, random.nextInt(2))
+            case MarshleafStage3Block  => (MarshleafSeedsUiItem, random.nextInt(3) + 1)
+            case _                     => (EmptyUiItem, 0)
           }
 
-          UiItem.onImageItem(tempUiItem) { imgItm =>
-            (0 until max(1, n)).foreach { _ =>
+          UiItem.onImageItem(tempUiItem2) { imgItm =>
+            (0 until max(1, n2)).foreach { _ =>
               entities += new IdEntity(
                 (ux * BLOCKSIZE).toDouble,
                 (uy * BLOCKSIZE).toDouble,
@@ -4405,7 +4295,7 @@ class TerraFrame
   }
 
   def addBlockLighting(ux: Int, uy: Int): Unit = {
-    n = findNonLayeredBlockLightSource(ux, uy)
+    val n: Int = findNonLayeredBlockLightSource(ux, uy)
     if (n =/= 0) {
       addTileToZQueue(ux, uy)
       lights(uy)(ux) = max(lights(uy)(ux), n.toFloat)
@@ -4494,7 +4384,7 @@ class TerraFrame
   }
 
   def removeBlockLighting(ux: Int, uy: Int, layer: Layer): Unit = {
-    n = findNonLayeredBlockLightSource(ux, uy)
+    val n: Int = findNonLayeredBlockLightSource(ux, uy)
     if (n =/= 0) {
       lsources(uy)(ux) = isNonLayeredBlockLightSource(ux, uy, layer)
       (-n until n + 1).foreach { axl =>
@@ -4972,7 +4862,7 @@ class TerraFrame
   }
 
   def removeSunLighting(ux: Int, uy: Int): Unit = { // And including
-    n = sunlightlevel
+    val n: Int = sunlightlevel
     (0 until uy).foreach { y =>
       if (ltrans(blocks(PrimaryLayer.num)(y)(ux).id)) {
         return
@@ -5035,25 +4925,26 @@ class TerraFrame
   }
 
   def findBlockLightSource(ux: Int, uy: Int): Int = {
-    n = 0
     if (blocks(BackgroundLayer.num)(uy)(ux) =/= AirBlock)
-      n = max(lightIntensity(blocks(BackgroundLayer.num)(uy)(ux)), n)
+      max(lightIntensity(blocks(BackgroundLayer.num)(uy)(ux)), 0)
     if (blocks(PrimaryLayer.num)(uy)(ux) =/= AirBlock)
-      n = max(lightIntensity(blocks(PrimaryLayer.num)(uy)(ux)), n)
+      max(lightIntensity(blocks(PrimaryLayer.num)(uy)(ux)), 0)
     if (blocks(ForegroundLayer.num)(uy)(ux) =/= AirBlock)
-      n = max(lightIntensity(blocks(ForegroundLayer.num)(uy)(ux)), n)
-    n
+      max(lightIntensity(blocks(ForegroundLayer.num)(uy)(ux)), 0)
+    else
+      0
+
   }
 
   def findNonLayeredBlockLightSource(ux: Int, uy: Int): Int = {
-    n = 0
     if (blocks(BackgroundLayer.num)(uy)(ux) =/= AirBlock)
-      n = max(lightIntensity(blocks(BackgroundLayer.num)(uy)(ux)), n)
+      max(lightIntensity(blocks(BackgroundLayer.num)(uy)(ux)), 0)
     if (blocks(PrimaryLayer.num)(uy)(ux) =/= AirBlock)
-      n = max(lightIntensity(blocks(PrimaryLayer.num)(uy)(ux)), n)
+      max(lightIntensity(blocks(PrimaryLayer.num)(uy)(ux)), 0)
     if (blocks(ForegroundLayer.num)(uy)(ux) =/= AirBlock)
-      n = max(lightIntensity(blocks(ForegroundLayer.num)(uy)(ux)), n)
-    n
+      max(lightIntensity(blocks(ForegroundLayer.num)(uy)(ux)), 0)
+    else
+      0
   }
 
   def addTileToQueue(ux: Int, uy: Int): Unit = {
@@ -5116,7 +5007,7 @@ class TerraFrame
         x = lqx(0)
         y = lqy(0)
         if (lsources(y)(x)) {
-          n = findBlockLightSource(x, y)
+          val n: Int = findBlockLightSource(x, y)
           if (isReachedBySunlight(x, y)) {
             lights(y)(x) = mh.max(lights(y)(x), n.toFloat, sunlightlevel.toFloat)
           } else {
@@ -5641,7 +5532,7 @@ class TerraFrame
           if (pixm(dy)(dx) === 255) {
             (0 until 8).foreach { dy2 =>
               (0 until 8).foreach { dx2 =>
-                n = (255 - 32 * sqrt(pow((dx - dx2).toDouble, 2) + pow((dy - dy2).toDouble, 2))).toInt
+                val n: Int = (255 - 32 * sqrt(pow((dx - dx2).toDouble, 2) + pow((dy - dy2).toDouble, 2))).toInt
                 if (pixm(dy2)(dx2) < n) {
                   pixm(dy2)(dx2) = n
                 }
