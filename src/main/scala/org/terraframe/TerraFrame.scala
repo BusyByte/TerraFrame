@@ -1695,11 +1695,10 @@ class TerraFrame
   val temporarySaveFile: Array2D[Option[Chunk]] = Array.fill(2, 2)(None)
   val chunkMatrix: Array2D[Option[Chunk]]       = Array.fill(2, 2)(None)
 
-  var rgnc1: Int       = 0
-  var rgnc2: Int       = 0
-  var layer: Layer     = PrimaryLayer
-  var iclayer: Layer   = PrimaryLayer
-  var blockTemp: Block = AirBlock
+  var rgnc1: Int     = 0
+  var rgnc2: Int     = 0
+  var layer: Layer   = PrimaryLayer
+  var iclayer: Layer = PrimaryLayer
 
   var state: GameState                 = LoadingGraphics
   var mobSpawn: Option[EntityStrategy] = None
@@ -2255,27 +2254,27 @@ class TerraFrame
       updatet.update(i, updatet(i) - 1)
       if (updatet(i) <= 0) {
         if (blocks(updatel(i).num)(updatey(i))(updatex(i)) === ButtonLeftOnBlock) {
-          blockTemp = blocks(updatel(i).num)(updatey(i))(updatex(i))
+          //blockTemp = blocks(updatel(i).num)(updatey(i))(updatex(i)) TODO: Doesn't seem to be used
           removeBlockPower(updatex(i), updatey(i), updatel(i))
           blocks(updatel(i).num)(updatey(i))(updatex(i)) = ButtonLeftBlock
           rdrawn(updatey(i))(updatex(i)) = false
         } else if (blocks(updatel(i).num)(updatey(i))(updatex(i)) === ButtonRightOnBlock) {
-          blockTemp = blocks(updatel(i).num)(updatey(i))(updatex(i))
+          //blockTemp = blocks(updatel(i).num)(updatey(i))(updatex(i)) TODO: Doesn't seem to be used
           removeBlockPower(updatex(i), updatey(i), updatel(i))
           blocks(updatel(i).num)(updatey(i))(updatex(i)) = ButtonRightBlock
           rdrawn(updatey(i))(updatex(i)) = false
         } else if (blocks(updatel(i).num)(updatey(i))(updatex(i)) === WoodenPressurePlateOnBlock) {
-          blockTemp = blocks(updatel(i).num)(updatey(i))(updatex(i))
+          //blockTemp = blocks(updatel(i).num)(updatey(i))(updatex(i)) TODO: Doesn't seem to be used
           removeBlockPower(updatex(i), updatey(i), updatel(i))
           blocks(updatel(i).num)(updatey(i))(updatex(i)) = WoodenPressurePlateBlock
           rdrawn(updatey(i))(updatex(i)) = false
         } else if (blocks(updatel(i).num)(updatey(i))(updatex(i)) === StonePressurePlateOnBlock) {
-          blockTemp = blocks(updatel(i).num)(updatey(i))(updatex(i))
+          //blockTemp = blocks(updatel(i).num)(updatey(i))(updatex(i)) TODO: Doesn't seem to be used
           removeBlockPower(updatex(i), updatey(i), updatel(i))
           blocks(updatel(i).num)(updatey(i))(updatex(i)) = StonePressurePlateBlock
           rdrawn(updatey(i))(updatex(i)) = false
         } else if (blocks(updatel(i).num)(updatey(i))(updatex(i)) === ZythiumPressurePlateOnBlock) {
-          blockTemp = blocks(updatel(i).num)(updatey(i))(updatex(i))
+//          blockTemp = blocks(updatel(i).num)(updatey(i))(updatex(i))  TODO: Doesn't seem to be used
           removeBlockPower(updatex(i), updatey(i), updatel(i))
           blocks(updatel(i).num)(updatey(i))(updatex(i)) = ZythiumPressurePlateBlock
           rdrawn(updatey(i))(updatex(i)) = false
@@ -2288,7 +2287,7 @@ class TerraFrame
                      updatel(i).num)(updatey(i))(updatex(i)).id >= ZythiumDelayer8DelayRightOnBlock.id && blocks(
                      updatel(i).num)(updatey(i))(updatex(i)).id <= ZythiumDelayer8DelayUpOnBlock.id) {
           logger.debug("(DEBUG2R)")
-          blockTemp = blocks(updatel(i).num)(updatey(i))(updatex(i))
+//          blockTemp = blocks(updatel(i).num)(updatey(i))(updatex(i))  TODO: Doesn't seem to be used
           removeBlockPower(updatex(i), updatey(i), updatel(i), false)
           blocks(updatel(i).num)(updatey(i))(updatex(i)) =
             Block.withId(blocks(updatel(i).num)(updatey(i))(updatex(i)).id - 4)
@@ -2896,7 +2895,7 @@ class TerraFrame
                 }
               }
             } else if (inventory.tool() =/= EmptyUiItem) {
-              blockTemp = UiItem.blockForTool(inventory.tool())
+              var toolBlock: Block = UiItem.blockForTool(inventory.tool())
               if (layer.num < blocks.length &&
                   uy < blocks(layer.num).length &&
                   ux < blocks(layer.num)(uy).length &&
@@ -2910,35 +2909,35 @@ class TerraFrame
                   layer.num === 2 && (blocks(layer.num)(uy)(ux - 1) =/= AirBlock || blocks(layer.num)(uy)(ux + 1) =/= AirBlock ||
                   blocks(layer.num)(uy - 1)(ux) =/= AirBlock || blocks(layer.num)(uy + 1)(ux) =/= AirBlock ||
                   blocks(layer.num - 1)(uy)(ux) =/= AirBlock)) &&
-                  !(blockTemp === SunflowerStage1Block && (blocks(layer.num)(uy + 1)(ux) =/= DirtBlock && blocks(
+                  !(toolBlock === SunflowerStage1Block && (blocks(layer.num)(uy + 1)(ux) =/= DirtBlock && blocks(
                     layer.num)(uy + 1)(ux) =/= GrassBlock && blocks(layer.num)(uy + 1)(ux) =/= JungleGrassBlock) || // sunflower
-                    blockTemp === MoonflowerStage1Block && (blocks(layer.num)(uy + 1)(ux) =/= DirtBlock && blocks(
+                    toolBlock === MoonflowerStage1Block && (blocks(layer.num)(uy + 1)(ux) =/= DirtBlock && blocks(
                       layer.num)(uy + 1)(ux) =/= GrassBlock && blocks(layer.num)(uy + 1)(ux) =/= JungleGrassBlock) || // moonflower
-                    blockTemp === DryweedStage1Block && (blocks(layer.num)(uy + 1)(ux) =/= SandBlock) ||              // dryweed
-                    blockTemp === GreenleafStage1Block && (blocks(layer.num)(uy + 1)(ux) =/= JungleGrassBlock) ||     // greenleaf
-                    blockTemp === FrostleafStage1Block && (blocks(layer.num)(uy + 1)(ux) =/= SnowBlock) ||            // frostleaf
-                    blockTemp === CaverootStage1Block && (blocks(layer.num)(uy + 1)(ux) =/= StoneBlock) ||            // caveroot
-                    blockTemp === SkyblossomStage1Block && (blocks(layer.num)(uy + 1)(ux) =/= DirtBlock && blocks(
+                    toolBlock === DryweedStage1Block && (blocks(layer.num)(uy + 1)(ux) =/= SandBlock) ||              // dryweed
+                    toolBlock === GreenleafStage1Block && (blocks(layer.num)(uy + 1)(ux) =/= JungleGrassBlock) ||     // greenleaf
+                    toolBlock === FrostleafStage1Block && (blocks(layer.num)(uy + 1)(ux) =/= SnowBlock) ||            // frostleaf
+                    toolBlock === CaverootStage1Block && (blocks(layer.num)(uy + 1)(ux) =/= StoneBlock) ||            // caveroot
+                    toolBlock === SkyblossomStage1Block && (blocks(layer.num)(uy + 1)(ux) =/= DirtBlock && blocks(
                       layer.num)(uy + 1)(ux) =/= GrassBlock && blocks(layer.num)(uy + 1)(ux) =/= JungleGrassBlock) || // skyblossom
-                    blockTemp === VoidRotStage1Block && (blocks(layer.num)(uy + 1)(ux) =/= StoneBlock))) { // void_rot
+                    toolBlock === VoidRotStage1Block && (blocks(layer.num)(uy + 1)(ux) =/= StoneBlock))) { // void_rot
                 if (TORCHESL
-                      .get(blockTemp)
-                      .isEmpty || uy < HEIGHT - 1 && (solid(blocks(layer.num)(uy + 1)(ux).id) && blockTemp =/= ButtonLeftBlock || solid(
+                      .get(toolBlock)
+                      .isEmpty || uy < HEIGHT - 1 && (solid(blocks(layer.num)(uy + 1)(ux).id) && toolBlock =/= ButtonLeftBlock || solid(
                       blocks(layer.num)(uy)(ux + 1).id) || solid(blocks(layer.num)(uy)(ux - 1).id))) {
-                  if (TORCHESL.get(blockTemp).isDefined) {
-                    if (solid(blocks(layer.num)(uy + 1)(ux).id) && blockTemp =/= ButtonLeftBlock) {
-                      blockTemp = blockTemp
+                  if (TORCHESL.get(toolBlock).isDefined) {
+                    if (solid(blocks(layer.num)(uy + 1)(ux).id) && toolBlock =/= ButtonLeftBlock) {
+                      toolBlock = toolBlock
                     } else if (solid(blocks(layer.num)(uy)(ux - 1).id)) { //TODO: encode solid into Block
-                      TORCHESL.get(blockTemp).foreach { t => //TODO encode torchesl into Block
-                        blockTemp = t
+                      TORCHESL.get(toolBlock).foreach { t => //TODO encode torchesl into Block
+                        toolBlock = t
                       }
                     } else if (solid(blocks(layer.num)(uy)(ux + 1).id)) {
-                      TORCHESR.get(blockTemp).foreach { t =>
-                        blockTemp = t
+                      TORCHESR.get(toolBlock).foreach { t =>
+                        toolBlock = t
                       }
                     }
                   }
-                  if (layer === PrimaryLayer && !DEBUG_GPLACE && blockcds(blockTemp.id)) { //TODO: encode blockcs into Block
+                  if (layer === PrimaryLayer && !DEBUG_GPLACE && blockcds(toolBlock.id)) { //TODO: encode blockcs into Block
                     entities
                       .collect {
                         case e: AIEntity => e
@@ -2946,16 +2945,16 @@ class TerraFrame
                       .foreach { entity: AIEntity =>
                         if (entity.rect.intersects(
                               new Rectangle(ux * BLOCKSIZE, uy * BLOCKSIZE, BLOCKSIZE, BLOCKSIZE))) {
-                          blockTemp = AirBlock
+                          toolBlock = AirBlock
                         }
                       }
                     if (player.playerRect.intersects(
                           new Rectangle(ux * BLOCKSIZE, uy * BLOCKSIZE, BLOCKSIZE, BLOCKSIZE))) {
-                      blockTemp = AirBlock
+                      toolBlock = AirBlock
                     }
                   }
-                  if (blockTemp =/= AirBlock) {
-                    blocks(layer.num)(uy)(ux) = blockTemp
+                  if (toolBlock =/= AirBlock) {
+                    blocks(layer.num)(uy)(ux) = toolBlock
                     if (receives(blocks(layer.num)(uy)(ux).id)) { // TODO: encode receives into Block
                       addAdjacentTilesToPQueue(ux, uy)
                     }
@@ -2968,7 +2967,7 @@ class TerraFrame
                     }
                     addBlockLighting(ux, uy)
                   }
-                  if (blockTemp =/= AirBlock) {
+                  if (toolBlock =/= AirBlock) {
                     inventory.removeLocation(inventory.selection, 1.toShort)
                     blockds(layer.num) = World.generate2b(blocks(layer.num), blockds(layer.num), ux, uy)
                     (uy - 1 until uy + 2).foreach { uly =>
@@ -3439,7 +3438,7 @@ class TerraFrame
             }
             if (mouseClicked2) {
               mouseNoLongerClicked2 = true
-              blockTemp = blocks(layer.num)(uy)(ux)
+              // blockTemp = blocks(layer.num)(uy)(ux) // TODO: appears to not be used
               if (blocks(layer.num)(uy)(ux) === LeverBlock || blocks(layer.num)(uy)(ux) === LeverLeftWallBlock || blocks(
                     layer.num)(uy)(ux) === LeverLightWallBlock) {
                 blocks(layer.num)(uy)(ux) = Block.withId(blocks(layer.num)(uy)(ux).id + 1)
@@ -4012,15 +4011,15 @@ class TerraFrame
         }
       }
       removeBlockLighting(ux, uy)
-      blockTemp = blocks(layer.num)(uy)(ux)
+      val userBlock = blocks(layer.num)(uy)(ux)
       blocks(layer.num)(uy)(ux) = AirBlock
-      if (blockTemp.id >= ZythiumWireBlock.id && blockTemp.id <= ZythiumWire5PowerBlock.id) {
+      if (userBlock.id >= ZythiumWireBlock.id && userBlock.id <= ZythiumWire5PowerBlock.id) {
         redoBlockPower(ux, uy, layer)
       }
-      if (powers(blockTemp)) {
+      if (powers(userBlock)) {
         removeBlockPower(ux, uy, layer)
       }
-      if (ltrans(blockTemp.id)) {
+      if (ltrans(userBlock.id)) {
         addSunLighting(ux, uy)
         redoBlockLighting(ux, uy)
       }
@@ -4092,12 +4091,12 @@ class TerraFrame
               if (layer === PrimaryLayer) {
                 addSunLighting(ux - 1, uy)
               }
-              blockTemp = blocks(layer.num)(uy)(ux - 1)
+              val leftAdjacentBlock = blocks(layer.num)(uy)(ux - 1)
               blocks(layer.num)(uy)(ux - 1) = AirBlock
-              if (blockTemp.id >= ZythiumWireBlock.id && blockTemp.id <= ZythiumWire5PowerBlock.id) {
+              if (leftAdjacentBlock.id >= ZythiumWireBlock.id && leftAdjacentBlock.id <= ZythiumWire5PowerBlock.id) {
                 redoBlockPower(ux, uy, layer)
               }
-              if (powers(blockTemp)) {
+              if (powers(leftAdjacentBlock)) {
                 removeBlockPower(ux, uy, layer)
               }
               drawn(uy)(ux - 1) = false
@@ -4125,12 +4124,12 @@ class TerraFrame
               if (layer === PrimaryLayer) {
                 addSunLighting(ux + 1, uy)
               }
-              blockTemp = blocks(layer.num)(uy)(ux + 1)
+              val rightAdjacentBlock = blocks(layer.num)(uy)(ux + 1)
               blocks(layer.num)(uy)(ux + 1) = AirBlock
-              if (blockTemp.id >= ZythiumWireBlock.id && blockTemp.id <= ZythiumWire5PowerBlock.id) {
+              if (rightAdjacentBlock.id >= ZythiumWireBlock.id && rightAdjacentBlock.id <= ZythiumWire5PowerBlock.id) {
                 redoBlockPower(ux, uy, layer)
               }
-              if (powers(blockTemp)) {
+              if (powers(rightAdjacentBlock)) {
                 removeBlockPower(ux, uy, layer)
               }
               drawn(uy)(ux + 1) = false
@@ -4199,15 +4198,15 @@ class TerraFrame
             }
           }
           removeBlockLighting(ux, uy)
-          blockTemp = blocks(layer.num)(uy)(ux)
+          val userBlock: Block = blocks(layer.num)(uy)(ux)
           blocks(layer.num)(uy)(ux) = AirBlock
-          if (blockTemp.id >= ZythiumWireBlock.id && blockTemp.id <= ZythiumWire5PowerBlock.id) {
+          if (userBlock.id >= ZythiumWireBlock.id && userBlock.id <= ZythiumWire5PowerBlock.id) {
             redoBlockPower(ux, uy, layer)
           }
-          if (powers(blockTemp)) {
+          if (powers(userBlock)) {
             removeBlockPower(ux, uy, layer)
           }
-          if (ltrans(blockTemp.id)) {
+          if (ltrans(userBlock.id)) {
             addSunLighting(ux, uy)
             redoBlockLighting(ux, uy)
           }
@@ -4644,7 +4643,7 @@ class TerraFrame
 
   def removeBlockPower(ux: Int, uy: Int, lyr: Layer, turnOffDelayer: Boolean): Unit = {
     arbprd(lyr.num)(uy)(ux) = true
-    logger.debug(s"[rbp ] $ux $uy ${lyr.num} ${turnOffDelayer}")
+    logger.debug(s"[rbp ] $ux $uy ${lyr.num} $turnOffDelayer")
     if (!((blocks(lyr.num)(uy)(ux).id >= ZythiumDelayer1DelayRightOnBlock.id && blocks(lyr.num)(uy)(ux).id <= ZythiumDelayer1DelayUpOnBlock.id || blocks(
           lyr.num)(uy)(ux).id >= ZythiumDelayer2DelayRightOnBlock.id && blocks(lyr.num)(uy)(ux).id <= ZythiumDelayer2DelayUpOnBlock.id || blocks(
           lyr.num)(uy)(ux).id >= ZythiumDelayer4DelayRightOnBlock.id && blocks(lyr.num)(uy)(ux).id <= ZythiumDelayer4DelayUpOnBlock.id || blocks(
@@ -4781,7 +4780,7 @@ class TerraFrame
       rdrawn(uy)(ux) = false
     }
     if (blocks(lyr.num)(uy)(ux).id >= ZythiumAmplifierRightOnBlock.id && blocks(lyr.num)(uy)(ux).id <= ZythiumAmplifierUpOnBlock.id) {
-      blockTemp = blocks(lyr.num)(uy)(ux)
+      // blockTemp = blocks(lyr.num)(uy)(ux) TODO: appears to not be used
       blocks(lyr.num)(uy)(ux) = Block.withId(blocks(lyr.num)(uy)(ux).id - 4)
       removeBlockPower(ux, uy, lyr)
       removeBlockLighting(ux, uy)
@@ -5299,7 +5298,6 @@ class TerraFrame
     rgnc1 = wc.rgnc1
     rgnc2 = wc.rgnc2
     layer = wc.layer
-    blockTemp = wc.blockTemp
     mx = wc.mx
     my = wc.my
     icx = wc.icx
@@ -5379,7 +5377,6 @@ class TerraFrame
       rgnc1,
       rgnc2,
       layer,
-      blockTemp,
       mx,
       my,
       icx,
