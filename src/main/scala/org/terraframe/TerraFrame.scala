@@ -2164,46 +2164,38 @@ class TerraFrame
       (0 until theSize).foreach { y =>
         (0 until theSize).foreach { x =>
           if (random.nextInt(22500) === 0) {
-            var t: Block = AirBlock
-            blocks(l)(y)(x) match {
-              case SunflowerStage1Block if timeOfDay >= 75913 || timeOfDay < 28883 => t = SunflowerStage2Block
-              case SunflowerStage2Block if timeOfDay >= 75913 || timeOfDay < 28883 => t = SunflowerStage3Block
-              case MoonflowerStage1Block if timeOfDay >= 32302 && timeOfDay < 72093 =>
-                t = MoonflowerStage2Block
-              case MoonflowerStage2Block if timeOfDay >= 32302 && timeOfDay < 72093 =>
-                t = MoonflowerStage3Block
-              case DryweedStage1Block if checkBiome(x, y, u, v, blocks, blockbgs) === DesertBiome =>
-                t = DryweedStage2Block
-              case DryweedStage2Block if checkBiome(x, y, u, v, blocks, blockbgs) === DesertBiome =>
-                t = DryweedStage3Block
-              case GreenleafStage1Block if checkBiome(x, y, u, v, blocks, blockbgs) === JungleBiome =>
-                t = GreenleafStage2Block
-              case GreenleafStage2Block if checkBiome(x, y, u, v, blocks, blockbgs) === JungleBiome =>
-                t = GreenleafStage3Block
-              case FrostleafStage1Block if checkBiome(x, y, u, v, blocks, blockbgs) === FrostBiome =>
-                t = FrostleafStage2Block
-              case FrostleafStage2Block if checkBiome(x, y, u, v, blocks, blockbgs) === FrostBiome =>
-                t = FrostleafStage3Block
-              case CaverootStage1Block
-                  if checkBiome(x, y, u, v, blocks, blockbgs) === CavernBiome || y >= 0 /*stonelayer(x)*/ =>
-                t = CaverootStage2Block
-              case CaverootStage2Block
-                  if checkBiome(x, y, u, v, blocks, blockbgs) === CavernBiome || y >= 0 /*stonelayer(x)*/ =>
-                t = CaverootStage3Block
-              case SkyblossomStage1Block if y <= HEIGHT * 0.08 && random.nextInt(3) === 0 || y <= HEIGHT * 0.04 =>
-                t = SkyblossomStage2Block
-              case SkyblossomStage2Block if y <= HEIGHT * 0.08 && random.nextInt(3) === 0 || y <= HEIGHT * 0.04 =>
-                t = SkyblossomStage3Block
-              case VoidRotStage1Block if y >= HEIGHT * 0.98 => t = VoidRotStage2Block
-              case VoidRotStage2Block if y >= HEIGHT * 0.98 => t = VoidRotStage3Block
-              case MarshleafStage1Block if checkBiome(x, y, u, v, blocks, blockbgs) === SwampBiome =>
-                t = MarshleafStage2Block
-              case MarshleafStage2Block if checkBiome(x, y, u, v, blocks, blockbgs) === SwampBiome =>
-                t = MarshleafStage3Block
-              case _ =>
+
+            def oneInThreeChance =
+              random.nextInt(3) === 0 // TODO: need module to handle randomness like this in more readable way
+            lazy val blockBiome = checkBiome(x, y, u, v, blocks, blockbgs)
+            lazy val daytime    = timeOfDay >= 75913 || timeOfDay < 28883 // TODO: module to handle time of day
+            lazy val nighttime  = timeOfDay >= 32302 && timeOfDay < 72093
+
+            val nextStageGrowingPlantBlock: Block = blocks(l)(y)(x) match {
+              case SunflowerStage1Block if daytime                             => SunflowerStage2Block
+              case SunflowerStage2Block if daytime                             => SunflowerStage3Block
+              case MoonflowerStage1Block if nighttime                          => MoonflowerStage2Block
+              case MoonflowerStage2Block if nighttime                          => MoonflowerStage3Block
+              case DryweedStage1Block if blockBiome === DesertBiome            => DryweedStage2Block
+              case DryweedStage2Block if blockBiome === DesertBiome            => DryweedStage3Block
+              case GreenleafStage1Block if blockBiome === JungleBiome          => GreenleafStage2Block
+              case GreenleafStage2Block if blockBiome === JungleBiome          => GreenleafStage3Block
+              case FrostleafStage1Block if blockBiome === FrostBiome           => FrostleafStage2Block
+              case FrostleafStage2Block if blockBiome === FrostBiome           => FrostleafStage3Block
+              case CaverootStage1Block if blockBiome === CavernBiome || y >= 0 => CaverootStage2Block
+              case CaverootStage2Block if blockBiome === CavernBiome || y >= 0 => CaverootStage3Block
+              case SkyblossomStage1Block if y <= HEIGHT * 0.08 && oneInThreeChance || y <= HEIGHT * 0.04 =>
+                SkyblossomStage2Block
+              case SkyblossomStage2Block if y <= HEIGHT * 0.08 && oneInThreeChance || y <= HEIGHT * 0.04 =>
+                SkyblossomStage3Block
+              case VoidRotStage1Block if y >= HEIGHT * 0.98          => VoidRotStage2Block
+              case VoidRotStage2Block if y >= HEIGHT * 0.98          => VoidRotStage3Block
+              case MarshleafStage1Block if blockBiome === SwampBiome => MarshleafStage2Block
+              case MarshleafStage2Block if blockBiome === SwampBiome => MarshleafStage3Block
+              case _                                                 => AirBlock
             }
-            if (t =/= AirBlock) {
-              blocks(l)(y)(x) = t
+            if (nextStageGrowingPlantBlock =/= AirBlock) {
+              blocks(l)(y)(x) = nextStageGrowingPlantBlock
               drawn(y)(x) = false
             }
           }
