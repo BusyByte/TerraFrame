@@ -1762,7 +1762,6 @@ class TerraFrame
   val newWorldFocus: Boolean         = false
   var menuPressed: Boolean           = false
   var doGenerateWorld: Boolean       = true
-  var doGrassGrow: Boolean           = false
   val reallyAddPower: Boolean        = false
   val reallyRemovePower: Boolean     = false
 
@@ -2217,22 +2216,24 @@ class TerraFrame
         (0 until theSize).foreach { x =>
           if (random.nextInt(1000) === 0) {
             if (y >= 1 && y < HEIGHT - 1) {
-              doGrassGrow = false
-              if (blocks(l)(y)(x) === DirtBlock && hasOpenSpace(x + u, y + v, l) && blocks(l)(
-                    y + random.nextInt(3) - 1 + u)(x + random.nextInt(3) - 1 + v) === GrassBlock) {
-                blocks(l)(y)(x) = GrassBlock
-                doGrassGrow = true
-              } // TODO: pattern matching
-              if (blocks(l)(y)(x) === DirtBlock && hasOpenSpace(x + u, y + v, l) && blocks(l)(
-                    y + random.nextInt(3) - 1 + u)(x + random.nextInt(3) - 1 + v) === JungleGrassBlock) {
-                blocks(l)(y)(x) = JungleGrassBlock
-                doGrassGrow = true
+
+              val currentBlock = blocks(l)(y)(x)
+
+              lazy val isOpen  = hasOpenSpace(x + u, y + v, l)
+              lazy val randomY = y + random.nextInt(3) - 1 + u
+
+              lazy val randomX     = x + random.nextInt(3) - 1 + v
+              lazy val randomBlock = blocks(l)(randomY)(randomX)
+
+              val (updatedBlock, doGrassGrow): (Block, Boolean) = currentBlock match {
+                case DirtBlock if isOpen && randomBlock === GrassBlock       => (GrassBlock, true)
+                case DirtBlock if isOpen && randomBlock === JungleGrassBlock => (JungleGrassBlock, true)
+                case MudBlock if isOpen && randomBlock === SwampGrassBlock   => (SwampGrassBlock, true)
+                case _                                                       => (currentBlock, false)
               }
-              if (blocks(l)(y)(x) === MudBlock && hasOpenSpace(x + u, y + v, l) && blocks(l)(
-                    y + random.nextInt(3) - 1 + u)(x + random.nextInt(3) - 1 + v) === SwampGrassBlock) {
-                blocks(l)(y)(x) = SwampGrassBlock
-                doGrassGrow = true
-              }
+
+              blocks(l)(y)(x) = updatedBlock
+
               if (doGrassGrow) {
                 (y - 1 until y + 2).foreach { y2 =>
                   (x - 1 until x + 2).foreach { x2 =>
