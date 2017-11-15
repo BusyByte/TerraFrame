@@ -1706,7 +1706,7 @@ class TerraFrame
 
   private[this] var width, height                         = 0
   var u, v: Int                                           = 0
-  var ux, uy, mx, my, vc, xpos, ypos, x2, y2, mining: Int = 0 //TODO get rid of all usages of `n`
+  var ux, uy, mx, my, vc, xpos, ypos, x2, y2, mining: Int = 0
   private[this] var x, y                                  = 0
 
   var miningTool: UiItem = EmptyUiItem
