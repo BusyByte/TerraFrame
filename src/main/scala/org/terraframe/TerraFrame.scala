@@ -1754,7 +1754,6 @@ class TerraFrame
   var mouseNoLongerClicked2: Boolean = false
   val removeSources: Boolean         = false
   val beginLight: Boolean            = false
-  var doMobSpawn: Boolean            = false
   val newWorldFocus: Boolean         = false
   var menuPressed: Boolean           = false
   var doGenerateWorld: Boolean       = true
@@ -2428,7 +2427,7 @@ class TerraFrame
                     }
                   }
 
-                  doMobSpawn = true
+                  var doMobSpawn: Boolean = true
                   ((xpos / BLOCKSIZE) until (xpos / BLOCKSIZE + xmax)).foreach { x =>
                     ((ypos / BLOCKSIZE) until (ypos / BLOCKSIZE + ymax)).foreach { y =>
                       if (y > 0 && y < HEIGHT - 1 && blocks(PrimaryLayer.num)(y)(x) =/= AirBlock && blockcds(
@@ -5313,7 +5312,6 @@ class TerraFrame
     ready = wc.ready
     showTool = wc.showTool
     showInv = wc.showInv
-    doMobSpawn = wc.doMobSpawn
     WIDTH = wc.WIDTH
     HEIGHT = wc.HEIGHT
     random = wc.random
@@ -5390,7 +5388,6 @@ class TerraFrame
       ready,
       showTool,
       showInv,
-      doMobSpawn,
       WIDTH,
       HEIGHT,
       random,
