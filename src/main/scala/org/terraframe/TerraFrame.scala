@@ -1710,10 +1710,10 @@ class TerraFrame
 
   var miningTool: UiItem = EmptyUiItem
 
-  var moveItem: UiItem                     = EmptyUiItem
-  var moveItemTemp: UiItem                 = EmptyUiItem
-  var moveNum, moveDur, moveNumTemp: Short = 0
-  var msi, ou, ov, icx, icy, immune: Int   = 0
+  var moveItem: UiItem                   = EmptyUiItem
+  var moveItemTemp: UiItem               = EmptyUiItem
+  var moveNum, moveDur: Short            = 0
+  var msi, ou, ov, icx, icy, immune: Int = 0
 
   var toolAngle: Double = 4.7
   var toolSpeed: Double = UiItem.defaultSpeed
@@ -2498,7 +2498,7 @@ class TerraFrame
                 mouseNoLongerClicked = true
                 if (uy =/= 0 || inventory.selection =/= ux || !showTool) {
                   moveItemTemp = inventory.ids(uy * 10 + ux)
-                  moveNumTemp = inventory.nums(uy * 10 + ux)
+                  val moveNumTemp = inventory.nums(uy * 10 + ux)
                   val moveDurTemp = inventory.durs(uy * 10 + ux)
                   if (moveItem === inventory.ids(uy * 10 + ux)) {
                     moveNum = inventory.addLocation(uy * 10 + ux, moveItem, moveNum)
@@ -2530,7 +2530,7 @@ class TerraFrame
                 mouseNoLongerClicked = true
                 cic.foreach { c =>
                   moveItemTemp = c.ids(uy * 2 + ux)
-                  moveNumTemp = c.nums(uy * 2 + ux)
+                  val moveNumTemp = c.nums(uy * 2 + ux)
                   val moveDurTemp = c.durs(uy * 2 + ux)
 
                   if (moveItem === c.ids(uy * 2 + ux)) {
@@ -2588,7 +2588,7 @@ class TerraFrame
                   if (mouseClicked) {
                     mouseNoLongerClicked = true
                     moveItemTemp = icTemp.ids(uy * 3 + ux)
-                    moveNumTemp = icTemp.nums(uy * 3 + ux)
+                    val moveNumTemp = icTemp.nums(uy * 3 + ux)
                     if (moveItem === icTemp.ids(uy * 3 + ux)) {
                       moveNum = inventory.addLocationIC(icTemp, uy * 3 + ux, moveItem, moveNum)
                       if (moveNum === 0) {
@@ -2640,7 +2640,7 @@ class TerraFrame
                   if (mouseClicked) {
                     mouseNoLongerClicked = true
                     moveItemTemp = icTemp.ids(uy * icTemp.icType.CX + ux)
-                    moveNumTemp = icTemp.nums(uy * icTemp.icType.CX + ux)
+                    val moveNumTemp = icTemp.nums(uy * icTemp.icType.CX + ux)
                     if (moveItem === icTemp.ids(uy * icTemp.icType.CX + ux)) {
                       moveNum = inventory.addLocationIC(icTemp, uy * icTemp.icType.CX + ux, moveItem, moveNum)
                       if (moveNum === 0) {
@@ -2671,7 +2671,7 @@ class TerraFrame
               if (mouseClicked) {
                 mouseNoLongerClicked = true
                 moveItemTemp = icTemp.ids(0)
-                moveNumTemp = icTemp.nums(0)
+                val moveNumTemp = icTemp.nums(0)
                 if (moveItem === icTemp.ids(0)) {
                   moveNum = inventory.addLocationIC(icTemp, 0, moveItem, moveNum)
                   if (moveNum === 0) {
@@ -2695,7 +2695,7 @@ class TerraFrame
               if (mouseClicked) {
                 mouseNoLongerClicked = true
                 moveItemTemp = icTemp.ids(2)
-                moveNumTemp = icTemp.nums(2)
+                val moveNumTemp = icTemp.nums(2)
                 if (moveItem === icTemp.ids(2)) {
                   moveNum = inventory.addLocationIC(icTemp, 2, moveItem, moveNum)
                   if (moveNum === 0) {
@@ -2763,7 +2763,7 @@ class TerraFrame
                   moveNum = 0
                 } else {
                   moveItemTemp = armor.ids(i)
-                  moveNumTemp = armor.nums(i)
+                  val moveNumTemp = armor.nums(i)
                   inventory.removeLocationIC(armor, i, moveNumTemp)
                   inventory.addLocationIC(armor, i, moveItem, moveNum)
                   moveItem = moveItemTemp
@@ -3000,7 +3000,7 @@ class TerraFrame
               if (mouseClicked2) {
                 mouseNoLongerClicked2 = true
                 moveItemTemp = inventory.ids(uy * 10 + ux)
-                moveNumTemp = (inventory.nums(uy * 10 + ux) / 2).toShort
+                val moveNumTemp = (inventory.nums(uy * 10 + ux) / 2).toShort
                 val moveDurTemp = inventory.durs(uy * 10 + ux)
                 if (inventory.ids(uy * 10 + ux) === EmptyUiItem) {
                   inventory.addLocation(uy * 10 + ux, moveItem, 1.toShort)
@@ -3039,7 +3039,7 @@ class TerraFrame
                 mouseNoLongerClicked2 = true
                 cic.foreach { c =>
                   moveItemTemp = c.ids(uy * 2 + ux)
-                  moveNumTemp = (c.nums(uy * 2 + ux) / 2).toShort
+                  val moveNumTemp = (c.nums(uy * 2 + ux) / 2).toShort
                   if (c.ids(uy * 2 + ux) === EmptyUiItem) {
                     inventory.addLocationIC(c, uy * 2 + ux, moveItem, 1.toShort)
                     moveNum = (moveNum - 1).toShort
@@ -3076,7 +3076,7 @@ class TerraFrame
                   if (mouseClicked2) {
                     mouseNoLongerClicked2 = true
                     moveItemTemp = icTemp.ids(uy * 3 + ux)
-                    moveNumTemp = (icTemp.nums(uy * 3 + ux) / 2).toShort
+                    val moveNumTemp = (icTemp.nums(uy * 3 + ux) / 2).toShort
                     if (icTemp.ids(uy * 3 + ux) === EmptyUiItem) {
                       inventory.addLocationIC(icTemp, uy * 3 + ux, moveItem, 1.toShort)
                       moveNum = (moveNum - 1).toShort
@@ -3128,7 +3128,7 @@ class TerraFrame
                   if (mouseClicked2) {
                     mouseNoLongerClicked2 = true
                     moveItemTemp = icTemp.ids(uy * icTemp.icType.CX + ux)
-                    moveNumTemp = (icTemp.nums(uy * icTemp.icType.CX + ux) / 2).toShort
+                    val moveNumTemp = (icTemp.nums(uy * icTemp.icType.CX + ux) / 2).toShort
                     if (icTemp.ids(uy * icTemp.icType.CX + ux) === EmptyUiItem) {
                       inventory.addLocationIC(icTemp, uy * icTemp.icType.CX + ux, moveItem, 1.toShort)
                       moveNum = (moveNum - 1).toShort
@@ -3165,7 +3165,7 @@ class TerraFrame
               if (mouseClicked2) {
                 mouseNoLongerClicked2 = true
                 moveItemTemp = icTemp.ids(0)
-                moveNumTemp = (icTemp.nums(0) / 2).toShort
+                val moveNumTemp = (icTemp.nums(0) / 2).toShort
                 if (icTemp.ids(0) === EmptyUiItem) {
                   inventory.addLocationIC(icTemp, 0, moveItem, 1.toShort)
                   moveNum = (moveNum - 1).toShort
@@ -3195,7 +3195,7 @@ class TerraFrame
               if (mouseClicked2) {
                 mouseNoLongerClicked2 = true
                 moveItemTemp = icTemp.ids(2)
-                moveNumTemp = (icTemp.nums(2) / 2).toShort
+                val moveNumTemp = (icTemp.nums(2) / 2).toShort
                 if (icTemp.ids(2) === EmptyUiItem) {
                   inventory.addLocationIC(icTemp, 2, moveItem, 1.toShort)
                   moveNum = (moveNum - 1).toShort
@@ -3225,7 +3225,7 @@ class TerraFrame
               if (mouseClicked2) {
                 mouseNoLongerClicked2 = true
                 moveItemTemp = icTemp.ids(3)
-                moveNumTemp = (icTemp.nums(3) / 2).toShort
+                val moveNumTemp = (icTemp.nums(3) / 2).toShort
                 if (moveItem === EmptyUiItem && icTemp.nums(3) =/= 1) {
                   inventory.removeLocationIC(icTemp, 3, (icTemp.nums(3) / 2).toShort)
                   moveItem = moveItemTemp
@@ -5306,7 +5306,6 @@ class TerraFrame
     moveItem = wc.moveItem
     moveNum = wc.moveNum
     moveItemTemp = wc.moveItemTemp
-    moveNumTemp = wc.moveNumTemp
     msi = wc.msi
     toolAngle = wc.toolAngle
     toolSpeed = wc.toolSpeed
@@ -5385,7 +5384,6 @@ class TerraFrame
       moveItem,
       moveNum,
       moveItemTemp,
-      moveNumTemp,
       msi,
       toolAngle,
       toolSpeed,
