@@ -1753,7 +1753,6 @@ class TerraFrame
   var mouseClicked2: Boolean         = true
   var mouseNoLongerClicked: Boolean  = false
   var mouseNoLongerClicked2: Boolean = false
-  var addSources: Boolean            = false
   val removeSources: Boolean         = false
   val beginLight: Boolean            = false
   var doMobSpawn: Boolean            = false
@@ -4836,7 +4835,7 @@ class TerraFrame
         return
       }
     }
-    addSources = false
+    var addSources: Boolean = false
     (uy until HEIGHT - 1).foreach { y =>
       if (ltrans(blocks(PrimaryLayer.num)(y + 1)(ux - 1).id) || ltrans(blocks(PrimaryLayer.num)(y + 1)(ux + 1).id)) {
         addSources = true
