@@ -1755,7 +1755,6 @@ class TerraFrame
   val removeSources: Boolean         = false
   val beginLight: Boolean            = false
   var doMobSpawn: Boolean            = false
-  var keepLeaf: Boolean              = false
   val newWorldFocus: Boolean         = false
   var menuPressed: Boolean           = false
   var doGenerateWorld: Boolean       = true
@@ -4037,7 +4036,7 @@ class TerraFrame
         (ux - 4 until ux + 5).foreach { ulx =>
           (0 until (3, 2)).foreach { l =>
             if (uly >= 0 && uly < HEIGHT && blocks(l)(uly)(ulx) === LeavesBlock) {
-              keepLeaf = false
+              var keepLeaf = false
               import scala.util.control.Breaks._
               breakable {
                 (uly - 4 until uly + 5).foreach { uly2 =>
@@ -4224,7 +4223,7 @@ class TerraFrame
             (ux - 4 until ux + 5).foreach { ulx =>
               (0 until (3, 2)).foreach { l =>
                 if (uly >= 0 && uly < HEIGHT && blocks(l)(uly)(ulx) === LeavesBlock) {
-                  keepLeaf = false
+                  var keepLeaf = false
                   breakable {
                     (uly - 4 until uly + 5).foreach { uly2 =>
                       breakable {
