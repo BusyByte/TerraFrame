@@ -1710,10 +1710,10 @@ class TerraFrame
 
   var miningTool: UiItem = EmptyUiItem
 
-  var moveItem: UiItem                                  = EmptyUiItem
-  var moveItemTemp: UiItem                              = EmptyUiItem
-  var moveNum, moveDur, moveNumTemp, moveDurTemp: Short = 0
-  var msi, ou, ov, icx, icy, immune: Int                = 0
+  var moveItem: UiItem                     = EmptyUiItem
+  var moveItemTemp: UiItem                 = EmptyUiItem
+  var moveNum, moveDur, moveNumTemp: Short = 0
+  var msi, ou, ov, icx, icy, immune: Int   = 0
 
   var toolAngle: Double = 4.7
   var toolSpeed: Double = UiItem.defaultSpeed
@@ -2499,7 +2499,7 @@ class TerraFrame
                 if (uy =/= 0 || inventory.selection =/= ux || !showTool) {
                   moveItemTemp = inventory.ids(uy * 10 + ux)
                   moveNumTemp = inventory.nums(uy * 10 + ux)
-                  moveDurTemp = inventory.durs(uy * 10 + ux)
+                  val moveDurTemp = inventory.durs(uy * 10 + ux)
                   if (moveItem === inventory.ids(uy * 10 + ux)) {
                     moveNum = inventory.addLocation(uy * 10 + ux, moveItem, moveNum)
                     if (moveNum === 0) {
@@ -2531,7 +2531,7 @@ class TerraFrame
                 cic.foreach { c =>
                   moveItemTemp = c.ids(uy * 2 + ux)
                   moveNumTemp = c.nums(uy * 2 + ux)
-                  moveDurTemp = c.durs(uy * 2 + ux)
+                  val moveDurTemp = c.durs(uy * 2 + ux)
 
                   if (moveItem === c.ids(uy * 2 + ux)) {
                     moveNum = inventory.addLocationIC(c, uy * 2 + ux, moveItem, moveNum)
@@ -3001,7 +3001,7 @@ class TerraFrame
                 mouseNoLongerClicked2 = true
                 moveItemTemp = inventory.ids(uy * 10 + ux)
                 moveNumTemp = (inventory.nums(uy * 10 + ux) / 2).toShort
-                moveDurTemp = inventory.durs(uy * 10 + ux)
+                val moveDurTemp = inventory.durs(uy * 10 + ux)
                 if (inventory.ids(uy * 10 + ux) === EmptyUiItem) {
                   inventory.addLocation(uy * 10 + ux, moveItem, 1.toShort)
                   moveNum = (moveNum - 1).toShort
