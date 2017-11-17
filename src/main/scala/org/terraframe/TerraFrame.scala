@@ -2281,13 +2281,13 @@ class TerraFrame
 
           case b
               if //TODO could make a named extractor
-              b.id >= ZythiumDelayer1DelayRightOnBlock.id && b.id <= ZythiumDelayer1DelayUpOnBlock.id
+              b.id >= ZythiumDelayer1RightOnBlock.id && b.id <= ZythiumDelayer1UpOnBlock.id
                 ||
-                  b.id >= ZythiumDelayer2DelayRightOnBlock.id && b.id <= ZythiumDelayer2DelayUpOnBlock.id
+                  b.id >= ZythiumDelayer2RightOnBlock.id && b.id <= ZythiumDelayer2UpOnBlock.id
                 ||
-                  b.id >= ZythiumDelayer4DelayRightOnBlock.id && b.id <= ZythiumDelayer4DelayUpOnBlock.id
+                  b.id >= ZythiumDelayer4RightOnBlock.id && b.id <= ZythiumDelayer4UpOnBlock.id
                 ||
-                  b.id >= ZythiumDelayer8DelayRightOnBlock.id && b.id <= ZythiumDelayer8DelayUpOnBlock.id =>
+                  b.id >= ZythiumDelayer8RightOnBlock.id && b.id <= ZythiumDelayer8UpOnBlock.id =>
             logger.debug("(DEBUG2R)")
             removeBlockPower(updatex(i), updatey(i), updatel(i), false)
             updateBlockTo(Block.withId(blockToUpdate.id - 4))
@@ -2295,13 +2295,13 @@ class TerraFrame
 
           case b
               if //TODO could make a named extractor
-              b.id >= ZythiumDelayer1DelayRightBlock.id && b.id <= ZythiumDelayer1DelayUpBlock.id
+              b.id >= ZythiumDelayer1RightBlock.id && b.id <= ZythiumDelayer1UpBlock.id
                 ||
-                  b.id >= ZythiumDelayer2DelayRightBlock.id && b.id <= ZythiumDelayer2DelayUpBlock.id
+                  b.id >= ZythiumDelayer2RightBlock.id && b.id <= ZythiumDelayer2UpBlock.id
                 ||
-                  b.id >= ZythiumDelayer4DelayRightBlock.id && b.id <= ZythiumDelayer4DelayUpBlock.id
+                  b.id >= ZythiumDelayer4RightBlock.id && b.id <= ZythiumDelayer4UpBlock.id
                 ||
-                  b.id >= ZythiumDelayer8DelayRightBlock.id && b.id <= ZythiumDelayer8DelayUpBlock.id =>
+                  b.id >= ZythiumDelayer8RightBlock.id && b.id <= ZythiumDelayer8UpBlock.id =>
             logger.debug("(DEBUG2A)")
             updateBlockTo(Block.withId(b.id + 4))
             power(updatel(i).num)(updatey(i))(updatex(i)) = 5.toFloat
@@ -2883,14 +2883,14 @@ class TerraFrame
                 })
               }
             } else if (inventory.tool() === WrenchUiItem) {
-              if (blocks(layer.num)(uy)(ux).id >= ZythiumDelayer1DelayRightBlock.id && blocks(layer.num)(uy)(ux).id <= ZythiumDelayer4DelayUpOnBlock.id) { // TODO need a better logic method than comparing ids
+              if (blocks(layer.num)(uy)(ux).id >= ZythiumDelayer1RightBlock.id && blocks(layer.num)(uy)(ux).id <= ZythiumDelayer4UpOnBlock.id) { // TODO need a better logic method than comparing ids
                 inventory.durs(inventory.selection) = (inventory.durs(inventory.selection) - 1).toShort
                 blocks(layer.num)(uy)(ux) = Block.withId(blocks(layer.num)(uy)(ux).id + 8)
                 rdrawn(uy)(ux) = false
                 if (inventory.durs(inventory.selection) <= 0) {
                   inventory.removeLocation(inventory.selection, inventory.nums(inventory.selection))
                 }
-              } else if (blocks(layer.num)(uy)(ux).id >= ZythiumDelayer8DelayRightBlock.id && blocks(layer.num)(uy)(ux).id <= ZythiumDelayer8DelayUpOnBlock.id) {
+              } else if (blocks(layer.num)(uy)(ux).id >= ZythiumDelayer8RightBlock.id && blocks(layer.num)(uy)(ux).id <= ZythiumDelayer8UpOnBlock.id) {
                 inventory.durs(inventory.selection) = (inventory.durs(inventory.selection) - 1).toShort
                 blocks(layer.num)(uy)(ux) = Block.withId(blocks(layer.num)(uy)(ux).id - 24)
                 rdrawn(uy)(ux) = false
@@ -3500,15 +3500,15 @@ class TerraFrame
                 updatet += 50
                 updatel += layer
               }
-              if (blocks(layer.num)(uy)(ux).id >= ZythiumDelayer1DelayRightBlock.id && blocks(layer.num)(uy)(ux).id <= ZythiumDelayer8DelayUpOnBlock.id) {
-                if (blocks(layer.num)(uy)(ux).id >= ZythiumDelayer1DelayRightBlock.id && blocks(layer.num)(uy)(ux).id <= ZythiumDelayer1DelayLeftBlock.id || blocks(
-                      layer.num)(uy)(ux).id >= ZythiumDelayer1DelayRightOnBlock.id && blocks(layer.num)(uy)(ux).id <= ZythiumDelayer1DelayLeftOnBlock.id ||
-                    blocks(layer.num)(uy)(ux).id >= ZythiumDelayer2DelayRightBlock.id && blocks(layer.num)(uy)(ux).id <= ZythiumDelayer2DelayLeftBlock.id || blocks(
-                      layer.num)(uy)(ux).id >= ZythiumDelayer2DelayRightOnBlock.id && blocks(layer.num)(uy)(ux).id <= ZythiumDelayer2DelayLeftOnBlock.id ||
-                    blocks(layer.num)(uy)(ux).id >= ZythiumDelayer4DelayRightBlock.id && blocks(layer.num)(uy)(ux).id <= ZythiumDelayer4DelayLeftBlock.id || blocks(
-                      layer.num)(uy)(ux).id >= ZythiumDelayer4DelayRightOnBlock.id && blocks(layer.num)(uy)(ux).id <= ZythiumDelayer4DelayLeftOnBlock.id ||
-                    blocks(layer.num)(uy)(ux).id >= ZythiumDelayer8DelayRightBlock.id && blocks(layer.num)(uy)(ux).id <= ZythiumDelayer8DelayLeftBlock.id || blocks(
-                      layer.num)(uy)(ux).id >= ZythiumDelayer8DelayRightOnBlock.id && blocks(layer.num)(uy)(ux).id <= ZythiumDelayer8DelayLeftOnBlock.id) {
+              if (blocks(layer.num)(uy)(ux).id >= ZythiumDelayer1RightBlock.id && blocks(layer.num)(uy)(ux).id <= ZythiumDelayer8UpOnBlock.id) {
+                if (blocks(layer.num)(uy)(ux).id >= ZythiumDelayer1RightBlock.id && blocks(layer.num)(uy)(ux).id <= ZythiumDelayer1LeftBlock.id || blocks(
+                      layer.num)(uy)(ux).id >= ZythiumDelayer1RightOnBlock.id && blocks(layer.num)(uy)(ux).id <= ZythiumDelayer1LeftOnBlock.id ||
+                    blocks(layer.num)(uy)(ux).id >= ZythiumDelayer2RightBlock.id && blocks(layer.num)(uy)(ux).id <= ZythiumDelayer2LeftBlock.id || blocks(
+                      layer.num)(uy)(ux).id >= ZythiumDelayer2RightOnBlock.id && blocks(layer.num)(uy)(ux).id <= ZythiumDelayer2LeftOnBlock.id ||
+                    blocks(layer.num)(uy)(ux).id >= ZythiumDelayer4RightBlock.id && blocks(layer.num)(uy)(ux).id <= ZythiumDelayer4LeftBlock.id || blocks(
+                      layer.num)(uy)(ux).id >= ZythiumDelayer4RightOnBlock.id && blocks(layer.num)(uy)(ux).id <= ZythiumDelayer4LeftOnBlock.id ||
+                    blocks(layer.num)(uy)(ux).id >= ZythiumDelayer8RightBlock.id && blocks(layer.num)(uy)(ux).id <= ZythiumDelayer8LeftBlock.id || blocks(
+                      layer.num)(uy)(ux).id >= ZythiumDelayer8RightOnBlock.id && blocks(layer.num)(uy)(ux).id <= ZythiumDelayer8LeftOnBlock.id) {
                   blocks(layer.num)(uy)(ux) = Block.withId(blocks(layer.num)(uy)(ux).id + 1)
                 } else {
                   blocks(layer.num)(uy)(ux) = Block.withId(blocks(layer.num)(uy)(ux).id - 3)
@@ -4302,7 +4302,7 @@ class TerraFrame
 
   def addBlockPower(ux: Int, uy: Int): Unit = {
     if (powers(blocks(PrimaryLayer.num)(uy)(ux))) {
-      if (blocks(PrimaryLayer.num)(uy)(ux).id >= ZythiumDelayer1DelayRightBlock.id && blocks(PrimaryLayer.num)(uy)(ux).id <= ZythiumDelayer8DelayUpOnBlock.id) {
+      if (blocks(PrimaryLayer.num)(uy)(ux).id >= ZythiumDelayer1RightBlock.id && blocks(PrimaryLayer.num)(uy)(ux).id <= ZythiumDelayer8UpOnBlock.id) {
         logger.debug("Whaaat?")
         updatex += ux
         updatey += uy
@@ -4325,8 +4325,7 @@ class TerraFrame
       }
     }
     if (powers(blocks(BackgroundLayer.num)(uy)(ux))) {
-      if (blocks(BackgroundLayer.num)(uy)(ux).id >= ZythiumDelayer1DelayRightBlock.id && blocks(BackgroundLayer.num)(
-            uy)(ux).id <= ZythiumDelayer8DelayUpOnBlock.id) {
+      if (blocks(BackgroundLayer.num)(uy)(ux).id >= ZythiumDelayer1RightBlock.id && blocks(BackgroundLayer.num)(uy)(ux).id <= ZythiumDelayer8UpOnBlock.id) {
         logger.debug("Whaaat?")
         updatex += ux
         updatey += uy
@@ -4349,8 +4348,7 @@ class TerraFrame
       }
     }
     if (powers(blocks(ForegroundLayer.num)(uy)(ux))) {
-      if (blocks(ForegroundLayer.num)(uy)(ux).id >= ZythiumDelayer1DelayRightBlock.id && blocks(ForegroundLayer.num)(
-            uy)(ux).id <= ZythiumDelayer8DelayUpOnBlock.id) {
+      if (blocks(ForegroundLayer.num)(uy)(ux).id >= ZythiumDelayer1RightBlock.id && blocks(ForegroundLayer.num)(uy)(ux).id <= ZythiumDelayer8UpOnBlock.id) {
         logger.debug("Whaaat?")
         updatex += ux
         updatey += uy
@@ -4426,10 +4424,10 @@ class TerraFrame
               blockId >= ZythiumInverterRightBlock.id && blockId <= ZythiumInverterUpOnBlock.id && uy > ay3 && block =/= ZythiumInverterDownBlock && block =/= ZythiumInverterDownOnBlock ||
               blockId >= ZythiumInverterRightBlock.id && blockId <= ZythiumInverterUpOnBlock.id && ux < ax3 && block =/= ZythiumInverterLeftBlock && block =/= ZythiumInverterLeftOnBlock ||
               blockId >= ZythiumInverterRightBlock.id && blockId <= ZythiumInverterUpOnBlock.id && uy < ay3 && block =/= ZythiumInverterUpBlock && block =/= ZythiumInverterUpOnBlock) &&
-            !(blockId >= ZythiumDelayer1DelayRightBlock.id && blockId <= ZythiumDelayer8DelayUpOnBlock.id && ux > ax3 && block =/= ZythiumDelayer1DelayRightBlock && block =/= ZythiumDelayer1DelayRightOnBlock && block =/= ZythiumDelayer2DelayRightBlock && block =/= ZythiumDelayer2DelayRightOnBlock && block =/= ZythiumDelayer4DelayRightBlock && block =/= ZythiumDelayer4DelayRightOnBlock && block =/= ZythiumDelayer8DelayRightBlock && block =/= ZythiumDelayer8DelayRightOnBlock ||
-              blockId >= ZythiumDelayer1DelayRightBlock.id && blockId <= ZythiumDelayer8DelayUpOnBlock.id && uy > ay3 && block =/= ZythiumDelayer1DelayDownBlock && block =/= ZythiumDelayer1DelayDownOnBlock && block =/= ZythiumDelayer2DelayDownBlock && block =/= ZythiumDelayer2DelayDownOnBlock && block =/= ZythiumDelayer4DelayDownBlock && block =/= ZythiumDelayer4DelayDownOnBlock && block =/= ZythiumDelayer8DelayDownBlock && block =/= ZythiumDelayer8DelayDownOnBlock ||
-              blockId >= ZythiumDelayer1DelayRightBlock.id && blockId <= ZythiumDelayer8DelayUpOnBlock.id && ux < ax3 && block =/= ZythiumDelayer1DelayLeftBlock && block =/= ZythiumDelayer1DelayLeftOnBlock && block =/= ZythiumDelayer2DelayLeftBlock && block =/= ZythiumDelayer2DelayLeftOnBlock && block =/= ZythiumDelayer4DelayLeftBlock && block =/= ZythiumDelayer4DelayLeftOnBlock && block =/= ZythiumDelayer8DelayLeftBlock && block =/= ZythiumDelayer8DelayLeftOnBlock ||
-              blockId >= ZythiumDelayer1DelayRightBlock.id && blockId <= ZythiumDelayer8DelayUpOnBlock.id && uy < ay3 && block =/= ZythiumDelayer1DelayUpBlock && block =/= ZythiumDelayer1DelayUpOnBlock && block =/= ZythiumDelayer2DelayUpBlock && block =/= ZythiumDelayer2DelayUpOnBlock && block =/= ZythiumDelayer4DelayUpBlock && block =/= ZythiumDelayer4DelayUpOnBlock && block =/= ZythiumDelayer8DelayUpBlock && block =/= ZythiumDelayer8DelayUpOnBlock))) {
+            !(blockId >= ZythiumDelayer1RightBlock.id && blockId <= ZythiumDelayer8UpOnBlock.id && ux > ax3 && block =/= ZythiumDelayer1RightBlock && block =/= ZythiumDelayer1RightOnBlock && block =/= ZythiumDelayer2RightBlock && block =/= ZythiumDelayer2RightOnBlock && block =/= ZythiumDelayer4RightBlock && block =/= ZythiumDelayer4RightOnBlock && block =/= ZythiumDelayer8RightBlock && block =/= ZythiumDelayer8RightOnBlock ||
+              blockId >= ZythiumDelayer1RightBlock.id && blockId <= ZythiumDelayer8UpOnBlock.id && uy > ay3 && block =/= ZythiumDelayer1DownBlock && block =/= ZythiumDelayer1DownOnBlock && block =/= ZythiumDelayer2DownBlock && block =/= ZythiumDelayer2DownOnBlock && block =/= ZythiumDelayer4DownBlock && block =/= ZythiumDelayer4DownOnBlock && block =/= ZythiumDelayer8DownBlock && block =/= ZythiumDelayer8DownOnBlock ||
+              blockId >= ZythiumDelayer1RightBlock.id && blockId <= ZythiumDelayer8UpOnBlock.id && ux < ax3 && block =/= ZythiumDelayer1LeftBlock && block =/= ZythiumDelayer1LeftOnBlock && block =/= ZythiumDelayer2LeftBlock && block =/= ZythiumDelayer2LeftOnBlock && block =/= ZythiumDelayer4LeftBlock && block =/= ZythiumDelayer4LeftOnBlock && block =/= ZythiumDelayer8LeftBlock && block =/= ZythiumDelayer8LeftOnBlock ||
+              blockId >= ZythiumDelayer1RightBlock.id && blockId <= ZythiumDelayer8UpOnBlock.id && uy < ay3 && block =/= ZythiumDelayer1UpBlock && block =/= ZythiumDelayer1UpOnBlock && block =/= ZythiumDelayer2UpBlock && block =/= ZythiumDelayer2UpOnBlock && block =/= ZythiumDelayer4UpBlock && block =/= ZythiumDelayer4UpOnBlock && block =/= ZythiumDelayer8UpBlock && block =/= ZythiumDelayer8UpOnBlock))) {
           logger.debug(s"Added tile $ax3 $ay3 to PQueue.")
           addTileToPQueue(ax3, ay3)
           remember(ir) = true
@@ -4456,10 +4454,10 @@ class TerraFrame
               userBlockId >= ZythiumInverterRightBlock.id && userBlockId <= ZythiumInverterUpOnBlock.id && uy < ay3 && userBlock =/= ZythiumInverterDownBlock && userBlock =/= ZythiumInverterDownOnBlock ||
               userBlockId >= ZythiumInverterRightBlock.id && userBlockId <= ZythiumInverterUpOnBlock.id && ux > ax3 && userBlock =/= ZythiumInverterLeftBlock && userBlock =/= ZythiumInverterLeftOnBlock ||
               userBlockId >= ZythiumInverterRightBlock.id && userBlockId <= ZythiumInverterUpOnBlock.id && uy > ay3 && userBlock =/= ZythiumInverterUpBlock && userBlock =/= ZythiumInverterUpOnBlock) &&
-            !(userBlockId >= ZythiumDelayer1DelayRightBlock.id && userBlockId <= ZythiumDelayer8DelayUpOnBlock.id && ux < ax3 && userBlock =/= ZythiumDelayer1DelayRightBlock && userBlock =/= ZythiumDelayer1DelayRightOnBlock && userBlock =/= ZythiumDelayer2DelayRightBlock && userBlock =/= ZythiumDelayer2DelayRightOnBlock && userBlock =/= ZythiumDelayer4DelayRightBlock && userBlock =/= ZythiumDelayer4DelayRightOnBlock && userBlock =/= ZythiumDelayer8DelayRightBlock && userBlock =/= ZythiumDelayer8DelayRightOnBlock ||
-              userBlockId >= ZythiumDelayer1DelayRightBlock.id && userBlockId <= ZythiumDelayer8DelayUpOnBlock.id && uy < ay3 && userBlock =/= ZythiumDelayer1DelayDownBlock && userBlock =/= ZythiumDelayer1DelayDownOnBlock && userBlock =/= ZythiumDelayer2DelayDownBlock && userBlock =/= ZythiumDelayer2DelayDownOnBlock && userBlock =/= ZythiumDelayer4DelayDownBlock && userBlock =/= ZythiumDelayer4DelayDownOnBlock && userBlock =/= ZythiumDelayer8DelayDownBlock && userBlock =/= ZythiumDelayer8DelayDownOnBlock ||
-              userBlockId >= ZythiumDelayer1DelayRightBlock.id && userBlockId <= ZythiumDelayer8DelayUpOnBlock.id && ux > ax3 && userBlock =/= ZythiumDelayer1DelayLeftBlock && userBlock =/= ZythiumDelayer1DelayLeftOnBlock && userBlock =/= ZythiumDelayer2DelayLeftBlock && userBlock =/= ZythiumDelayer2DelayLeftOnBlock && userBlock =/= ZythiumDelayer4DelayLeftBlock && userBlock =/= ZythiumDelayer4DelayLeftOnBlock && userBlock =/= ZythiumDelayer8DelayLeftBlock && userBlock =/= ZythiumDelayer8DelayLeftOnBlock ||
-              userBlockId >= ZythiumDelayer1DelayRightBlock.id && userBlockId <= ZythiumDelayer8DelayUpOnBlock.id && uy > ay3 && userBlock =/= ZythiumDelayer1DelayUpBlock && userBlock =/= ZythiumDelayer1DelayUpOnBlock && userBlock =/= ZythiumDelayer2DelayUpBlock && userBlock =/= ZythiumDelayer2DelayUpOnBlock && userBlock =/= ZythiumDelayer4DelayUpBlock && userBlock =/= ZythiumDelayer4DelayUpOnBlock && userBlock =/= ZythiumDelayer8DelayUpBlock && userBlock =/= ZythiumDelayer8DelayUpOnBlock))) {
+            !(userBlockId >= ZythiumDelayer1RightBlock.id && userBlockId <= ZythiumDelayer8UpOnBlock.id && ux < ax3 && userBlock =/= ZythiumDelayer1RightBlock && userBlock =/= ZythiumDelayer1RightOnBlock && userBlock =/= ZythiumDelayer2RightBlock && userBlock =/= ZythiumDelayer2RightOnBlock && userBlock =/= ZythiumDelayer4RightBlock && userBlock =/= ZythiumDelayer4RightOnBlock && userBlock =/= ZythiumDelayer8RightBlock && userBlock =/= ZythiumDelayer8RightOnBlock ||
+              userBlockId >= ZythiumDelayer1RightBlock.id && userBlockId <= ZythiumDelayer8UpOnBlock.id && uy < ay3 && userBlock =/= ZythiumDelayer1DownBlock && userBlock =/= ZythiumDelayer1DownOnBlock && userBlock =/= ZythiumDelayer2DownBlock && userBlock =/= ZythiumDelayer2DownOnBlock && userBlock =/= ZythiumDelayer4DownBlock && userBlock =/= ZythiumDelayer4DownOnBlock && userBlock =/= ZythiumDelayer8DownBlock && userBlock =/= ZythiumDelayer8DownOnBlock ||
+              userBlockId >= ZythiumDelayer1RightBlock.id && userBlockId <= ZythiumDelayer8UpOnBlock.id && ux > ax3 && userBlock =/= ZythiumDelayer1LeftBlock && userBlock =/= ZythiumDelayer1LeftOnBlock && userBlock =/= ZythiumDelayer2LeftBlock && userBlock =/= ZythiumDelayer2LeftOnBlock && userBlock =/= ZythiumDelayer4LeftBlock && userBlock =/= ZythiumDelayer4LeftOnBlock && userBlock =/= ZythiumDelayer8LeftBlock && userBlock =/= ZythiumDelayer8LeftOnBlock ||
+              userBlockId >= ZythiumDelayer1RightBlock.id && userBlockId <= ZythiumDelayer8UpOnBlock.id && uy > ay3 && userBlock =/= ZythiumDelayer1UpBlock && userBlock =/= ZythiumDelayer1UpOnBlock && userBlock =/= ZythiumDelayer2UpBlock && userBlock =/= ZythiumDelayer2UpOnBlock && userBlock =/= ZythiumDelayer4UpBlock && userBlock =/= ZythiumDelayer4UpOnBlock && userBlock =/= ZythiumDelayer8UpBlock && userBlock =/= ZythiumDelayer8UpOnBlock))) {
           if (!arbprd(lyr.num)(ay3)(ax3)) {
             rbpRecur(ax3, ay3, lyr)
             if (conducts(blocks(lyr.num)(ay3)(ax3).id) >= 0 && wcnct(ay3)(ax3)) {
@@ -4519,8 +4517,8 @@ class TerraFrame
             blockId >= ZythiumInverterRightBlock.id &&
             blockId <= ZythiumInverterUpOnBlock.id
             ||
-            blockId >= ZythiumDelayer1DelayRightBlock.id
-            && blockId <= ZythiumDelayer8DelayUpOnBlock.id
+            blockId >= ZythiumDelayer1RightBlock.id
+            && blockId <= ZythiumDelayer8UpOnBlock.id
           )
           &&
           !(
@@ -4575,53 +4573,53 @@ class TerraFrame
                   block =/= ZythiumInverterUpOnBlock
           )
           &&
-          !(blockId >= ZythiumDelayer1DelayRightBlock.id &&
-            blockId <= ZythiumDelayer8DelayUpOnBlock.id &&
+          !(blockId >= ZythiumDelayer1RightBlock.id &&
+            blockId <= ZythiumDelayer8UpOnBlock.id &&
             ux < ax3 &&
-            block =/= ZythiumDelayer1DelayRightBlock &&
-            block =/= ZythiumDelayer1DelayRightOnBlock &&
-            block =/= ZythiumDelayer2DelayRightBlock &&
-            block =/= ZythiumDelayer2DelayRightOnBlock &&
-            block =/= ZythiumDelayer4DelayRightBlock &&
-            block =/= ZythiumDelayer4DelayRightOnBlock &&
-            block =/= ZythiumDelayer8DelayRightBlock &&
-            block =/= ZythiumDelayer8DelayRightOnBlock
+            block =/= ZythiumDelayer1RightBlock &&
+            block =/= ZythiumDelayer1RightOnBlock &&
+            block =/= ZythiumDelayer2RightBlock &&
+            block =/= ZythiumDelayer2RightOnBlock &&
+            block =/= ZythiumDelayer4RightBlock &&
+            block =/= ZythiumDelayer4RightOnBlock &&
+            block =/= ZythiumDelayer8RightBlock &&
+            block =/= ZythiumDelayer8RightOnBlock
             ||
-              blockId >= ZythiumDelayer1DelayRightBlock.id &&
-                blockId <= ZythiumDelayer8DelayUpOnBlock.id &&
+              blockId >= ZythiumDelayer1RightBlock.id &&
+                blockId <= ZythiumDelayer8UpOnBlock.id &&
                 uy < ay3 &&
-                block =/= ZythiumDelayer1DelayDownBlock &&
-                block =/= ZythiumDelayer1DelayDownOnBlock &&
-                block =/= ZythiumDelayer2DelayDownBlock &&
-                block =/= ZythiumDelayer2DelayDownOnBlock &&
-                block =/= ZythiumDelayer4DelayDownBlock &&
-                block =/= ZythiumDelayer4DelayDownOnBlock &&
-                block =/= ZythiumDelayer8DelayDownBlock &&
-                block =/= ZythiumDelayer8DelayDownOnBlock
+                block =/= ZythiumDelayer1DownBlock &&
+                block =/= ZythiumDelayer1DownOnBlock &&
+                block =/= ZythiumDelayer2DownBlock &&
+                block =/= ZythiumDelayer2DownOnBlock &&
+                block =/= ZythiumDelayer4DownBlock &&
+                block =/= ZythiumDelayer4DownOnBlock &&
+                block =/= ZythiumDelayer8DownBlock &&
+                block =/= ZythiumDelayer8DownOnBlock
             ||
-              blockId >= ZythiumDelayer1DelayRightBlock.id &&
-                blockId <= ZythiumDelayer8DelayUpOnBlock.id &&
+              blockId >= ZythiumDelayer1RightBlock.id &&
+                blockId <= ZythiumDelayer8UpOnBlock.id &&
                 ux > ax3 &&
-                block =/= ZythiumDelayer1DelayLeftBlock &&
-                block =/= ZythiumDelayer1DelayLeftOnBlock &&
-                block =/= ZythiumDelayer2DelayLeftBlock &&
-                block =/= ZythiumDelayer2DelayLeftOnBlock &&
-                block =/= ZythiumDelayer4DelayLeftBlock &&
-                block =/= ZythiumDelayer4DelayLeftOnBlock &&
-                block =/= ZythiumDelayer8DelayLeftBlock &&
-                block =/= ZythiumDelayer8DelayLeftOnBlock
+                block =/= ZythiumDelayer1LeftBlock &&
+                block =/= ZythiumDelayer1LeftOnBlock &&
+                block =/= ZythiumDelayer2LeftBlock &&
+                block =/= ZythiumDelayer2LeftOnBlock &&
+                block =/= ZythiumDelayer4LeftBlock &&
+                block =/= ZythiumDelayer4LeftOnBlock &&
+                block =/= ZythiumDelayer8LeftBlock &&
+                block =/= ZythiumDelayer8LeftOnBlock
             ||
-              blockId >= ZythiumDelayer1DelayRightBlock.id &&
-                blockId <= ZythiumDelayer8DelayUpOnBlock.id &&
+              blockId >= ZythiumDelayer1RightBlock.id &&
+                blockId <= ZythiumDelayer8UpOnBlock.id &&
                 uy > ay3 &&
-                block =/= ZythiumDelayer1DelayUpBlock &&
-                block =/= ZythiumDelayer1DelayUpOnBlock &&
-                block =/= ZythiumDelayer2DelayUpBlock &&
-                block =/= ZythiumDelayer2DelayUpOnBlock &&
-                block =/= ZythiumDelayer4DelayUpBlock &&
-                block =/= ZythiumDelayer4DelayUpOnBlock &&
-                block =/= ZythiumDelayer8DelayUpBlock &&
-                block =/= ZythiumDelayer8DelayUpOnBlock)) {
+                block =/= ZythiumDelayer1UpBlock &&
+                block =/= ZythiumDelayer1UpOnBlock &&
+                block =/= ZythiumDelayer2UpBlock &&
+                block =/= ZythiumDelayer2UpOnBlock &&
+                block =/= ZythiumDelayer4UpBlock &&
+                block =/= ZythiumDelayer4UpOnBlock &&
+                block =/= ZythiumDelayer8UpBlock &&
+                block =/= ZythiumDelayer8UpOnBlock)) {
         if (blockId >= ZythiumInverterRightOnBlock.id && blockId <= ZythiumInverterUpOnBlock.id) {
           blocks(lyr.num)(ay3)(ax3) = Block.withId(blockId - 4)
           logger.debug(s"Adding power for inverter at ($ax3, $ay3).")
@@ -4648,10 +4646,10 @@ class TerraFrame
   def removeBlockPower(ux: Int, uy: Int, lyr: Layer, turnOffDelayer: Boolean): Unit = {
     arbprd(lyr.num)(uy)(ux) = true
     logger.debug(s"[rbp ] $ux $uy ${lyr.num} $turnOffDelayer")
-    if (!((blocks(lyr.num)(uy)(ux).id >= ZythiumDelayer1DelayRightOnBlock.id && blocks(lyr.num)(uy)(ux).id <= ZythiumDelayer1DelayUpOnBlock.id || blocks(
-          lyr.num)(uy)(ux).id >= ZythiumDelayer2DelayRightOnBlock.id && blocks(lyr.num)(uy)(ux).id <= ZythiumDelayer2DelayUpOnBlock.id || blocks(
-          lyr.num)(uy)(ux).id >= ZythiumDelayer4DelayRightOnBlock.id && blocks(lyr.num)(uy)(ux).id <= ZythiumDelayer4DelayUpOnBlock.id || blocks(
-          lyr.num)(uy)(ux).id >= ZythiumDelayer8DelayRightOnBlock.id && blocks(lyr.num)(uy)(ux).id <= ZythiumDelayer8DelayUpOnBlock.id) && turnOffDelayer)) {
+    if (!((blocks(lyr.num)(uy)(ux).id >= ZythiumDelayer1RightOnBlock.id && blocks(lyr.num)(uy)(ux).id <= ZythiumDelayer1UpOnBlock.id || blocks(
+          lyr.num)(uy)(ux).id >= ZythiumDelayer2RightOnBlock.id && blocks(lyr.num)(uy)(ux).id <= ZythiumDelayer2UpOnBlock.id || blocks(
+          lyr.num)(uy)(ux).id >= ZythiumDelayer4RightOnBlock.id && blocks(lyr.num)(uy)(ux).id <= ZythiumDelayer4UpOnBlock.id || blocks(
+          lyr.num)(uy)(ux).id >= ZythiumDelayer8RightOnBlock.id && blocks(lyr.num)(uy)(ux).id <= ZythiumDelayer8UpOnBlock.id) && turnOffDelayer)) {
       var ax3, ay3: Int = 0
       (0 until 4).foreach { ir =>
         ax3 = ux + cl(ir)(0)
@@ -4669,10 +4667,10 @@ class TerraFrame
                 blockId >= ZythiumInverterRightBlock.id && blockId <= ZythiumInverterUpOnBlock.id && uy > ay3 && block =/= ZythiumInverterDownBlock && block =/= ZythiumInverterDownOnBlock ||
                 blockId >= ZythiumInverterRightBlock.id && blockId <= ZythiumInverterUpOnBlock.id && ux < ax3 && block =/= ZythiumInverterLeftBlock && block =/= ZythiumInverterLeftOnBlock ||
                 blockId >= ZythiumInverterRightBlock.id && blockId <= ZythiumInverterUpOnBlock.id && uy < ay3 && block =/= ZythiumInverterUpBlock && block =/= ZythiumInverterUpOnBlock) &&
-              !(blockId >= ZythiumDelayer1DelayRightBlock.id && blockId <= ZythiumDelayer8DelayUpOnBlock.id && ux > ax3 && block =/= ZythiumDelayer1DelayRightBlock && block =/= ZythiumDelayer1DelayRightOnBlock && block =/= ZythiumDelayer2DelayRightBlock && block =/= ZythiumDelayer2DelayRightOnBlock && block =/= ZythiumDelayer4DelayRightBlock && block =/= ZythiumDelayer4DelayRightOnBlock && block =/= ZythiumDelayer8DelayRightBlock && block =/= ZythiumDelayer8DelayRightOnBlock ||
-                blockId >= ZythiumDelayer1DelayRightBlock.id && blockId <= ZythiumDelayer8DelayUpOnBlock.id && uy > ay3 && block =/= ZythiumDelayer1DelayDownBlock && block =/= ZythiumDelayer1DelayDownOnBlock && block =/= ZythiumDelayer2DelayDownBlock && block =/= ZythiumDelayer2DelayDownOnBlock && block =/= ZythiumDelayer4DelayDownBlock && block =/= ZythiumDelayer4DelayDownOnBlock && block =/= ZythiumDelayer8DelayDownBlock && block =/= ZythiumDelayer8DelayDownOnBlock ||
-                blockId >= ZythiumDelayer1DelayRightBlock.id && blockId <= ZythiumDelayer8DelayUpOnBlock.id && ux < ax3 && block =/= ZythiumDelayer1DelayLeftBlock && block =/= ZythiumDelayer1DelayLeftOnBlock && block =/= ZythiumDelayer2DelayLeftBlock && block =/= ZythiumDelayer2DelayLeftOnBlock && block =/= ZythiumDelayer4DelayLeftBlock && block =/= ZythiumDelayer4DelayLeftOnBlock && block =/= ZythiumDelayer8DelayLeftBlock && block =/= ZythiumDelayer8DelayLeftOnBlock ||
-                blockId >= ZythiumDelayer1DelayRightBlock.id && blockId <= ZythiumDelayer8DelayUpOnBlock.id && uy < ay3 && block =/= ZythiumDelayer1DelayUpBlock && block =/= ZythiumDelayer1DelayUpOnBlock && block =/= ZythiumDelayer2DelayUpBlock && block =/= ZythiumDelayer2DelayUpOnBlock && block =/= ZythiumDelayer4DelayUpBlock && block =/= ZythiumDelayer4DelayUpOnBlock && block =/= ZythiumDelayer8DelayUpBlock && block =/= ZythiumDelayer8DelayUpOnBlock))) {
+              !(blockId >= ZythiumDelayer1RightBlock.id && blockId <= ZythiumDelayer8UpOnBlock.id && ux > ax3 && block =/= ZythiumDelayer1RightBlock && block =/= ZythiumDelayer1RightOnBlock && block =/= ZythiumDelayer2RightBlock && block =/= ZythiumDelayer2RightOnBlock && block =/= ZythiumDelayer4RightBlock && block =/= ZythiumDelayer4RightOnBlock && block =/= ZythiumDelayer8RightBlock && block =/= ZythiumDelayer8RightOnBlock ||
+                blockId >= ZythiumDelayer1RightBlock.id && blockId <= ZythiumDelayer8UpOnBlock.id && uy > ay3 && block =/= ZythiumDelayer1DownBlock && block =/= ZythiumDelayer1DownOnBlock && block =/= ZythiumDelayer2DownBlock && block =/= ZythiumDelayer2DownOnBlock && block =/= ZythiumDelayer4DownBlock && block =/= ZythiumDelayer4DownOnBlock && block =/= ZythiumDelayer8DownBlock && block =/= ZythiumDelayer8DownOnBlock ||
+                blockId >= ZythiumDelayer1RightBlock.id && blockId <= ZythiumDelayer8UpOnBlock.id && ux < ax3 && block =/= ZythiumDelayer1LeftBlock && block =/= ZythiumDelayer1LeftOnBlock && block =/= ZythiumDelayer2LeftBlock && block =/= ZythiumDelayer2LeftOnBlock && block =/= ZythiumDelayer4LeftBlock && block =/= ZythiumDelayer4LeftOnBlock && block =/= ZythiumDelayer8LeftBlock && block =/= ZythiumDelayer8LeftOnBlock ||
+                blockId >= ZythiumDelayer1RightBlock.id && blockId <= ZythiumDelayer8UpOnBlock.id && uy < ay3 && block =/= ZythiumDelayer1UpBlock && block =/= ZythiumDelayer1UpOnBlock && block =/= ZythiumDelayer2UpBlock && block =/= ZythiumDelayer2UpOnBlock && block =/= ZythiumDelayer4UpBlock && block =/= ZythiumDelayer4UpOnBlock && block =/= ZythiumDelayer8UpBlock && block =/= ZythiumDelayer8UpOnBlock))) {
             logger.debug(s"Added tile $ax3 $ay3 to PQueue.")
             addTileToPQueue(ax3, ay3)
           }
@@ -4697,10 +4695,10 @@ class TerraFrame
                   userBlockId >= ZythiumInverterRightBlock.id && userBlockId <= ZythiumInverterUpOnBlock.id && uy < ay3 && userBlock =/= ZythiumInverterDownBlock && userBlock =/= ZythiumInverterDownOnBlock ||
                   userBlockId >= ZythiumInverterRightBlock.id && userBlockId <= ZythiumInverterUpOnBlock.id && ux > ax3 && userBlock =/= ZythiumInverterLeftBlock && userBlock =/= ZythiumInverterLeftOnBlock ||
                   userBlockId >= ZythiumInverterRightBlock.id && userBlockId <= ZythiumInverterUpOnBlock.id && uy > ay3 && userBlock =/= ZythiumInverterUpBlock && userBlock =/= ZythiumInverterUpOnBlock) &&
-                !(userBlockId >= ZythiumDelayer1DelayRightBlock.id && userBlockId <= ZythiumDelayer8DelayUpOnBlock.id && ux < ax3 && userBlock =/= ZythiumDelayer1DelayRightBlock && userBlock =/= ZythiumDelayer1DelayRightOnBlock && userBlock =/= ZythiumDelayer2DelayRightBlock && userBlock =/= ZythiumDelayer2DelayRightOnBlock && userBlock =/= ZythiumDelayer4DelayRightBlock && userBlock =/= ZythiumDelayer4DelayRightOnBlock && userBlock =/= ZythiumDelayer8DelayRightBlock && userBlock =/= ZythiumDelayer8DelayRightOnBlock ||
-                  userBlockId >= ZythiumDelayer1DelayRightBlock.id && userBlockId <= ZythiumDelayer8DelayUpOnBlock.id && uy < ay3 && userBlock =/= ZythiumDelayer1DelayDownBlock && userBlock =/= ZythiumDelayer1DelayDownOnBlock && userBlock =/= ZythiumDelayer2DelayDownBlock && userBlock =/= ZythiumDelayer2DelayDownOnBlock && userBlock =/= ZythiumDelayer4DelayDownBlock && userBlock =/= ZythiumDelayer4DelayDownOnBlock && userBlock =/= ZythiumDelayer8DelayDownBlock && userBlock =/= ZythiumDelayer8DelayDownOnBlock ||
-                  userBlockId >= ZythiumDelayer1DelayRightBlock.id && userBlockId <= ZythiumDelayer8DelayUpOnBlock.id && ux > ax3 && userBlock =/= ZythiumDelayer1DelayLeftBlock && userBlock =/= ZythiumDelayer1DelayLeftOnBlock && userBlock =/= ZythiumDelayer2DelayLeftBlock && userBlock =/= ZythiumDelayer2DelayLeftOnBlock && userBlock =/= ZythiumDelayer4DelayLeftBlock && userBlock =/= ZythiumDelayer4DelayLeftOnBlock && userBlock =/= ZythiumDelayer8DelayLeftBlock && userBlock =/= ZythiumDelayer8DelayLeftOnBlock ||
-                  userBlockId >= ZythiumDelayer1DelayRightBlock.id && userBlockId <= ZythiumDelayer8DelayUpOnBlock.id && uy > ay3 && userBlock =/= ZythiumDelayer1DelayUpBlock && userBlock =/= ZythiumDelayer1DelayUpOnBlock && userBlock =/= ZythiumDelayer2DelayUpBlock && userBlock =/= ZythiumDelayer2DelayUpOnBlock && userBlock =/= ZythiumDelayer4DelayUpBlock && userBlock =/= ZythiumDelayer4DelayUpOnBlock && userBlock =/= ZythiumDelayer8DelayUpBlock && userBlock =/= ZythiumDelayer8DelayUpOnBlock)) {
+                !(userBlockId >= ZythiumDelayer1RightBlock.id && userBlockId <= ZythiumDelayer8UpOnBlock.id && ux < ax3 && userBlock =/= ZythiumDelayer1RightBlock && userBlock =/= ZythiumDelayer1RightOnBlock && userBlock =/= ZythiumDelayer2RightBlock && userBlock =/= ZythiumDelayer2RightOnBlock && userBlock =/= ZythiumDelayer4RightBlock && userBlock =/= ZythiumDelayer4RightOnBlock && userBlock =/= ZythiumDelayer8RightBlock && userBlock =/= ZythiumDelayer8RightOnBlock ||
+                  userBlockId >= ZythiumDelayer1RightBlock.id && userBlockId <= ZythiumDelayer8UpOnBlock.id && uy < ay3 && userBlock =/= ZythiumDelayer1DownBlock && userBlock =/= ZythiumDelayer1DownOnBlock && userBlock =/= ZythiumDelayer2DownBlock && userBlock =/= ZythiumDelayer2DownOnBlock && userBlock =/= ZythiumDelayer4DownBlock && userBlock =/= ZythiumDelayer4DownOnBlock && userBlock =/= ZythiumDelayer8DownBlock && userBlock =/= ZythiumDelayer8DownOnBlock ||
+                  userBlockId >= ZythiumDelayer1RightBlock.id && userBlockId <= ZythiumDelayer8UpOnBlock.id && ux > ax3 && userBlock =/= ZythiumDelayer1LeftBlock && userBlock =/= ZythiumDelayer1LeftOnBlock && userBlock =/= ZythiumDelayer2LeftBlock && userBlock =/= ZythiumDelayer2LeftOnBlock && userBlock =/= ZythiumDelayer4LeftBlock && userBlock =/= ZythiumDelayer4LeftOnBlock && userBlock =/= ZythiumDelayer8LeftBlock && userBlock =/= ZythiumDelayer8LeftOnBlock ||
+                  userBlockId >= ZythiumDelayer1RightBlock.id && userBlockId <= ZythiumDelayer8UpOnBlock.id && uy > ay3 && userBlock =/= ZythiumDelayer1UpBlock && userBlock =/= ZythiumDelayer1UpOnBlock && userBlock =/= ZythiumDelayer2UpBlock && userBlock =/= ZythiumDelayer2UpOnBlock && userBlock =/= ZythiumDelayer4UpBlock && userBlock =/= ZythiumDelayer4UpOnBlock && userBlock =/= ZythiumDelayer8UpBlock && userBlock =/= ZythiumDelayer8UpOnBlock)) {
               if (!arbprd(lyr.num)(ay3)(ax3)) {
                 rbpRecur(ax3, ay3, lyr)
                 if (conducts(blocks(lyr.num)(ay3)(ax3).id) >= 0 && wcnct(ay3)(ax3)) {
@@ -4753,7 +4751,7 @@ class TerraFrame
         }
         lazy val block   = blocks(lyr.num)(ay3)(ax3)
         lazy val blockId = block.id
-        if (block === ZythiumLampOnBlock || (blockId >= ZythiumAmplifierRightBlock.id && blockId <= ZythiumAmplifierUpOnBlock.id || blockId >= ZythiumInverterRightBlock.id && blockId <= ZythiumInverterUpOnBlock.id || blockId >= ZythiumDelayer1DelayRightBlock.id && blockId <= ZythiumDelayer8DelayUpOnBlock.id) &&
+        if (block === ZythiumLampOnBlock || (blockId >= ZythiumAmplifierRightBlock.id && blockId <= ZythiumAmplifierUpOnBlock.id || blockId >= ZythiumInverterRightBlock.id && blockId <= ZythiumInverterUpOnBlock.id || blockId >= ZythiumDelayer1RightBlock.id && blockId <= ZythiumDelayer8UpOnBlock.id) &&
             !(blockId >= ZythiumAmplifierRightBlock.id && blockId <= ZythiumAmplifierUpOnBlock.id && ux < ax3 && block =/= ZythiumAmplifierRightBlock && block =/= ZythiumAmplifierRightOnBlock ||
               blockId >= ZythiumAmplifierRightBlock.id && blockId <= ZythiumAmplifierUpOnBlock.id && uy < ay3 && block =/= ZythiumAmplifierDownBlock && block =/= ZythiumAmplifierDownOnBlock ||
               blockId >= ZythiumAmplifierRightBlock.id && blockId <= ZythiumAmplifierUpOnBlock.id && ux > ax3 && block =/= ZythiumAmplifierLeftBlock && block =/= ZythiumAmplifierLeftOnBlock ||
@@ -4762,10 +4760,10 @@ class TerraFrame
               blockId >= ZythiumInverterRightBlock.id && blockId <= ZythiumInverterUpOnBlock.id && uy < ay3 && block =/= ZythiumInverterDownBlock && block =/= ZythiumInverterDownOnBlock ||
               blockId >= ZythiumInverterRightBlock.id && blockId <= ZythiumInverterUpOnBlock.id && ux > ax3 && block =/= ZythiumInverterLeftBlock && block =/= ZythiumInverterLeftOnBlock ||
               blockId >= ZythiumInverterRightBlock.id && blockId <= ZythiumInverterUpOnBlock.id && uy > ay3 && block =/= ZythiumInverterUpBlock && block =/= ZythiumInverterUpOnBlock) &&
-            !(blockId >= ZythiumDelayer1DelayRightBlock.id && blockId <= ZythiumDelayer8DelayUpOnBlock.id && ux < ax3 && block =/= ZythiumDelayer1DelayRightBlock && block =/= ZythiumDelayer1DelayRightOnBlock && block =/= ZythiumDelayer2DelayRightBlock && block =/= ZythiumDelayer2DelayRightOnBlock && block =/= ZythiumDelayer4DelayRightBlock && block =/= ZythiumDelayer4DelayRightOnBlock && block =/= ZythiumDelayer8DelayRightBlock && block =/= ZythiumDelayer8DelayRightOnBlock ||
-              blockId >= ZythiumDelayer1DelayRightBlock.id && blockId <= ZythiumDelayer8DelayUpOnBlock.id && uy < ay3 && block =/= ZythiumDelayer1DelayDownBlock && block =/= ZythiumDelayer1DelayDownOnBlock && block =/= ZythiumDelayer2DelayDownBlock && block =/= ZythiumDelayer2DelayDownOnBlock && block =/= ZythiumDelayer4DelayDownBlock && block =/= ZythiumDelayer4DelayDownOnBlock && block =/= ZythiumDelayer8DelayDownBlock && block =/= ZythiumDelayer8DelayDownOnBlock ||
-              blockId >= ZythiumDelayer1DelayRightBlock.id && blockId <= ZythiumDelayer8DelayUpOnBlock.id && ux > ax3 && block =/= ZythiumDelayer1DelayLeftBlock && block =/= ZythiumDelayer1DelayLeftOnBlock && block =/= ZythiumDelayer2DelayLeftBlock && block =/= ZythiumDelayer2DelayLeftOnBlock && block =/= ZythiumDelayer4DelayLeftBlock && block =/= ZythiumDelayer4DelayLeftOnBlock && block =/= ZythiumDelayer8DelayLeftBlock && block =/= ZythiumDelayer8DelayLeftOnBlock ||
-              blockId >= ZythiumDelayer1DelayRightBlock.id && blockId <= ZythiumDelayer8DelayUpOnBlock.id && uy > ay3 && block =/= ZythiumDelayer1DelayUpBlock && block =/= ZythiumDelayer1DelayUpOnBlock && block =/= ZythiumDelayer2DelayUpBlock && block =/= ZythiumDelayer2DelayUpOnBlock && block =/= ZythiumDelayer4DelayUpBlock && block =/= ZythiumDelayer4DelayUpOnBlock && block =/= ZythiumDelayer8DelayUpBlock && block =/= ZythiumDelayer8DelayUpOnBlock)) {
+            !(blockId >= ZythiumDelayer1RightBlock.id && blockId <= ZythiumDelayer8UpOnBlock.id && ux < ax3 && block =/= ZythiumDelayer1RightBlock && block =/= ZythiumDelayer1RightOnBlock && block =/= ZythiumDelayer2RightBlock && block =/= ZythiumDelayer2RightOnBlock && block =/= ZythiumDelayer4RightBlock && block =/= ZythiumDelayer4RightOnBlock && block =/= ZythiumDelayer8RightBlock && block =/= ZythiumDelayer8RightOnBlock ||
+              blockId >= ZythiumDelayer1RightBlock.id && blockId <= ZythiumDelayer8UpOnBlock.id && uy < ay3 && block =/= ZythiumDelayer1DownBlock && block =/= ZythiumDelayer1DownOnBlock && block =/= ZythiumDelayer2DownBlock && block =/= ZythiumDelayer2DownOnBlock && block =/= ZythiumDelayer4DownBlock && block =/= ZythiumDelayer4DownOnBlock && block =/= ZythiumDelayer8DownBlock && block =/= ZythiumDelayer8DownOnBlock ||
+              blockId >= ZythiumDelayer1RightBlock.id && blockId <= ZythiumDelayer8UpOnBlock.id && ux > ax3 && block =/= ZythiumDelayer1LeftBlock && block =/= ZythiumDelayer1LeftOnBlock && block =/= ZythiumDelayer2LeftBlock && block =/= ZythiumDelayer2LeftOnBlock && block =/= ZythiumDelayer4LeftBlock && block =/= ZythiumDelayer4LeftOnBlock && block =/= ZythiumDelayer8LeftBlock && block =/= ZythiumDelayer8LeftOnBlock ||
+              blockId >= ZythiumDelayer1RightBlock.id && blockId <= ZythiumDelayer8UpOnBlock.id && uy > ay3 && block =/= ZythiumDelayer1UpBlock && block =/= ZythiumDelayer1UpOnBlock && block =/= ZythiumDelayer2UpBlock && block =/= ZythiumDelayer2UpOnBlock && block =/= ZythiumDelayer4UpBlock && block =/= ZythiumDelayer4UpOnBlock && block =/= ZythiumDelayer8UpBlock && block =/= ZythiumDelayer8UpOnBlock)) {
           if (blockId >= ZythiumInverterRightOnBlock.id && blockId <= ZythiumInverterUpOnBlock.id) {
             blocks(lyr.num)(ay3)(ax3) = Block.withId(blockId - 4)
             logger.debug(s"Adding power for inverter at ($ax3, $ay3).")
@@ -4790,17 +4788,17 @@ class TerraFrame
       removeBlockLighting(ux, uy)
       rdrawn(uy)(ux) = false
     }
-    if (turnOffDelayer && blocks(lyr.num)(uy)(ux).id >= ZythiumDelayer1DelayRightBlock.id && blocks(lyr.num)(uy)(ux).id <= ZythiumDelayer8DelayUpOnBlock.id) {
+    if (turnOffDelayer && blocks(lyr.num)(uy)(ux).id >= ZythiumDelayer1RightBlock.id && blocks(lyr.num)(uy)(ux).id <= ZythiumDelayer8UpOnBlock.id) {
       logger.debug("???")
       updatex += ux
       updatey += uy
       DDELAY.get(blocks(lyr.num)(uy)(ux).id).foreach(updatet.+=)
       updatel += lyr
     }
-    if (!((blocks(lyr.num)(uy)(ux).id >= ZythiumDelayer1DelayRightOnBlock.id && blocks(lyr.num)(uy)(ux).id <= ZythiumDelayer1DelayUpOnBlock.id || blocks(
-          lyr.num)(uy)(ux).id >= ZythiumDelayer2DelayRightOnBlock.id && blocks(lyr.num)(uy)(ux).id <= ZythiumDelayer2DelayUpOnBlock.id || blocks(
-          lyr.num)(uy)(ux).id >= ZythiumDelayer4DelayRightOnBlock.id && blocks(lyr.num)(uy)(ux).id <= ZythiumDelayer4DelayUpOnBlock.id || blocks(
-          lyr.num)(uy)(ux).id >= ZythiumDelayer8DelayRightOnBlock.id && blocks(lyr.num)(uy)(ux).id <= ZythiumDelayer8DelayUpOnBlock.id) && turnOffDelayer)) {
+    if (!((blocks(lyr.num)(uy)(ux).id >= ZythiumDelayer1RightOnBlock.id && blocks(lyr.num)(uy)(ux).id <= ZythiumDelayer1UpOnBlock.id || blocks(
+          lyr.num)(uy)(ux).id >= ZythiumDelayer2RightOnBlock.id && blocks(lyr.num)(uy)(ux).id <= ZythiumDelayer2UpOnBlock.id || blocks(
+          lyr.num)(uy)(ux).id >= ZythiumDelayer4RightOnBlock.id && blocks(lyr.num)(uy)(ux).id <= ZythiumDelayer4UpOnBlock.id || blocks(
+          lyr.num)(uy)(ux).id >= ZythiumDelayer8RightOnBlock.id && blocks(lyr.num)(uy)(ux).id <= ZythiumDelayer8UpOnBlock.id) && turnOffDelayer)) {
       power(lyr.num)(uy)(ux) = 0.toFloat
     }
     arbprd(lyr.num)(uy)(ux) = false
@@ -5056,7 +5054,7 @@ class TerraFrame
         y = pqy(0)
         (0 until 3).foreach { l =>
           if (powers(blocks(l)(y)(x))) {
-            if (!(blocks(l)(y)(x).id >= ZythiumDelayer1DelayRightBlock.id && blocks(l)(y)(x).id <= ZythiumDelayer8DelayUpOnBlock.id)) {
+            if (!(blocks(l)(y)(x).id >= ZythiumDelayer1RightBlock.id && blocks(l)(y)(x).id <= ZythiumDelayer8UpOnBlock.id)) {
               addTileToPQueue(x, y)
               power(l)(y)(x) = 5.toFloat
             }
@@ -5088,20 +5086,20 @@ class TerraFrame
                       blockId >= ZythiumInverterRightBlock.id && blockId <= ZythiumInverterUpOnBlock.id && y < y2 && block =/= ZythiumInverterDownBlock && block =/= ZythiumInverterDownOnBlock ||
                       blockId >= ZythiumInverterRightBlock.id && blockId <= ZythiumInverterUpOnBlock.id && x > x2 && block =/= ZythiumInverterLeftBlock && block =/= ZythiumInverterLeftOnBlock ||
                       blockId >= ZythiumInverterRightBlock.id && blockId <= ZythiumInverterUpOnBlock.id && y > y2 && block =/= ZythiumInverterUpBlock && block =/= ZythiumInverterUpOnBlock) &&
-                    !(blockId2 >= ZythiumDelayer1DelayRightBlock.id && blockId2 <= ZythiumDelayer8DelayUpOnBlock.id && x < x2 && block2 =/= ZythiumDelayer1DelayRightBlock && block2 =/= ZythiumDelayer1DelayRightOnBlock && block2 =/= ZythiumDelayer2DelayRightBlock && block2 =/= ZythiumDelayer2DelayRightOnBlock && block2 =/= ZythiumDelayer4DelayRightBlock && block2 =/= ZythiumDelayer4DelayRightOnBlock && block2 =/= ZythiumDelayer8DelayRightBlock && block2 =/= ZythiumDelayer8DelayRightOnBlock ||
-                      blockId2 >= ZythiumDelayer1DelayRightBlock.id && blockId2 <= ZythiumDelayer8DelayUpOnBlock.id && y < y2 && block2 =/= ZythiumDelayer1DelayDownBlock && block2 =/= ZythiumDelayer1DelayDownOnBlock && block2 =/= ZythiumDelayer2DelayDownBlock && block2 =/= ZythiumDelayer2DelayDownOnBlock && block2 =/= ZythiumDelayer4DelayDownBlock && block2 =/= ZythiumDelayer4DelayDownOnBlock && block2 =/= ZythiumDelayer8DelayDownBlock && block2 =/= ZythiumDelayer8DelayDownOnBlock ||
-                      blockId2 >= ZythiumDelayer1DelayRightBlock.id && blockId2 <= ZythiumDelayer8DelayUpOnBlock.id && x > x2 && block2 =/= ZythiumDelayer1DelayLeftBlock && block2 =/= ZythiumDelayer1DelayLeftOnBlock && block2 =/= ZythiumDelayer2DelayLeftBlock && block2 =/= ZythiumDelayer2DelayLeftOnBlock && block2 =/= ZythiumDelayer4DelayLeftBlock && block2 =/= ZythiumDelayer4DelayLeftOnBlock && block2 =/= ZythiumDelayer8DelayLeftBlock && block2 =/= ZythiumDelayer8DelayLeftOnBlock ||
-                      blockId2 >= ZythiumDelayer1DelayRightBlock.id && blockId2 <= ZythiumDelayer8DelayUpOnBlock.id && y > y2 && block2 =/= ZythiumDelayer1DelayUpBlock && block2 =/= ZythiumDelayer1DelayUpOnBlock && block2 =/= ZythiumDelayer2DelayUpBlock && block2 =/= ZythiumDelayer2DelayUpOnBlock && block2 =/= ZythiumDelayer4DelayUpBlock && block2 =/= ZythiumDelayer4DelayUpOnBlock && block2 =/= ZythiumDelayer8DelayUpBlock && block2 =/= ZythiumDelayer8DelayUpOnBlock) &&
-                    !(blockId >= ZythiumDelayer1DelayRightBlock.id && blockId <= ZythiumDelayer8DelayUpOnBlock.id && x < x2 && block =/= ZythiumDelayer1DelayRightBlock && block =/= ZythiumDelayer1DelayRightOnBlock && block =/= ZythiumDelayer2DelayRightBlock && block =/= ZythiumDelayer2DelayRightOnBlock && block =/= ZythiumDelayer4DelayRightBlock && block =/= ZythiumDelayer4DelayRightOnBlock && block =/= ZythiumDelayer8DelayRightBlock && block =/= ZythiumDelayer8DelayRightOnBlock ||
-                      blockId >= ZythiumDelayer1DelayRightBlock.id && blockId <= ZythiumDelayer8DelayUpOnBlock.id && y < y2 && block =/= ZythiumDelayer1DelayDownBlock && block =/= ZythiumDelayer1DelayDownOnBlock && block =/= ZythiumDelayer2DelayDownBlock && block =/= ZythiumDelayer2DelayDownOnBlock && block =/= ZythiumDelayer4DelayDownBlock && block =/= ZythiumDelayer4DelayDownOnBlock && block =/= ZythiumDelayer8DelayDownBlock && block =/= ZythiumDelayer8DelayDownOnBlock ||
-                      blockId >= ZythiumDelayer1DelayRightBlock.id && blockId <= ZythiumDelayer8DelayUpOnBlock.id && x > x2 && block =/= ZythiumDelayer1DelayLeftBlock && block =/= ZythiumDelayer1DelayLeftOnBlock && block =/= ZythiumDelayer2DelayLeftBlock && block =/= ZythiumDelayer2DelayLeftOnBlock && block =/= ZythiumDelayer4DelayLeftBlock && block =/= ZythiumDelayer4DelayLeftOnBlock && block =/= ZythiumDelayer8DelayLeftBlock && block =/= ZythiumDelayer8DelayLeftOnBlock ||
-                      blockId >= ZythiumDelayer1DelayRightBlock.id && blockId <= ZythiumDelayer8DelayUpOnBlock.id && y > y2 && block =/= ZythiumDelayer1DelayUpBlock && block =/= ZythiumDelayer1DelayUpOnBlock && block =/= ZythiumDelayer2DelayUpBlock && block =/= ZythiumDelayer2DelayUpOnBlock && block =/= ZythiumDelayer4DelayUpBlock && block =/= ZythiumDelayer4DelayUpOnBlock && block =/= ZythiumDelayer8DelayUpBlock && block =/= ZythiumDelayer8DelayUpOnBlock)) {
+                    !(blockId2 >= ZythiumDelayer1RightBlock.id && blockId2 <= ZythiumDelayer8UpOnBlock.id && x < x2 && block2 =/= ZythiumDelayer1RightBlock && block2 =/= ZythiumDelayer1RightOnBlock && block2 =/= ZythiumDelayer2RightBlock && block2 =/= ZythiumDelayer2RightOnBlock && block2 =/= ZythiumDelayer4RightBlock && block2 =/= ZythiumDelayer4RightOnBlock && block2 =/= ZythiumDelayer8RightBlock && block2 =/= ZythiumDelayer8RightOnBlock ||
+                      blockId2 >= ZythiumDelayer1RightBlock.id && blockId2 <= ZythiumDelayer8UpOnBlock.id && y < y2 && block2 =/= ZythiumDelayer1DownBlock && block2 =/= ZythiumDelayer1DownOnBlock && block2 =/= ZythiumDelayer2DownBlock && block2 =/= ZythiumDelayer2DownOnBlock && block2 =/= ZythiumDelayer4DownBlock && block2 =/= ZythiumDelayer4DownOnBlock && block2 =/= ZythiumDelayer8DownBlock && block2 =/= ZythiumDelayer8DownOnBlock ||
+                      blockId2 >= ZythiumDelayer1RightBlock.id && blockId2 <= ZythiumDelayer8UpOnBlock.id && x > x2 && block2 =/= ZythiumDelayer1LeftBlock && block2 =/= ZythiumDelayer1LeftOnBlock && block2 =/= ZythiumDelayer2LeftBlock && block2 =/= ZythiumDelayer2LeftOnBlock && block2 =/= ZythiumDelayer4LeftBlock && block2 =/= ZythiumDelayer4LeftOnBlock && block2 =/= ZythiumDelayer8LeftBlock && block2 =/= ZythiumDelayer8LeftOnBlock ||
+                      blockId2 >= ZythiumDelayer1RightBlock.id && blockId2 <= ZythiumDelayer8UpOnBlock.id && y > y2 && block2 =/= ZythiumDelayer1UpBlock && block2 =/= ZythiumDelayer1UpOnBlock && block2 =/= ZythiumDelayer2UpBlock && block2 =/= ZythiumDelayer2UpOnBlock && block2 =/= ZythiumDelayer4UpBlock && block2 =/= ZythiumDelayer4UpOnBlock && block2 =/= ZythiumDelayer8UpBlock && block2 =/= ZythiumDelayer8UpOnBlock) &&
+                    !(blockId >= ZythiumDelayer1RightBlock.id && blockId <= ZythiumDelayer8UpOnBlock.id && x < x2 && block =/= ZythiumDelayer1RightBlock && block =/= ZythiumDelayer1RightOnBlock && block =/= ZythiumDelayer2RightBlock && block =/= ZythiumDelayer2RightOnBlock && block =/= ZythiumDelayer4RightBlock && block =/= ZythiumDelayer4RightOnBlock && block =/= ZythiumDelayer8RightBlock && block =/= ZythiumDelayer8RightOnBlock ||
+                      blockId >= ZythiumDelayer1RightBlock.id && blockId <= ZythiumDelayer8UpOnBlock.id && y < y2 && block =/= ZythiumDelayer1DownBlock && block =/= ZythiumDelayer1DownOnBlock && block =/= ZythiumDelayer2DownBlock && block =/= ZythiumDelayer2DownOnBlock && block =/= ZythiumDelayer4DownBlock && block =/= ZythiumDelayer4DownOnBlock && block =/= ZythiumDelayer8DownBlock && block =/= ZythiumDelayer8DownOnBlock ||
+                      blockId >= ZythiumDelayer1RightBlock.id && blockId <= ZythiumDelayer8UpOnBlock.id && x > x2 && block =/= ZythiumDelayer1LeftBlock && block =/= ZythiumDelayer1LeftOnBlock && block =/= ZythiumDelayer2LeftBlock && block =/= ZythiumDelayer2LeftOnBlock && block =/= ZythiumDelayer4LeftBlock && block =/= ZythiumDelayer4LeftOnBlock && block =/= ZythiumDelayer8LeftBlock && block =/= ZythiumDelayer8LeftOnBlock ||
+                      blockId >= ZythiumDelayer1RightBlock.id && blockId <= ZythiumDelayer8UpOnBlock.id && y > y2 && block =/= ZythiumDelayer1UpBlock && block =/= ZythiumDelayer1UpOnBlock && block =/= ZythiumDelayer2UpBlock && block =/= ZythiumDelayer2UpOnBlock && block =/= ZythiumDelayer4UpBlock && block =/= ZythiumDelayer4UpOnBlock && block =/= ZythiumDelayer8UpBlock && block =/= ZythiumDelayer8UpOnBlock)) {
                   if (power(l.num)(y2)(x2) <= power(l.num)(y)(x) - conducts(blockId)) {
                     addTileToPZQueue(x2, y2)
-                    if (blockId2 >= ZythiumDelayer1DelayRightBlock.id && blockId2 <= ZythiumDelayer1DelayUpBlock.id ||
-                        blockId2 >= ZythiumDelayer2DelayRightBlock.id && blockId2 <= ZythiumDelayer2DelayUpBlock.id ||
-                        blockId2 >= ZythiumDelayer4DelayRightBlock.id && blockId2 <= ZythiumDelayer4DelayUpBlock.id ||
-                        blockId2 >= ZythiumDelayer8DelayRightBlock.id && blockId2 <= ZythiumDelayer8DelayUpBlock.id) {
+                    if (blockId2 >= ZythiumDelayer1RightBlock.id && blockId2 <= ZythiumDelayer1UpBlock.id ||
+                        blockId2 >= ZythiumDelayer2RightBlock.id && blockId2 <= ZythiumDelayer2UpBlock.id ||
+                        blockId2 >= ZythiumDelayer4RightBlock.id && blockId2 <= ZythiumDelayer4UpBlock.id ||
+                        blockId2 >= ZythiumDelayer8RightBlock.id && blockId2 <= ZythiumDelayer8UpBlock.id) {
                       logger.debug("(DEBUG1)")
                       updatex += x2
                       updatey += y2
