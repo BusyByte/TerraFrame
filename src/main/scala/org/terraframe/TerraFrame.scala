@@ -2249,61 +2249,69 @@ class TerraFrame
     (updatex.length - 1 until (-1, -1)).foreach { i =>
       updatet.update(i, updatet(i) - 1)
       if (updatet(i) <= 0) {
-        if (blocks(updatel(i).num)(updatey(i))(updatex(i)) === ButtonLeftOnBlock) {
-          //blockTemp = blocks(updatel(i).num)(updatey(i))(updatex(i)) TODO: Doesn't seem to be used
-          removeBlockPower(updatex(i), updatey(i), updatel(i))
-          blocks(updatel(i).num)(updatey(i))(updatex(i)) = ButtonLeftBlock
-          rdrawn(updatey(i))(updatex(i)) = false
-        } else if (blocks(updatel(i).num)(updatey(i))(updatex(i)) === ButtonRightOnBlock) {
-          //blockTemp = blocks(updatel(i).num)(updatey(i))(updatex(i)) TODO: Doesn't seem to be used
-          removeBlockPower(updatex(i), updatey(i), updatel(i))
-          blocks(updatel(i).num)(updatey(i))(updatex(i)) = ButtonRightBlock
-          rdrawn(updatey(i))(updatex(i)) = false
-        } else if (blocks(updatel(i).num)(updatey(i))(updatex(i)) === WoodenPressurePlateOnBlock) {
-          //blockTemp = blocks(updatel(i).num)(updatey(i))(updatex(i)) TODO: Doesn't seem to be used
-          removeBlockPower(updatex(i), updatey(i), updatel(i))
-          blocks(updatel(i).num)(updatey(i))(updatex(i)) = WoodenPressurePlateBlock
-          rdrawn(updatey(i))(updatex(i)) = false
-        } else if (blocks(updatel(i).num)(updatey(i))(updatex(i)) === StonePressurePlateOnBlock) {
-          //blockTemp = blocks(updatel(i).num)(updatey(i))(updatex(i)) TODO: Doesn't seem to be used
-          removeBlockPower(updatex(i), updatey(i), updatel(i))
-          blocks(updatel(i).num)(updatey(i))(updatex(i)) = StonePressurePlateBlock
-          rdrawn(updatey(i))(updatex(i)) = false
-        } else if (blocks(updatel(i).num)(updatey(i))(updatex(i)) === ZythiumPressurePlateOnBlock) {
-//          blockTemp = blocks(updatel(i).num)(updatey(i))(updatex(i))  TODO: Doesn't seem to be used
-          removeBlockPower(updatex(i), updatey(i), updatel(i))
-          blocks(updatel(i).num)(updatey(i))(updatex(i)) = ZythiumPressurePlateBlock
-          rdrawn(updatey(i))(updatex(i)) = false
-        } else if (blocks(updatel(i).num)(updatey(i))(updatex(i)).id >= ZythiumDelayer1DelayRightOnBlock.id && blocks(
-                     updatel(i).num)(updatey(i))(updatex(i)).id <= ZythiumDelayer1DelayUpOnBlock.id || blocks(
-                     updatel(i).num)(updatey(i))(updatex(i)).id >= ZythiumDelayer2DelayRightOnBlock.id && blocks(
-                     updatel(i).num)(updatey(i))(updatex(i)).id <= ZythiumDelayer2DelayUpOnBlock.id ||
-                   blocks(updatel(i).num)(updatey(i))(updatex(i)).id >= ZythiumDelayer4DelayRightOnBlock.id && blocks(
-                     updatel(i).num)(updatey(i))(updatex(i)).id <= ZythiumDelayer4DelayUpOnBlock.id || blocks(
-                     updatel(i).num)(updatey(i))(updatex(i)).id >= ZythiumDelayer8DelayRightOnBlock.id && blocks(
-                     updatel(i).num)(updatey(i))(updatex(i)).id <= ZythiumDelayer8DelayUpOnBlock.id) {
-          logger.debug("(DEBUG2R)")
-//          blockTemp = blocks(updatel(i).num)(updatey(i))(updatex(i))  TODO: Doesn't seem to be used
-          removeBlockPower(updatex(i), updatey(i), updatel(i), false)
-          blocks(updatel(i).num)(updatey(i))(updatex(i)) =
-            Block.withId(blocks(updatel(i).num)(updatey(i))(updatex(i)).id - 4)
-          rdrawn(updatey(i))(updatex(i)) = false
-        } else if (blocks(updatel(i).num)(updatey(i))(updatex(i)).id >= ZythiumDelayer1DelayRightBlock.id && blocks(
-                     updatel(i).num)(updatey(i))(updatex(i)).id <= ZythiumDelayer1DelayUpBlock.id || blocks(
-                     updatel(i).num)(updatey(i))(updatex(i)).id >= ZythiumDelayer2DelayRightBlock.id && blocks(
-                     updatel(i).num)(updatey(i))(updatex(i)).id <= ZythiumDelayer2DelayUpBlock.id ||
-                   blocks(updatel(i).num)(updatey(i))(updatex(i)).id >= ZythiumDelayer4DelayRightBlock.id && blocks(
-                     updatel(i).num)(updatey(i))(updatex(i)).id <= ZythiumDelayer4DelayUpBlock.id || blocks(
-                     updatel(i).num)(updatey(i))(updatex(i)).id >= ZythiumDelayer8DelayRightBlock.id && blocks(
-                     updatel(i).num)(updatey(i))(updatex(i)).id <= ZythiumDelayer8DelayUpBlock.id) {
-          logger.debug("(DEBUG2A)")
-          blocks(updatel(i).num)(updatey(i))(updatex(i)) =
-            Block.withId(blocks(updatel(i).num)(updatey(i))(updatex(i)).id + 4)
-          power(updatel(i).num)(updatey(i))(updatex(i)) = 5.toFloat
-          addBlockLighting(updatex(i), updatey(i))
-          addTileToPQueue(updatex(i), updatey(i))
-          rdrawn(updatey(i))(updatex(i)) = false
+        val blockToUpdate = blocks(updatel(i).num)(updatey(i))(updatex(i))
+        @inline def updateBlockTo(b: Block) = {
+          blocks(updatel(i).num)(updatey(i))(updatex(i)) = b
         }
+        blockToUpdate match {
+          case ButtonLeftOnBlock =>
+            removeBlockPower(updatex(i), updatey(i), updatel(i))
+            updateBlockTo(ButtonLeftBlock)
+            rdrawn(updatey(i))(updatex(i)) = false
+
+          case ButtonRightOnBlock =>
+            removeBlockPower(updatex(i), updatey(i), updatel(i))
+            updateBlockTo(ButtonRightBlock)
+            rdrawn(updatey(i))(updatex(i)) = false
+
+          case WoodenPressurePlateOnBlock =>
+            removeBlockPower(updatex(i), updatey(i), updatel(i))
+            updateBlockTo(WoodenPressurePlateBlock)
+            rdrawn(updatey(i))(updatex(i)) = false
+
+          case StonePressurePlateOnBlock =>
+            removeBlockPower(updatex(i), updatey(i), updatel(i))
+            updateBlockTo(StonePressurePlateBlock)
+            rdrawn(updatey(i))(updatex(i)) = false
+
+          case ZythiumPressurePlateOnBlock =>
+            removeBlockPower(updatex(i), updatey(i), updatel(i))
+            updateBlockTo(ZythiumPressurePlateBlock)
+            rdrawn(updatey(i))(updatex(i)) = false
+
+          case b
+              if //TODO could make a named extractor
+              b.id >= ZythiumDelayer1DelayRightOnBlock.id && b.id <= ZythiumDelayer1DelayUpOnBlock.id
+                ||
+                  b.id >= ZythiumDelayer2DelayRightOnBlock.id && b.id <= ZythiumDelayer2DelayUpOnBlock.id
+                ||
+                  b.id >= ZythiumDelayer4DelayRightOnBlock.id && b.id <= ZythiumDelayer4DelayUpOnBlock.id
+                ||
+                  b.id >= ZythiumDelayer8DelayRightOnBlock.id && b.id <= ZythiumDelayer8DelayUpOnBlock.id =>
+            logger.debug("(DEBUG2R)")
+            removeBlockPower(updatex(i), updatey(i), updatel(i), false)
+            updateBlockTo(Block.withId(blockToUpdate.id - 4))
+            rdrawn(updatey(i))(updatex(i)) = false
+
+          case b
+              if //TODO could make a named extractor
+              b.id >= ZythiumDelayer1DelayRightBlock.id && b.id <= ZythiumDelayer1DelayUpBlock.id
+                ||
+                  b.id >= ZythiumDelayer2DelayRightBlock.id && b.id <= ZythiumDelayer2DelayUpBlock.id
+                ||
+                  b.id >= ZythiumDelayer4DelayRightBlock.id && b.id <= ZythiumDelayer4DelayUpBlock.id
+                ||
+                  b.id >= ZythiumDelayer8DelayRightBlock.id && b.id <= ZythiumDelayer8DelayUpBlock.id =>
+            logger.debug("(DEBUG2A)")
+            updateBlockTo(Block.withId(b.id + 4))
+            power(updatel(i).num)(updatey(i))(updatex(i)) = 5.toFloat
+            addBlockLighting(updatex(i), updatey(i))
+            addTileToPQueue(updatex(i), updatey(i))
+            rdrawn(updatey(i))(updatex(i)) = false
+
+          case _ =>
+        }
+
         updatex.remove(i)
         updatey.remove(i)
         updatet.remove(i)
@@ -2398,7 +2406,7 @@ class TerraFrame
                   } else if (DEBUG_MOBTEST.isDefined)
                     mobSpawn = DEBUG_MOBTEST
 
-                  val (xmax, ymax): (Int, Int) = {
+                  val (xmax, ymax): (Int, Int) = { //TODO: pattern match on Some(x)
                     if (mobSpawn.contains(BlueBubble) ||
                         mobSpawn.contains(GreenBubble) ||
                         mobSpawn.contains(RedBubble) ||
