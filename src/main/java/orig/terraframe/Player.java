@@ -1,3 +1,5 @@
+package orig.terraframe;
+
 import java.applet.Applet;
 import java.awt.*;
 import java.awt.event.*;
@@ -312,7 +314,7 @@ public class Player implements Serializable {
     }
 
     private static BufferedImage loadImage(String path) {
-        URL url = TerraFrame.class.getResource(path);
+        URL url = TerraFrame.class.getResource("/" + path);
         BufferedImage image = null;
         try {
             image = ImageIO.read(url);

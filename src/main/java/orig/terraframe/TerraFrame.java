@@ -1,3 +1,5 @@
+package orig.terraframe;
+
 /**
 
 TerraFrame (working title) [Pre-alpha 1.3]
@@ -5963,7 +5965,7 @@ public class TerraFrame extends JApplet implements ChangeListener, KeyListener, 
     }
 
     public static BufferedImage loadImage(String path) {
-        InputStream url = TerraFrame.class.getResourceAsStream(path);
+        InputStream url = TerraFrame.class.getResourceAsStream("/" + path);
         BufferedImage image = null;
         try {
             image = ImageIO.read(url);

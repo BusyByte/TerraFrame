@@ -1,3 +1,5 @@
+package orig.terraframe;
+
 import java.awt.*;
 import java.awt.image.*;
 import java.io.*;
@@ -95,7 +97,7 @@ public class RandConverter {
     }
 
     private static BufferedImage loadImage(String path) {
-        URL url = RandConverter.class.getResource(path);
+        URL url = RandConverter.class.getResource("/" + path);
         BufferedImage image = null;
         try {
             image = ImageIO.read(url);
